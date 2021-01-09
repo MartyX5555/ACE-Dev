@@ -5,11 +5,7 @@ AddCSLuaFile( "cl_init.lua" )
 
 include('shared.lua')
 
-
-
-DEFINE_BASECLASS("acf_explosive")
-
-
+DEFINE_BASECLASS( "base_wire_entity" )
 
 
 function ENT:GetReloadTime(nextMsl)
@@ -61,14 +57,16 @@ function ENT:Initialize()
 
     self.BaseClass.Initialize(self)
 
-	self.SpecialHealth = true	--If true needs a special ACF_Activate function
+	self.SpecialHealth = true	    --If true needs a special ACF_Activate function
 	self.SpecialDamage = true   	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
 	self.ReloadTime = 1
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
-	self.PostReloadWait = CurTime()
+	self.PostReloadWait = CurTime() + 0.5
     self.WaitFunction = self.GetFireDelay
+	self.Legal = true
+	self.LegalIssues = ""
 	self.LastSend = 0
 	self.Owner = self
 	
@@ -100,6 +98,8 @@ function ENT:Initialize()
     self.Missiles = {}   
 
 	self.AmmoLink = {}
+	
+	self:GetOverlayText()
 	
 end
 
@@ -147,12 +147,12 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 	
 	local curammo = table.Count(self.Missiles)
 	
-	// Detonate rack if damage causes ammo rupture, or a penetrating shot hits some ammo.
+	-- Detonate rack if damage causes ammo rupture, or a penetrating shot hits some ammo.
 	if not HitRes.Kill then
 		local Ratio = (HitRes.Damage * (self.ACF.MaxHealth - self.ACF.Health) / self.ACF.MaxHealth)^0.2
 		local ammoRatio = curammo / self.MagSize	--Thanks, eagle-eyed sestze!
 		local chance = math.Rand(0,1)
-		//print(Ratio, ammoRatio, chance, ( Ratio * ammoRatio ) > chance, HitRes.Overkill > 0 and chance > (1 - ammoRatio))
+		--print(Ratio, ammoRatio, chance, ( Ratio * ammoRatio ) > chance, HitRes.Overkill > 0 and chance > (1 - ammoRatio))
 		if ( Ratio * ammoRatio ) > chance or HitRes.Overkill > 0 and chance > (1 - ammoRatio) then  
 			self.Inflictor = Inflictor
 			HitRes.Kill = true
@@ -189,6 +189,7 @@ function ENT:DetonateAmmo(inflictor)
         local missile = self:PopMissile()
         
         local bdata = missile.BulletData
+		
         
         if bdata.FillerMass then 
             fillerMass = fillerMass + bdata.FillerMass
@@ -247,9 +248,11 @@ function ENT:CanLinkCrate(crate)
 		return false, "Refill crates cannot be linked!"
 	end
     
+	
     -- Don't link if it's a blacklisted round type for this gun
     local class = ACF_GetGunValue(bdata, "gunclass")
 	local Blacklist = ACF.AmmoBlacklist[ bdata.RoundType or bdata.Type ] or {}
+	
 	
 	if not class or table.HasValue( Blacklist, class ) then
 		return false, "That round type cannot be used with this gun!"
@@ -293,9 +296,12 @@ function ENT:Link( Target )
     
 	table.insert( self.AmmoLink, Target )
 	table.insert( Target.Master, self )
-	
-    
+
+    self:SetOverlayText(txt)
+
 	return true, "Link successful!"
+
+	
 	
 end
 
@@ -313,6 +319,9 @@ function ENT:Unlink( Target )
 	end
 	
 	if Success then
+	
+	    self:GetOverlayText()
+	
 		return true, "Unlink successful!"
 	else
 		return false, "That entity is not linked to this gun!"
@@ -375,21 +384,41 @@ end
 
 
 function ENT:TriggerInput( iname , value )
+
+    
+
 	
-	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled ) then
-		if self.NextFire >= 1 then
-			self.User = self:GetUser(self.Inputs["Fire"].Src)
-			if not IsValid(self.User) then self.User = self.Owner end
+	if ( iname == "Fire" and value > 0 and self.Ready   ) then --and ACF.GunfireEnabled
+
+		self.User = self:GetUser(self.Inputs["Fire"].Src)
+		
+		if not IsValid(self.User) then self.User = self.Owner end
+		
 			self:FireMissile()
 			self:Think()
-		end
-		self.Firing = true
-	elseif ( iname == "Fire" and value == 0 ) then
-		self.Firing = false
-    elseif (iname == "Reload" and value ~= 0 ) then
-        self:Reload()
+
+		    self.Firing = true
+			
+		    print(self.Firing)
+		    print('Value: '..value)
+		    print(self.Ready)
+  	
+	elseif ( iname == "Fire" and value == 0 or not self.Ready ) then
+		
+		    self.Firing = false
+			
+		    print(self.Firing)
+		    print(self.value)
+		    print(self.Ready)
+			
+    elseif (iname == "Reload" and value > 0 ) then
+		
+            self:Reload()
+			
     elseif (iname == "Target Pos") then
-        Wire_TriggerOutput(self, "Position", value)
+		
+            Wire_TriggerOutput(self, "Position", value)
+			
 	end		
 end
 
@@ -417,28 +446,72 @@ end
 
 
 function ENT:SetStatusString()
+--[[
 	local phys = self:GetPhysicsObject()
+	
 	if(!IsValid(phys)) then
 		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
+		self:GetOverlayText()
 		return
 	end
+	
     if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)-1) then
         self:SetNWString("Status", "Underweight! (should be " .. tostring((self.LegalWeight or self.Mass)-1) .. " kg)")
+		self:GetOverlayText()
         return
     end
+]]--    
+
     
-    local Crate = self:FindNextCrate()
-    if not IsValid(Crate) then
-        self:SetNWString("Status", "Can't find ammo!")
-        return
-    end
-    
+	local Missile = self:PeekMissile()
+	
+	if not IsValid(Missile) then
+	    self:SetNWString("Status", "Empty")
+		self:GetOverlayText()
+		return
+	else
+	    if not self.Ready then
+		
+	    self:SetNWString("Status", "Loading")
+		self:GetOverlayText()	
+		return
+		else
+		
+	    self:SetNWString("Status", "Ready")
+		self:GetOverlayText()
+		return	
+		end
+	end
+	self:SetNWString("Linked", "")
     self:SetNWString("Status", "")
+	self:GetOverlayText()
     
+
+    
+	
+	
 end
 
 
 
+--[[
+function ENT:SetGuidanceString()
+    
+	local Missile = self:PeekMissile()
+	
+    local guidance  = Missile.Guidance
+	
+	if guidance == 'Dumb' then
+	    self:SetNWString("Guidance", "")
+		self:GetOverlayText()
+		return   
+	end
+    
+	self:SetNWString("Guidance", "")
+	self:GetOverlayText()
+	
+end
+]]--
 
 function ENT:TrimDistantCrates()
 
@@ -517,6 +590,7 @@ function ENT:Think()
 		
         self:GetReloadTime(self:PeekMissile())
         self:SetStatusString()
+--		self:SetGuidanceString()
 		
 		self.LastSend = Time
 	
@@ -548,7 +622,7 @@ function ENT:Think()
 	self:NextThink(Time + 0.5)
     
     self.LastThink = Time
-    
+	
 	return true
 	
 end
@@ -734,7 +808,7 @@ function ENT:AddMissile()
     if self.ProtectMissile then missile.DisableDamage = true end
     
     missile:Spawn()
-    --missile:SetBulletData(BulletData)
+    
     
     self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
     
@@ -768,7 +842,7 @@ function ENT:LoadAmmo( Reload )
     end
     
 	self.NextFire = 0
-	self.PostReloadWait = CurTime() + 5
+	self.PostReloadWait = 0--CurTime() + 4.5
     self.WaitFunction = self.GetReloadTime
 
 	self.Ready = false
@@ -776,22 +850,12 @@ function ENT:LoadAmmo( Reload )
     
 	Wire_TriggerOutput(self, "Ready", 0)
 	
-	self:OnLoaded()
+	self:GetOverlayText()
 	
 	self:Think()
 	return true	
 	
 end
-
-
-
-
-function ENT:OnLoaded()
-	
-end
-
-
-
 
 function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
@@ -1019,35 +1083,8 @@ end
 
 
 function ENT:MuzzleEffect( attach, bdata )
-	
     self:EmitSound( "phx/epicmetal_hard.wav", 500, 100 )
-    
-	-- local Effect = EffectData()
-		-- Effect:SetEntity( self )
-		-- Effect:SetScale( self.BulletData["PropMass"] )
-		-- Effect:SetAttachment( attach )
-		-- Effect:SetSurfaceProp( ACF.RoundTypes[bdata.Type]["netid"]  )	--Encoding the ammo type into a table index
-	-- util.Effect( "ACF_MissileLaunch", Effect, true, true )
-
 end
-
-
-
-
-function ENT:ReloadEffect()
-
-	-- local Effect = EffectData()
-		-- Effect:SetEntity( self )
-		-- Effect:SetScale( 0 )
-		-- Effect:SetMagnitude( self.ReloadTime or 1 )
-		-- Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData["Type"]]["netid"]  )	--Encoding the ammo type into a table index
-	-- util.Effect( "ACF_MuzzleFlash", Effect, true, true )
-	
-end
-
-
-
-
 
 function ENT:PreEntityCopy()
 
@@ -1121,4 +1158,61 @@ end
 
 function ENT:OnRestore()
     Wire_Restored(self.Entity)
+end
+
+function ENT:GetOverlayText()   --New Overlay text that is shown when you are looking at the rack. 
+
+	local name          = self:GetNWString("WireName")   
+	local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
+	local Ammo          = self:GetNWInt("Ammo")          --Ammo count
+	local FireRate      = self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
+    local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
+    local ReloadBonus   = self:GetNWFloat("ReloadBonus") --the word explains by itself
+    local Status        = self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
+	
+	--if not Status == '' then
+	
+	  local txt = '-  '..Status..'  -'
+	
+	    if Ammo > 0  then
+	        if Ammo == 1 then 
+	            txt = txt..'\n'..Ammo..' Launch left'
+	        else
+	            txt = txt..'\n'..Ammo..' Launches left'
+	        end 
+	   
+	        txt = txt..'\n\nFire Rate: '..(math.Round(FireRate,2))..' secs'
+	   
+	        txt = txt..'\nReload Time: '..(math.Round(Reload,2))..' secs'
+	   
+	        if ReloadBonus > 0 then
+	   
+	           txt = txt..'\n'..math.floor(ReloadBonus * 100)..'% Reload Time Decreased'
+	   
+	        end
+			
+	    else
+	    
+	  	    if #self.AmmoLink ~= 0 then
+		
+		       txt = txt..'\n\nProvided with ammo.\n'
+		
+		    else
+		
+		       txt = txt..'\n\nAmmo not found!\n'     
+		
+		    end
+			
+	    end
+		
+	--else
+	
+	   local txt = '- Empty -'
+		
+	--end
+	
+	
+    self:SetOverlayText(txt)
+	
+
 end
