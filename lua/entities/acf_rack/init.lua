@@ -1207,7 +1207,7 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 		
 	--else
 	
-	   local txt = '- Empty -'
+	--   local txt = '- Empty -'
 		
 	--end
 	
