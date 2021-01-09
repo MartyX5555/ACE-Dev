@@ -620,7 +620,12 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local phys = Debris:GetPhysicsObject() 
 	if phys:IsValid() then
 		phys:SetMass(mass)
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 10 , Debris:GetPos()+VectorRand()*20 ) 	-- previously energy*350
+		
+		if entClass ~= 'acf_rack' then   --just curious why acf_rack doesnt work well with this
+		
+	       phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 10 , Debris:GetPos()+VectorRand()*20 ) 	-- previously energy*350
+		
+		end
 		phys:EnableGravity( grav )
 	end
 
