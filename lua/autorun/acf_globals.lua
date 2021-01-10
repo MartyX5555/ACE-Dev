@@ -666,19 +666,19 @@ function ACF_UpdateChecking( )
 				
 		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
 		
-      --  str = str:gsub("%s+", "")
-		
-	--	local rev = 0
 		if rev and ACF.Version >= rev then
 		    
 			print("[ACE] ACF Is Up To Date, Latest Version: "..rev)
-			print(reva)
+			
 		elseif !rev then
+		
 			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
+			
 		else
+		
 			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have Version: "..ACF.Version)
-			print(reva)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
+			
 		end
 		ACF.CurrentVersion = rev
 		
