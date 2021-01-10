@@ -270,7 +270,7 @@ function ACFHomeGUICreate( Table )
 	--start version
 	
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
-	versiontext = "Github Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetDark( true )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()
