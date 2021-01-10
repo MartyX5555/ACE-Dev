@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 999           --ACE current version
+ACF.Version = 453           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021             --Current Year
@@ -60,20 +60,23 @@ ACF.TextoliteSpallMult = 1.3
 ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
 ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
 
+--ACF Damage Multipler.
 
-ACF.APDamageMult = 1.1
-ACF.APCDamageMult = 1.1
-ACF.APBCDamageMult = 1.05
-ACF.APCBCDamageMult = 1.05
-ACF.APHEDamageMult = 1.0
-ACF.APDSDamageMult = 1.5
-ACF.APDSSDamageMult = 1.55
-ACF.HVAPDamageMult = 1.65
-ACF.FLDamageMult = 1.4
-ACF.HEATDamageMult = 2
-ACF.HEDamageMult = 2
-ACF.HESHDamageMult = 1.2
-ACF.HPDamageMult = 4
+ACF.APDamageMult = 1.1            --AP Damage Multipler             -1.1
+ACF.APCDamageMult = 1.05           --APC Damage Multipler           -1.1
+ACF.APBCDamageMult = 1.05         --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult = 1.0        --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult = 1.0          --APHE Damage Multipler          
+ACF.APDSDamageMult = 1.5          --APDS Damage Multipler          
+ACF.APDSSDamageMult = 1.55        --APDSS Damage Multipler
+ACF.HVAPDamageMult = 1.65         --HVAP/APCR Damage Multipler
+ACF.FLDamageMult = 1.4            --FL Damage Multipler
+ACF.HEATDamageMult = 2            --HEAT Damage Multipler
+ACF.HEDamageMult = 2              --HE Damage Multipler
+ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
+ACF.HPDamageMult = 4              --HP Damage Multipler
+
+
 --[[
             Material thickness exponential curves, implemented to reduce high thickness memes.
             Higher thickness plates take less damage. Enjoy balancing the two.
@@ -655,14 +658,26 @@ else
 end
 
 function ACF_UpdateChecking( )
-	http.Fetch("https://github.com/RedDeadlyCreeper/ArmoredCombatExtended",function(contents,size)
-		local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
+	http.Fetch("https://raw.githubusercontent.com/MartyX5555/ACE-Dev/master/lua/autorun/acf_globals.lua",function(contents,size)   --https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
+		--local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
+		
+		str = tostring("String:"..contents)    --maybe not the best way to get git but well......
+		i,k = string.find(str,'ACF.Version =')
+				
+		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
+		
+      --  str = str:gsub("%s+", "")
+		
+	--	local rev = 0
 		if rev and ACF.Version >= rev then
+		    
 			print("[ACE] ACF Is Up To Date, Latest Version: "..rev)
+			print(reva)
 		elseif !rev then
 			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
 		else
 			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have Version: "..ACF.Version)
+			print(reva)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
 		end
 		ACF.CurrentVersion = rev
@@ -762,10 +777,6 @@ include("autorun/acf_missile/folder.lua")
 AddCSLuaFile("acf/shared/acf_missileloader.lua")
 include("acf/shared/acf_missileloader.lua")
 
-AddCSLuaFile("acf/shared/acfm_globals.lua")
-include("acf/shared/acfm_globals.lua")
-
-AddCSLuaFile("autorun/client/cl_acfm_versioncheck.lua")
 AddCSLuaFile("autorun/client/cl_acfm_menuinject.lua")
 AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
 AddCSLuaFile("autorun/printbyname.lua")
