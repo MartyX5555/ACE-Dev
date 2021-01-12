@@ -62,9 +62,9 @@ ACF.ERAEffectivenessMult = 5                   --How many more times is the deto
 
 --ACF Damage Multipler.
 
-ACF.APDamageMult = 1.1            --AP Damage Multipler             -1.1
-ACF.APCDamageMult = 1.05           --APC Damage Multipler           -1.1
-ACF.APBCDamageMult = 1.05         --APBC Damage Multipler           -1.05
+ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
+ACF.APCDamageMult = 1.5           --APC Damage Multipler           -1.1
+ACF.APBCDamageMult = 1.5         --APBC Damage Multipler           -1.05
 ACF.APCBCDamageMult = 1.0        --APCBC Damage Multipler           -1.05
 ACF.APHEDamageMult = 1.0          --APHE Damage Multipler          
 ACF.APDSDamageMult = 1.5          --APDS Damage Multipler          
