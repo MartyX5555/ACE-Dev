@@ -57,8 +57,8 @@ function ENT:Initialize()
 
     self.BaseClass.Initialize(self)
 
-	self.SpecialHealth = true	    --If true needs a special ACF_Activate function
-	self.SpecialDamage = true   	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
+	self.SpecialHealth = false	    --If true needs a special ACF_Activate function
+	self.SpecialDamage = false   	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
 	self.ReloadTime = 1
 	self.Ready = true
 	self.Firing = nil
@@ -115,6 +115,7 @@ function ENT:ACF_Activate( Recalc )
 	if not self.ACF.Aera then
 		self.ACF.Aera = PhysObj:GetSurfaceArea() * 6.45
 	end
+	--[[
 	if not self.ACF.Volume then
 		self.ACF.Volume = PhysObj:GetVolume() * 16.38
 	end
@@ -137,7 +138,7 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Mass = self.Mass
 	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
 	self.ACF.Type = "Prop"
-	
+	]]--
 end
 
 --Thanks sestze
@@ -731,11 +732,11 @@ function ENT:SetLoadedWeight()
     local addWeight = 0
     
     for k, missile in pairs(self.Missiles) do
-        addWeight = addWeight + missile.RoundWeight + 1
+        --addWeight = addWeight + missile.RoundWeight + 1 --addWeight = addWeight + missile.RoundWeight + 1
         
         local phys = missile:GetPhysicsObject()  	
         if (IsValid(phys)) then  		
-            phys:SetMass( 5 ) -- Will result in slightly heavier rack but is probably a good idea to have some mass for any damage calcs.
+            phys:SetMass( missile.RoundWeight ) --phys:SetMass( 5 )  -- Will result in slightly heavier rack but is probably a good idea to have some mass for any damage calcs.
         end 
     end
     
