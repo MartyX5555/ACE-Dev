@@ -400,17 +400,17 @@ function ENT:TriggerInput( iname , value )
 
 		    self.Firing = true
 			
-		    print(self.Firing)
-		    print('Value: '..value)
-		    print(self.Ready)
+		    --print(self.Firing)
+		    --print('Value: '..value)
+		    --print(self.Ready)
   	
 	elseif ( iname == "Fire" and value == 0 or not self.Ready ) then
 		
 		    self.Firing = false
 			
-		    print(self.Firing)
-		    print(self.value)
-		    print(self.Ready)
+		    --print(self.Firing)
+		    --print(self.value)
+		    --print(self.Ready)
 			
     elseif (iname == "Reload" and value > 0 ) then
 		
@@ -843,7 +843,7 @@ function ENT:LoadAmmo( Reload )
     end
     
 	self.NextFire = 0
-	self.PostReloadWait = CurTime() --CurTime() + 4.5
+	self.PostReloadWait = CurTime() + 5 --CurTime() + 4.5
     self.WaitFunction = self.GetReloadTime
 
 	self.Ready = false
