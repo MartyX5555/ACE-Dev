@@ -63,10 +63,10 @@ function ENT:Initialize()
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
-	self.PostReloadWait = CurTime() + 0.5
+	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
-	self.Legal = true
-	self.LegalIssues = ""
+	--self.Legal = true
+	--self.LegalIssues = ""
 	self.LastSend = 0
 	self.Owner = self
 	
@@ -385,41 +385,21 @@ end
 
 
 function ENT:TriggerInput( iname , value )
-
-    
-
 	
-	if ( iname == "Fire" and value > 0 and self.Ready   ) then --and ACF.GunfireEnabled
-
-		self.User = self:GetUser(self.Inputs["Fire"].Src)
-		
-		if not IsValid(self.User) then self.User = self.Owner end
-		
+	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled ) then
+		if self.NextFire >= 1 then
+			self.User = self:GetUser(self.Inputs["Fire"].Src)
+			if not IsValid(self.User) then self.User = self.Owner end
 			self:FireMissile()
 			self:Think()
-
-		    self.Firing = true
-			
-		    --print(self.Firing)
-		    --print('Value: '..value)
-		    --print(self.Ready)
-  	
-	elseif ( iname == "Fire" and value == 0 or not self.Ready ) then
-		
-		    self.Firing = false
-			
-		    --print(self.Firing)
-		    --print(self.value)
-		    --print(self.Ready)
-			
-    elseif (iname == "Reload" and value > 0 ) then
-		
-            self:Reload()
-			
+		end
+		self.Firing = true
+	elseif ( iname == "Fire" and value == 0 ) then
+		self.Firing = false
+    elseif (iname == "Reload" and value ~= 0 ) then
+        self:Reload()
     elseif (iname == "Target Pos") then
-		
-            Wire_TriggerOutput(self, "Position", value)
-			
+        Wire_TriggerOutput(self, "Position", value)
 	end		
 end
 
