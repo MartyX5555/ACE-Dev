@@ -823,7 +823,7 @@ function ENT:LoadAmmo( Reload )
     end
     
 	self.NextFire = 0
-	self.PostReloadWait = CurTime() + 5 --CurTime() + 4.5
+	self.PostReloadWait = CurTime()-- + 5 --CurTime() + 4.5
     self.WaitFunction = self.GetReloadTime
 
 	self.Ready = false

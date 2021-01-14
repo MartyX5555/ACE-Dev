@@ -281,7 +281,7 @@ function ENT:Detonate(overrideBData)
 		   bdata.HandlesOwnIteration = nil
 
 		   ACFM_BulletLaunch(bdata)
-		
+		   
 		
 
 		   self:SetSolid(SOLID_NONE)

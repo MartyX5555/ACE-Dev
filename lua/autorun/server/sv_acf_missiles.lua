@@ -34,12 +34,12 @@ function ACFM_BulletLaunch(BData)
         ACF.CurBulletIndex = 1
     end
 
-    local cvarGrav = GetConVar("sv_gravity")
-    BData.Accel = Vector(0,0,-1)            --Those are BData settings that are global and shouldn't change round to round
+    --local cvarGrav = GetConVar("sv_gravity")  --gravity
+    BData.Accel = Vector(0,0,-1600)            --Those are BData settings that are global and shouldn't change round to round
     BData.LastThink = BData.LastThink or SysTime()
     BData["FlightTime"] = 0
     --BData["TraceBackComp"] = 0
-    local Owner = BData.Owner
+    local Owner = BData.Owner  --owner of bullet
     
     if BData["FuseLength"] then
         BData["InitTime"] = SysTime()
@@ -103,8 +103,8 @@ function ACFM_ExpandBulletData(bullet)
     ret.Flight = bullet.Flight or Vector(0,0,0)
     ret.Type = ret.Type or bullet.Type
     
-    local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = Vector(0,0,-1)
+    --local cvarGrav = GetConVar("sv_gravity")
+    ret.Accel = Vector(0,0,-1600)
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
     ret.Colour = toconvert["Colour"]
     
@@ -218,7 +218,9 @@ end
 ResetVelocity.HE = ResetVelocity.AP
 ResetVelocity.HEP = ResetVelocity.AP
 ResetVelocity.SM = ResetVelocity.AP
-           
+--ResetVelocity.HEAT = ResetVelocity.AP
+ 
+         
 function ResetVelocity.HEAT(bdata)    
   
     if not bdata.Detonated then return ResetVelocity.AP(bdata) end
@@ -237,7 +239,7 @@ end
 function ResetVelocity.THEAT(bdata)    
 
 	DetCount = bdata.Detonated or 0
-    if DetCount == 0 then return ResetVelocity.AP(bdata) , print("APMode")	end
+    if DetCount == 0 then return ResetVelocity.AP(bdata)	end    --print("APMode")
     
     if not (bdata.MuzzleVel and bdata.SlugMV and bdata.SlugMV1 and bdata.SlugMV2) then return end
     
