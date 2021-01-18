@@ -30,8 +30,8 @@ function ENT:Initialize()
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
 
-	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
-	self.SpecialHealth = true	--If true needs a special ACF_Activate function
+	self.SpecialDamage = false	--If true needs a special ACF_OnDamage function
+	self.SpecialHealth = false	--If true needs a special ACF_Activate function
 
 	self:SetNWFloat("LightSize", 0)
 
@@ -604,7 +604,7 @@ end
 
 
 function ENT:ACF_Activate( Recalc )
-
+--[[
 	local EmptyMass = self.RoundWeight or self.Mass or 10
 
 	self.ACF = self.ACF or {}
@@ -641,7 +641,7 @@ function ENT:ACF_Activate( Recalc )
 	
  
 	
-	
+]]--
 end
 
 

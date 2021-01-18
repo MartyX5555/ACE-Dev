@@ -34,8 +34,8 @@ function ACFM_BulletLaunch(BData)
         ACF.CurBulletIndex = 1
     end
 
-    --local cvarGrav = GetConVar("sv_gravity")  --gravity
-    BData.Accel = Vector(0,0,-1600)            --Those are BData settings that are global and shouldn't change round to round
+    local cvarGrav = GetConVar("sv_gravity")  --gravity
+    BData.Accel = Vector(0,0,-600)            --Those are BData settings that are global and shouldn't change round to round
     BData.LastThink = BData.LastThink or SysTime()
     BData["FlightTime"] = 0
     --BData["TraceBackComp"] = 0
@@ -104,7 +104,7 @@ function ACFM_ExpandBulletData(bullet)
     ret.Type = ret.Type or bullet.Type
     
     --local cvarGrav = GetConVar("sv_gravity")
-    ret.Accel = Vector(0,0,-1600)
+    ret.Accel = Vector(0,0,-600)
     if ret.Tracer == 0 and bullet["Tracer"] and bullet["Tracer"] > 0 then ret.Tracer = bullet["Tracer"] end
     ret.Colour = toconvert["Colour"]
     
@@ -211,7 +211,7 @@ function ResetVelocity.AP(bdata)
 
     bdata.Flight:Normalize()
     
-    bdata.Flight = -(bdata.Flight * (bdata.MuzzleVel * 39.37))
+    bdata.Flight = bdata.Flight * (bdata.MuzzleVel * 39.37)
     
 end
             
@@ -223,7 +223,7 @@ ResetVelocity.SM = ResetVelocity.AP
          
 function ResetVelocity.HEAT(bdata)    
   
-    if not bdata.Detonated then return ResetVelocity.AP(bdata) end
+    --if not bdata.Detonated then return ResetVelocity.AP(bdata) end
       
     if not (bdata.MuzzleVel and bdata.SlugMV) then return end
     
@@ -231,7 +231,7 @@ function ResetVelocity.HEAT(bdata)
     
     local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77     --local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2)*0.77
     
-    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
+    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
     bdata.NotFirstPen = false
 
 end    
@@ -239,7 +239,7 @@ end
 function ResetVelocity.THEAT(bdata)    
 
 	DetCount = bdata.Detonated or 0
-    if DetCount == 0 then return ResetVelocity.AP(bdata)	end    --print("APMode")
+    --if DetCount == 0 then return ResetVelocity.AP(bdata)	end    --print("APMode")
     
     if not (bdata.MuzzleVel and bdata.SlugMV and bdata.SlugMV1 and bdata.SlugMV2) then return end
     
@@ -252,11 +252,11 @@ function ResetVelocity.THEAT(bdata)
 --	print(DetCount)	
 	if DetCount==1 then 
 --	print("Detonation1")
-    bdata.Flight = -(bdata.Flight * (bdata.SlugMV * penmul) * 39.37 )
+    bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37 
     bdata.NotFirstPen = false
     elseif DetCount == 2 then
 --	print("Detonation2")
-    bdata.Flight = -(bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 )
+    bdata.Flight = bdata.Flight * (bdata.SlugMV2 * penmul) * 39.37 
     bdata.NotFirstPen = false	
 	end
 end     
