@@ -2,7 +2,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 453           --ACE current version
+ACF.Version = 454           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021             --Current Year
@@ -658,7 +658,7 @@ else
 end
 
 function ACF_UpdateChecking( )
-	http.Fetch("https://raw.githubusercontent.com/MartyX5555/ACE-Dev/master/lua/autorun/acf_globals.lua",function(contents,size)   --https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
+	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)   --https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
 		--local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
 		
 		str = tostring("String:"..contents)    --maybe not the best way to get git but well......
