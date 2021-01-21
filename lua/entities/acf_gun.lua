@@ -833,8 +833,18 @@ function ENT:FireShell()
 					else
 					FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
 					end
-				
-					self.BulletData.FuseLength = self.FuseTime * FuseNoise
+				    
+					if self.BulletData.Type == "HE" then  --HE fuse code doesnt like the SM one
+					
+					    self.BulletData.FuseLength = self.FuseTime * FuseNoise
+					
+					elseif self.BulletData.Type == "SM" then
+				    
+					    self.FuseTime = self.BulletData.FuseLength * FuseNoise 
+					
+					end
+					
+					
 				end
 			end
 

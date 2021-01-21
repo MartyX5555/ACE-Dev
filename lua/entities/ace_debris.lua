@@ -7,8 +7,6 @@ ENT.PrintName = "Debris"
 
 if CLIENT then return end
 
--- todo: rename this to acf_debris
-
 function ENT:Initialize()
 	
 	self.Timer = CurTime() + 60
@@ -18,9 +16,17 @@ function ENT:Initialize()
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 	
 	local phys = self:GetPhysicsObject()
+	local Mass = phys:GetVolume() * 0.005
+	
 	if IsValid( phys ) then
+	    
 		phys:Wake()
+		phys:SetMass(Mass)
+	    phys:SetMaterial('concrete')
+		
 	end
+	
+
 	
 end
 
