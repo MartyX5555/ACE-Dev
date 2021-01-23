@@ -276,7 +276,7 @@ ACFTranslation.HP = {
 
 ACFTranslation.ShellAPCR = {
 	"Armor-Piercing Composite Rigid", --AmmoName (1)
-	"A soft projectile that contains a heavy tungsten core, penetrates and does a lot more damage than APDS or APFSDS, but has horrible drag characteristics" --Desc (2)
+	"A soft projectile that contains a heavy tungsten core, penetrates and does a lot more damage than APDS or APFSDS, but has horrible drag characteristics and is not meant against sloped armor." --Desc (2)
 
 }
 

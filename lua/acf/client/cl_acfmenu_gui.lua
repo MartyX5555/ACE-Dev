@@ -12,6 +12,8 @@ function PANEL:Init( )
 	self.WeaponSelect = vgui.Create( "DTree", self )
 
 	self.WeaponData = ACF.Weapons
+	radarClasses = ACF.Classes.Radar
+	radars = ACF.Weapons.Radar
 	
 	local Classes = list.Get("ACFClasses")
 	self.Classes = {}
@@ -89,7 +91,7 @@ function PANEL:Init( )
 		
 	end
 	--Creating variables for mobility subfolders
-	local Mobility = self.WeaponSelect:AddNode( "Mobility" )	
+	local Mobility = self.WeaponSelect:AddNode( "Mobility" )	--Mobility folder
 	local Gearboxes = Mobility:AddNode( "Gearboxes" )
 	local FuelTanks = Mobility:AddNode( "Fuel Tanks" )
 	local Engines = Mobility:AddNode("Engines")
@@ -135,7 +137,7 @@ function PANEL:Init( )
 	end --end mobility subfolders
                 
 	
-	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do   --Mobility folder
+	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do   
 		
 		local NodeAdd = Mobility
 		if MobilityTable.ent == "acf_engine" then
@@ -167,7 +169,28 @@ function PANEL:Init( )
 		EndNode.Icon:SetImage( "icon16/newspaper.png" )
 
 	end
+
+	local radar = self.WeaponSelect:AddNode("Radar") --radar folder name
+	local nods = {}
 	
+	for k, v in pairs(radarClasses) do  --calls subfolders		
+		nods[k] = radar:AddNode( v.name or "No Name" )	
+	end
+    
+	for Type, Ent in pairs(radars) do --calls subfolders content	
+		local curNode = nods[Ent.class]		
+		if curNode then
+			local EndNode = curNode:AddNode( Ent.name or "No Name" )
+			EndNode.mytable = Ent
+				
+			function EndNode:DoClick()
+				RunConsoleCommand( "acfmenu_type", self.mytable.type )
+				acfmenupanel:UpdateDisplay( self.mytable )
+			end	
+				EndNode.Icon:SetImage( "icon16/newspaper.png" )
+		end
+	end --end radar folder
+
 --[[	inactived stuff, could be used on future
 
 	local Missiles = self.WeaponSelect:AddNode( "Missiles" )
@@ -198,6 +221,7 @@ function PANEL:Init( )
 	end
 	
 	]]--
+	
 end
 
 /*------------------------------------

@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.HVAP =  { "MO", "RM", "SL", "GL", "HW", "MG", "SC", "BOMB" , "
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APCR) "..ACFTranslation.ShellAPCR[1] --Human readable name
+Round.name = "[APCR / HVAP] - "..ACFTranslation.ShellAPCR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_ap_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellAPCR[2]
 Round.netid = 11 --Unique ammotype ID for network transmission
@@ -39,7 +39,7 @@ function Round.convert( Crate, PlayerData )
     Data.MinCalMult = 0.25
     Data.MaxCalMult = 1
     Data.PenModifier = 1.7
-    Data.Ricochet = 60
+    Data.Ricochet = 45
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]

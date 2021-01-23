@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.HE = { "MG", "RAC", "SL", "ECM","ATR","SBC" }
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(HE) "..ACFTranslation.ShellHE[1] --Human readable name
+Round.name = "[HE] - "..ACFTranslation.ShellHE[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellHE[2]
 Round.netid = 2 --Unique ammotype ID for network transmission

@@ -8,7 +8,7 @@ ACF.AmmoBlacklist.APFSDS = { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" 
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "(APFSDS-LRP) "..ACFTranslation.ShellAPFSDS[1] --Human readable name
+Round.name = "[APFSDS-LRP] - "..ACFTranslation.ShellAPFSDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellAPFSDS[2]
 Round.netid = 16 --Unique ammotype ID for network transmission
