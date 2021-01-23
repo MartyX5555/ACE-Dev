@@ -22,7 +22,7 @@ function ENT:Initialize()
 	    
 		phys:Wake()
 		phys:SetMass(Mass)
-	    phys:SetMaterial('concrete')
+	    phys:SetMaterial('jeeptire')
 		
 	end
 	

@@ -639,9 +639,9 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if phys:IsValid() then
 
 		
-		phys:SetMaterial("concrete")
+		phys:SetMaterial("jeeptire")
 		
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 100, Debris:GetPos()+VectorRand()*1200 ) 	-- previously energy*350
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*1200 ) 	-- previously energy*350
 	   
 	end
 
@@ -681,7 +681,7 @@ function ACF_APKill( Entity , HitVector , Power )
 	local phys = Debris:GetPhysicsObject() 
 	if (phys:IsValid()) then	
 	
-        phys:SetMaterial("concrete")
+        phys:SetMaterial("jeeptire")
 		
 		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )
 		

@@ -77,6 +77,7 @@ end
 --checks the visclips of an entity, to determine if round should pass through or not
 -- ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
 function ACF_CheckClips( Ent, HitPos )
+
 	if not IsValid(Ent) or (Ent.ClipData == nil)
 		or (not (Ent:GetClass() == "prop_physics"))
 		or (Ent:GetPhysicsObject():GetVolume() == nil) -- makesphere
@@ -85,13 +86,14 @@ function ACF_CheckClips( Ent, HitPos )
 	local normal
 	local origin
 	for i=1, #Ent.ClipData do
-		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
+		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward() 
 		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
 		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end
+		if normal:Dot((origin - HitPos):GetNormalized()) > 0.15 then return true end  --0 was overkill, let bullets dont pass though a very short of visclip side.
 	end
 	
 	return false
+	
 end
 
 --handles non-terminal ballistics and fusing of bullets

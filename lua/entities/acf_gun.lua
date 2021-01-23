@@ -557,8 +557,10 @@ function ENT:TriggerInput( iname, value )
 	elseif ( iname == "Fuse Time" ) then
 	if value > 0 then
 		self.FuseTime = value
+		self:SetNWString("connected","wired")
 	else
 		self.FuseTime = 0
+		self:SetNWString("connected","unwired")
 	end
 	elseif (iname == "ROFLimit") then
 		self.ROFLimit = math.min(1/(value/60),10) --Clamped to 10 seconds because people are stupid and set this too low
@@ -834,17 +836,14 @@ function ENT:FireShell()
 					FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
 					end
 				    
-					if self.BulletData.Type == "HE" then  --HE fuse code doesnt like the SM one
+					wired = self:GetNWString('connected')
 					
-					    self.BulletData.FuseLength = self.FuseTime * FuseNoise
-					
-					elseif self.BulletData.Type == "SM" then
-				    
-					    self.FuseTime = self.BulletData.FuseLength * FuseNoise 
-					
+					if wired == 'wired' then --using fusetime via wire will override the ammo fusetime!
+				        print(wired)
+					    self.BulletData.FuseLength = self.FuseTime * FuseNoise  
+									
 					end
-					
-					
+									
 				end
 			end
 
