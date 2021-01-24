@@ -5,7 +5,8 @@ ACF.AmmoBlacklist = {}
 ACF.Version = 454           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
-ACF.Year = 2021             --Current Year
+ACF.Year = 2021      --Current Year
+
 
 ACF.EnableNewContent = true                    --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
@@ -129,6 +130,8 @@ ACF.NormalizationFactor = 0.15       --at 0.1(10%) a round hitting a 70 degree p
 
 ACF.AllowCSLua = 0
 
+ACF.LegalCheck = true                --if true, legal checks will be done and it will disable any no legal ent.
+
 --[[
 	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
 	with a hard to predict check time and punishing lockout time
@@ -192,8 +195,6 @@ ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
 ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
-
-
 
 	if ACF.AllowCSLua > 0 then
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
@@ -782,16 +783,7 @@ AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
 AddCSLuaFile("autorun/printbyname.lua")
 AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
-if SERVER then
-
-  include("gitrc.lua")
-
-end
-
 AddCSLuaFile("includes/modules/markdown.lua")
-AddCSLuaFile("acf/client/cl_missilewiki.lua")
-AddCSLuaFile("autorun/client/acfm_wiki.lua")
-
 
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")

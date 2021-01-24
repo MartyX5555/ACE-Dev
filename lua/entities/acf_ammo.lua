@@ -447,7 +447,7 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 
-	if not (self.BulletData.Type == "Refill") then
+	if not (self.BulletData.Type == "Refill") then   --ammo capacity start code
 
 		local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
 		local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
@@ -490,14 +490,17 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 
 
 	self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
-	else
+	
+	else -- for refill ammocrates Calculations 
 
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 	self.Volume = vol*Efficiency
 	
 	self.Capacity = 99999999
 	self.AmmoMassMax = vol*1	
-	end
+	
+	end -- end capacity calculations
+	
 	self.Caliber = GunData.caliber or 1
 	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
 	self.RoFMul = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0) --30% ROF penalty for 2 piece
