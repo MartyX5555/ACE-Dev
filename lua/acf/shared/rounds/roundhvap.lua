@@ -39,7 +39,7 @@ function Round.convert( Crate, PlayerData )
     Data.MinCalMult = 0.25
     Data.MaxCalMult = 1
     Data.PenModifier = 1.7
-    Data.Ricochet = 45
+    Data.Ricochet = 50  --do u think im evil?, consider using FS instead  - Marty
 --    end
 	
 	Data.SCalMult = PlayerData["Data5"]
