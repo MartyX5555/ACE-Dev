@@ -249,7 +249,7 @@ function TOOL:RightClick( trace )
 	
 	local ply = self:GetOwner()
 	
-	ply:ConCommand( "acfarmorprop_ductility " .. ent.ACF.Ductility * 100 )
+	ply:ConCommand( "acfarmorprop_ductility " .. (ent.ACF.Ductility or 0) * 100 )
 	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
 	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or 0) )
 	
