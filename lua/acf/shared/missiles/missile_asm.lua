@@ -3,7 +3,7 @@
 ACF_defineGunClass("ASM", {
     type            = "missile",
 	spread          = 1,
-	name            = "(Missile) Air-To-Surface Missile",
+	name            = "Air-To-Surface Missile",
 	desc            = ACFTranslation.MissileClasses[3],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	year = 1969,

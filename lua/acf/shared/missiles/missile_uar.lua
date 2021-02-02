@@ -3,7 +3,7 @@
 ACF_defineGunClass("UAR", {
     type            = "missile",
 	spread          = 0.2,
-	name            = "(Missile) Unguided Aerial Rockets",
+	name            = "Unguided Aerial Rockets",
 	desc            = ACFTranslation.MissileClasses[9],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 0.5,

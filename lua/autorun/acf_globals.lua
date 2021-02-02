@@ -7,7 +7,37 @@ ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2021      --Current Year
 
+--[[
 
+   --- ServerSide Convars ---
+
+]]--
+CreateConVar('sbox_max_acf_gun', 24)           -- Gun limit
+CreateConVar('sbox_max_acf_rapidgun', 4)       -- Guns like RACs, MGs, and ACs
+CreateConVar('sbox_max_acf_largegun', 2)       -- Guns with a caliber above 100mm
+CreateConVar('sbox_max_acf_smokelauncher', 20) -- smoke launcher limit
+CreateConVar('sbox_max_acf_ammo', 50)          -- ammo limit
+CreateConVar('sbox_max_acf_misc', 50)          -- misc ents limit
+CreateConVar('acf_meshvalue', 1) 
+CreateConVar("sbox_acf_restrictinfo", 1)       -- 0=any, 1=owned
+ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )         -- Should flares light players and NPCs on fire?  Does not affect godded players.
+ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )        -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities.
+CreateConVar( "acf_legalchecks", 1 , FCVAR_ARCHIVE)         -- If true, legal checks will be done and it will disable any no legal ent.
+CreateConVar( "acf_enable_dp", 'true' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
+
+if CLIENT then
+--[[
+
+   --- Client Convars
+
+]]--
+
+	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
+	
+end
+
+
+ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 ACF.EnableNewContent = true                    --If set to true this will enable new content like new guntypes, ammo, and composite armor
 
 ACF.Threshold = 264.7	                       --Health Divisor (don't forget to update cvar function down below)
@@ -124,29 +154,30 @@ ACF.FuelRate = 10                    --multiplier for fuel usage, 1.0 is approx 
 ACF.ElecRate = 3                     --multiplier for electrics
 ACF.TankVolumeMul = 1                -- multiplier for fuel tank capacity, 1.0 is approx real world
 
-ACF.EnableKillicons = true           -- Enable killicons overwriting.
+
 
 ACF.NormalizationFactor = 0.15       --at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ACF.AllowCSLua = 0
 
-ACF.LegalCheck = true                --if true, legal checks will be done and it will disable any no legal ent.
 
---[[
-	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
-	with a hard to predict check time and punishing lockout time
-	usage:
-	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
-	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
-]]
 
-ACF.LegalSettings = {
-	CanModelSwap = false,
-	Min = 5, 			-- min seconds between checks
-	Max = 25, 			-- max seconds between checks
-	Lockout = 35,		-- lockout time on not legal
-	NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(self.Min, self.Max) or self.Lockout) end
-}
+ACF.LiIonED = 0.458                  --li-ion energy density: kw hours / liter
+ACF.CuIToLiter = 0.0163871           -- cubic inches to liters
+
+ACF.RefillDistance = 400             --Distance in which ammo crate starts refilling.
+ACF.RefillSpeed = 250                -- (ACF.RefillSpeed / RoundMass) / Distance 
+
+ACF.ChildDebris = 50                 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
+ACF.DebrisIgniteChance = 0.25
+ACF.DebrisScale = 20                 -- Ignore debris that is less than this bounding radius.
+ACF.SpreadScale = 16		         -- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
+ACF.GunInaccuracyScale = 1           -- A multiplier for gun accuracy.
+ACF.GunInaccuracyBias = 2            -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
+
+ACF.EnableDefaultDP = GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
+ACF.LegalChecks = GetConVar('acf_legalchecks'):GetInt()               --if true, legal checks will be done and it will disable any no legal ent.
+ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
@@ -181,45 +212,25 @@ ACF.EngineHPMult = { --health multiplier for engines
 	Electric = 0.75
 }
 
-ACF.LiIonED = 0.458 -- li-ion energy density: kw hours / liter
-ACF.CuIToLiter = 0.0163871 -- cubic inches to liters
+--[[
+    ACE translations section
+]]--
 
-ACF.RefillDistance = 400 --Distance in which ammo crate starts refilling.
-ACF.RefillSpeed = 250 -- (ACF.RefillSpeed / RoundMass) / Distance 
-
-ACF.ChildDebris = 50 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
-ACF.DebrisIgniteChance = 0.25
-ACF.DebrisScale = 20 -- Ignore debris that is less than this bounding radius.
-ACF.SpreadScale = 16		-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
-ACF.GunInaccuracyScale = 1 -- A multiplier for gun accuracy.
-ACF.GunInaccuracyBias = 2  -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
-
-ACF.EnableDefaultDP = true -- Enable the inbuilt damage protection system.
-
-	if ACF.AllowCSLua > 0 then
+if ACF.AllowCSLua > 0 then
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
 	RunConsoleCommand( "sv_allowcslua", 1 )
 	include("autorun/translation/ace_translationpacks.lua") --File that is overwritten to install a translation pack
-	else
+else
 	RunConsoleCommand( "sv_allowcslua", 0 )
 	include("autorun/translation/ace_translationpacks.lua")
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
-	end
+end
 
 if file.Exists("acf/shared/acf_userconfig.lua", "LUA") then
 	include("acf/shared/acf_userconfig.lua")
 end
---ace_translationpacksserver
 
-CreateConVar('sbox_max_acf_gun', 24) 
-CreateConVar('sbox_max_acf_rapidgun', 4) --Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 2) --Guns with a caliber above 100mm
-ACF.LargeCaliber = 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
-CreateConVar('sbox_max_acf_smokelauncher', 20)
-CreateConVar('sbox_max_acf_ammo', 50)
-CreateConVar('sbox_max_acf_misc', 50)
-CreateConVar('acf_meshvalue', 1)
-CreateConVar("sbox_acf_restrictinfo", 1) -- 0=any, 1=owned
+
 
 AddCSLuaFile()
 AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
@@ -235,7 +246,7 @@ game.AddParticles( "particles/flares_fx.pcf" )
 PrecacheParticleSystem( "ACFM_Flare" )
 
 include("autorun/acf_missile/folder.lua")
-include("autorun/sh_acfm_cvars.lua")
+--include("autorun/sh_acfm_cvars.lua")
 include("acf/shared/acf_missileloader.lua")
 
 if SERVER then
@@ -278,6 +289,10 @@ elseif CLIENT then
 	end
 	
 end
+
+--[[
+    RoundType Loader
+]]--
 
 include("acf/shared/rounds/roundap.lua")
 include("acf/shared/rounds/roundhe.lua")
@@ -526,16 +541,35 @@ function ACF_CalcMassRatio( obj, pwr )
 end
 
 --[[
+	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
+	with a hard to predict check time and punishing lockout time
+	usage:
+	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
+	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
+]]
+
+ACF.LegalSettings = {
+	CanModelSwap = false,
+	Min = 5, 			-- min seconds between checks
+	Max = 25, 			-- max seconds between checks
+	Lockout = 35,		-- lockout time on not legal
+	NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(self.Min, self.Max) or self.Lockout) end
+}
+
+--[[
    checks if an ent meets the given requirements for legality
    MinInertia needs to be mass normalized (normalized=inertia/mass)
    ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
-
-	local problems = {}
+    
+	
+	local problems = {} --problems table definition
 	local physobj = Ent:GetPhysicsObject()
-
+    
+	if ACF.LegalChecks > 0 then   --checking if admin has allowed legal checks first
+	
 	-- check it exists
 	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
 	
@@ -592,7 +626,8 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 		end
 
 	end
-    	
+    end
+     	
 	-- legal if number of problems is 0
 	return (#problems == 0), table.concat(problems, ", ")
 	
@@ -659,7 +694,7 @@ else
 end
 
 function ACF_UpdateChecking( )
-	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)   --https://github.com/RedDeadlyCreeper/ArmoredCombatExtended
+	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size) 
 		--local rev = tonumber(string.match( contents, "%s*(%d+)\n%s*</span>\n%s*commits" )) or 0 --"history\"></span>\n%s*(%d+)\n%s*</span>"
 		
 		str = tostring("String:"..contents)    --maybe not the best way to get git but well......

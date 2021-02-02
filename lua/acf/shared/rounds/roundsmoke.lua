@@ -311,5 +311,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set( "SPECSRoundTypes", "SM", Round ) 
 list.Set( "ACFRoundTypes", "SM", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "SM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

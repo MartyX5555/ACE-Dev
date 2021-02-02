@@ -401,5 +401,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set("HEATRoundTypes", 'GLATGM', Round ) --Set the round on chemical folder
 list.Set( "ACFRoundTypes", "GLATGM", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "GLATGM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

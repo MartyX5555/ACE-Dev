@@ -261,7 +261,7 @@ function ModifyACFMenu(panel)
     local gunsNode
     
     for k, node in pairs(rootNodes) do
-        if node:GetText() == "Guns" then
+        if node:GetText() == "Missiles" then
             gunsNode = node
             break
         end

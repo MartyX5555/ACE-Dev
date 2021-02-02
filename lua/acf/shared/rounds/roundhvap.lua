@@ -72,7 +72,7 @@ end
 function Round.getDisplayData(Data)
 	local GUIData = {}
 	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+	GUIData.MaxPen = ((Energy.Penetration/Data.PenAera)*ACF.KEtoRHA)*1.055
 	return GUIData
 end
 
@@ -286,5 +286,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set( "APRoundTypes", "HVAP", Round )
 list.Set( "ACFRoundTypes", "HVAP", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HVAP" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

@@ -2,28 +2,46 @@ function PANEL:Init( )
 
 	acfmenupanel = self.Panel
 	
-	// height
-	
-	
+	-- // height
 	self:SetTall( surface.ScreenHeight() - 150 )
 	
-	//Weapon Select	
-	
+	-- //Weapon Select	
 	self.WeaponSelect = vgui.Create( "DTree", self )
 
+    -- //Tables definition
 	self.WeaponData = ACF.Weapons
 	radarClasses = ACF.Classes.Radar
 	radars = ACF.Weapons.Radar
 	
+--[[=========================
+   Table distribution
+]]--=========================
 	local Classes = list.Get("ACFClasses")
-	self.Classes = {}
+	self.GunClasses = {}
+	self.MisClasses = {}
+
 	for ID,Table in pairs(Classes) do
-		self.Classes[ID] = {}
+		self.GunClasses[ID] = {}
+		self.MisClasses[ID] = {}
 		for ClassID,Class in pairs(Table) do
 			Class.id = ClassID
-			table.insert(self.Classes[ID], Class)
+			
+			
+			if Class.type == 'Gun' then    --Table content for Guns folder
+			
+			--print('Gun detected!')
+			table.insert(self.GunClasses[ID], Class)
+			
+			elseif Class.type == 'missile' then    --Table content for Missiles folder
+			
+			--print('Missile detected!')
+			table.insert(self.MisClasses[ID], Class)
+			
+			end
+			
 		end
-		table.sort(self.Classes[ID], function(a,b) return a.id < b.id end )
+		table.sort(self.GunClasses[ID], function(a,b) return a.id < b.id end )
+		table.sort(self.MisClasses[ID], function(a,b) return a.id < b.id end )
 	end
 	
 	local WeaponDisplay = list.Get("ACFEnts")
@@ -42,32 +60,32 @@ function PANEL:Init( )
 		
 	end
 	
-	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" ) --Main Menu folder
+--[[=========================
+   ACE information folder
+]]--=========================
+	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" , "icon16/cog.png" ) --Main Menu folder
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
 	function HomeNode:DoClick()
 		acfmenupanel:UpdateDisplay(self.mytable)
 	end
-	HomeNode.Icon:SetImage( "icon16/cog.png" )
+
+--[[=========================
+   Guns folder
+]]--=========================	
+	local Guns = self.WeaponSelect:AddNode( "Guns" , "icon16/attach.png" ) --Guns folder
 	
-	local RoundAttribs = list.Get("ACFRoundTypes")
-	self.RoundAttribs = {}
-	for ID,Table in pairs(RoundAttribs) do
-		Table.id = ID
-		table.insert(self.RoundAttribs, Table)
-	end
-	table.sort(self.RoundAttribs, function(a,b) return a.id < b.id end )
+	for ClassID,Class in pairs(self.GunClasses["GunClass"]) do
 	
-	local Guns = self.WeaponSelect:AddNode( "Guns" ) --Guns folder
-	for ClassID,Class in pairs(self.Classes["GunClass"]) do
-	
-		local SubNode = Guns:AddNode( Class.name or "No Name" )
+		local SubNode = Guns:AddNode( Class.name or "No Name" , "icon16/brick.png" )
 		
 		for Type, Ent in pairs(self.WeaponDisplay["Guns"]) do	
 			if Ent.gunclass == Class.id then
-				local EndNode = SubNode:AddNode( Ent.name or "No Name" )
+			
+				local EndNode = SubNode:AddNode( Ent.name or "No Name")
 				EndNode.mytable = Ent
+				
 				function EndNode:DoClick()
 					RunConsoleCommand( "acfmenu_type", self.mytable.type )
 					acfmenupanel:UpdateDisplay( self.mytable )
@@ -78,10 +96,58 @@ function PANEL:Init( )
 		
 	end
 
-	local Ammo = self.WeaponSelect:AddNode( "Ammo" ) --Ammo folder
-	for AmmoID,AmmoTable in pairs(self.RoundAttribs) do
+--[[=========================
+   Missiles folder
+]]--=========================	
+
+	local Missiles = self.WeaponSelect:AddNode( "Missiles" , "icon16/wand.png" ) --Missiles folder
+	
+	for ClassID,Class in pairs(self.MisClasses["GunClass"]) do
+	
+		local SubNode = Missiles:AddNode( Class.name or "No Name" , "icon16/brick.png" )
 		
-		local EndNode = Ammo:AddNode( AmmoTable.name or "No Name" )
+		for Type, Ent in pairs(self.WeaponDisplay["Guns"]) do	
+			if Ent.gunclass == Class.id then
+			
+				local EndNode = SubNode:AddNode( Ent.name or "No Name")
+				EndNode.mytable = Ent
+				
+				function EndNode:DoClick()
+					RunConsoleCommand( "acfmenu_type", self.mytable.type )
+					acfmenupanel:UpdateDisplay( self.mytable )
+				end
+				EndNode.Icon:SetImage( "icon16/newspaper.png" )
+			end
+		end
+		
+	end
+
+--[[=========================
+   Ammo folder
+]]--=========================	    
+	local Ammo = self.WeaponSelect:AddNode( "Ammo" , "icon16/box.png" ) --Ammo folder
+	
+	local AP = Ammo:AddNode("Armor Piercing Rounds", "icon16/brick.png" )
+	local HE = Ammo:AddNode("High Explosive Rounds", "icon16/brick.png" )
+	local HEAT = Ammo:AddNode("Explosive Anti-Tank Rounds", "icon16/brick.png" )
+	local SPECS = Ammo:AddNode("Special Purpose Rounds" , "icon16/brick.png" )
+	
+--[[=========================
+   Ammo subfolder AP
+]]--=========================	   	
+	
+	local APAttribs = list.Get("APRoundTypes") 
+	self.APAttribs = {}
+	for ID,Table in pairs(APAttribs) do
+		Table.id = ID
+		table.insert(self.APAttribs, Table)
+	end
+	table.sort(self.APAttribs, function(a,b) return a.id < b.id end )	
+	
+	
+	for AmmoID,AmmoTable in pairs(self.APAttribs) do
+		
+		local EndNode = AP:AddNode( AmmoTable.name or "No Name" )
 		EndNode.mytable = AmmoTable
 		function EndNode:DoClick()
 			RunConsoleCommand( "acfmenu_type", self.mytable.type )
@@ -90,11 +156,90 @@ function PANEL:Init( )
 		EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		
 	end
-	--Creating variables for mobility subfolders
-	local Mobility = self.WeaponSelect:AddNode( "Mobility" )	--Mobility folder
-	local Gearboxes = Mobility:AddNode( "Gearboxes" )
-	local FuelTanks = Mobility:AddNode( "Fuel Tanks" )
-	local Engines = Mobility:AddNode("Engines")
+
+--[[=========================
+   Ammo subfolder HE
+]]--=========================	   	
+	
+	local HEAttribs = list.Get("HERoundTypes") 
+	self.HEAttribs = {}
+	for ID,Table in pairs(HEAttribs) do
+		Table.id = ID
+		table.insert(self.HEAttribs, Table)
+	end
+	table.sort(self.HEAttribs, function(a,b) return a.id < b.id end )	
+	
+	
+	for AmmoID,AmmoTable in pairs(self.HEAttribs) do
+		
+		local EndNode = HE:AddNode( AmmoTable.name or "No Name" )
+		EndNode.mytable = AmmoTable
+		function EndNode:DoClick()
+			RunConsoleCommand( "acfmenu_type", self.mytable.type )
+			acfmenupanel:UpdateDisplay( self.mytable )
+		end
+		EndNode.Icon:SetImage( "icon16/newspaper.png" )
+		
+	end
+
+--[[=========================
+   Ammo subfolder HEAT
+]]--=========================	   	
+	
+	local HEATAttribs = list.Get("HEATRoundTypes") 
+	self.HEATAttribs = {}
+	for ID,Table in pairs(HEATAttribs) do
+		Table.id = ID
+		table.insert(self.HEATAttribs, Table)
+	end
+	table.sort(self.HEATAttribs, function(a,b) return a.id < b.id end )	
+	
+	
+	for AmmoID,AmmoTable in pairs(self.HEATAttribs) do
+		
+		local EndNode = HEAT:AddNode( AmmoTable.name or "No Name" )
+		EndNode.mytable = AmmoTable
+		function EndNode:DoClick()
+			RunConsoleCommand( "acfmenu_type", self.mytable.type )
+			acfmenupanel:UpdateDisplay( self.mytable )
+		end
+		EndNode.Icon:SetImage( "icon16/newspaper.png" )
+		
+	end
+	
+--[[=========================
+   Ammo subfolder SPECS
+]]--=========================	   	
+	
+	local SPECSAttribs = list.Get("SPECSRoundTypes") --local RoundAttribs = list.Get("ACFRoundTypes")
+	self.SPECSAttribs = {}
+	for ID,Table in pairs(SPECSAttribs) do
+		Table.id = ID
+		table.insert(self.SPECSAttribs, Table)
+	end
+	table.sort(self.SPECSAttribs, function(a,b) return a.id < b.id end )	
+	
+	
+	for AmmoID,AmmoTable in pairs(self.SPECSAttribs) do
+		
+		local EndNode = SPECS:AddNode( AmmoTable.name or "No Name" )
+		EndNode.mytable = AmmoTable
+		function EndNode:DoClick()
+			RunConsoleCommand( "acfmenu_type", self.mytable.type )
+			acfmenupanel:UpdateDisplay( self.mytable )
+		end
+		EndNode.Icon:SetImage( "icon16/newspaper.png" )
+		
+	end
+		
+--[[=========================
+   Mobility folder
+]]--=========================
+	local Mobility = self.WeaponSelect:AddNode( "Mobility" , "icon16/car.png" )	--Mobility folder
+	local Gearboxes = Mobility:AddNode( "Gearboxes" , "icon16/brick.png"  )
+	local FuelTanks = Mobility:AddNode( "Fuel Tanks" , "icon16/brick.png"  )
+	local Engines = Mobility:AddNode("Engines" , "icon16/brick.png" )
+	
 	local EngineSubcats = {}
         
 	for _, MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do
@@ -140,12 +285,14 @@ function PANEL:Init( )
 	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do   
 		
 		local NodeAdd = Mobility
+		
 		if MobilityTable.ent == "acf_engine" then
 			local FuelCategory = EngineSubcats[MobilityTable.fuel]
 			local Category = MobilityTable.category
 			local Node = Category and FuelCategory[Category] or FuelCategory.Default
 			
 			NodeAdd = Node
+			
 		elseif MobilityTable.ent == "acf_gearbox" then
 			NodeAdd = Gearboxes
 			if(MobilityTable.category) then
@@ -153,6 +300,7 @@ function PANEL:Init( )
 			else
 				NodeAdd = EngineSubcats["miscg"]
 			end
+			
 		elseif MobilityTable.ent == "acf_fueltank" then
 			NodeAdd = FuelTanks
 			if (MobilityTable.category) then
@@ -170,11 +318,17 @@ function PANEL:Init( )
 
 	end
 
-	local radar = self.WeaponSelect:AddNode("Radar") --radar folder name
+--[[=========================
+   Sensor folder
+]]--=========================
+	local sensors = self.WeaponSelect:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
+	local radar = sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
+	local antimissile = radar:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
+	
 	local nods = {}
 	
 	for k, v in pairs(radarClasses) do  --calls subfolders		
-		nods[k] = radar:AddNode( v.name or "No Name" )	
+		nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
 	end
     
 	for Type, Ent in pairs(radars) do --calls subfolders content	
@@ -191,42 +345,33 @@ function PANEL:Init( )
 		end
 	end --end radar folder
 
---[[	inactived stuff, could be used on future
-
-	local Missiles = self.WeaponSelect:AddNode( "Missiles" )
-	for MisID, MisTable in pairs(self.WeaponDisplay["Missiles"]) do
-
-		local EndNode = Missiles:AddNode( MisTable.name or "No Name" )
-    
-		EndNode.mytable = MisTable
-		function EndNode:DoClick()
-			RunConsoleCommand( "acfmenu_type", self.mytable.type )
-			acfmenupanel:UpdateDisplay( self.mytable )
-		end
-    
-		EndNode.Icon:SetImage( "icon16/newspaper.png")
-    
-	end
-    local Sensors = self.WeaponSelect:AddNode( "Sensors" )
-	for SensorsID,SensorsTable in pairs(self.WeaponDisplay["Sensors"]) do
-		
-		local EndNode = Sensors:AddNode( SensorsTable.name or "No Name" )
-		EndNode.mytable = SensorsTable
-		function EndNode:DoClick()
-			-- RunConsoleCommand( "acfmenu_type", self.mytable.type )
-			-- acfmenupanel:UpdateDisplay( self.mytable )
-		end
-		EndNode.Icon:SetImage( "icon16/newspaper.png" )
-		
-	end
+--[[=========================
+   Settings folder
+]]--=========================
+	local OptionsNode = self.WeaponSelect:AddNode( "Settings" ) --Options folder
 	
-	]]--
+	local CLNod = OptionsNode:AddNode("Client" , "icon16/user.png")--Client folder
+	local SVNod = OptionsNode:AddNode("Server", "icon16/cog.png")--Server folder
+	
+	CLNod.mytable = {}
+	SVNod.mytable = {}
+	
+	CLNod.mytable.guicreate = (function( Panel, Table ) ACFCLGUICreate( Table ) end or nil)	
+	SVNod.mytable.guicreate = (function( Panel, Table ) ACFSVGUICreate( Table ) end or nil)
+	
+	function CLNod:DoClick()
+		acfmenupanel:UpdateDisplay(self.mytable)
+	end
+	function SVNod:DoClick()
+		acfmenupanel:UpdateDisplay(self.mytable)
+	end
+	OptionsNode.Icon:SetImage( "icon16/wrench_orange.png" )
 	
 end
 
-/*------------------------------------
-	Think
-------------------------------------*/
+------------------------------------
+---Think   // needed?
+------------------------------------
 function PANEL:Think( )
 
 end
@@ -289,12 +434,29 @@ function PANEL:PerformLayout()
 	
 end
 
+--[[=========================
+   ACE information folder content
+]]--=========================
 function ACFHomeGUICreate( Table )
 
 	if not acfmenupanel.CustomDisplay then return end
 	--start version
-	
+--Trebuchet18
+
+	local color
+	local versionstring
+	if ACF.Version >= ACF.CurrentVersion then
+		versionstring = "Up To Date"
+		color = Color(0,225,0,255)
+	else
+	    txt = outdate
+		versionstring = "Out Of Date"
+		color = Color(225,0,0,255)
+
+	end
+
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
+	
 	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetDark( true )
@@ -304,18 +466,9 @@ function ACFHomeGUICreate( Table )
 	
 	acfmenupanel["CData"]["VersionText"] = vgui.Create( "DLabel" )
 	
-	local color
-	local versionstring
-	if ACF.Version >= ACF.CurrentVersion then
-		versionstring = "Up To Date"
-		color = Color(0,225,0,255)
-	else
-		versionstring = "Out Of Date"
-		color = Color(225,0,0,255)
 
-	end
-	
-	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n\n\n")
+    acfmenupanel["CData"]["VersionText"]:SetFont( 'Trebuchet18' )
+	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n")
 	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
 	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
@@ -323,21 +476,31 @@ function ACFHomeGUICreate( Table )
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["VersionText"] )
 	-- end version
 	
-	acfmenupanel:CPanelText("Header", "Changelog")
+	acfmenupanel:CPanelText("Header", "Changelog")  --changelog screen
+	
+--[[=========================
+   Changelog table maker
+]]--=========================	
 	
 	if acfmenupanel.Changelog then
 		acfmenupanel["CData"]["Changelist"] = vgui.Create( "DTree" )
-		for Rev,Changes in pairs(acfmenupanel.Changelog) do
-			
-			local Node = acfmenupanel["CData"]["Changelist"]:AddNode( "Rev "..Rev )
-			Node.mytable = {}
-				Node.mytable["rev"] = Rev
-			function Node:DoClick()
-				acfmenupanel:UpdateAttribs( Node.mytable )
-			end
-			Node.Icon:SetImage( "icon16/newspaper.png" )
-			
-		end	
+
+		for i = 0, table.maxn(acfmenupanel.Changelog)-100 do 
+		   
+		   local k = table.maxn(acfmenupanel.Changelog)-i
+		   
+		    local Node = acfmenupanel["CData"]["Changelist"]:AddNode( "Rev "..k )
+			      Node.mytable = {}
+			      Node.mytable["rev"] = k
+                function Node:DoClick()
+				
+				    acfmenupanel:UpdateAttribs( Node.mytable )
+					
+			    end			
+		    Node.Icon:SetImage( "icon16/newspaper.png" )
+		
+		end
+
 		acfmenupanel.CData.Changelist:SetSize( acfmenupanel.CustomDisplay:GetWide(), 60 )
 		
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Changelist"] )
@@ -349,6 +512,9 @@ function ACFHomeGUICreate( Table )
 	
 end
 
+--[[=========================
+   ACE information folder content updater
+]]--=========================
 function ACFHomeGUIUpdate( Table )
 	
 	acfmenupanel:CPanelText("Changelog", acfmenupanel.Changelog[Table["rev"]])
@@ -365,21 +531,31 @@ function ACFHomeGUIUpdate( Table )
 
 	end
 	
-	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n\n\n")
+	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n")
 	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
 	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
 	
 end
 
+--[[=========================
+   Changelog.txt
+]]--=========================
+
 function ACFChangelogHTTPCallBack(contents , size)
 	local Temp = string.Explode( "*", contents )
 	
-	acfmenupanel.Changelog = {}
+	acfmenupanel.Changelog = {}  --changelog table
 	for Key,String in pairs(Temp) do
+		
 		acfmenupanel.Changelog[tonumber(string.sub(String,2,4))] = string.Trim(string.sub(String, 5))
+		
 	end
-	table.SortByKey(acfmenupanel.Changelog,true)
+	
+	   table.SortByKey(acfmenupanel.Changelog,true)
+	
+	
+	--print('1.-'..acfmenupanel.Changelog[100]..'\n2.-'..acfmenupanel.Changelog[101]..'\n3.-'..acfmenupanel.Changelog[102])
 	
 	local Table = {}
 		Table.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
@@ -387,9 +563,95 @@ function ACFChangelogHTTPCallBack(contents , size)
 	acfmenupanel:UpdateDisplay( Table )
 	
 end
+
 http.Fetch("http://raw.github.com/RedDeadlyCreeper/ArmoredCombatExtended/master/changelog.txt", ACFChangelogHTTPCallBack, function() end)
---http.Fetch("http://raw.github.com/nrlulz/ACF/master/changelog.txt", ACFChangelogHTTPCallBack, function() end)
-	  --http://raw.github.com/nrlulz          /ACF                  /master/changelog.txt
+
+--[[=========================
+   Clientside folder content
+]]--=========================
+function ACFCLGUICreate( Table )  
+
+    acfmenupanel["CData"]["Options"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"]["Options"]:SetPos( 0, 0 )
+	acfmenupanel["CData"]["Options"]:SetColor( Color(10,10,10) ) 
+	acfmenupanel["CData"]["Options"]:SetText("ACE - Client Side Control Panel")
+	acfmenupanel["CData"]["Options"]:SetFont("DermaDefaultBold")
+	acfmenupanel["CData"]["Options"]:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Options"] )
+	
+	local Sub = vgui.Create( "DLabel" )
+	Sub:SetPos( 0, 0 )
+	Sub:SetColor( Color(10,10,10) ) 
+	Sub:SetText("Client Side parameters can be adjusted here.")
+	Sub:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Sub )
+	
+	local MisLight = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	MisLight:SetPos(50,200)
+	MisLight:SetText("Enable missiles emit light while their motors are burning? (Impact on performance!)")
+	MisLight:SetTextColor( Color(10,10,10) )
+	MisLight:SetConVar("ACFM_MissileLights")
+	MisLight:SetValue( false )
+	MisLight:SizeToContents()
+	acfmenupanel.CustomDisplay:AddItem( MisLight )
+	
+	local Rope = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	Rope:SetPos(50,200)
+	Rope:SetText("Draw Mobility rope links? (requires dupe respawn!)")
+	Rope:SetTextColor( Color(10,10,10) )
+	Rope:SetConVar("ACF_MobilityRopeLinks")
+	Rope:SetValue( false )
+	Rope:SizeToContents()
+	acfmenupanel.CustomDisplay:AddItem( Rope )
+		
+end
+
+--[[=========================
+   Serverside folder content
+]]--=========================
+function ACFSVGUICreate( Table )   --Serverside folder content
+
+    acfmenupanel["CData"]["Options"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"]["Options"]:SetPos( 0, 0 )
+	acfmenupanel["CData"]["Options"]:SetColor( Color(10,10,10) ) 
+	acfmenupanel["CData"]["Options"]:SetText("ACE - Server Side Control Panel")
+	acfmenupanel["CData"]["Options"]:SetFont("DermaDefaultBold")
+	acfmenupanel["CData"]["Options"]:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Options"] )
+	
+	local Sub = vgui.Create( "DLabel" )
+	Sub:SetPos( 0, 0 )
+	Sub:SetColor( Color(10,10,10) ) 
+	Sub:SetText("Server Side parameters can be adjusted here (admin only!)")
+	Sub:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Sub )
+	
+   
+	local Legal = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	Legal:SetPos(50,200)
+	Legal:SetText("Enable Legal checks? (requires restart!)")
+	Legal:SetTextColor( Color(10,10,10) )
+	Legal:SetConVar("acf_legalchecks")
+	Legal:SetValue( false )
+	Legal:SizeToContents()
+	
+	acfmenupanel.CustomDisplay:AddItem( Legal )
+	
+	local Damage = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	Damage:SetPos(50,200)
+	Damage:SetText("Enable ACE Damage permissions? (requires restart and CPPI to work)")
+	Damage:SetTextColor( Color(10,10,10) )
+	Damage:SetConVar("acf_enable_dp")
+	Damage:SetValue( false )
+	Damage:SizeToContents()
+	
+	acfmenupanel.CustomDisplay:AddItem( Damage )
+	
+end
+
+
+
+
 function PANEL:AmmoSelect( Blacklist )
 	
 	if not acfmenupanel.CustomDisplay then return end

@@ -160,10 +160,27 @@ function ENT:Initialize()
 end  
 
 function MakeACF_Gun(Owner, Pos, Angle, Id)
+   
 
 	local EID
 	local List = list.Get("ACFEnts")
-	if List.Guns[Id] then EID = Id else EID = "50mmC" end
+	if List.Guns[Id] then 
+	EID = Id 
+	elseif Id == '20mmHRAC' then    
+	EID = '20mmRAC' 
+	elseif Id == '30mmHRAC' then
+    EID = '30mmRAC'
+	elseif Id == '105mmSB' then  --ACF2 smoothbore compatibility / thanks old-ACF devs for creating another smoothbore ids
+	EID = '100mmSBC'
+	elseif Id == '120mmSB' then
+	EID = '120mmSBC'
+	elseif Id == '140mmSB' then
+	EID = '140mmSBC'
+	elseif Id == '170mmSB' then
+	EID = '170mmSBC'
+    else	
+	EID = "100mmC" --just cuz 50mmC was too small
+	end
 	local Lookup = List.Guns[EID]
 
 	

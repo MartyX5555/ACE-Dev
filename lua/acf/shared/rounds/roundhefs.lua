@@ -249,5 +249,6 @@ function Round.guiupdate( Panel, Table )
 	
 end
 
+list.Set("HERoundTypes", 'HEFS', Round ) --Set the round on chemical folder
 list.Set( "ACFRoundTypes", "HEFS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

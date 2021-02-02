@@ -139,6 +139,8 @@ function this:GetWhitelistedEntsInCone(missile)
 	for k, scanEnt in pairs(ScanArray) do
 
 		if(IsValid(scanEnt))then
+		    model = scanEnt:GetModel()
+			print(model)
 			local entpos = scanEnt:GetPos()
 			local difpos = entpos - missilePos
 			local dist = difpos:Length()
@@ -198,6 +200,7 @@ function this:AcquireLock(missile)
 	local bestent = nil
 
 	for k, classifyent in pairs(found) do
+	    if classifyent:GetParent():IsValid() or classifyent:IsConstrained() then
 		local entpos = classifyent:GetPos()
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
@@ -205,10 +208,10 @@ function this:AcquireLock(missile)
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
-		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
+		local testHeat = self.SeekSensitivity*(((classifyent.THeat or 0) + 8*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1))
 --dist
 --		print(testHeat)
-		if testHeat > 50 then --Hotter than 50 deg C
+		if testHeat > 0 then --Hotter than 50 deg C
 
 			if (absang.p < self.SeekCone and absang.y < self.SeekCone) then --Entity is within missile cone
 				local testang = testHeat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
@@ -221,6 +224,7 @@ function this:AcquireLock(missile)
 				end
 
 			end
+		end
 		end
 	end
 

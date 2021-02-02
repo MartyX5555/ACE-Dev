@@ -76,6 +76,10 @@ end
 
 --checks the visclips of an entity, to determine if round should pass through or not
 -- ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
+--actual issue: bullets can pass though visclip corners, due to tracehulls hitting both visclip corners before impact real surface.
+--temporal adjustment: making more tolerance on visclip bounds, reducing this issue alot, this DOESNT fix the error at all, but you wont see mgs blowing 4 billons ton armor
+--ideal fix: change tracehull to traceline when the bullet detects visclip in front, then, the following visclip prop should.
+--maybe, use traceline with tracehull, the first one should check for visclip hit, but will it be expensive? (excluding low calibers from using tracehull could be useful too)
 function ACF_CheckClips( Ent, HitPos )
 
 	if not IsValid(Ent) or (Ent.ClipData == nil)
@@ -89,7 +93,7 @@ function ACF_CheckClips( Ent, HitPos )
 		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward() 
 		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
 		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0.15 then return true end  --0 was overkill, let bullets dont pass though a very short of visclip side.
+		if normal:Dot((origin - HitPos):GetNormalized()) > 0.2 then return true end  --0 was overkill, let bullets dont pass though a very short of visclip side.
 	end
 	
 	return false
@@ -164,7 +168,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
 	if Bullet.SkyLvL then
 		--We don't want to calculate bullets that will never come back to map
-		if (ACF.CurTime - Bullet.LifeTime) > 30 then
+		if (ACF.CurTime - Bullet.LifeTime) > 100 then
 			ACF_RemoveBullet( Index )
 			return
 		end
@@ -202,20 +206,38 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	FlightTr.mins = -FlightTr.maxs
 	
 	--perform the trace for damage
-	local RetryTrace = true
+	
+	   	local RetryTrace	
+	
+	   	RetryTrace = true	
+
 	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
+	
 		RetryTrace = false
 		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation
-		--util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)
+		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
+		
+		
 		util.TraceHull(FlightTr)
-
-		--We hit something that's not world, if it's visclipped, filter it out and retry		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
-		if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
-			table.insert( Bullet.Filter , FlightRes.Entity )
-			RetryTrace = true
-		end
+		
+		if Bullet.Caliber <= 5 then
+		
+		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
+		   
+		end  
+        		  
+		--We hit something that's not world, if it's visclipped, filter it out and retry	
+        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
+		    
+		    table.insert( Bullet.Filter , FlightRes.Entity )
+		    RetryTrace = true
+			
+	    end
+	
 	end
+	
+	--util.TraceHull(FlightTr)
+	
 	
 	--bullet is told to ignore the next hit, so it does and resets flag
 	if Bullet.SkipNextHit then
@@ -225,6 +247,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--bullet hit something that isn't world and is allowed to hit
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 		--If we hit stuff then send the resolution to the bullets damage function
+		
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
 		
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
@@ -301,19 +324,19 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
 			
 			if Retry == "Penetrated" then 								--if it is, we soldier on	
-			    print('World-Pen')
+			    --print('World-Pen')
 				if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
 				ACF_CalcBulletFlight( Index, Bullet, true )				--The world ain't going to move, so we say True for the backtrace override
 				
 			elseif Retry == "Ricochet"  then
-			    print('World-Rico')
+			    --print('World-Rico')
 				if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 3 , FlightRes.HitPos  )
 				ACF_CalcBulletFlight( Index, Bullet, true )
 				
 			else														--If not, end of the line, boyo
-			    print('World-NoPen')
+			    --print('World-NoPen')
 				if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 				ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
 				ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]

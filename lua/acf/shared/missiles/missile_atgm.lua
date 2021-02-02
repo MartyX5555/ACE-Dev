@@ -1,7 +1,7 @@
 ACF_defineGunClass("ATGM", {
     type            = "missile",
 	spread          = 1,
-	name            = "(Missile) Anti-Tank Guided Missile",
+	name            = "Anti-Tank Guided Missile",
 	desc            = ACFTranslation.MissileClasses[4],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
@@ -216,7 +216,6 @@ ACF_defineGun("AT-2 ASM", { --id
     armdelay    = 0.00     -- minimum fuse arming delay
 } )
 
---[[
 ACF_defineGun("FGM-148 ASM", { --id
 	name = "Javelin Missile",
 	desc = "A long range, hard hitting ATGM often used to top attack tanks. Extremely Agile and powerful. Long reload. Heavy.",
@@ -246,11 +245,10 @@ ACF_defineGun("FGM-148 ASM", { --id
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
-    guidance    = {"Dumb", "Laser"},
+    guidance    = {"Dumb", "Infrared"},
     fuses       = {"Contact", "Optical"},
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.28,     -- multiplier for missile turn-rate.
-    armdelay    = 0.5     -- minimum fuse arming delay
+    agility     = 0.24,     -- multiplier for missile turn-rate.
+    armdelay    = 1     -- minimum fuse arming delay
 } )
-]]--
