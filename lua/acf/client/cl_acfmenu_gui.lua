@@ -256,7 +256,7 @@ function PANEL:Init( )
 
 		if not Categories["miscg"] then
 			--Categories["miscg"] = Gearboxes:AddNode("Miscellaneous" , "icon16/brick.png")
-			Basics = Gearboxes:AddNode("Basic" , "icon16/brick.png")
+			--Basics = Gearboxes:AddNode("Basic" , "icon16/brick.png")
 		end
 
 		if MobilityTable.fuel then
