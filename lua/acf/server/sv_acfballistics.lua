@@ -73,13 +73,10 @@ function ACF_RemoveBullet( Index )
 	ACF.Bullet[Index] = nil
 	if Bullet and Bullet.OnRemoved then Bullet:OnRemoved() end
 end
-
---checks the visclips of an entity, to determine if round should pass through or not
--- ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
---actual issue: bullets can pass though visclip corners, due to tracehulls hitting both visclip corners before impact real surface.
---temporal adjustment: making more tolerance on visclip bounds, reducing this issue alot, this DOESNT fix the error at all, but you wont see mgs blowing 4 billons ton armor
---ideal fix: change tracehull to traceline when the bullet detects visclip in front, then, the following visclip prop should.
---maybe, use traceline with tracehull, the first one should check for visclip hit, but will it be expensive? (excluding low calibers from using tracehull could be useful too)
+--[[
+   checks the visclips of an entity, to determine if round should pass through or not.
+   ignores anything that's not a prop (acf components, seats) or with nil volume (makesphere props)
+]]--
 function ACF_CheckClips( Ent, HitPos )
 
 	if not IsValid(Ent) or (Ent.ClipData == nil)
@@ -93,7 +90,7 @@ function ACF_CheckClips( Ent, HitPos )
 		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward() 
 		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
 		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0.2 then return true end  --0 was overkill, let bullets dont pass though a very short of visclip side.
+		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
 	end
 	
 	return false
@@ -213,31 +210,28 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
 	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
 	
-		RetryTrace = false
+		RetryTrace = false  --disabling....
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
 		
 		
-		util.TraceHull(FlightTr)
+		util.TraceHull(FlightTr)    --Defining tracehull at first instance
 		
-		if Bullet.Caliber <= 5 then
-		
+		if Bullet.Caliber <= 5 or ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our gun is using a low caliber or our shell hits visclips, tracehull becomes traceline
+		   print('Traceline!')
 		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
 		   
 		end  
         		  
 		--We hit something that's not world, if it's visclipped, filter it out and retry	
-        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
+        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hits the visclip as traceline, no more double bounds.
 		    
 		    table.insert( Bullet.Filter , FlightRes.Entity )
-		    RetryTrace = true
+		    RetryTrace = true   --re-enabled for retry trace
 			
 	    end
 	
-	end
-	
-	--util.TraceHull(FlightTr)
-	
+	end	
 	
 	--bullet is told to ignore the next hit, so it does and resets flag
 	if Bullet.SkipNextHit then

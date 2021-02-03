@@ -388,7 +388,7 @@ function Round.guiupdate( Panel, Table )
 	
 	R1P = Data.MaxPen
 	
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV).." m/s\n\nPenetrator Maximum Penetration : "..math.Round(Data.MaxPen).." mm RHA\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV).." m/s\n\nMax Penetration : "..math.Round(Data.MaxPen).." mm RHA\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
 
 end
 

@@ -63,7 +63,7 @@ function PANEL:Init( )
 --[[=========================
    ACE information folder
 ]]--=========================
-	local HomeNode = self.WeaponSelect:AddNode( "ACE Information" , "icon16/cog.png" ) --Main Menu folder
+	local HomeNode = self.WeaponSelect:AddNode( "ACE Main Menu" , "icon16/world.png" ) --Main Menu folder
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
@@ -255,18 +255,19 @@ function PANEL:Init( )
 		end
 
 		if not Categories["miscg"] then
-			Categories["miscg"] = Gearboxes:AddNode("Miscellaneous")
+			--Categories["miscg"] = Gearboxes:AddNode("Miscellaneous" , "icon16/brick.png")
+			Basics = Gearboxes:AddNode("Basic" , "icon16/brick.png")
 		end
 
 		if MobilityTable.fuel then
 			local Category = Categories[MobilityTable.fuel]
 			
 			if not Category then
-				local Node = NodeAdd:AddNode(MobilityTable.fuel)
+				local Node = NodeAdd:AddNode(MobilityTable.fuel , "icon16/brick.png")
 			
 				Category = {
 					_Node = Node,
-					Default = Node:AddNode("Miscellaneous")
+					Default = Node:AddNode("Miscellaneous" , "icon16/brick.png")
 				}
 				
 				Categories[MobilityTable.fuel] = Category
@@ -277,11 +278,10 @@ function PANEL:Init( )
 		end
 		
 		if MobilityTable.category and not Categories[MobilityTable.category] then
-			Categories[MobilityTable.category] = NodeAdd:AddNode(MobilityTable.category)
+			Categories[MobilityTable.category] = NodeAdd:AddNode(MobilityTable.category , "icon16/brick.png")
 		end
-	end --end mobility subfolders
+	end 
                 
-	
 	for MobilityID,MobilityTable in pairs(self.WeaponDisplay["Mobility"]) do   
 		
 		local NodeAdd = Mobility
@@ -629,7 +629,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
    
 	local Legal = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
 	Legal:SetPos(50,200)
-	Legal:SetText("Enable Legal checks? (requires restart!)")
+	Legal:SetText("Enable Legality checks? (requires restart!)")
 	Legal:SetTextColor( Color(10,10,10) )
 	Legal:SetConVar("acf_legalchecks")
 	Legal:SetValue( false )
