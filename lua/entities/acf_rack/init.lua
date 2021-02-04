@@ -1192,9 +1192,9 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 	    end
 		
 		
-	if not self.Legal then
-		txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-	end
+	--if not self.Legal then
+		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	--end
 		
 	--else
 	

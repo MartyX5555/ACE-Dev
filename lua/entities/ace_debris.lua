@@ -9,7 +9,7 @@ if CLIENT then return end
 
 function ENT:Initialize()
 	
-	self.Timer = CurTime() + 60
+	self.Timer = CurTime() + 30
 	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_VPHYSICS )
@@ -36,7 +36,7 @@ function ENT:Think()
 		self:Remove()
 	end
 	
-	self:NextThink( CurTime() + 60 )
+	self:NextThink( CurTime() + 30 )
 	
 	return true
 	
