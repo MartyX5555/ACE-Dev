@@ -217,19 +217,19 @@ ACF_defineGun("AT-2 ASM", { --id
 } )
 
 ACF_defineGun("FGM-148 ASM", { --id
-	name = "Javelin Missile",
+	name = "FGM-148 Javelin Missile",
 	desc = "A long range, hard hitting ATGM often used to top attack tanks. Extremely Agile and powerful. Long reload. Heavy.",
-	model = "models/missiles/fgm148.mdl",
+	model = "models/missiles/at2.mdl",    --model to spawn on menu
 	gunclass = "ATGM",
-    rack = "1xRK",  -- Which rack to spawn this missile on?
-	length = 52,		--Used for the physics calculations
-	caliber = 12.7, 
+    rack = "1x Javelin",  -- Which rack to spawn this missile on?
+	length = 160,		--Used for the physics calculations
+	caliber = 12.7,    --caliber
 	weight = 97.2,    -- Don't scale down the weight though!
-	year = 1989,
-	rofmod = 1.5,
+	year = 1989,      --year
+	rofmod = 0.05,     --Rate Of Fire
 	round = {
-		model		= "models/missiles/fgm148.mdl",
-		rackmdl		= "models/missiles/fgm148.mdl",
+		model		= "models/missiles/at2.mdl",       --models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
+		rackmdl		= "models/missiles/at2.mdl", --model when its in tube
 		maxlength	= 60,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
@@ -248,7 +248,7 @@ ACF_defineGun("FGM-148 ASM", { --id
     guidance    = {"Dumb", "Infrared"},
     fuses       = {"Contact", "Optical"},
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
-    racks       = {["1xRK_small"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
+    racks       = {["1x Javelin"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     agility     = 0.24,     -- multiplier for missile turn-rate.
     armdelay    = 1     -- minimum fuse arming delay
 } )
