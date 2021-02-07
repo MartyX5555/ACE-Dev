@@ -253,18 +253,19 @@ function ModifyACFMenu(panel)
         
     end
     
-    
-    
-    
-    local rootNodes = acfmenupanel.WeaponSelect:Root().ChildNodes:GetChildren()
-    
+	local rootNodes = HomeNode.ChildNodes:GetChildren()  --lets find all our folder inside of Main menu
+	
     local gunsNode
     
-    for k, node in pairs(rootNodes) do
-        if node:GetText() == "Missiles" then
-            gunsNode = node
-            break
-        end
+    for k, node in pairs(rootNodes) do -- iterating though found folders
+			
+			    if node:GetText() == "Missiles" then   --Missile folder is the one that we need
+				
+			        gunsNode = node
+			        break
+					
+			    end
+			
     end
     
     if gunsNode then

@@ -186,7 +186,7 @@ ACF_defineGun("Zuni ASR", { --id
 	name		= "Zuni Rocket",
 	desc		= "A heavy 5in air to surface unguided rocket, able to provide heavy suppressive fire in a single pass.",
 	model		= "models/ghosteh/zuni.mdl",
-	caliber		= 14,
+	caliber		= 12.7,
 	gunclass	= "UAR",
 	rack		= "127mm4xPOD",
 	weight		= 120,

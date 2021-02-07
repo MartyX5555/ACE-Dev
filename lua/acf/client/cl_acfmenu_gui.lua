@@ -41,6 +41,7 @@ function PANEL:Init( )
 			
 			else
 			
+			--print('Modded Gun detected!')
 			table.insert(self.ModClasses[ID], Class)
 			
 			end
@@ -48,6 +49,7 @@ function PANEL:Init( )
 		end
 		table.sort(self.GunClasses[ID], function(a,b) return a.id < b.id end )
 		table.sort(self.MisClasses[ID], function(a,b) return a.id < b.id end )
+		table.sort(self.ModClasses[ID], function(a,b) return a.id < b.id end )
 	end
 	
 	local WeaponDisplay = list.Get("ACFEnts")
@@ -69,18 +71,19 @@ function PANEL:Init( )
 --[[=========================
    ACE information folder
 ]]--=========================
-	local HomeNode = self.WeaponSelect:AddNode( "ACE Main Menu" , "icon16/world.png" ) --Main Menu folder
+	HomeNode = self.WeaponSelect:AddNode( "ACE Main Menu" , "icon16/world.png" ) --Main Menu folder
 	HomeNode.mytable = {}
 		HomeNode.mytable.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
 		HomeNode.mytable.guiupdate = (function( Panel, Table ) ACFHomeGUIUpdate( Table ) end or nil)
 	function HomeNode:DoClick()
 		acfmenupanel:UpdateDisplay(self.mytable)
 	end
+    
 
 --[[=========================
    Guns folder
 ]]--=========================	
-	local Guns = self.WeaponSelect:AddNode( "Guns" , "icon16/attach.png" ) --Guns folder
+	local Guns = HomeNode:AddNode( "Guns" , "icon16/attach.png" ) --Guns folder
 	
 	for ClassID,Class in pairs(self.GunClasses["GunClass"]) do
 	
@@ -107,7 +110,7 @@ function PANEL:Init( )
 ]]--=========================	
 	if table.Count(self.ModClasses) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, they will be loaded on missiles folder!!
 	
-	    local Mod = self.WeaponSelect:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
+	    local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
 	
 	   	for ClassID,Class in pairs(self.ModClasses["GunClass"]) do 
 	
@@ -137,7 +140,7 @@ function PANEL:Init( )
    Missiles folder
 ]]--=========================	
 
-	local Missiles = self.WeaponSelect:AddNode( "Missiles" , "icon16/wand.png" ) --Missiles folder
+	local Missiles = HomeNode:AddNode( "Missiles" , "icon16/wand.png" ) --Missiles folder
 	
 	for ClassID,Class in pairs(self.MisClasses["GunClass"]) do
 	
@@ -162,7 +165,7 @@ function PANEL:Init( )
 --[[=========================
    Ammo folder
 ]]--=========================	    
-	local Ammo = self.WeaponSelect:AddNode( "Ammo" , "icon16/box.png" ) --Ammo folder
+	local Ammo = HomeNode:AddNode( "Ammo" , "icon16/box.png" ) --Ammo folder
 	
 	local AP = Ammo:AddNode("Armor Piercing Rounds", "icon16/brick.png" )
 	local HE = Ammo:AddNode("High Explosive Rounds", "icon16/brick.png" )
@@ -272,7 +275,7 @@ function PANEL:Init( )
 --[[=========================
    Mobility folder
 ]]--=========================
-	local Mobility = self.WeaponSelect:AddNode( "Mobility" , "icon16/car.png" )	--Mobility folder
+	local Mobility = HomeNode:AddNode( "Mobility" , "icon16/car.png" )	--Mobility folder
 	local Gearboxes = Mobility:AddNode( "Gearboxes" , "icon16/brick.png"  )
 	local FuelTanks = Mobility:AddNode( "Fuel Tanks" , "icon16/brick.png"  )
 	local Engines = Mobility:AddNode("Engines" , "icon16/brick.png" )
@@ -358,7 +361,7 @@ function PANEL:Init( )
 --[[=========================
    Sensor folder
 ]]--=========================
-	local sensors = self.WeaponSelect:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
+	local sensors = HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
 	local radar = sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
 	local antimissile = radar:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
 	
@@ -404,7 +407,22 @@ function PANEL:Init( )
 	end
 	OptionsNode.Icon:SetImage( "icon16/wrench_orange.png" )
 	
+--[[=========================
+   Contact & Support folder
+]]--=========================
+    local Contact =  self.WeaponSelect:AddNode( "Contact Us" , "icon16/feed.png" ) --Options folder
+	Contact.mytable = {}
+	
+	Contact.mytable.guicreate = (function( Panel, Table ) ContactGUICreate( Table ) end or nil)
+    
+	function Contact:DoClick()
+		acfmenupanel:UpdateDisplay(self.mytable)
+	end		
+	
+	
+	
 end
+
 
 ------------------------------------
 ---Think   // needed?
@@ -686,8 +704,41 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	
 end
 
+--[[=========================
+   Contact folder content
+]]--=========================
+function ContactGUICreate( Table )
 
-
+    acfmenupanel["CData"]["Contact"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"]["Contact"]:SetPos( 0, 0 )
+	acfmenupanel["CData"]["Contact"]:SetColor( Color(10,10,10) ) 
+	acfmenupanel["CData"]["Contact"]:SetText("Where reach us")
+	acfmenupanel["CData"]["Contact"]:SetFont("Trebuchet24")
+	acfmenupanel["CData"]["Contact"]:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Contact"] )
+	
+	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about what stuff and why we should include it, our discord is a good place for that.')
+	acfmenupanel:CPanelText('desc2','Dont forget to check out our wiki, its a Work In Progress yet, but it will be continued on future.')
+	
+	local Discord = vgui.Create("DButton")
+	Discord:SetText( "Join our Discord!" )
+	Discord:SetPos(0,0)
+	Discord:SetSize(250,30)
+	Discord.DoClick = function()
+	    gui.OpenURL( 'https://discord.gg/Y8aEYU6' )
+	end
+	acfmenupanel.CustomDisplay:AddItem( Discord )
+	
+	local Wiki = vgui.Create("DButton")
+	Wiki:SetText( "Open wiki" )
+	Wiki:SetPos(0,0)
+	Wiki:SetSize(250,30)
+	Wiki.DoClick = function()
+	    gui.OpenURL( 'https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki' )
+	end
+	acfmenupanel.CustomDisplay:AddItem( Wiki )
+	
+end
 
 function PANEL:AmmoSelect( Blacklist )
 	
