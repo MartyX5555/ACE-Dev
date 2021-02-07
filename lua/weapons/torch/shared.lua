@@ -167,7 +167,27 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				HitRes = ACF_Damage ( ent , {Kinetic = 0.2,Momentum = 0,Penetration = 0.2} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
 			else
 				if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
+				
 				HitRes = ACF_Damage ( ent , {Kinetic = 500,Momentum = 0,Penetration = 500} , 2 , 0 , self.Owner )--We can use the damage function instead of direct access here since no numbers are negative.
+				
+				if ent.ACF.Material == 4 then     --ERA should detonate now
+				
+					if HitRes.Kill then
+					    ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour , ent.ACF.Armour, self.Owner , ent , ent )   --calling HE explosion function
+						--ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*1 , Inflictor , Entity, Entity )
+						--ACF_HEKill( ent, VectorRand() , 0)
+						ent:Remove()
+					
+					end
+				end
+--[[	this part will destroy the prop once its health is almost 0. Disabled atm			
+				if ent.ACF.Health < 2 then
+				
+				    ACF_APKill( ent, VectorRand() , 0)
+				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )
+					
+				end
+]]--				
 			end
 			if HitRes.Kill then
 				constraint.RemoveAll( ent )

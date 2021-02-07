@@ -108,8 +108,11 @@ function PANEL:Init( )
 --[[=========================
    Modded Guns folder   
 ]]--=========================	
-	if table.Count(self.ModClasses) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, they will be loaded on missiles folder!!
-	
+
+print(table.Count(self.ModClasses))
+
+	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, they will be loaded on missiles folder!!
+	    
 	    local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
 	
 	   	for ClassID,Class in pairs(self.ModClasses["GunClass"]) do 

@@ -217,7 +217,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		
 		util.TraceHull(FlightTr)    --Defining tracehull at first instance
 		
-		if Bullet.Caliber <= 5 or ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our gun is using a low caliber or our shell hits visclips, tracehull becomes traceline
+		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our gun is using a low caliber or our shell hits visclips, tracehull becomes traceline
 		   print('Traceline!')
 		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
 		   
