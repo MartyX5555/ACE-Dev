@@ -19,10 +19,12 @@ function PANEL:Init( )
 	local Classes = list.Get("ACFClasses")
 	self.GunClasses = {}
 	self.MisClasses = {}
+	self.ModClasses = {}
 
 	for ID,Table in pairs(Classes) do
 		self.GunClasses[ID] = {}
 		self.MisClasses[ID] = {}
+		self.ModClasses[ID] = {}
 		for ClassID,Class in pairs(Table) do
 			Class.id = ClassID
 			
@@ -36,6 +38,10 @@ function PANEL:Init( )
 			
 			--print('Missile detected!')
 			table.insert(self.MisClasses[ID], Class)
+			
+			else
+			
+			table.insert(self.ModClasses[ID], Class)
 			
 			end
 			
@@ -95,6 +101,37 @@ function PANEL:Init( )
 		end
 		
 	end
+
+--[[=========================
+   Modded Guns folder   
+]]--=========================	
+	if table.Count(self.ModClasses) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, they will be loaded on missiles folder!!
+	
+	    local Mod = self.WeaponSelect:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
+	
+	   	for ClassID,Class in pairs(self.ModClasses["GunClass"]) do 
+	
+		    local SubNode = Mod:AddNode( Class.name or "No Name" , "icon16/brick.png" )
+		
+		    for Type, Ent in pairs(self.WeaponDisplay["Guns"]) do	
+			    if Ent.gunclass == Class.id then
+			
+				    local EndNode = SubNode:AddNode( Ent.name or "No Name")
+				    EndNode.mytable = Ent
+				
+				    function EndNode:DoClick()
+					    RunConsoleCommand( "acfmenu_type", self.mytable.type )
+					    acfmenupanel:UpdateDisplay( self.mytable )
+				    end
+				    EndNode.Icon:SetImage( "icon16/newspaper.png" )
+			    end
+				
+		    end
+			
+	    end
+		
+	end
+	
 
 --[[=========================
    Missiles folder
