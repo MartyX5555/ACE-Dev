@@ -712,7 +712,7 @@ function ACF_UpdateChecking( )
 			
 		else
 		
-			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have Version: "..ACF.Version)
+			print("[ACE] A newer version of ACE is available! Version: "..rev..", You have the Version: "..ACF.Version)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
 			
 		end
@@ -822,9 +822,6 @@ AddCSLuaFile("includes/modules/markdown.lua")
 
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
-
-AddCSLuaFile("autorun/sh_acfm_cvars.lua")
-include("autorun/sh_acfm_cvars.lua")
 
 game.AddParticles( "particles/flares_fx.pcf" )
 PrecacheParticleSystem( "ACFM_Flare" )

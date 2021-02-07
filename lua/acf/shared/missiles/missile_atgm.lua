@@ -1,7 +1,7 @@
 ACF_defineGunClass("ATGM", {
     type            = "missile",
 	spread          = 1,
-	name            = "Anti-Tank Guided Missile",
+	name            = "[ATGM] - Anti-Tank Guided Missile",
 	desc            = ACFTranslation.MissileClasses[4],
 	muzzleflash     = "40mm_muzzleflash_noscale",
 	rofmod          = 1,
@@ -218,18 +218,18 @@ ACF_defineGun("AT-2 ASM", { --id
 
 ACF_defineGun("FGM-148 ASM", { --id
 	name = "FGM-148 Javelin Missile",
-	desc = "A long range, hard hitting ATGM often used to top attack tanks. Extremely Agile and powerful. Long reload. Heavy.",
-	model = "models/missiles/at2.mdl",    --model to spawn on menu
+	desc = "A long range, hard hitting ATGM often used to top attack tanks. Extremely Agile and powerful, although heavy and take a long time to load.", 
+	model = "models/mcace/Jevelinemissile.mdl",    --model to spawn on menu
 	gunclass = "ATGM",
     rack = "1x Javelin",  -- Which rack to spawn this missile on?
-	length = 160,		--Used for the physics calculations
+	length = 60,		--Used for the physics calculations
 	caliber = 12.7,    --caliber
 	weight = 97.2,    -- Don't scale down the weight though!
 	year = 1989,      --year
 	rofmod = 0.05,     --Rate Of Fire
 	round = {
-		model		= "models/missiles/at2.mdl",       --models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
-		rackmdl		= "models/missiles/at2.mdl", --model when its in tube
+		model		= "models/mcace/Jevelinemissile.mdl",       --models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
+		rackmdl		= "models/mcace/Jevelinemissile.mdl",       --model when its in tube
 		maxlength	= 60,
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
@@ -247,8 +247,10 @@ ACF_defineGun("FGM-148 ASM", { --id
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Infrared"},
     fuses       = {"Contact", "Optical"},
+	
+	seekcone    = 120,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1x Javelin"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.24,     -- multiplier for missile turn-rate.
+    agility     = 0.15,     -- multiplier for missile turn-rate.
     armdelay    = 1     -- minimum fuse arming delay
 } )
