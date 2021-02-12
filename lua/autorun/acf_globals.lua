@@ -702,11 +702,11 @@ function ACF_UpdateChecking( )
 				
 		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
 		
-		if rev and ACF.Version >= rev then
+		if rev and ACF.Version >= rev  and rev ~= 0 then
 		    
 			print("[ACE] ACF Is Up To Date, Latest Version: "..rev)
 			
-		elseif !rev then
+		elseif rev == 0 then
 		
 			print("[ACE] No Internet Connection Detected! ACE Update Check Failed")
 			

@@ -173,10 +173,9 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				if ent.ACF.Material == 4 then     --ERA should detonate now
 				
 					if HitRes.Kill then
-					    ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour , ent.ACF.Armour, self.Owner , ent , ent )   --calling HE explosion function
-						--ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*1 , Inflictor , Entity, Entity )
-						--ACF_HEKill( ent, VectorRand() , 0)
-						ent:Remove()
+					    ACF_HE( ent:GetPos(), Vector(0,0,1), ent.ACF.Armour * 0.00075 , ent.ACF.Armour * 0.1, self.Owner , ent , ent )   --calling HE explosion function. Adjusted HE power, its possible to change on future.
+
+						ent:Remove()   --removing it because era simply is not removed after explosion
 					
 					end
 				end
@@ -184,7 +183,7 @@ self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
 				if ent.ACF.Health < 2 then
 				
 				    ACF_APKill( ent, VectorRand() , 0)
-				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )
+				    ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO )  --Sound is no correct
 					
 				end
 ]]--				

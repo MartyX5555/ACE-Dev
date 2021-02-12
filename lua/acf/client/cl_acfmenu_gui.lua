@@ -111,7 +111,7 @@ function PANEL:Init( )
 
 print(table.Count(self.ModClasses))
 
-	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, they will be loaded on missiles folder!!
+	if table.Count(self.ModClasses["GunClass"]) > 0 then   --this will only load any uncategorized, non official weapon of ace. If they are missiles, Gearboxes or Engines, they will be loaded on missiles, Gearboxes and Engines folder repectetively!!
 	    
 	    local Mod = HomeNode:AddNode( "Modded Guns" , "icon16/attach.png") --Modded Guns folder
 	
@@ -172,7 +172,7 @@ print(table.Count(self.ModClasses))
 	
 	local AP = Ammo:AddNode("Armor Piercing Rounds", "icon16/brick.png" )
 	local HE = Ammo:AddNode("High Explosive Rounds", "icon16/brick.png" )
-	local HEAT = Ammo:AddNode("Explosive Anti-Tank Rounds", "icon16/brick.png" )
+	--local HEAT = Ammo:AddNode("Explosive Anti-Tank Rounds", "icon16/brick.png" )  --Unused. HEAT rounds are in HE folder.
 	local SPECS = Ammo:AddNode("Special Purpose Rounds" , "icon16/brick.png" )
 	
 --[[=========================
@@ -226,9 +226,9 @@ print(table.Count(self.ModClasses))
 	end
 
 --[[=========================
-   Ammo subfolder HEAT
+   Ammo subfolder HEAT                 --Unused. HEAT rounds are in HE folder.
 ]]--=========================	   	
-	
+--[[	
 	local HEATAttribs = list.Get("HEATRoundTypes") 
 	self.HEATAttribs = {}
 	for ID,Table in pairs(HEATAttribs) do
@@ -249,7 +249,7 @@ print(table.Count(self.ModClasses))
 		EndNode.Icon:SetImage( "icon16/newspaper.png" )
 		
 	end
-	
+]]--
 --[[=========================
    Ammo subfolder SPECS
 ]]--=========================	   	
@@ -503,14 +503,18 @@ function ACFHomeGUICreate( Table )
 
 	local color
 	local versionstring
+	if ACF.CurrentVersion > 0 then
 	if ACF.Version >= ACF.CurrentVersion then
 		versionstring = "Up To Date"
 		color = Color(0,225,0,255)
 	else
-	    txt = outdate
 		versionstring = "Out Of Date"
 		color = Color(225,0,0,255)
 
+	end
+	else
+		versionstring = "No internet Connection available!"
+		color = Color(225,0,0,255)
 	end
 
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
@@ -580,6 +584,8 @@ function ACFHomeGUIUpdate( Table )
 	
 	local color
 	local versionstring
+	
+	if ACF.CurrentVersion > 0 then
 	if ACF.Version >= ACF.CurrentVersion then
 		versionstring = "Up To Date"
 		color = Color(0,225,0,255)
@@ -588,8 +594,20 @@ function ACFHomeGUIUpdate( Table )
 		color = Color(225,0,0,255)
 
 	end
+	else
+		versionstring = "No internet Connection available!"
+		color = Color(225,0,0,255)
+	end
 	
-	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n")
+	local txt
+	
+	if ACF.CurrentVersion > 0 then
+	   txt = "ACE Is "..versionstring.."!\n\n"
+	else
+	   txt = versionstring
+	end
+	
+	acfmenupanel["CData"]["VersionText"]:SetText(txt)
 	acfmenupanel["CData"]["VersionText"]:SetDark( true )
 	acfmenupanel["CData"]["VersionText"]:SetColor(color) 
 	acfmenupanel["CData"]["VersionText"]:SizeToContents() 
@@ -715,25 +733,25 @@ function ContactGUICreate( Table )
     acfmenupanel["CData"]["Contact"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"]["Contact"]:SetPos( 0, 0 )
 	acfmenupanel["CData"]["Contact"]:SetColor( Color(10,10,10) ) 
-	acfmenupanel["CData"]["Contact"]:SetText("Where reach us")
+	acfmenupanel["CData"]["Contact"]:SetText("Contact Us")
 	acfmenupanel["CData"]["Contact"]:SetFont("Trebuchet24")
 	acfmenupanel["CData"]["Contact"]:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Contact"] )
 	
 	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about what stuff and why we should include it, our discord is a good place for that.')
-	acfmenupanel:CPanelText('desc2','Dont forget to check out our wiki, its a Work In Progress yet, but it will be continued on future.')
+	acfmenupanel:CPanelText('desc2','Don´t forget to check out our wiki, contains valuable information about how to use this addon. Its on WIP, but expect more content on future.')
 	
 	local Discord = vgui.Create("DButton")
 	Discord:SetText( "Join our Discord!" )
 	Discord:SetPos(0,0)
 	Discord:SetSize(250,30)
 	Discord.DoClick = function()
-	    gui.OpenURL( 'https://discord.gg/Y8aEYU6' )
+	    gui.OpenURL( 'https://discord.gg/Y8aEYU6' ) 
 	end
 	acfmenupanel.CustomDisplay:AddItem( Discord )
 	
 	local Wiki = vgui.Create("DButton")
-	Wiki:SetText( "Open wiki" )
+	Wiki:SetText( "Open Wiki" )
 	Wiki:SetPos(0,0)
 	Wiki:SetSize(250,30)
 	Wiki.DoClick = function()

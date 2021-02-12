@@ -538,16 +538,16 @@ ACF.Splosive = {
 -- helper function to process children of an acf-destroyed prop
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
 
---[[
+
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
 
 	local count = 0
 	local boom = {}
 	local children = ACF_GetAllChildren(Entity)
 	
-	print('Children: '..#children)
+	--print('Children: '..table.Count(children))
 	
-	--if #children < 1 then  --checking if we have more props to process instead of one
+	if table.Count(children) > 1 then  --checking if we have more props to process instead of one
     
 	    -- do an initial processing pass on children, separating out explodey things to handle last
 	    for _, ent in pairs( children ) do
@@ -591,16 +591,16 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    	ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
 		    end
 	    end
-	--end	
+	end	
 end
-]]--
+
 
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
-	--if not Entity.ACF_Killed then
-	--	ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
-	--end
+	if not Entity.ACF_Killed then
+		ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
+	end
 
 	-- process this prop into debris
 	--local entClass = Entity:GetClass()
@@ -653,7 +653,7 @@ end
 function ACF_APKill( Entity , HitVector , Power )
 
 	-- kill the children of this ent, instead of disappearing them from removing parent
-	--ACF_KillChildProps( Entity, Entity:GetPos(), Power )
+	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
     
 	
    
