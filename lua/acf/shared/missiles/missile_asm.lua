@@ -21,7 +21,7 @@ ACF_defineGunClass("ASM", {
 
 -- The AGM-114, a laser guided missile with high anti-tank effectiveness.
 ACF_defineGun("AGM-114 ASM", { --id
-	name = "AGM-114 Missile",
+	name = "AGM-114 Hellfire Missile",
 	desc = "The AGM-114 Hellfire is an air-to-surface missile first developed for anti-armor use, but later models were developed for precision strikes against other target types. Bringer of Hell.",
 	model = "models/missiles/agm_114.mdl",
 	gunclass = "ASM",
