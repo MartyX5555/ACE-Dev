@@ -200,34 +200,39 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	FlightTr.filter = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 	TROffset = 0.3937*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 	FlightTr.maxs = Vector( TROffset, TROffset, TROffset )
-	FlightTr.mins = -FlightTr.maxs
+	FlightTr.mins = -FlightTr.maxs	
 	
-	--perform the trace for damage
-	
-	   	local RetryTrace	
-	
-	   	RetryTrace = true	
+	--perform the trace for damage	
+		
+	local RetryTrace = true	
 
 	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
-	
+	    
 		RetryTrace = false  --disabling....
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
-		
+
 		
 		util.TraceHull(FlightTr)    --Defining tracehull at first instance
 		
-		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our shell hits visclips, tracehull becomes traceline
-		   print('Traceline!')
+		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our shell hits visclips, convert the tracehull on traceline.
+		   --print('Traceline!')
 		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
+		  
+		    if not FlightRes.HitNonWorld then -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
+			
+		        --print('back to tracehull!')
+			    util.TraceHull(FlightTr)
+		   
+		    end
 		   
 		end  
-        		  
+        
 		--We hit something that's not world, if it's visclipped, filter it out and retry	
-        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hits the visclip as traceline, no more double bounds.
+        if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
 		    
 		    table.insert( Bullet.Filter , FlightRes.Entity )
-		    RetryTrace = true   --re-enabled for retry trace
+		    RetryTrace = true   --re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
 			
 	    end
 	

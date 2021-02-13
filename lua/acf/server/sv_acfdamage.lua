@@ -475,7 +475,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 	
 	if loss == 1 or loss == 0 then --couldn't penetrate
 	    --print('PenValid: '..loss)
-		print(start)
+		--print(start)
 		local Ricochet = 0
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
 		local Angle = ACF_GetHitAngle( HitNormal, Bullet.Flight )
