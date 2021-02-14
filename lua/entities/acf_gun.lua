@@ -95,6 +95,7 @@ if CLIENT then
 		acfmenupanel:CPanelText("GunDesc", Table.desc)
 		acfmenupanel:CPanelText("Caliber", "Caliber : "..(Table.caliber*10).."mm")
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
+		acfmenupanel:CPanelText("Year", "Year : "..Table.year)
 		
 		--PrintTable(Table)
 		if not Table.rack then
