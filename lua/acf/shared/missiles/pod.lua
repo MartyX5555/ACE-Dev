@@ -492,11 +492,11 @@ ACF_DefineRack("1x Javelin", {
 	caliber = 12.7,
 
 	protectmissile  = true,
-    hidemissile     = false,
+    hidemissile     = true,
     whitelistonly   = true,
 	
     mountpoints = 
 	{
-		["missile1"] = {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,0)}
+		["missile1"] = {["offset"] = Vector(0,-1.38,2.4), ["scaledir"] = Vector(0,0,0)}
 	}
 } )
