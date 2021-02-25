@@ -23,7 +23,7 @@ CreateConVar("sbox_acf_restrictinfo", 1)       -- 0=any, 1=owned
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )         -- Should flares light players and NPCs on fire?  Does not affect godded players.
 ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )        -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities.
 CreateConVar( "acf_legalchecks", 1 , FCVAR_ARCHIVE)         -- If true, legal checks will be done and it will disable any no legal ent.
-CreateConVar( "acf_enable_dp", 'true' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
+CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
 
 if CLIENT then
 --[[
@@ -238,6 +238,7 @@ AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 
 if SERVER and ACF.EnableDefaultDP then
+    print('Damage Protection is enabled!')
 	AddCSLuaFile( "acf/client/cl_acfpermission.lua" )
 	AddCSLuaFile( "acf/client/gui/cl_acfsetpermission.lua" )
 end
