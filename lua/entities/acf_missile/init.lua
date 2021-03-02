@@ -216,7 +216,7 @@ function ENT:CalcFlight()
 	tracedata.filter = self.Filter
 	local trace = util.TraceLine(tracedata)
 
-	if trace.Hit then
+	if trace.Hit then --and not ACF_CheckClips( trace.Entity, trace.HitPos ) 
 
 		if not (IsValid(trace.Entity) and CurTime() < self.GhostPeriod) then
 			self.HitNorm = trace.HitNormal

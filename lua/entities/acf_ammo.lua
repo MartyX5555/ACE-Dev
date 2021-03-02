@@ -99,7 +99,7 @@ if CLIENT then
 		local EntFrom, EntTo, Weapon = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() ), msg:ReadString()
 		if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 		//local List = list.Get( "ACFRoundTypes")	
-		-- local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
+		--local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
 		local Mdl = "models/munitions/round_100mm_shot.mdl"
 		EntFrom.RefillAmmoEffect = EntFrom.RefillAmmoEffect or {}
 		table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )
@@ -443,7 +443,7 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	
 	local Min,Max = self:GetCollisionBounds()
 	local Size = (Max - Min)
-
+    print(Size)
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 
