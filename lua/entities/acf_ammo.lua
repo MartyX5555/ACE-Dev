@@ -443,7 +443,7 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	
 	local Min,Max = self:GetCollisionBounds()
 	local Size = (Max - Min)
-    print(Size)
+    --print(Size)
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
 

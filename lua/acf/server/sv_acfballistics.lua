@@ -306,6 +306,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 			--print(Bullet.Flight)
 			ACF_CalcBulletFlight( Index, Bullet, true )
 			end
+			
 		else						--Else end the flight here
 			if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 			ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )
@@ -361,16 +362,19 @@ function ACF_DoBulletsFlight( Index, Bullet )
 end
 
 function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
-
+	
 	if Type == "Update" then
 		local Effect = EffectData()
+		    
 			Effect:SetAttachment( Index )		--Bulet Index
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
+			
 			if Hit > 0 then		-- If there is a hit then set the effect pos to the impact pos instead of the retry pos
 				Effect:SetOrigin( HitPos )		--Bullet Pos
 			else
 				Effect:SetOrigin( Bullet.Pos )
 			end
+			
 			Effect:SetScale( Hit )	--Hit Type 
 		util.Effect( "ACF_BulletEffect", Effect, true, true )
 

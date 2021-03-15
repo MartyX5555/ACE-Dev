@@ -94,7 +94,7 @@ function Round.convert( Crate, PlayerData )
 	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
-	Data.Ricochet = 63										--Base ricochet angle
+	Data.Ricochet = 80										--Base ricochet angle
 	Data.DetonatorAngle = 80
 	
 	Data.Detonated = false
@@ -393,16 +393,21 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\nAverage Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \nAverage Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
-	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
-	local R1V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 100 ) 
-	local R2V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 200 )	
-	local R3V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 400 )	
-	local R4V = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
+    ---------------------------Chance of Ricochet table----------------------------    
+ 	
+	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
 	
-	R1P = Data.MaxPen
+	-------------------------------------------------------------------------------
+	local R1V, R1P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 100 )
+	R1P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	local R2V, R2P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 200 )
+	R2P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	local R3V, R3P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 400 )
+	R3P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
+	local R4V, R4P = ACF_PenRanging( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel, 800 )
+	R4P = (ACF_Kinetic( (Data.SlugMV) * 39.37, Data.SlugMass, 999999 ).Penetration/Data.SlugPenAera)*ACF.KEtoRHA
 	
-	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV).." m/s\n\nMax Penetration : "..math.Round(Data.MaxPen).." mm RHA\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.MuzzleVel + Data.SlugMV).." m/s \nMax Penetration : "..math.floor(Data.MaxPen).." mm RHA\n\n100m pen: "..math.Round(R1P,0).."mm @ "..math.Round(R1V,0).." m\\s\n200m pen: "..math.Round(R2P,0).."mm @ "..math.Round(R2V,0).." m\\s\n400m pen: "..math.Round(R3P,0).."mm @ "..math.Round(R3V,0).." m\\s\n800m pen: "..math.Round(R4P,0).."mm @ "..math.Round(R4V,0).." m\\s\n\nThe range data is an approximation and may not be entirely accurate.\n")	--Proj muzzle penetration (Name, Desc)
 
 end
 

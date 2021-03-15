@@ -10,7 +10,7 @@ function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
 	Data["Tracer"] = 0
 	if PlayerData["Data10"]*1 > 0 then	--Check for tracer
-		Data["Tracer"] = math.min(5/Data["Caliber"],2.5) --Tracer space calcs
+		Data["Tracer"] = math.min(Data["Caliber"]/5,3) --Tracer space calcs
 	end
 	
 	local PropMax = (BulletMax["propweight"]*1000/ACF.PDensity) / Data["FrAera"]	--Current casing absolute max propellant capacity
@@ -40,9 +40,16 @@ function ACF_RoundShellCapacity( Momentum, FrAera, Caliber, ProjLength )
 	return  Volume, Length, Radius --Returning the cavity volume and the minimum wall thickness
 end
 
-function ACF_RicoProbability( Rico, Speed)
-	local MinAngle = math.min(Rico - Speed/15,89)
-	return { Min = math.Round(math.max(MinAngle,0.1),1), Mean = math.Round(math.max(MinAngle+(90-MinAngle)/2,0.1),1), Max = 90 }
+function ACF_RicoProbability( Rico, Speed )
+	
+	local RicoAngle = math.Round(math.min(Rico -  (( (Speed-800) / 39.37 ) /5),89))
+		
+    local None = math.max(RicoAngle-10,1) --0% chance to ricochet
+	local Mean = math.max(RicoAngle,1)   --50% chance to ricochet
+	local Max = math.max(RicoAngle+10,1)  --100% chance to ricochet
+	
+	return None, Mean, Max
+
 end
 
 --Formula from https://mathscinotes.wordpress.com/2013/10/03/parameter-determination-for-pejsa-velocity-model/
@@ -58,7 +65,7 @@ function ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenAera, LimitVel, Range
 	return (Vel*0.0254), Pen
 end
 
-	
+--This function is not used by ACE anymore, but i´ll keep it just for those acf2 custom ammos dont break	
 function ACF_CalcCrateStats( CrateVol, RoundVol )
 
 	local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
@@ -70,6 +77,7 @@ function ACF_CalcCrateStats( CrateVol, RoundVol )
 	return Cap, CapMul, RoFMul
 end
 
+--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
 function AmmoCapacity( ProjLenght, PropLenght, Caliber )
 
     local Cal = (Caliber)/ACF.AmmoWidthMul/1.6
@@ -95,9 +103,6 @@ function AmmoCapacity( ProjLenght, PropLenght, Caliber )
 	local cap5 = math.floor(math.floor(Lenght/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Width/Cal)) or 1
 		--Horizontal 2 piece  placement 2
 	local cap6 = math.floor(math.floor(Width/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Lenght/Cal)) or 1
-
-	
-	--	self.Capacity = math.floor(CapMul*self.Volume*16.38/self.BulletData.RoundVolume)
 	
     local Cap
 	local TwoPiece

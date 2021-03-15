@@ -52,7 +52,7 @@ function Round.convert( Crate, PlayerData )
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 70										--Base ricochet angle
-	Data.DetonatorAngle = 80
+	Data.DetonatorAngle = 70
 	
 	Data.BoomPower = Data.PropMass + Data.FillerMass
 
@@ -258,9 +258,11 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 	
-	--local RicoAngs = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-	--acfmenupanel:CPanelText("RicoDisplay", "Ricochet probability vs impact angle:\n".."    0% @ "..RicoAngs.Min.." degrees\n  50% @ "..RicoAngs.Mean.." degrees\n100% @ "..RicoAngs.Max.." degrees")
+    ---------------------------Chance of Ricochet table----------------------------    
+ 
+	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
 	
+	-------------------------------------------------------------------------------	
 end
 
 list.Set("HERoundTypes", 'HE', Round ) --Set the round on chemical folder

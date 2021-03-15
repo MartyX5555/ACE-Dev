@@ -86,10 +86,10 @@ ACF_defineGun("SAKR-10 RA", { --id
 		thrust		= 1300,		-- average thrust - kg*in/s^2
 		burnrate	= 120,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.1,
-        minspeed	= 300,			-- minimum speed beyond which the fins work at 100% efficiency
+        minspeed	= 300,			-- minimum speed beyond which the fins work at 100% efficiency 
         dragcoef	= 0.002,		-- drag coefficient while falling
         dragcoefflight  = 0.010,                 -- drag coefficient during flight
-		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.03,			-- fin multiplier (mostly used for unpropelled guidance)  
         penmul      = math.sqrt(0.2)  	--  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
