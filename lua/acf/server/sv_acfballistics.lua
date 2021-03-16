@@ -22,7 +22,7 @@ function ACF_CreateBullet( BulletData )
 
 	--Those are BulletData settings that are global and shouldn't change round to round	
 	local cvarGrav = GetConVar("sv_gravity")
-	BulletData["Accel"] = Vector(0,0,cvarGrav:GetInt()*-1)
+	BulletData["Accel"] =  Vector(0,0,cvarGrav:GetInt()*-1)--Vector(0,0,cvarGrav:GetInt()*-1)
 	BulletData["LastThink"] = ACF.SysTime
 	BulletData["FlightTime"] = 0
 	BulletData["TraceBackComp"] = 0
