@@ -253,6 +253,21 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 		
 end
 
+--[[----------------------------------------------------------------------------
+	Function:
+		ACF_Spall
+	Arguments:
+		HitPos      - detonation center,
+		HitVec 	    - Hit vector 
+		HitMask 	- Filter of ents to be ignored
+		KE          - Kinetic Energy 
+		Caliber     - Gun's caliber where the spalling comes from
+		Armour      - Armour of the impacted prop
+		Inflictor	- owner of said TNT
+		Material    - Material of the impacted prop
+	Purpose:
+		Handles ACF Spalling
+------------------------------------------------------------------------------]]
 
 function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor , Material)
 	
@@ -263,13 +278,13 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	local SpallMul = 1 --If all else fails treat it like RHA
 	local ArmorMul = 1
 
-	if Material == 2 then 
+	if Material == 2 then     
 		SpallMul = 1.2 --Cast
 		ArmorMul = 1.8
 	elseif Material == 3 then 
 		SpallMul = 0 --Rubber does not spall
 	elseif Material == 5 then
-		SpallMul = ACF.AluminumSpallMult
+		SpallMul = ACF.AluminumSpallMult  
 		ArmorMul = 0.334
 	elseif Material == 6 then
 		SpallMul = ACF.TextoliteSpallMult
@@ -449,7 +464,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	return HitRes
 end
 
-function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull show again
+function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 	
@@ -540,7 +555,7 @@ ACF.Splosive = {
 
 
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
-
+--[[
 	local count = 0
 	local boom = {}
 	local children = ACF_GetAllChildren(Entity)
@@ -576,8 +591,8 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 				    if math.random() < DebrisChance then -- ignore some of the debris props to save lag
 					    ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
 				    else
-					    constraint.RemoveAll( child )
-					    child:Remove()
+					    --constraint.RemoveAll( child )
+					    --child:Remove()
 				    end
 			    end
 		    end
@@ -592,9 +607,10 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    end
 	    end
 	end	
+]]--
 end
 
-
+-- blast pos is an optional world-pos input for flinging away children props more realistically
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
@@ -694,15 +710,27 @@ end
 --converts what would be multiple simultaneous cache detonations into one large explosion
 function ACF_ScaledExplosion( ent )
 	local Inflictor = nil
-	local Owner = ent:CPPIGetOwner()
+	if CPPI then
+	
+	    local Owner = ent:CPPIGetOwner()
+	
+	end
 	if( ent.Inflictor ) then
 		Inflictor = ent.Inflictor
 	end
 	
 	local HEWeight
-	if ent:GetClass() == "acf_fueltank" then
+	if ent:GetClass() == "acf_fueltank" then   --for fueltanks
+	
 		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 1
-	else
+		
+	elseif ent:GetClass() == 'acf_missile' then   --for missiles
+	    
+		local missile = ent:GetPhysicsObject()
+	    
+	    HEWeight = missile:GetVolume()*0.005
+		
+	else                                         --for rest of ents
 		local HE, Propel
 		if ent.RoundType == "Refill" then
 			HE = 0.00025
@@ -713,7 +741,7 @@ function ACF_ScaledExplosion( ent )
 		end
 		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo
 	end
-	local Radius = HEWeight^0.33*8*39.37
+	local Radius = HEWeight^0.33*8*39.37                        --HEWeight^0.33*8*39.37
 	local ExplodePos = {}
 	local Pos = ent:LocalToWorld(ent:OBBCenter())
 	table.insert(ExplodePos, Pos)
@@ -796,7 +824,7 @@ function ACF_ScaledExplosion( ent )
 	HEWeight=HEWeight*ACF.BoomMult
 	Radius = (HEWeight)^0.33*8*39.37
 			
-	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )
+	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight * 0.05 , HEWeight*0.01 , Inflictor , ent, ent ) --ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )
 	
 	local Flash = EffectData()
 		Flash:SetOrigin( AvgPos )
