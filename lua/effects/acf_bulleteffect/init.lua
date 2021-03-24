@@ -37,7 +37,7 @@ function EFFECT:Init( data )
 
 		end
 		ACF_SimBulletFlight( Bullet, self.Index )
-		--self:Remove()	--This effect updated the old one, so it removes itself now
+		self:Remove()	--This effect updated the old one, so it removes itself now
 		--if IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
 		self.Alive = false
 

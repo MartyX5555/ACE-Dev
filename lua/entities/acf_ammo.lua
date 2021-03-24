@@ -157,27 +157,6 @@ function ENT:Initialize()
 	self.Caliber = 1
 	self.RoFMul = 1
 	self.LastMass = 1
---[[
-	--Lets see if this fixes some invalid ammo
-	self.RoundId = ( self.RoundId or "100mmC"	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
-	self.RoundType = ( self.RoundType or "AP"	) --Type of round, IE AP, HE, HEAT ...
-	self.RoundPropellant = ( self.RoundPropellant or 0 )--Lenght of propellant
-	self.RoundProjectile = ( self.RoundProjectile or 0 )--Lenght of the projectile
-	self.RoundData5 = ( self.RoundData5 or 0 )
-	self.RoundData6 = ( self.RoundData6 or 0 )
-	self.RoundData7 = ( self.RoundData7 or 0 )
-	self.RoundData8 = ( self.RoundData8 or 0 )
-	self.RoundData9 = ( self.RoundData9 or 0 )
-	self.RoundData10 = ( self.RoundData10 or 0 )
-	self.RoundData11 = ( self.RoundData11 or 0 )	
-	self.RoundData12 = ( self.RoundData12 or 0 )	
-	self.RoundData13 = ( self.RoundData13 or 0 )	
-	self.RoundData14 = ( self.RoundData14 or 0 )	
-	self.RoundData15 = ( self.RoundData15 or 0 )
-]]--
-
-------------------------------HERE !!!!
-
 
 	self.RoundId = ( self.RoundId or "100mmC"	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
 	self.RoundType = ( self.RoundType or "AP"	) --Type of round, IE AP, HE, HEAT ...
@@ -418,8 +397,9 @@ end
 
 function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 	
-	if Data1 == '20mmHRAC' then
-	    self.RoundId = '20mmRAC'
+	--Weapon this round loads into, ie 140mmC, 105mmH ...
+	if Data1 == '20mmHRAC' then                            --checking if its an old gun
+	    self.RoundId = '20mmRAC'                           --replacing it with the current one
 	elseif Data1 == '30mmHRAC' then
 	    self.RoundId = '30mmRAC'
 	elseif Data1 == '105mmSB' then
@@ -439,19 +419,8 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		self:Remove()
 		return
 	end
-	
-----------------------------------OTHER TABLE HERE!!!!	
-
-	--print('1: '..Data1)
-	--print(Data2)
-	--print(Data3)
-	--print(Data4)
 
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
-		--Weapon this round loads into, ie 140mmC, 105mmH ...
-	
-
-	
 
 	self.RoundType = ( Data2 or "AP"	)   --Type of round, IE AP, HE, HEAT ...
 	self.RoundPropellant = ( Data3 or 0 )   --Lenght of propellant

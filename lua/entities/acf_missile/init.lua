@@ -668,7 +668,7 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 			self.Inflictor = Inflictor
 		end
 
-		self:ForceDetonate()
+		--self:ForceDetonate()
 
 	end
 

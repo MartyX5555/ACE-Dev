@@ -210,7 +210,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	    
 		RetryTrace = false  --disabling....
 		FlightTr.start = Bullet.StartTrace
-		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) * 2 --compensation 		
+		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation 		
 
 		
 		util.TraceHull(FlightTr)    --Defining tracehull at first instance
