@@ -213,7 +213,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation 		
 
 		
-		util.TraceHull(FlightTr)    --Defining tracehull at first instance
+		util.TraceLine(FlightTr)    --Defining tracehull at first instance
 		
 		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our shell hits visclips, convert the tracehull on traceline.
 		   --print('Traceline!')
@@ -222,7 +222,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 		    if not FlightRes.HitNonWorld then -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
 			
 		        --print('back to tracehull!')
-			    util.TraceHull(FlightTr)
+			    util.TraceLine(FlightTr)
 		   
 		    end
 		   
