@@ -601,7 +601,7 @@ function ENT:OnRemove()
 
 end
 ------------------------------------------
---SPECIAL damage 
+--SPECIAL damage
 ------------------------------------------
 
 
@@ -653,14 +653,11 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 	if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
 
 	local HitRes = ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor )	--Calling the standard damage prop function
---[[
+
 	-- Detonate if the shot penetrates the casing.
 	HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0
 
-	if HitRes.Kill and math.random() < 0.75 then
-	
-	--Missiles that can detonate. F for pay respects for server since detonating tons of missiles will make it on fire.
-	
+	if HitRes.Kill then
 
 		local CanDo = hook.Run("ACF_AmmoExplode", self, self.BulletData )
 		if CanDo == false then return HitRes end
@@ -670,18 +667,9 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )	--This
 		if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
 			self.Inflictor = Inflictor
 		end
-        
-		--ACF_ScaledExplosion( self )          --Less laggy than the function below but still unacceptable 
-		--self:ForceDetonate()                 --Laggy
-        
-		if self:GetParent():IsValid() then     --Why do we have to remove racks since missiles dont explode for now
-		
-		    local rack = self:GetParent()
-		    
-			--rack:Remove()
-		    
-		end
-]]--		
+
+		self:ForceDetonate()
+
 	end
 
 	return HitRes
