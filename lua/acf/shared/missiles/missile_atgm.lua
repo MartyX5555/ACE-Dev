@@ -42,7 +42,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 		dragcoef	= 0.003,			-- drag coefficient while falling
         dragcoefflight  = 0.06,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.797)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(0.9265)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)   --was 0.797
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -74,11 +74,11 @@ ACF_defineGun("9M113 ASM", { --id
 		casing		= 0.2,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
-		thrust		= 7000,			-- average thrust - kg*in/s^2
-		burnrate	= 40,			-- cm^3/s at average chamber pressure
+		thrust		= 3500,			-- average thrust - kg*in/s^2                                    --was 7000
+		burnrate	= 100,			-- cm^3/s at average chamber pressure                            --was 40
 		starterpct	= 0.2,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
+		dragcoef	= 0.005,		-- drag coefficient while falling                                --was 0.001
         dragcoefflight  = 0.03,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(1.2)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
@@ -157,14 +157,14 @@ ACF_defineGun("Ataka ASM", { --id
 		casing		= 0.12,			-- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 1.7,			-- motor mass - motor casing
-		thrust		= 18500,			-- average thrust - kg*in/s^2
-		burnrate	= 130,			-- cm^3/s at average chamber pressure
+		thrust		= 24000,			-- average thrust - kg*in/s^2                               --was 18500
+		burnrate	= 500,			-- cm^3/s at average chamber pressure                           --was 130
 		starterpct	= 0.3,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5000,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
+		dragcoef	= 0.01,		-- drag coefficient while falling                               --was 0.001
         dragcoefflight  = 0.04,                 -- drag coefficient during flight
 		finmul		= 0.05,			-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      = math.sqrt(0.854)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      = math.sqrt(1.148)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)   --was 0.854
 	},
 
     ent         = "acf_missile_to_rack", -- A workaround ent which spawns an appropriate rack for the missile.
@@ -200,10 +200,10 @@ ACF_defineGun("AT-2 ASM", { --id
 		thrust		= 1500,			-- average thrust - kg*in/s^2
 		burnrate	= 25,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.5,			-- percentage of the propellant consumed in the starter motor.
-		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.001,		-- drag coefficient while falling
+		minspeed	= 500,			-- minimum speed beyond which the fins work at 100% efficiency    --was 500
+		dragcoef	= 0.0001,		-- drag coefficient while falling                                 --was 0.001
         dragcoefflight  = 0.01,                 -- drag coefficient during flight
-		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
+		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)          --was 0.1
         penmul      = math.sqrt(1.3)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
@@ -227,9 +227,9 @@ ACF_defineGun("FGM-148 ASM", { --id
     rack = "1x Javelin",  -- Which rack to spawn this missile on?
 	length = 60,		--Used for the physics calculations
 	caliber = 12.7,    --caliber
-	weight = 97.2,    -- Don't scale down the weight though!
+	weight = 11.8,    -- Don't scale down the weight though!  --was 97.2
 	year = 1989,      --year
-	rofmod = 1.45,     --Rate Of Fire
+	rofmod = 0.74,     --Rate Of Fire    --was 1.45
 	round = {
 		model		= "models/mcace/Jevelinemissile.mdl",       --models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
 		rackmdl		= "models/mcace/Jevelinemissile.mdl",       --model when its in tube
@@ -241,7 +241,7 @@ ACF_defineGun("FGM-148 ASM", { --id
 		burnrate	= 100,				-- cm^3/s at average chamber pressure --100
 		starterpct	= 0.15,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5,				-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.02,			-- drag coefficient while falling
+		dragcoef	= 0.01,			-- drag coefficient while falling
                 dragcoefflight  = 0.01,                 -- drag coefficient during flight
 		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(1.75)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)

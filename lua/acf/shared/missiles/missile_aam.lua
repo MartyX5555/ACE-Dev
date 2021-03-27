@@ -107,7 +107,8 @@ ACF_defineGun("AIM-120 AAM", { --id
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", { --id
 	name = "AIM-54 Missile",
-	desc = "A BEEFY god-tier anti-bomber weapon, made with Jimmy Carter's repressed rage.  Getting hit with one of these is a significant emotional event that is hard to avoid if you're flying high, but with a very narrow 8 degree seeker, a thin casing, and a laughable speed, don't expect to be using it vs MIGs.",
+	desc = "A Hypersonic Long-Range Air to Air missile, the prehistoric of the AIM-120. This 300kgs missile is decided to reduce to your first opponent that it faces to ashes, of course, if its tiny ",
+	--desc = "A BEEFY god-tier anti-bomber weapon, made with Jimmy Carter's repressed rage.  Getting hit with one of these is a significant emotional event that is hard to avoid if you're flying high, but with a very narrow 8 degree seeker, a thin casing, and a laughable speed, don't expect to be using it vs MIGs.",
 	model = "models/missiles/aim54.mdl",
 	gunclass = "AAM",
     rack = "1xRK",  -- Which rack to spawn this missile on?
@@ -124,7 +125,7 @@ ACF_defineGun("AIM-54 AAM", { --id
 		casing		= 0.2,	        -- thickness of missile casing, cm
 		armour		= 4,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
-		thrust		= 100000,	    -- average thrust - kg*in/s^2		--was 10000
+		thrust		= 140000,	    -- average thrust - kg*in/s^2		--was 10000
 		burnrate	= 200,	        -- cm^3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,          -- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1000,			-- minimum speed beyond which the fins work at 100% efficiency  --was 1000

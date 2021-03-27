@@ -80,12 +80,12 @@ ACF_defineGun("AGM-45 ASM", { --id
 		casing		= 0.15,			-- thickness of missile casing, cm
 		armour		= 8,			-- effective armour thickness of casing, in mm
 		propweight	= 3,			-- motor mass - motor casing
-		thrust		= 2700,		-- average thrust - kg*in/s^2           --was 600
+		thrust		= 2000,		-- average thrust - kg*in/s^2           --was 600
 		burnrate	= 300,			-- cm^3/s at average chamber pressure
 		starterpct	= 0.05,			-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 4000,			-- minimum speed beyond which the fins work at 100% efficiency   --was 4000
 		dragcoef	= 0.004,		-- drag coefficient while falling                                --was 0.001
-                dragcoefflight  = 0,                 -- drag coefficient during flight
+                dragcoefflight  = 0.004,                 -- drag coefficient during flight
 		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.18)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
