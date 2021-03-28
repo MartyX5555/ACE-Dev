@@ -796,7 +796,7 @@ function ACF_ScaledExplosion( ent )
 	HEWeight=HEWeight*ACF.BoomMult
 	Radius = (HEWeight)^0.33*8*39.37
 			
-	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight , HEWeight*0.5 , Inflictor , ent, ent )
+	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )
 	
 	local Flash = EffectData()
 		Flash:SetOrigin( AvgPos )

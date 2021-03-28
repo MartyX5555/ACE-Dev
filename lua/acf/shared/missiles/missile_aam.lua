@@ -107,7 +107,7 @@ ACF_defineGun("AIM-120 AAM", { --id
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", { --id
 	name = "AIM-54 Missile",
-	desc = "A Hypersonic Long-Range Air to Air missile, the prehistoric of the AIM-120. This 300kgs missile is decided to reduce to your first opponent that it faces to ashes, of course, if its tiny ",
+	desc = "A supersonic long-range air to air missile, a early generation to AIM-120. This 300kgs beast is decided to reduce your first opponent that it faces to ashes, of course, if its tiny seek cone is able to see it.",
 	--desc = "A BEEFY god-tier anti-bomber weapon, made with Jimmy Carter's repressed rage.  Getting hit with one of these is a significant emotional event that is hard to avoid if you're flying high, but with a very narrow 8 degree seeker, a thin casing, and a laughable speed, don't expect to be using it vs MIGs.",
 	model = "models/missiles/aim54.mdl",
 	gunclass = "AAM",

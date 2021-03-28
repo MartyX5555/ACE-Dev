@@ -937,6 +937,13 @@ function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, sli
 	acfmenupanel["CData"][Name.."_text"]:SizeToContentsX()
 	
 end
+
+function PANEL:AmmoStats(RoundLenght, MaxTotalLenght ,MuzzleVel ,MaxPen)
+
+    acfmenupanel:CPanelText("AmmoStats", "Round Length : "..RoundLenght.."/"..MaxTotalLenght.." cms\n\nMuzzle Velocity : "..MuzzleVel.." m\\s\nMax penetration : "..MaxPen.." mm RHA")	--Total round length (Name, Desc)
+	
+end
+
 --[[-------------------------------------
 
     PANEL:CPanelText(Name, Desc)

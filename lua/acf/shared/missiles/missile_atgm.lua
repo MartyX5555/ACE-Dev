@@ -237,13 +237,13 @@ ACF_defineGun("FGM-148 ASM", { --id
 		casing		= 0.1,				-- thickness of missile casing, cm
 		armour		= 4,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
-		thrust		= 3000,				-- average thrust - kg*in/s^2
-		burnrate	= 100,				-- cm^3/s at average chamber pressure --100
+		thrust		= 2000,				-- average thrust - kg*in/s^2         --was 3000
+		burnrate	= 300,				-- cm^3/s at average chamber pressure --100
 		starterpct	= 0.15,				-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5,				-- minimum speed beyond which the fins work at 100% efficiency
-		dragcoef	= 0.01,			-- drag coefficient while falling
-                dragcoefflight  = 0.01,                 -- drag coefficient during flight
-		finmul		= 0.1,			-- fin multiplier (mostly used for unpropelled guidance)
+		dragcoef	= 0.02,			-- drag coefficient while falling               --was 0.01
+                dragcoefflight  = 0.025,                 -- drag coefficient during flight
+		finmul		= 0.2,			-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(1.75)  	-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
@@ -251,9 +251,9 @@ ACF_defineGun("FGM-148 ASM", { --id
     guidance    = {"Dumb", "Infrared","Laser"},  --here you have Laser for those top attacks, feel free to build one.
     fuses       = {"Contact", "Optical"},
 	
-	seekcone    = 45,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone    = 80,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1x Javelin"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-    agility     = 0.22,     -- multiplier for missile turn-rate.
+    agility     = 0.2,     -- multiplier for missile turn-rate.
     armdelay    = 1     -- minimum fuse arming delay
 } )
