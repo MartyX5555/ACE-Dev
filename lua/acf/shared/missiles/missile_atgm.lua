@@ -251,7 +251,7 @@ ACF_defineGun("FGM-148 ASM", { --id
     guidance    = {"Dumb", "Infrared","Laser"},  --here you have Laser for those top attacks, feel free to build one.
     fuses       = {"Contact", "Optical"},
 	
-	seekcone    = 80,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone    = 40,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone    = 120,   -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {["1x Javelin"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
     agility     = 0.2,     -- multiplier for missile turn-rate.
