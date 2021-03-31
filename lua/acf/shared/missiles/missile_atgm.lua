@@ -33,7 +33,7 @@ ACF_defineGun("BGM-71E ASM", { --id
 		rackmdl		= "models/missiles/bgm_71e.mdl",
 		maxlength	= 105,
 		casing		= 0.1,				-- thickness of missile casing, cm
-		armour		= 4,				-- effective armour thickness of casing, in mm
+		armour		= 5,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
 		thrust		= 10000,				-- average thrust - kg*in/s^2
 		burnrate	= 200,				-- cm^3/s at average chamber pressure
@@ -72,7 +72,7 @@ ACF_defineGun("9M113 ASM", { --id
 		rackmdl		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",
 		maxlength	= 105,
 		casing		= 0.2,			-- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1,			-- motor mass - motor casing
 		thrust		= 3500,			-- average thrust - kg*in/s^2                                    --was 7000
 		burnrate	= 100,			-- cm^3/s at average chamber pressure                            --was 40
@@ -113,7 +113,7 @@ ACF_defineGun("AT-3 ASM", { --id
 		rackmdl		= "models/missiles/at3.mdl",
 		maxlength	= 55,
 		casing		= 0.1,				-- thickness of missile casing, cm
-		armour		= 4,				-- effective armour thickness of casing, in mm
+		armour		= 5,				-- effective armour thickness of casing, in mm
 		propweight	= 1.2,				-- motor mass - motor casing
 		thrust		= 7000,				-- average thrust - kg*in/s^2
 		burnrate	= 150,				-- cm^3/s at average chamber pressure
@@ -155,7 +155,7 @@ ACF_defineGun("Ataka ASM", { --id
 		rackmdl		= "models/missiles/9m120.mdl",
 		maxlength	= 105,
 		casing		= 0.12,			-- thickness of missile casing, cm
-		armour		= 4,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 1.7,			-- motor mass - motor casing
 		thrust		= 24000,			-- average thrust - kg*in/s^2                               --was 18500
 		burnrate	= 500,			-- cm^3/s at average chamber pressure                           --was 130
@@ -235,7 +235,7 @@ ACF_defineGun("FGM-148 ASM", { --id
 		rackmdl		= "models/mcace/Jevelinemissile.mdl",       --model when its in tube
 		maxlength	= 60,
 		casing		= 0.1,				-- thickness of missile casing, cm
-		armour		= 4,				-- effective armour thickness of casing, in mm
+		armour		= 5,				-- effective armour thickness of casing, in mm
 		propweight	= 1,				-- motor mass - motor casing
 		thrust		= 2000,				-- average thrust - kg*in/s^2         --was 3000
 		burnrate	= 300,				-- cm^3/s at average chamber pressure --100

@@ -36,7 +36,7 @@ ACF_defineGun("Type 63 RA", { --id
 		rackmdl		= "models/missiles/glatgm/mgm51.mdl",
 		maxlength	= 200,
 		casing		= 0.1,			-- thickness of missile casing, cm
-		armour		= 2,			-- effective armour thickness of casing, in mm
+		armour		= 5,			-- effective armour thickness of casing, in mm
 		propweight	= 0.7,			-- motor mass - motor casing
 		thrust		= 2700,		-- average thrust - kg*in/s^2
 		burnrate	= 450,			-- cm^3/s at average chamber pressure
@@ -81,7 +81,7 @@ ACF_defineGun("SAKR-10 RA", { --id
 		rackmdl		= "models/missiles/9m31.mdl",
 		maxlength	= 140,
 		casing		= 0.1,			-- thickness of missile casing, cm
-		armour		= 2,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 1.2,			-- motor mass - motor casing
 		thrust		= 1300,		-- average thrust - kg*in/s^2
 		burnrate	= 120,			-- cm^3/s at average chamber pressure
@@ -126,7 +126,7 @@ ACF_defineGun("SS-40 RA", { --id
 		rackmdl		= "models/missiles/aim120.mdl",
 		maxlength	= 180,
 		casing		= 0.1,			-- thickness of missile casing, cm
-		armour		= 2,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 4.0,			-- motor mass - motor casing
 		thrust		= 850,		-- average thrust - kg*in/s^2
 		burnrate	= 200,			-- cm^3/s at average chamber pressure
@@ -170,7 +170,7 @@ ACF_defineGun("RW61 RA", { --id
 		rackmdl		= "models/missiles/RW61M.mdl",
 		maxlength	= 160,
 		casing		= 1.0,	        -- thickness of missile casing, cm
-		armour		= 5,			-- effective armour thickness of casing, in mm
+		armour		= 10,			-- effective armour thickness of casing, in mm
 		propweight	= 5,	        -- motor mass - motor casing
 		thrust		= 5000,	    	-- average thrust - kg*in/s^2
 		burnrate	= 5000,	        -- cm^3/s at average chamber pressure
