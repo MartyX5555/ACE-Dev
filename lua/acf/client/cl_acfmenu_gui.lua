@@ -1,3 +1,11 @@
+--[[------------------------
+    1.- This is the file that displays the main menu, such as guns, ammo, mobility and subfolders.
+	
+    2.- Almost everything here has been documented, you should find the responsible function easily.
+
+    3.- If you are going to do changes, please not to be a shitnuckle and write a note alongside the code that you´ve changed/edited. This should avoid issues with future developers.
+
+]]--------------------------
 function PANEL:Init( ) 
 
 	acfmenupanel = self.Panel
