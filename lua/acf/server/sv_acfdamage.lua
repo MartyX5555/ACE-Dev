@@ -723,7 +723,7 @@ function ACF_ScaledExplosion( ent )
 	local Filter = {ent}
 	while Search do
 		for key,Found in pairs(ents.FindInSphere(Pos, Radius)) do
-			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms
+			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
 				local Hitat = Found:NearestPoint( Pos )
 				
 				local Occlusion = {}
