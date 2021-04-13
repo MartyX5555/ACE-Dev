@@ -104,6 +104,12 @@ for k, v in pairs( guns ) do
 	include( "acf/shared/guns/" .. v )
 end
 
+local ammocrates = file.Find( "acf/shared/ammocrates/*.lua", "LUA" )
+for k, v in pairs( ammocrates ) do
+	AddCSLuaFile( "acf/shared/ammocrates/" .. v )
+	include( "acf/shared/ammocrates/" .. v )
+end
+
 local engines = file.Find( "acf/shared/engines/*.lua", "LUA" )
 for k, v in pairs( engines ) do
 	AddCSLuaFile( "acf/shared/engines/" .. v )
@@ -121,6 +127,10 @@ for k, v in pairs( fueltanks ) do
 	AddCSLuaFile( "acf/shared/fueltanks/" .. v )
 	include( "acf/shared/fueltanks/" .. v )
 end
+
+
+
+
 
 -- now that the tables are populated, throw them in the acf ents list
 list.Set( "ACFClasses", "GunClass", GunClasses )

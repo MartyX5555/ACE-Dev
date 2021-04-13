@@ -207,9 +207,6 @@ function ACF_GetAllFuseNamesExcept(list)
     
 end
 
-
-
-
 aaa_IncludeShared("acf/shared/missiles")
 aaa_IncludeShared("acf/shared/guns")
 aaa_IncludeShared("acf/shared/radars")
