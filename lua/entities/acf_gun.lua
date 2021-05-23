@@ -213,7 +213,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun.Mass = Lookup.weight
 	Gun.Class = Lookup.gunclass
 	Gun.Parentable = Lookup.canparent
-	Gun.Heat = 0
+	Gun.Heat = ACE.AmbientTemp
 	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
@@ -351,13 +351,19 @@ function ENT:Link( Target )
 	if Target:GetClass() == "ace_crewseat_gunner" then
 	--CrewLink
 
-		-- Don't link if it's already linked
+    --Don't link if it's already linked
 	for k, v in pairs( self.CrewLink ) do
 		if v == Target then
 			return false, "That crewseat is already linked to this gun!"
 		end
 	end
 	
+	--Don't link if it's too far from this gun
+	if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+	    return false, "That crewseat is too far to be linked to this gun!"
+	end
+	
+	--Don't link if it's already linked
 	if self.HasGunner == 1 then
 	return false, "The gun already has a gunner!"	
 	end
@@ -378,6 +384,11 @@ function ENT:Link( Target )
 		if v == Target then
 			return false, "That crewseat is already linked to this gun!"
 		end
+	end
+
+	--Don't link if it's too far from this gun
+	if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+	    return false, "That crewseat is too far to be linked to this gun!"
 	end
 
 	if self.HasGunner == 0 then --IK there is going to be an exploit to delete the gunner after placing a loader but idk how to fix *shrugs*
@@ -435,6 +446,11 @@ function ENT:Link( Target )
 	
 	if table.HasValue( Blacklist, self.Class ) then
 		return false, "That round type cannot be used with this gun!"
+	end
+	
+	-- Dont't link if it's too far from this gun
+	if RetDist( self, Target ) > 512 * self.LinkRangeMul then
+	    return false, "That crate is too far to be connected with this gun!"
 	end
 	
 	-- Don't link if it's already linked
@@ -605,9 +621,7 @@ end
 
 function ENT:Think()
 	
-
-	
-	
+----Legality check 	
 	if ACF.CurTime > self.NextLegalCheck then
 
 		-- check gun is legal
@@ -616,42 +630,43 @@ function ENT:Think()
 
 		-- check the seat is legal
 		local seat = IsValid(self.User) and self.User:GetVehicle() or nil
-		--if IsValid(self.User) then
-		--	local seat = self.User:GetVehicle()
-			if IsValid(seat) then
-				local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, true, false, false)
-				if not legal then
-					self.Legal = false
-					self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
-				end
+
+		if IsValid(seat) then
+			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, true, false, false)
+			if not legal then
+				self.Legal = false
+				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
 			end
-		--end
+		end
 
 		self:UpdateOverlayText()
 
 		if not self.Legal then
 			if self.Firing then self:TriggerInput("Fire",0) end
 		end
+		
 	end
 
 	local PhysObj = self:GetPhysicsObject()
 	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
 
+
+----Heat function
 	DeltaTime = CurTime() - self.LastThink	
-	local Mass = PhysObj:GetMass()
-	local Energyloss = ((42500*(-self.Heat))) * (1+(Mass^0.5)*2/75) * DeltaTime * 0.03
-	self.Heat = math.max(self.Heat +(Energyloss/(Mass^0.5)*2/743.2),0)
+	self.Heat = ACE_HeatFromGun( self , self.Heat, DeltaTime )
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
---TODO: instead of breaking the gun by heat, decrease accurancy and jam it
 
+----TODO: instead of breaking the gun by heat, decrease accurancy and jam it
 	local OverHeat = math.max(self.Heat/150,0) --overheat will start affecting the gun at 150° celcius
 	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
-	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
+	
+	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
 
-			if HitRes.Kill then
+		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
-			end
+		end
+			
 	end
 
 	
@@ -736,36 +751,9 @@ function ENT:Think()
 	return true
 end
 
--- BNK ggg stuff, still used?
-function ENT:CheckWeight()
-	local mass = self:GetPhysicsObject():GetMass()
-	local maxmass = GetConVarNumber("bnk_maxweight") * 1000 + 999
-	
-	local chk = false
-	
-	local allents = constraint.GetAllConstrainedEntities( self )
-	for _, ent in pairs(allents) do
-		if (ent and ent:IsValid() and not ent:IsPlayer() and not (ent == self)) then
-			local phys = ent:GetPhysicsObject()
-			if(phys:IsValid()) then
-				mass = mass + phys:GetMass()
-			end
-		end
-	end
-	
-	if( mass < maxmass ) then
-		chk = true
-	end
-	
-	return chk
-end
-
 function ENT:ReloadMag()
 	if(self.IsUnderWeight == nil) then
 		self.IsUnderWeight = true
-		if(ISBNK) then
-			self.IsUnderWeight = self:CheckWeight()
-		end
 	end
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
 		if ( ACF.RoundTypes[self.BulletData.Type] ) then		--Check if the roundtype loaded actually exists
@@ -811,20 +799,9 @@ function ENT:FireShell()
 
 	if(self.IsUnderWeight == nil) then
 		self.IsUnderWeight = true
-		if(ISBNK) then
-			self.IsUnderWeight = self:CheckWeight()
-		end
 	end
 	
 	local bool = true
-	if(ISSITP) then
-		if(self.sitp_spacetype != "space" and self.sitp_spacetype != "planet") then
-			bool = false
-		end
-		if(self.sitp_core == false) then
-			bool = false
-		end
-	end
 
 	if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
 		Blacklist = {}
@@ -872,7 +849,7 @@ function ENT:FireShell()
 					wired = self:GetNWString('connected')
 					
 					if wired == 'wired' then --using fusetime via wire will override the ammo fusetime!
-				        print(wired)
+				        --print(wired)
 					    self.BulletData.FuseLength = self.FuseTime * FuseNoise  
 									
 					end
@@ -908,10 +885,6 @@ function ENT:FireShell()
 		end
 	end
 	
-end
-
-function ENT:CreateShell()
-	--You overwrite this with your own function, defined in the ammo definition file
 end
 
 function ENT:FindNextCrate()

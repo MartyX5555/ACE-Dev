@@ -112,7 +112,7 @@ function ENT:Initialize()
 	self.LastThink = 0
 	self.MassRatio = 1
 	self.FuelTank = 0
-	self.Heat=0
+	self.Heat = ACE.AmbientTemp
 	self.Efficiency = 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 	self.Legal = true
 	self.CanUpdate = true
@@ -128,7 +128,10 @@ function ENT:Initialize()
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
 	self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM", "Torque", "Power", "Fuel Use", "Entity", "Mass", "Physical Mass" , "EngineHeat"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
+	
 	Wire_TriggerOutput( self, "Entity", self )
+	Wire_TriggerOutput(self, "EngineHeat", self.Heat)
+	
 	self.WireDebugName = "ACF Engine"
 
 end  
@@ -173,7 +176,7 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.SpecialDamage = true
 	Engine.TorqueMult = 1
 	Engine.FuelTank = 0
-	Engine.Heat=0
+	Engine.Heat= ACE.AmbientTemp
 	
 	Engine.TorqueScale = ACF.TorqueScale[Engine.EngineType]
 	
@@ -437,6 +440,9 @@ end
 
 function ENT:Think()
 
+    self.Heat = ACE_HeatFromEngine( self )
+	Wire_TriggerOutput(self, "EngineHeat", self.Heat)
+	
 	if ACF.CurTime > self.NextLegalCheck then
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, false, true, true, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
@@ -461,7 +467,7 @@ function ENT:Think()
 	if self.Active then
 		self:CalcRPM()
 	end
-
+	
 	self.LastThink = ACF.CurTime
 	self:NextThink( ACF.CurTime )
 	return true
@@ -535,6 +541,7 @@ function ENT:ACFInit()
 end
 
 function ENT:CalcRPM()
+
 	local PhysObj = self:GetPhysicsObject()
 	local DeltaTime = CurTime() - self.LastThink
 	-- local AutoClutch = math.min(math.max(self.FlyRPM-self.IdleRPM,0)/(self.IdleRPM+self.LimitRPM/10),1)
@@ -622,21 +629,12 @@ function ENT:CalcRPM()
 	end
 
 	self.FlyRPM = self.FlyRPM - math.min( TorqueDiff, TotalReqTq ) / self.Inertia
---	self.Heat = self.Efficiency
-	local Mass = PhysObj:GetMass()
-	local Energy = (self.FlyRPM * self.FuelUse * self.Throttle/180 * DeltaTime) * self.Efficiency * 0.3 * 32600000 * 0.04 or 0
-	local Energyloss = ((42500*(-self.Heat))) * ((50+Mass^0.5)/8) * DeltaTime * 0.03
-	self.Heat = math.max(self.Heat +((Energy+Energyloss)/(Mass^0.5)/743.2),0)
---	self.Heat = 21
---	local OverHeat = math.max(self.Heat/105,0)
---[[	if OverHeat > 1.05 then
-	HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-400,0)/100),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-400,0)/100)} , 2 , 0 , self.Owner )
 
-			if HitRes.Kill then
-			ACF_HEKill( self, VectorRand() , 0)
-			end
-	end
-]]--
+	local Mass = PhysObj:GetMass()
+	
+	--print(self.Heat)
+	
+	self.Heat = ACE_HeatFromEngine( self )
 
 if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
 
@@ -648,9 +646,9 @@ if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
 
 	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
 
-			if HitRes.Kill then
-			ACF_HEKill( self, VectorRand() , 0)
-			end
+			--if HitRes.Kill then
+			--ACF_HEKill( self, VectorRand() , 0)
+			--end
 
 end
 
