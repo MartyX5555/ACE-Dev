@@ -360,7 +360,7 @@ function ENT:UpdateOverlayText()
 
 		text = text .. '\nCurrent Fuel Remaining:'
         text = text	.. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " liters"	
-		text = text .. '\n-  ' .. math.Round( self.Fuel * 3.6, 1 ) ..' / ' .. math.Round( self.Capacity * 0.264172, 1 ) .. ' gallons'	
+		text = text .. '\n-  ' .. math.Round( self.Fuel * 0.264172, 1 ) ..' / ' .. math.Round( self.Capacity * 0.264172, 1 ) .. ' gallons'	
 
 		--text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
 	end
@@ -370,7 +370,7 @@ function ENT:UpdateOverlayText()
 	end
 	
 	self:SetOverlayText( text )
-	
+
 end
 
 function ENT:UpdateFuelMass()

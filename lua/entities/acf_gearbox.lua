@@ -687,9 +687,12 @@ end
 
 function ENT:CheckRopes()
 
-	for Key, Link in pairs( self.WheelLink ) do
+	for Key, Link in pairs( self.WheelLink ) do	
 	
 		local Ent = Link.Ent
+		
+		--skips any invalid entity and remove from list
+		if not IsValid(Ent) then print('[ACE | DEV]- We found invalid ents linked to a gear, removing it. . .') table.remove(self.WheelLink, Key) goto cont end
 		
 		local OutPos = self:LocalToWorld( Link.Output )
 		local InPos = Ent:GetPos()
@@ -708,6 +711,7 @@ function ENT:CheckRopes()
 			self:Unlink( Ent )
 		end
 		
+		::cont::
 	end
 
 end
