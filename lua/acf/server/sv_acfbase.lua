@@ -213,7 +213,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------RHA-------
 	--------------------------------------------------------------------------------------------------------------------------------		
 	if MaterialID == 0 or MaterialID == nil then --RHA	
-		    print('RHA')		
+		    --print('RHA')		
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
@@ -232,7 +232,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
         -- Breach chance roll
 		if breachProb > math.random() and maxPenetration > armor then				
-			print('BREACH!')
+			--print('BREACH!')
 			HitRes.Damage   = FrAera / resiliance * damageMult			-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss     = armor / maxPenetration						-- Energy loss in percents
@@ -241,7 +241,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 						
 		-- Penetration chance roll	
 		elseif penProb > math.random() then									
-			print('PENETRATED!')	
+			--print('PENETRATED!')	
 			local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
 			HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )
@@ -254,7 +254,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness )
-        print('BULLET STOPPED!')	
+        --print('BULLET STOPPED!')	
 		HitRes.Damage 	= (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )/ resiliance
 		HitRes.Overkill = 0
 		HitRes.Loss 	= 1
@@ -265,7 +265,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------CAST-------
 	--------------------------------------------------------------------------------------------------------------------------------		
 	elseif MaterialID == 1 then --Cast	
-		    print('Cast')		   	
+		    --print('Cast')		   	
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
@@ -284,7 +284,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
         
 		-- Breach chance roll
 		if breachProb > math.random() and maxPenetration > armor then				
-		    print('BREACH!')
+		    --print('BREACH!')
 			
 			HitRes.Damage   = FrAera / resiliance * damageMult			-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
@@ -294,7 +294,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
         -- Penetration chance roll		
 		elseif penProb > math.random() then									
-		    print('PENETRATED!')
+		    --print('PENETRATED!')
 			
 			local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
@@ -308,7 +308,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness )
-        print('BULLET STOPPED!')
+        --print('BULLET STOPPED!')
 		
 		HitRes.Damage 	= (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult ) / resiliance
 		HitRes.Overkill = 0
@@ -320,7 +320,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------CERAMIC-------
 	--------------------------------------------------------------------------------------------------------------------------------
 	elseif MaterialID == 2 then --Ceramic	
-		    print('Ceramic')			
+		    --print('Ceramic')			
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
@@ -382,7 +382,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------RUBBER-------
 	--------------------------------------------------------------------------------------------------------------------------------	
 	elseif MaterialID == 3 then --Rubber	
-		    print('Rubber')		
+		    --print('Rubber')		
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
@@ -534,7 +534,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------ERA-------
 	--------------------------------------------------------------------------------------------------------------------------------		
 	elseif MaterialID == 4 then --ERA	
-		    print('ERA')		
+		    --print('ERA')		
 	
 		local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 			
@@ -593,7 +593,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------ALUMINUM-------
 	--------------------------------------------------------------------------------------------------------------------------------		
 	elseif MaterialID == 5 then --Aluminum	
-		    print('Aluminum')		
+		    --print('Aluminum')		
 		armor = armor^curve
 		losArmor = losArmor^curve
 
@@ -656,7 +656,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		                                                  ------TEXTOLITE-------
 	--------------------------------------------------------------------------------------------------------------------------------
 	elseif MaterialID == 6 then --Textolite	
-		    print('Textolite')		
+		    --print('Textolite')		
 		armor = armor^curve
 		losArmor = losArmor^curve
 	
