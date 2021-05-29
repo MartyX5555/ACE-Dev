@@ -50,10 +50,26 @@ function ACE_HeatFromGun( Gun , Heat, DeltaTime )
 
     local phys = Gun:GetPhysicsObject()
 	local Mass = phys:GetMass()
-	
-	local Energyloss = ((42500*(-Heat))) * (1+(Mass^0.5)*2/75) * DeltaTime * 0.03	
-    Heat = math.max(Heat +(Energyloss/(Mass^0.5)*2/743.2),0)
 
+--Decided to keep this code as note
+
+	--local Energyloss = ((42500*(-Heat))) * (1+(Mass^0.5)*2/75) * DeltaTime * 0.03	
+    --Heat = math.max(Heat +(Energyloss/(Mass^0.5)*2/743.2),0)	
+    
+	--Creates Heat when firing. Just as note, IK last shot will not create Heat, not really relevant though
+    if Gun.HeatFire then
+	
+	    Heat = Heat +(((0.2+Gun.BulletData.PropMass)^1.05 * 150000)/(Mass^0.5)/743.2)
+	    Gun.HeatFire = false	
+    --Dissipates when not firing	
+	else
+
+		local Diff = Heat - ACE.AmbientTemp
+	    Heat = Heat - Diff * DeltaTime *0.1--* 0.35
+		
+	end
+
+   
     return Heat
 end
 
@@ -68,14 +84,31 @@ end
 ]]---------------------------------------------------------------------------------------
 function ACE_HeatFromEngine( Engine , Radiator )  --radiator?!? woooo
 	
+	print(Engine.EngineType)
+	
 	local RPM  = 0
 	
 	if Engine.Active then
 	    RPM = Engine.FlyRPM 
 	end
-	local Heat = 0.01 * RPM / 2500
 	
 	
+	--Diesel Engines are cooler tbh
+	local Heat = 0.003 * RPM / 2500
+	
+	--Petrol Engines are oof of heat
+	if Engine.EngineType == 'GenericPetrol' then
+	    Heat = 0.005 * RPM / 2500
+	    
+	--Electric engines are more efficient, so they will make less heat than oil based engines
+	elseif Engine.EngineType == 'Electric' then
+	    Heat = 0.00125 * RPM / 2500
+	
+    --Turbines are the hottest engine for now	
+	elseif Engine.EngineType == 'Turbine' then
+	    Heat = 0.0025 * RPM / 2500
+	
+	end
 	Engine.Heat = Engine.Heat + Heat * RPM * 0.01
 
 -----------------------------------------------------------------------------------------

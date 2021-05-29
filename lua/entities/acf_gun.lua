@@ -147,6 +147,8 @@ function ENT:Initialize()
 	self.Sequence = 1
 	self.GunClass = "MG"
 	
+	self.Heat = ACE.AmbientTemp
+	
 	self.BulletData = {}
 		self.BulletData.Type = "Empty"
 		self.BulletData.PropMass = 0
@@ -653,13 +655,20 @@ function ENT:Think()
 
 ----Heat function
 	DeltaTime = CurTime() - self.LastThink	
+	
+	--print(DeltaTime)
+	
 	self.Heat = ACE_HeatFromGun( self , self.Heat, DeltaTime )
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
+ 
 
 ----TODO: instead of breaking the gun by heat, decrease accurancy and jam it
-	local OverHeat = math.max(self.Heat/150,0) --overheat will start affecting the gun at 150° celcius
+	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
 	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
+
+        local phys = self:GetPhysicsObject()
+	    local Mass = phys:GetMass()
 	
 	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
 
@@ -740,8 +749,10 @@ function ENT:Think()
 		end
 		
 		if self.Firing then
+		    --print('Fire!')
 			self:FireShell()	
 		elseif self.Reloading then
+		    --print('Reloading!')
 			self:ReloadMag()
 			self.Reloading = false
 		end
@@ -794,6 +805,8 @@ end
 
 
 function ENT:FireShell()
+    
+	print('FireShell')
 	
 	local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
 
@@ -804,6 +817,9 @@ function ENT:FireShell()
 	local bool = true
 
 	if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
+
+	print('FireShell2')	
+		
 		Blacklist = {}
 		if not ACF.AmmoBlacklist[self.BulletData.Type] then
 			Blacklist = {}
@@ -812,6 +828,11 @@ function ENT:FireShell()
 		end
 		if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then		--Check if the roundtype loaded actually exists
 		
+		   	print('FireShell3')
+			print('Fire!')
+		    
+            self.HeatFire = true  --Used by Heat			
+
 			local MuzzlePos = self:LocalToWorld(self.Muzzle)
 			local MuzzleVec = self:GetForward()
 			
@@ -863,8 +884,9 @@ function ENT:FireShell()
 			local PhysObj = self:GetPhysicsObject()
 			local HasPhys = constraint.FindConstraintEntity(self, "Weld"):IsValid() or not self:GetParent():IsValid()
 			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
-			local Mass = PhysObj:GetMass()			
-			self.Heat = self.Heat +(((0.2+self.BulletData.PropMass)^1.05 * 180000)/(Mass^0.5)/743.2)
+			
+			--local Mass = PhysObj:GetMass()			
+			--self.Heat = self.Heat +(((0.2+self.BulletData.PropMass)^1.05 * 180000)/(Mass^0.5)/743.2)
 --			print(self.Heat)
 			
 			self.Ready = false
@@ -878,6 +900,7 @@ function ENT:FireShell()
 			end
 			Wire_TriggerOutput(self, "Ready", 0)
 		else
+			
 			self.CurrentShot = 0
 			self.Ready = false
 			Wire_TriggerOutput(self, "Ready", 0)
