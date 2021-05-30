@@ -226,20 +226,30 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	end
 	Gun.CurrentShot = 0
 	Gun.MagSize = 1
-	if(Lookup.magsize) then
-		Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
-				local Cal = Gun.Caliber
-		if Cal<3 and Cal>12 then  
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "ROFLimit"} )
-		end
+	
+    --IDK why does this has been broken, giving it sense now
+	--to cover guns that uses magazines
+	if(Lookup.magsize) then	
+		Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)	
+		local Cal = Gun.Caliber
+	
+		if Cal>=3 and Cal<=12 then  
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "Fuse Time", "ROFLimit"} )
+		else 
+            Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "Reload", "ROFLimit"} )
+        end		
+		
+	--to cover guns that get its ammo directly from the crate
 	else
 		local Cal = Gun.Caliber
+
 		if Cal>=3 and Cal<=12 then
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time", "ROFLimit"} )
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload" , "Fuse Time", "ROFLimit"} )
 		else
-		Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "ROFLimit"} )
+		    Gun.Inputs = Wire_AdjustInputs( Gun, { "Fire", "Unload", "ROFLimit"} )
 		end
 	end
+	
 	Gun.MagReload = 0
 	if(Lookup.magreload) then
 		Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload)
@@ -806,7 +816,7 @@ end
 
 function ENT:FireShell()
     
-	print('FireShell')
+	--print('FireShell')
 	
 	local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
 
@@ -818,7 +828,7 @@ function ENT:FireShell()
 
 	if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
 
-	print('FireShell2')	
+	--print('FireShell2')	
 		
 		Blacklist = {}
 		if not ACF.AmmoBlacklist[self.BulletData.Type] then
@@ -828,8 +838,8 @@ function ENT:FireShell()
 		end
 		if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then		--Check if the roundtype loaded actually exists
 		
-		   	print('FireShell3')
-			print('Fire!')
+		   	--print('FireShell3')
+			--print('Fire!')
 		    
             self.HeatFire = true  --Used by Heat			
 

@@ -246,7 +246,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					table.insert( OccFilter , Debris )						--Add the debris created to the ignore so we don't hit it in other rounds
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 				else
-				    print('NO RIP')
+				    --print('NO RIP')
 					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 15 * (GetConVarNumber("acf_hepush") or 1) ) --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 				end
 			end

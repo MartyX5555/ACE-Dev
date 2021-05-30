@@ -1,4 +1,5 @@
 --Every funciton will return Heat. The only difference is how the Heat is created from
+--VERY IMPORTANT: If ACF3 changed some of their functions/value names, then it would be required to check this code below too.
 
 -----------------------------------[ HEAT PARAMETERS ]-----------------------------------
 
@@ -30,7 +31,7 @@ function ACE_InfraredHeatFromProp( guidance, Target , dist )
     --local Heat = (  guidance.SeekSensitivity * ( Speed / dist * 0.001 / ACE.HeatDistanceLoss )  )  + ACE.AmbientTemp
 	
 	local Heat =  (( guidance.SeekSensitivity * Speed ) / dist*1000 / ACE.HeatDistanceLoss ) + ACE.AmbientTemp
-	print(') Heat: '..Heat)
+	--print(') Heat: '..Heat)
 
     return Heat
 	
@@ -82,9 +83,10 @@ end
 	Radiator - The Radiator Entity -> no required yet
 	
 ]]---------------------------------------------------------------------------------------
+--[[
 function ACE_HeatFromEngine( Engine , Radiator )  --radiator?!? woooo
 	
-	print(Engine.EngineType)
+	--print(Engine.EngineType)
 	
 	local RPM  = 0
 	
@@ -126,6 +128,85 @@ function ACE_HeatFromEngine( Engine , Radiator )  --radiator?!? woooo
 	Engine.Heat = Engine.Heat - Diff * Mul * 0.0025
 	
     return Engine.Heat
+	
+end
+]]--
+
+function ACE_HeatFromEngine( Engine , Radiator )  --radiator?!? woooo
+	--bullshiet code below, better using tables next time	
+	--print(Engine.EngineType)
+	local ExTemp = 0            --> Defines how hot is the engine when it is active? DONT TOUCH
+	local RPM  = 0              --> RPM of said engine
+	local Temp = Engine.Heat    --> Current Temperature 
+	local Heat = 0              --> Heat from engine
+
+
+    --print(Engine.EngineType)
+	--print(Engine.FuelType)
+	
+	if Engine.Active then
+	
+	    RPM = Engine.FlyRPM 
+
+        ---Highly uneffective code below. Guaranteed to get cancer once you read this---
+		
+        --Diesel Engines are cooler tbh
+	    if Engine.FuelType == 'Diesel' then
+			print('Diesel Engine')
+	        Heat = RPM/90000
+		    ExTemp = 50
+
+		--Petrol Engines are oof of heat
+	    elseif Engine.FuelType == 'Petrol' then
+		    print('Petrol Engine')
+	        Heat = RPM/100000
+			ExTemp = 60
+	    
+	    --Electric engines are more efficient, so they will make less heat than oil based engines
+	    elseif Engine.FuelType == 'Electric' then
+			print('Electric Engine')
+	        Heat = RPM/60000
+			ExTemp = 5
+		
+	    --completely messy code, i hate it. ACF3 will cover this better
+		elseif Engine.FuelType == 'Multifuel' then 
+		    --print('MultiFuel Category')
+
+	        --Ground Gas turbines. This is going crazy at this point
+		    if Engine.EngineType == 'Radial' then
+			    --print('Ground Gas Turbine')
+	            Heat = RPM/100000
+			    ExTemp = 60		
+
+            --Aero-turbines. deal with that temperature. AGT 1500 is cooler though
+	        elseif Engine.EngineType == 'Turbine' then
+			    --print('Aero Turbine')
+	            Heat = RPM/30000
+			    ExTemp = 350
+			
+            --Any multifuel Engine that is not a gas turbine. 
+			--Since they can use both petrol or diesel that i´ll leave a average of them			
+			else
+			    --print('MutiFuel Engine')
+	            Heat = RPM/100000
+			    ExTemp = 60					
+			
+			end
+	    else
+		    print('Missing')
+		end
+		
+	    Temp = Temp + Heat
+	
+	end
+	
+	local Diff = Temp - (ACE.AmbientTemp + ExTemp )
+	
+	Temp = Temp - Diff / 750
+	
+	
+	
+    return Temp
 	
 end
 
