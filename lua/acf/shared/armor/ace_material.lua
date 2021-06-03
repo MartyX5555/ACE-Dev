@@ -7,7 +7,7 @@ ACE_ConfigureMaterial( 0 , {                    -- Unique ID
 
 --general information
 
-        name          = 'RHA' ,              -- Name       
+        name          = 'Rolled Homogeneus Armor' ,              -- Name       
 		desc          = 'RHA desc',          -- Description
 
 --General config
@@ -37,21 +37,21 @@ ACE_ConfigureMaterial( 1 , {                    -- Unique ID
 
 --general information
 
-        name          = 'Cast' ,              -- Name       
+        name          = 'Cast Homogeneus Armor' ,              -- Name       
 		desc          = 'Cast desc',          -- Description
 
 --General config
 		
-        massMod       = 2,                    -- Mass Multipler. 1x is the mass equivalent to rha
+        massMod       = 1.25,                    -- Mass Multipler. 1x is the mass equivalent to rha
 		curve         = 0.97,                 -- Thickness exponential value, used to avoid high thickness
 		
-		effectiveness = 0.5,                  -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
-		resiliance    = 2,                    -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
+		effectiveness = 0.98,                  -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
+		resiliance    = 2.25,                    -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
 		
 --Spalling config
 		
-		spallresist   = 1,                   -- resistance multipler to spall damage
-        spallmult	  =	1,                   -- spalling multipler. Higher => causes more spalling
+		spallresist   = 0.5,                   -- resistance multipler to spall damage
+        spallmult	  =	2,                   -- spalling multipler. Higher => causes more spalling
 		ArmorMul      = 1
 			                      
 	}

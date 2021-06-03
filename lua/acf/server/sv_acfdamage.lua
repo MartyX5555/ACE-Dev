@@ -642,7 +642,9 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-		Debris:EmitSound( "physics/concrete/concrete_break"..math.Round(math.random(2,3))..".wav" )
+		--Debris:EmitSound( "physics/concrete/concrete_break"..math.Round(math.random(2,3))..".wav" )
+		--Debris:EmitSound( "acf_other/penetratingshots/0000029"..math.Round(math.random(2,4))..".wav" )
+		--2.wav
 		Debris:Spawn()
 		
 	if math.random() < ACF.DebrisIgniteChance then
@@ -686,7 +688,7 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial(Entity:GetMaterial())
 		Debris:SetColor(Color(120,120,120,255))
-		Debris:EmitSound( "physics/metal/metal_sheet_impact_hard"..math.Round(math.random(2,8))..".wav")
+		--Debris:EmitSound( "physics/metal/metal_sheet_impact_hard"..math.Round(math.random(2,8))..".wav")
 		Debris:Spawn()
 		Debris:Activate()
 		
@@ -719,7 +721,7 @@ function ACF_ScaledExplosion( ent )
 	
 	local HEWeight
 	if ent:GetClass() == "acf_fueltank" then
-		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 1
+		HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 0.25
 	else
 		local HE, Propel
 		if ent.RoundType == "Refill" then
@@ -773,7 +775,7 @@ function ACF_ScaledExplosion( ent )
 				else
 					local FoundHEWeight
 					if Found:GetClass() == "acf_fueltank" then
-						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 10
+						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.25
 					else
 						local HE, Propel
 						if Found.RoundType == "Refill" then

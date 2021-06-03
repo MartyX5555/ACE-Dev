@@ -156,16 +156,38 @@ function ACE_HeatFromEngine( Engine )
 end
 
 --[[-------------------------------------------------------------------------------------
-    ACE_HeatFromGearbox( Gearbox )  --used mostly by gearboxes
+    ACE_HeatFromGearbox( Gearbox )  --used mostly by gearboxes. Not used atm
 	
 ->	Input information:
 	
     Gearbox - The Gearbox Entity
 	
 ]]---------------------------------------------------------------------------------------
-function ACE_HeatFromGearbox( Gearbox )
+--NOTE: disabled until i compile more information about gearbox code. the code works though
+function ACE_HeatFromGearbox( Gearbox , InputRPM )
 
+    if not Gearbox:IsValid() then 
+	    print("Missing Gearbox") 
+		Temp = 0
+		return Temp 
+	end
+	if not InputRPM then 
+	    print("Missing RPM") 
+		Temp = 0
+		return Temp 
+	end
+	
+	local ExTemp = 5
+	
+	local Temp = Gearbox.Heat
+	
+	Temp = Temp + math.abs(Gearbox.GearRatio) * InputRPM * 0.0005
+	
+	local Diff = Temp - (ACE.AmbientTemp + ExTemp)
+	
+	Temp = Temp - Diff / 100
 
+    return Temp
 end
 
 
