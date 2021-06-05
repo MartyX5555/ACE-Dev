@@ -149,7 +149,7 @@ ACE_ConfigureMaterial( 5 , {                    -- Unique ID
 
 --General config
 		
-        massMod       = 2,                   -- Mass Multipler. 1x is the mass equivalent to rha
+        massMod       = 0.221,                   -- Mass Multipler. 1x is the mass equivalent to rha
 		curve         = 0.93,                -- Thickness exponential value, used to avoid high thickness
 		
 		effectiveness = 0.34,                -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
