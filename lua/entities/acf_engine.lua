@@ -123,7 +123,6 @@ function ENT:Initialize()
 	self.CrewLink = {}
 	self.HasDriver = 0
 	
-	
 	self.LastDamageTime=CurTime()
 	
 	self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle" } ) --use fuel input?
@@ -355,9 +354,15 @@ function ENT:TriggerInput( iname, value )
 			
 			if HasFuel then
 				self.Active = true
-				if not (self.SoundPath=="") then
-					self.Sound = CreateSound(self, self.SoundPath)
+				if self.SoundPath ~= "" then
+
+					--stupid workaround for the engine sound. THANK YOU garry
+					filter = RecipientFilter()
+					filter:AddAllPlayers()
+
+					self.Sound = CreateSound(self, self.SoundPath , filter)
 					self.Sound:PlayEx(0.5,100)
+
 				end
 				self:ACFInit()
 			end
