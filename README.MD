@@ -13,7 +13,11 @@ The Armoured Combat Extended or aka ACE, is an addon that brings you a realistic
 
 ACE requires **[NADMOD](https://steamcommunity.com/workshop/filedetails/?id=159298542) & [Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)**. Make sure to have it installed before using ACE.
 
-## Installation manual
+## Workshop edition
+
+We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2512558788)** branch! Just go and subscribe it
+
+## Manual Installation
 
 For a latest method to install it, we recommend to use tortoiseGIT, which you can download [here!](https://tortoisegit.org/). Also you'll need [GIT](https://git-scm.com/downloads)
 
