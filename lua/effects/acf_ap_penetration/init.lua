@@ -58,6 +58,17 @@ local GunTable = ACFEnts.Guns
 
 function EFFECT:Metal()
 	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
+
+	local BulletEffect = {}
+		BulletEffect.Num = 1
+		BulletEffect.Src = self.Origin - self.DirVec
+		BulletEffect.Dir = self.DirVec
+		BulletEffect.Spread = Vector(0,0,0)
+		BulletEffect.Tracer = 0
+		BulletEffect.Force = 0
+		BulletEffect.Damage = 0	 
+	LocalPlayer():FireBullets(BulletEffect) 
+
 	
 	for i=0, 4*self.Scale do
 	
@@ -114,6 +125,17 @@ end
 function EFFECT:Concrete()
   
 	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
+
+	local BulletEffect = {}
+		BulletEffect.Num = 1
+		BulletEffect.Src = self.Origin - self.DirVec
+		BulletEffect.Dir = self.DirVec
+		BulletEffect.Spread = Vector(0,0,0)
+		BulletEffect.Tracer = 0
+		BulletEffect.Force = 0
+		BulletEffect.Damage = 0	 
+	LocalPlayer():FireBullets(BulletEffect) 
+
 	
 	for i=0, 4*self.Scale do
 	

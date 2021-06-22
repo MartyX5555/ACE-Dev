@@ -13,7 +13,7 @@ ACE_ConfigureMaterial( 0 , {                 -- Unique ID
       --General config
 
       massMod       = 1,                   -- Mass Multipler. 1x is the mass equivalent to rha
-      curve         = 0.99,                -- Thickness exponential value, used to avoid high thickness
+      curve         = 1,                -- Thickness exponential value, used to avoid high thickness
 
       effectiveness = 1,                   -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       resiliance    = 1,                   -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
@@ -40,7 +40,7 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       --General config
 
       massMod       = 1.25,                -- Mass Multipler. 1x is the mass equivalent to rha
-      curve         = 0.97,                -- Thickness exponential value, used to avoid high thickness
+      curve         = 1,                -- Thickness exponential value, used to avoid high thickness
 
       effectiveness = 0.98,                -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       resiliance    = 2.25,                -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha

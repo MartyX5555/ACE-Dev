@@ -44,12 +44,19 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 		local Damage = {}
 		local TotalAera = 0
 		for i,Tar in pairs(Targets) do
+
 			Iterations = i
+
 			if ( Tar != nil and Power > 0 and not Tar.Exploding ) then
+
 				local Type = ACF_Check(Tar)
+
 				if ( Type ) then
+
 					local Hitat = nil
+
 					if Type == "Squishy" then 	--A little hack so it doesn't check occlusion at the feet of players
+
 						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
 
 						Hitat = Tar:NearestPoint( Hitpos )					
@@ -61,7 +68,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 						if Eyes then
 
-
 							local Eyeat = Tar:GetAttachment( Eyes )
 							if Eyeat then
 								--Msg("Hitting Eyes\n")
@@ -71,10 +77,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 									Hitat = Tpos
 									cldist = cldist
 								end
-
 							end
-
-
 						end
 
 						Tpos = Tar:WorldSpaceCenter()
@@ -258,22 +261,20 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 		
 end
 
-
+--Handles normal spalling
 function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflictor , Material)
 	
-	if(!ACF.Spalling) then
-		return
-	end
+	--Don't use it if it's not allowed to
+	if not ACF.Spalling then return end
 	
 	local Mat = Material or 0
-	
 	local SpallMul = ACE.ArmorTypes[ Mat ].spallmult or 1
 	local ArmorMul = ACE.ArmorTypes[ Mat ].ArmorMul or 1
 
-		--	print("CMod: "..Caliber*4) 
-		--	print(Caliber) 
 	local UsedArmor = Armour*ArmorMul
+
 	if (SpallMul > 0) and (Caliber*10 > UsedArmor) and (Caliber > 3) then
+
 		--print("SpallPass")
 		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.0004
 		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
@@ -282,22 +283,24 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 		local SpallAera = (SpallWeight/7.8)^0.33 
 		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
 
---	print("Weight: "..SpallWeight)
---	print("Vel: "..SpallVel)
---	print("Count: "..Spall)
-	
-	for i = 1,Spall do
-		local SpallTr = { }
+		--print("Weight: "..SpallWeight)
+		--print("Vel: "..SpallVel)
+		--print("Count: "..Spall)
+
+		for i = 1,Spall do
+			local SpallTr = {}
+
 			SpallTr.start = HitPos
 			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*math.max(SpallVel*100,300) --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
+
+		end
 	end
-	end
-	
 end
 
+--Handles HESH spalling
 function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour , Inflictor , Material)
     
     local Mat = Material or 0
@@ -305,46 +308,27 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	local SpallMul = ACE.ArmorTypes[ Mat ].spallmult or 1
 	local ArmorMul = ACE.ArmorTypes[ Mat ].ArmorMul or 1
 
---[[
-	local SpallMul = 1
-	local ArmorMul = 1
+	--print("CMod: "..Caliber*4) 
 
-	if Material == 2 then 
-	SpallMul = 1.5
-	ArmorMul = 1.8
-	elseif Material == 3 then 
-	SpallMul = 0.1
-	ArmorMul = 0.01
-	elseif Material == 5 then
-	SpallMul = ACF.AluminumSpallMult
-	ArmorMul = 0.334
-	elseif Material == 6 then
-	SpallMul = ACF.TextoliteSpallMult
-	ArmorMul = 0.23
-	end
-	
-]]--
---	print("CMod: "..Caliber*4) 
+	--print(HEFiller)
 
---	print(HEFiller)
-
-local UsedArmor = Armour*ArmorMul
+	local UsedArmor = Armour*ArmorMul
 
 	if SpallMul > 0 and HEFiller/1501*4 > UsedArmor then
 
-	local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
-	local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
-	local SpallWeight = TotalWeight/Spall*SpallMul
-	local SpallVel = (HEFiller*10/SpallWeight)^0.5/Spall*SpallMul
-	local SpallAera = (SpallWeight/7.8)^0.33 
-	local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
+		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.00079
+		local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24)
+		local SpallWeight = TotalWeight/Spall*SpallMul
+		local SpallVel = (HEFiller*10/SpallWeight)^0.5/Spall*SpallMul
+		local SpallAera = (SpallWeight/7.8)^0.33 
+		local SpallEnergy = ACF_Kinetic( SpallVel*1000 , SpallWeight, 800 )
 
---	print("Weight: "..SpallWeight)
---	print("Vel: "..SpallVel)
---	print("Count: "..Spall)
-	
-	for i = 1,Spall do
-		local SpallTr = { }
+		--print("Weight: "..SpallWeight)
+		--print("Vel: "..SpallVel)
+		--print("Count: "..Spall)
+
+		for i = 1,Spall do
+			local SpallTr = { }
 			SpallTr.start = HitPos
 			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/2):GetNormalized()*math.max(SpallVel*100,300) --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
@@ -352,27 +336,35 @@ local UsedArmor = Armour*ArmorMul
 			SpallTr.maxs = Vector( 0, 0, 0 )
 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
-	end
+
+		end
 	end
 end
 
+--Spall trace core. For HESH and normal spalling
 function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 
 	local SpallRes = util.TraceHull(SpallTr)
 	
 	if SpallRes.Hit and ACF_Check( SpallRes.Entity ) then
+
 --		print("SpallHit")
 --		SpallRes.Entity:SetColor( Color(255,0,0))
+
 		local Angle = ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
 		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallAera , Angle , Inflictor, 0 )  --DAMAGE !!
+
 		if HitRes.Kill then
 			ACF_APKill( SpallRes.Entity , HitVec:GetNormalized() , SpallEnergy.Kinetic )
 		end	
+
 		if HitRes.Overkill > 0 then
+
 			table.insert( SpallTr.filter , Target )					--"Penetrate" (Ingoring the prop for the retry trace)
 			SpallEnergy.Penetration = SpallEnergy.Penetration*(1-HitRes.Loss)
 			SpallEnergy.Momentum = SpallEnergy.Momentum*(1-HitRes.Loss)
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
+
 		end
 	end
 end
@@ -457,6 +449,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	return HitRes
 end
 
+--Handles Ground penetrations
 function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull show again
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
@@ -507,6 +500,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 	return HitRes
 end
 
+--Handles HE push forces
 function ACF_KEShove(Target, Pos, Vec, KE )
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
 	if CanDo == false then return end
@@ -526,7 +520,6 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 		
 		local physratio = Target.acfphystotal / Target.acftotal
 		
-		--print('applying push:'..KE)
 		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 	end
 end
@@ -616,19 +609,6 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if not Entity.ACF_Killed then
 		ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
 	end
-
-	-- process this prop into debris
-	--local entClass = Entity:GetClass()
-	--local obj = Entity:GetPhysicsObject()
-	--local grav = true
-	--local mass = 2 --Reduce odds of crazy physics
-	
-	--if obj:IsValid() then
-		--mass = math.max(obj:GetMass(), mass)
-		--if ISSITP then
-			--grav = obj:IsGravityEnabled()
-		--end
-	--end
 	
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
@@ -688,7 +668,6 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial(Entity:GetMaterial())
 		Debris:SetColor(Color(120,120,120,255))
-		--Debris:EmitSound( "physics/metal/metal_sheet_impact_hard"..math.Round(math.random(2,8))..".wav")
 		Debris:Spawn()
 		Debris:Activate()
 		

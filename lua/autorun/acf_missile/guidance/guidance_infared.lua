@@ -209,7 +209,7 @@ function this:AcquireLock(missile)
                 if physEnt:IsValid() then  	
 ---------------------check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
                     if not physEnt:IsMoveable() then goto cont end
-				end
+                end
 				
 				Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
 			
