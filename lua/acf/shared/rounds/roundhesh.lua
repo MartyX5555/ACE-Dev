@@ -126,15 +126,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		
 		table.insert( Bullet.Filter , Target )
 		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*ACF.HEPower , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-
-		
---		print("Speed: "..Speed)
-
-		
-					--"Penetrate" (Ingoring the prop for the retry trace)
---			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-
-		
+	
 	else 
 		table.insert( Bullet.Filter , Target )
 	return "Penetrated" end
@@ -183,7 +175,7 @@ function Round.pierceeffect( Effect, Bullet )
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
 		Spall:SetScale( math.max(((Bullet.RoundMass * (Bullet.SimFlight:Length()/39.37)^2)/2000)/10000,1) )
-	util.Effect( "AP_Hit", Spall )
+	util.Effect( "ACF_AP_Impact", Spall )
 	
 end
 

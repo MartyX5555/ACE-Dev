@@ -121,8 +121,7 @@ function ENT:Think()
 
         if beingjammed < 1 then
 
-            --	local ScanArray = player.GetAll() --For testing
-            --	local ScanArray = ents.FindByClass( "prop_vehicle_prisoner_pod" ) 
+        	--Get all ents collected by contraptionScan
 	        local ScanArray = ACE.contraptionEnts
 
 	        local thisPos = self:GetPos()
@@ -140,12 +139,17 @@ function ENT:Think()
 
 	        for k, scanEnt in pairs(ScanArray) do
 
-		        if(IsValid(scanEnt))then
+	        	--check if ent is valid
+		        if scanEnt:IsValid() then
 
-			        --if (scanEnt.THeat or 0) > 0 then
-			        --print(scanEnt.THeat)
+		        	--skip any flare from vision
+		        	if scanEnt:GetClass() == 'ace_flare' then goto cont end
 
-			        --end
+		        	--skip the tracking itself
+		        	if scanEnt:EntIndex() == self:EntIndex() then goto cont end
+
+		        	--skip any parented entity
+		        	if scanEnt:GetParent():IsValid() then goto cont end
 
 			        local entvel = scanEnt:GetVelocity() --Test on parented props
 			        local velLength = entvel:Length()
@@ -202,11 +206,13 @@ function ENT:Think()
 							
 					        }) --Hits anything in the world.
 
+					        --returns amount of ground clutter
 					        if not GCtr.HitSky then
-						        GCdis = (1-GCtr.Fraction) --returns amount of ground clutter
+						        GCdis = (1-GCtr.Fraction) 
 						        GCFr = GCtr.Fraction
 					        else
-						        GCdis = 0 --returns amount of ground clutter
+					        	--returns amount of ground clutter
+						        GCdis = 0 
 						        GCFr = 1
 					        end
 
@@ -216,21 +222,23 @@ function ENT:Think()
 					        if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.4) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
 						        --1000 u = ~57 mph
 
-							    local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
+						        --Could do pythagorean stuff but meh, works 98% of time
+							    local err = absang.p + absang.y 
 
-							    if err < besterr then --Sorts targets as closest to being directly in front of radar
+							    --Sorts targets as closest to being directly in front of radar
+							    if err < besterr then 
 								    testClosestToBeam = table.getn( ownArray ) + 1
 								    besterr = err
 							    end
 						        --print((entpos - thisPos):Length())
 							
 						        table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
-							
 						        table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
 							    local veltest
 
-						        if evlen == 0 then --IDK if this is more intensive than length
+							    --IDK if this is more intensive than length
+						        if evlen == 0 then 
 							        veltest = Vector(0,0,0)
 						        else
 							        veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
@@ -251,6 +259,8 @@ function ENT:Think()
 			        end
 
 		        end
+
+		        ::cont::
 	        end
 
 	        --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )

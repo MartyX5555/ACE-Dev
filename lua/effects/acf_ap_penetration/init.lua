@@ -54,6 +54,7 @@ local GunTable = ACFEnts.Guns
 		self:Concrete()
 	end
 
+	self.Emitter:Finish()
  end   
 
 function EFFECT:Metal()

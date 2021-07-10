@@ -21,6 +21,9 @@ function ENT:Initialize()
 
 	self:SetActive(false)
 
+	self.SeekSensitivity = 1
+	self.HeatAboveAmbient = 5
+
 	self.Cone = 45 --120 degree forward facing cone
 	
 	self.Heat = 21
@@ -94,6 +97,7 @@ end
 
 if self.Active and self.IsLegal then
 
+	--Get all collected ents from contraptionScan
 	local ScanArray = ACE.contraptionEnts
 
 	local thisPos = self:GetPos()
@@ -106,70 +110,100 @@ if self.Active and self.IsLegal then
 	local testClosestToBeam = -1
 	local besterr = math.huge --Hugh mungus number
 
---	PrintTable(ScanArray)
 	for k, scanEnt in pairs(ScanArray) do
 
-		if(IsValid(scanEnt))then
+		--check if it's valid
+		if scanEnt:IsValid() then
+			--print(scanEnt:GetModel()..' is Valid!')
 
-			--if (scanEnt.THeat or 0) > 0 then
-			--	print(scanEnt.THeat)
+			--Why IRST should track itself?
+			if scanEnt:EntIndex() == self:EntIndex() then goto cont end
 
-			--end
 
 			local entpos = scanEnt:WorldSpaceCenter()
-
 			local difpos = (entpos - thisPos)
-			local dist = difpos:Length()
+
+
 			local nonlocang = difpos:Angle()
 			local ang = self:WorldToLocalAngles(nonlocang)	--Used for testing if inrange
 			local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
-			local entvel = scanEnt:GetVelocity()
+
 
 			--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
 			local errorFromAng = 0.01*(absang.y/90)^2+0.01*(absang.y/90)^2+0.01*(absang.p/90)^2 
 
 			if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within seeker cone
+				--print(scanEnt:GetModel()..' is in cone!')
 
-				local LOStr = util.TraceLine( {start = thisPos ,endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything in the world.
+				--Hits anything in the world.
+				local LOStr = util.TraceLine( {
+						start = thisPos ,
+						endpos = entpos,
+						collisiongroup = COLLISION_GROUP_WORLD,
+						filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end	
+					}) 
 
-				if not LOStr.Hit then --Trace did not hit world
+				--Trace did not hit world
+				if not LOStr.Hit then
+					--print(scanEnt:GetModel()..' is in sight!')
 
-					local testHeat = ((scanEnt.THeat or 0) + 2*entvel:Length()/17.6)*math.min(4000/math.max(dist,1),1)
-					--local testHeat = (scanEnt.THeat or 0)--
-					local errorFromHeat = math.max((200-testHeat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
+
+					--if the target is a Heat Emitter, track its heat
+		    		if scanEnt.Heat then
+		    			print(scanEnt:GetModel()..' is Heat emitter!')
+			    
+			    		Heat = self.SeekSensitivity * scanEnt.Heat 
+			
+					--if is not a Heat Emitter, track the friction's heat			
+		    		else
+
+		    			--print(scanEnt:GetModel()..' is a prop!')
+			
+			    		local physEnt = scanEnt:GetPhysicsObject()
+		
+						--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
+						if physEnt:IsValid() then  	
+						--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
+                    		if not physEnt:IsMoveable() then goto cont end
+                		end
+
+						local dist = difpos:Length()				
+						Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
+
+						print(scanEnt:GetModel()..' is '..Heat..'°c')
+			
+		    		end
 				
-					if testHeat > 50 then --Hotter than 50 deg C
+					if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end --Hotter than 50 deg C
+
+						print('Tracked Heat: '..Heat)
 						--1000 u = ~57 mph
 
+					--Could do pythagorean stuff but meh, works 98% of time
+					local err = absang.p + absang.y 
 
-							local err = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
-
-							if err < besterr then --Sorts targets as closest to being directly in front of radar
-								testClosestToBeam =  table.getn( ownArray ) + 1
-								besterr = err
-							end
-						--print((entpos - thisPos):Length())
-
-
-						--ownArray[k] = scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or ""
-						table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
-						--ownArray[k] = scanEnt:CPPIGetOwner():GetName()
-						--print(scanEnt:CPPIGetOwner():GetName())
-
-						local angerr = 1 + randinac * (errorFromAng + errorFromHeat)
-						table.insert(effHeatArray, testHeat)
-						table.insert(posArray,nonlocang * angerr )
-
+					--Sorts targets as closest to being directly in front of radar
+					if err < besterr then 
+						testClosestToBeam =  table.getn( ownArray ) + 1
+						besterr = err
 					end
 
-				else
-					--print(LOStr.SurfaceFlags)
-					--print(LOStr.Entity )
+					--For Owner table
+					table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+
+					local errorFromHeat = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
+					local angerr = 1 + randinac * (errorFromAng + errorFromHeat)
+
+					table.insert(effHeatArray, Heat)
+					table.insert(posArray,nonlocang * angerr )
+
 				end
 
 			end
 
 		end
+
+		::cont::
 	end
 
 --	self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )

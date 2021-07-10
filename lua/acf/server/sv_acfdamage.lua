@@ -294,8 +294,8 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*math.max(SpallVel*100,300) --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
-			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
-
+			ACF_SpallTrace( HitVec , HitMask, SpallTr , SpallEnergy , SpallAera , Inflictor )
+			
 		end
 	end
 end
@@ -335,21 +335,20 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 			SpallTr.mins = Vector( 0, 0, 0 )
 			SpallTr.maxs = Vector( 0, 0, 0 )
 
-			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
-
+			ACF_SpallTrace( HitVec , HitMask, SpallTr , SpallEnergy , SpallAera , Inflictor )
 		end
 	end
 end
 
 --Spall trace core. For HESH and normal spalling
-function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
+function ACF_SpallTrace( HitVec , HitMask,  SpallTr , SpallEnergy , SpallAera , Inflictor )
 
 	local SpallRes = util.TraceHull(SpallTr)
 	
 	if SpallRes.Hit and ACF_Check( SpallRes.Entity ) then
 
---		print("SpallHit")
---		SpallRes.Entity:SetColor( Color(255,0,0))
+		--print("SpallHit")
+		--SpallRes.Entity:SetColor( Color(255,0,0))
 
 		local Angle = ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
 		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallAera , Angle , Inflictor, 0 )  --DAMAGE !!
@@ -364,8 +363,9 @@ function ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor 
 			SpallEnergy.Penetration = SpallEnergy.Penetration*(1-HitRes.Loss)
 			SpallEnergy.Momentum = SpallEnergy.Momentum*(1-HitRes.Loss)
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
-
 		end
+
+		util.Decal("GunShot2", SpallRes.StartPos  , SpallRes.HitPos, HitMask )
 	end
 end
 
@@ -527,11 +527,9 @@ end
 
 -- whitelist for things that can be turned into debris
 ACF.Debris = {
-	acf_ammo = true,
 	acf_gun = true,
 	acf_rack = true,
 	acf_gearbox = true,
-	acf_fueltank = true,
 	acf_engine = true,
 	prop_physics = true,
 	prop_vehicle_prisoner_pod = true
@@ -545,58 +543,89 @@ ACF.Splosive = {
 
 -- helper function to process children of an acf-destroyed prop
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
-
-
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
 
-	local count = 0
-	local boom = {}
 	local children = ACF_GetAllChildren(Entity)
 	
-	--print('Children: '..table.Count(children))
-	
-	if table.Count(children) > 1 then  --checking if we have more props to process instead of one
-    
+	--why should we make use of this for ONE prop?
+	if table.Count(children) > 1 then  
+
+		local count = 0
+		local boom = {}
+
 	    -- do an initial processing pass on children, separating out explodey things to handle last
-	    for _, ent in pairs( children ) do
-		    ent.ACF_Killed = true  -- mark that it's already processed
+	    for k, ent in pairs( children ) do
+
+		    --Removes the first impacted entity. This should avoid debris being duplicated there.
+		    if Entity:EntIndex() == ent:EntIndex() then children[ent] = nil goto cont end	    	
+
+		    -- mark that it's already processed
+		    ent.ACF_Killed = true
+
 		    local class = ent:GetClass()
+
+		    -- exclude any entity that is not part of debris ents whitelist
 		    if not ACF.Debris[class] then
-			    children[ent] = nil -- ignoring stuff like holos
+
+		    	children[ent] = nil goto cont
 		    else
-			    ent:SetParent(nil)
-			    if ACF.Splosive[class] then
-				    table.insert(boom, ent) -- keep track of explosives to make them boom last
+
+			    -- remove this ent from children table and move it to the explosive table
+			    if ACF.Splosive[class] and not ent.Exploding then
+
+				    table.insert( boom , ent ) 
 				    children[ent] = nil
+
+				    goto cont
 			    else
-				    count = count+1  -- can't use #table or :count() because of ent indexing...
+			    	-- can't use #table or :count() because of ent indexing...
+				    count = count + 1  
 			    end
+
 		    end
+
+		    ::cont::
 	    end
-	
+
+
 	    -- HE kill the children of this ent, instead of disappearing them by removing parent
 	    if count > 0 then
+
+	    	--Some props will not be processed into debris to save performance
 		    local DebrisChance = math.Clamp(ACF.ChildDebris/count, 0, 1)
 		    local power = Energy/math.min(count,3)
 
-		    for _, child in pairs( children ) do
-			    if IsValid(child) then
-				    if math.random() < DebrisChance then -- ignore some of the debris props to save lag
-					    ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
-				    else
-					    constraint.RemoveAll( child )
-					    child:Remove()
-				    end
-			    end
+		    for k, child in pairs( children ) do
+
+		    	--Skip any invalid entity
+			    if not IsValid(child) then goto cont end
+
+			    -- ignore some of the debris props to save lag
+				if math.random() < DebrisChance then 
+
+					ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
+				else
+
+					constraint.RemoveAll( child )
+					child:Remove()
+				end
+
+				::cont::
 		    end
 	    end
-	
+
+
 	    -- explode stuff last, so we don't re-process all that junk again in a new explosion
-	    if #boom > 0 then
+	    if table.Count( boom ) > 0 then
+
 		    for _, child in pairs( boom ) do
-		    	if not IsValid(child) or child.Exploding then continue end
+
+		    	if not IsValid(child) or child.Exploding then goto cont end
+
 		    	child.Exploding = true
 		    	ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
+
+		    	::cont::
 		    end
 	    end
 	end	
@@ -606,25 +635,22 @@ end
 function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	-- if it hasn't been processed yet, check for children
-	if not Entity.ACF_Killed then
-		ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy )
-	end
+	if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
+
+	--ERA props should not create debris
+	local Mat = Entity.ACF.Material or 0
+	if Mat == 4 then return end
 	
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
 
-	if(Entity:BoundingRadius() < ACF.DebrisScale) then
-		return nil
-	end
+	if(Entity:BoundingRadius() < ACF.DebrisScale) then return nil end
 	
 	local Debris = ents.Create( "ace_debris" )
 		Debris:SetModel( Entity:GetModel() )
 		Debris:SetAngles( Entity:GetAngles() )
 		Debris:SetPos( Entity:GetPos() )
 		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-		--Debris:EmitSound( "physics/concrete/concrete_break"..math.Round(math.random(2,3))..".wav" )
-		--Debris:EmitSound( "acf_other/penetratingshots/0000029"..math.Round(math.random(2,4))..".wav" )
-		--2.wav
 		Debris:Spawn()
 		
 	if math.random() < ACF.DebrisIgniteChance then
@@ -633,14 +659,13 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	
 	Debris:Activate()
 
+	--Applies force to this debris
 	local phys = Debris:GetPhysicsObject() 
-	if phys:IsValid() then
+	local physent = Entity:GetPhysicsObject()
 
-		
-		phys:SetMaterial("jeeptire")
-		
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*1200 ) 	-- previously energy*350
-	   
+	if phys:IsValid() and physent:IsValid() then	
+		phys:SetMass(physent:GetMass())
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*1200 ) 		   
 	end
 
 	return Debris
@@ -652,15 +677,15 @@ function ACF_APKill( Entity , HitVector , Power )
 
 	-- kill the children of this ent, instead of disappearing them from removing parent
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
-    
-	
-   
+
+	--ERA props should not create debris
+	local Mat = Entity.ACF.Material or 0
+	if Mat == 4 then return end
+      
 	constraint.RemoveAll( Entity )
 	Entity:Remove()
 	
-	if(Entity:BoundingRadius() < ACF.DebrisScale) then
-		return nil
-	end
+	if(Entity:BoundingRadius() < ACF.DebrisScale) then return nil end
 
 	local Debris = ents.Create( "ace_debris" )
 		Debris:SetModel( Entity:GetModel() )
@@ -675,14 +700,14 @@ function ACF_APKill( Entity , HitVector , Power )
 		BreakEffect:SetOrigin( Entity:GetPos() )
 		BreakEffect:SetScale( 20 )
 	util.Effect( "WheelDust", BreakEffect )	
-	
+
+	--Applies force to this debris	
 	local phys = Debris:GetPhysicsObject() 
-	if (phys:IsValid()) then	
-	
-        phys:SetMaterial("jeeptire")
-		
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )
-		
+	local physent = Entity:GetPhysicsObject()
+
+	if phys:IsValid() and physent:IsValid() then	
+		phys:SetMass(physent:GetMass())
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )		
 	end
 
 	return Debris

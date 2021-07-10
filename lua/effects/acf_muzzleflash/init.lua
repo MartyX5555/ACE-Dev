@@ -29,7 +29,7 @@
 ]]--
 	
 	local Attachment = "muzzle"
-	local longbarrel = ClassData.longbarrel
+	local longbarrel = ClassData.longbarrel or nil
 	
 	if longbarrel ~= nil then
 		if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then

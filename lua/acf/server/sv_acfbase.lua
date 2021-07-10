@@ -533,13 +533,12 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	--------------------------------------------------------------------------------------------------------------------------------	
 		                                                  ------ERA-------
 	--------------------------------------------------------------------------------------------------------------------------------		
-	elseif MaterialID == 4 then --ERA	
-		    --print('ERA')		
+	elseif MaterialID == 4 then --ERA		
 	
 		local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
-			
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
-		
+
+		--ERA is more effective vs HEAT than vs kinetic	
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
 		end
 		
@@ -551,18 +550,18 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 		
 		if maxPenetration > losArmor then --ERA was penetrated
-		    
-			--print('Detonating. . .')
 			
-			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			HitRes.Damage   = 9999999										-- I have yet to meet one who can survive this Edit: NVM
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)		
 				
-			local HEWeight = armor*0.1			
-			local Radius = (HEWeight*0.0001)^0.33*8*39.37
+			local HEWeight = armor*0.01			
+			local Radius =( HEWeight*0.0001 )^0.33*8*39.37
 			
-			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*1 , Inflictor , Entity, Entity ) --ERABOOM
+			local Owner = Entity:CPPIGetOwner()
+
+			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
+			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
 			
 			local Flash = EffectData()
 				Flash:SetOrigin( Entity:GetPos() )
@@ -575,13 +574,11 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			return HitRes
 				
 		else	
-			
+
+			-- Projectile did not breach nor penetrate armor			
 			local Penetration = math.min( maxPenetration , losArmor)
-			-- Projectile did not breach nor penetrate armor
---			local Penetration = math.min( maxPenetration , losArmor )
 
 			HitRes.Damage 	= ( Penetration / losArmorHealth)^2 * FrAera / resiliance * damageMult	
---			HitRes.Damage 	= 1
 			HitRes.Overkill = 0
 			HitRes.Loss 	= 1
 	
