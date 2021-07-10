@@ -365,7 +365,7 @@ function ACF_SpallTrace( HitVec , HitMask,  SpallTr , SpallEnergy , SpallAera , 
 			ACF_SpallTrace( HitVec , SpallTr , SpallEnergy , SpallAera , Inflictor )
 		end
 
-		util.Decal("GunShot2", SpallRes.StartPos  , SpallRes.HitPos, HitMask )
+		util.Decal("GunShot1", SpallRes.StartPos  , SpallRes.HitPos, HitMask )
 	end
 end
 
@@ -638,6 +638,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
 
 	--ERA props should not create debris
+	if not Entity.ACF then return end
 	local Mat = Entity.ACF.Material or 0
 	if Mat == 4 then return end
 	
@@ -679,6 +680,7 @@ function ACF_APKill( Entity , HitVector , Power )
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
 	--ERA props should not create debris
+	if not Entity.ACF then return end
 	local Mat = Entity.ACF.Material or 0
 	if Mat == 4 then return end
       
