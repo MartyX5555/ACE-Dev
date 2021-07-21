@@ -33,8 +33,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local FragVel = (Power*50000/FragWeight/Fragments)^0.5
 	local FragAera = (FragWeight/7.8)^0.33
 	
-	local OccFilter = { NoOcc }
-	TraceInit.filter = OccFilter
+	local OccFilter = istable(NoOcc) and NoOcc or { NoOcc }
 	local LoopKill = true
 	
 	while LoopKill and Power > 0 do
@@ -378,9 +377,10 @@ end
 
 -- Handles the impact of a round on a target
 function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
-	Bullet.Ricochets = Bullet.Ricochets or 0
-	local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
 
+	Bullet.Ricochets = Bullet.Ricochets or 0
+
+	local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
 	local HitRes = ACF_Damage ( --DAMAGE !!
 		Target,
 		Energy,
@@ -393,30 +393,27 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	)
 
 	local Ricochet = 0
+	local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
+	local ricoProb = 1
 
-		--	if HitRes.Loss == 1 then --Why did we need to fail to pen to get a richochet anyway?
+	--print(Angle)
 
-			local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
-			local ricoProb = 1
-
-		--print(Angle)
-
-		if Angle > 85 then
-			ricoProb = 0 --Guarenteed Richochet
-		elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
-			ricoProb = 1 --Guarenteed to not richochet
-		else
-			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
-		end
+	if Angle > 85 then
+		ricoProb = 0 --Guarenteed Richochet
+	elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
+		ricoProb = 1 --Guarenteed to not richochet
+	else
+		ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
+	end
 
 
-		-- Checking for ricochet
-		if ricoProb < math.random() and Angle < 90 then --The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
-			Ricochet       = math.Clamp(Angle / 90, 0.1, 1) -- atleast 10% of energy is kept
-			HitRes.Loss    = 1 - Ricochet
-			Energy.Kinetic = Energy.Kinetic * HitRes.Loss
-		end	
-		--	end
+	-- Checking for ricochet
+	if ricoProb < math.random() and Angle < 90 then --The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
+		Ricochet       = math.Clamp(Angle / 90, 0.1, 1) -- atleast 10% of energy is kept
+		HitRes.Loss    = 1 - Ricochet
+		Energy.Kinetic = Energy.Kinetic * HitRes.Loss
+	end	
+
 	
 	ACF_KEShove(
 		Target,
@@ -502,26 +499,25 @@ end
 
 --Handles HE push forces
 function ACF_KEShove(Target, Pos, Vec, KE )
+
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
 	if CanDo == false then return end
 
 	local parent = ACF_GetPhysicalParent(Target)
 	local phys = parent:GetPhysicsObject()
 	
-	if (phys:IsValid()) then
+	if not phys:IsValid() then return end
 	
-	    --print('physics valid')
-	
-		if(!Target.acflastupdatemass) or ((Target.acflastupdatemass + 10) < CurTime()) then
-			ACF_CalcMassRatio(Target)
-		end
-		
-		if not Target.acfphystotal then return end --corner case error check
-		
-		local physratio = Target.acfphystotal / Target.acftotal
-		
-		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
+	if not Target.acflastupdatemass or ((Target.acflastupdatemass + 10) < CurTime()) then
+		ACF_CalcMassRatio(Target)
 	end
+		
+	if not Target.acfphystotal then return end --corner case error check
+		
+	local physratio = Target.acfphystotal / Target.acftotal
+		
+	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
+
 end
 
 
@@ -720,8 +716,9 @@ end
 function ACF_ScaledExplosion( ent )
   
 	local Inflictor = nil
-	local Owner = ent:CPPIGetOwner() 
-	if( ent.Inflictor ) then
+	local Owner = CPPI and ent:CPPIGetOwner() or NULL
+
+	if ent.Inflictor then
 		Inflictor = ent.Inflictor
 	end
 	
@@ -747,13 +744,14 @@ function ACF_ScaledExplosion( ent )
 	
 	local Search = true
 	local Filter = {ent}
+
 	while Search do
 	
-
 		for key,Found in pairs(ents.FindInSphere(Pos, Radius)) do
+
+			local EOwner = CPPI and Found:CPPIGetOwner() or NULL
 		    
-			
-			if Found.IsExplosive and not Found.Exploding and not (Owner != Found:CPPIGetOwner()) then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
+			if Found.IsExplosive and not Found.Exploding and Owner == EOwner then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
 				local Hitat = Found:NearestPoint( Pos )
 				
 				local Occlusion = {}
@@ -823,7 +821,7 @@ function ACF_ScaledExplosion( ent )
 	ent:Remove()
 	
 	
-	HEWeight=HEWeight*ACF.BoomMult
+	HEWeight = HEWeight*ACF.BoomMult
 	Radius = (HEWeight)^0.33*8*39.37
 			
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )

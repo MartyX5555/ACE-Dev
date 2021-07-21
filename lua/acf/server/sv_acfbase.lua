@@ -916,35 +916,9 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	
 	local dmul = 2.5
 	
-	--BNK stuff
-	if (ISBNK) then
-		if(Entity.freq and Inflictor.freq) then
-			if (Entity != Inflictor) and (Entity.freq == Inflictor.freq) then
-				dmul = 0
-			end
-		end
-	end
-	
-	--SITP stuff
-	local var = 1
-	if(!Entity.sitp_spacetype) then
-		Entity.sitp_spacetype = "space"
-	end
-	if(Entity.sitp_spacetype == "homeworld") then
-		var = 0
-	end
-	
-	--if Ammo == true then
-	--	Entity.KilledByAmmo = true
-	--end
-	Entity:TakeDamage( Damage * dmul * var, Inflictor, Gun )
-	--if Ammo == true then
-	--	Entity.KilledByAmmo = false
-	--end
-	
+	Entity:TakeDamage( Damage * dmul, Inflictor, Gun )
+
 	HitRes.Kill = false
-	--print(Damage)
-	--print(Bone)
 		
 	return HitRes
 end
