@@ -637,14 +637,14 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 
 		-- check gun is legal
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, true, true, false, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true)
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 
 		-- check the seat is legal
 		local seat = IsValid(self.User) and self.User:GetVehicle() or nil
 
 		if IsValid(seat) then
-			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, true, true, false, false)
+			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, false)
 			if not legal then
 				self.Legal = false
 				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues

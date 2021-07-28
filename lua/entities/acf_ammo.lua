@@ -606,7 +606,7 @@ function ENT:Think()
 	if ACF.CurTime > self.NextLegalCheck then
 	
 		--local minmass = math.floor(self.EmptyMass+self.AmmoMassMax*((self.Ammo-1)/math.max(self.Capacity,1)))-5  -- some possible weirdness with heavy shells, and refills.  just going to check above empty mass
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true, true, true)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true)
 
 		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
 		self:UpdateOverlayText()

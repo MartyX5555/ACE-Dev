@@ -492,7 +492,7 @@ end
 	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
 	with a hard to predict check time and punishing lockout time
 	usage:
-	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, ParentRequiresWeld, CanVisclip)
+	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
 	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
 ]]
 
@@ -510,7 +510,7 @@ ACF.LegalSettings = {
    ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
-function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip )
+function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
     
 	
 	local problems = {} --problems table definition
@@ -557,23 +557,28 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	end
 
 	-- check makesphere
-	if not CanMakesphere and (physobj:GetVolume() == nil) then
-		table.insert(problems,"Makesphere")
+	if physobj:GetVolume() == nil then
+		table.insert(problems,"Has makesphere")
 	end
 
 	-- check for clips
 	if not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
-		table.insert(problems,"Visclip")
+		table.insert(problems,"Has visclip")
 	end
 
 	-- if it has a parent, check if legally parented
 	if Ent:GetParent():IsValid() then
-
 		--Re-used requires wel parent, don't mind me being evil
-		if NeedsGateParent and not IsValid( Ent:GetParent():GetParent() ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
-			table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
-		end
+		--if NeedsGateParent and not IsValid( Ent:GetParent():GetParent() ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
+		--	table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
+		--end
 
+		-- dev note: parent really requires a gate since not using it will lead to other ways of bypassing. As proof, test the code above vs missiles. They will hit nothing...
+		-- Also, you just need a gate for it, no required to validate the parent of the parent.
+		-- check if you have parented to a gate since this will avoid to bypass traces
+		if NeedsGateParent and Ent:GetParent():GetClass() ~= 'gmod_wire_gate' then
+			table.insert(problems,"Not gate parented")
+		end
 	end
      	
 	-- legal if number of problems is 0
