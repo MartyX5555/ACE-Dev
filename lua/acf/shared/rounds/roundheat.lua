@@ -3,6 +3,7 @@ AddCSLuaFile()
 
 ACF.AmmoBlacklist.HEAT = { "MG", "RAC", "SL", "ECM", "ATR" , "AC", "AAM", "SAM", "SBC"}
 
+
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn

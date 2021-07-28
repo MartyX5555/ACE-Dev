@@ -23,7 +23,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local Radius = (FillerMass)^0.33*8*39.37				--Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
 	local MaxSphere = (4 * 3.1415 * (Radius*2.54 )^2) 		--Surface Aera of the sphere at maximum radius
 	local Amp = math.min(Power/2000,50)
-	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )  
+	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
+	--util.BlastDamage( Inflictor, Gun, Hitpos, Radius, 100 )  
 	--debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
 	
 	local Targets = ents.FindInSphere( Hitpos, Radius )--Will give tiny HE just a pinch of radius to help it hit the player
@@ -624,6 +625,8 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    	::cont::
 		    end
 	    end
+
+	    sound.Play( "weapons/strider_buster/Strider_Buster_detonate.wav", Entity:GetPos() , 100, 75, math.Clamp(300 - count*25,15,255))
 	end	
 end
 
@@ -662,7 +665,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 
 	if phys:IsValid() and physent:IsValid() then	
 		phys:SetMass(physent:GetMass())
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*1200 ) 		   
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*600 ) 		   
 	end
 
 	return Debris

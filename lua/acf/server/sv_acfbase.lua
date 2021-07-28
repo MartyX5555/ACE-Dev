@@ -202,11 +202,18 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 --	print("Damage mult from type: "..damageMult)	
 
+	local HitRes = {}
+
 	local curve         = ACE.ArmorTypes[ MaterialID ].curve
     local effectiveness = ACE.ArmorTypes[ MaterialID ].effectiveness
     local resiliance    = ACE.ArmorTypes[ MaterialID ].resiliance
-    
-	--print('resiliance: '..resiliance)
+
+    --RHA Penetration
+	local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	
+
+	-- Projectile caliber. Messy, function signature	
+    local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
+
 
 --im really disagreed with this format.
 	--------------------------------------------------------------------------------------------------------------------------------	
@@ -217,13 +224,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-
-		local HitRes = {}
-
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -269,13 +269,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -324,23 +317,14 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-	    
 		local slopeDmg = ( losArmor / armor ) --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
 		
 		if Type == 'HE' or Type == 'HESH' then
-		
-		    slopeDmg = slopeDmg * 5
-			
+		    slopeDmg = slopeDmg * 5	
 		end
 			
         local dmul = slopeDmg 	
         
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -386,13 +370,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 			
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-		
     --=========================================================================================================\
     --------------------------------------------------------- For HEAT shells & Spall -------------------------->
     --=========================================================================================================/
@@ -515,7 +492,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				HitRes.Damage   = ( Penetration / losArmorHealth * effectiveness )^2 * FrAera / resiliance * damageMult	
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
-	
+				
+				print('Damage applied: '..HitRes.Damage)
 				return HitRes
 						
 			end
@@ -541,13 +519,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
 		end
-		
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 		
 		if maxPenetration > losArmor then --ERA was penetrated
 			
@@ -594,8 +565,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		armor = armor^curve
 		losArmor = losArmor^curve
 
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
 		local DamageModifier = 1
 			
 		if Type == "Spall" then
@@ -608,11 +577,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		
 		end
 					
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / Entity.ACF.Armour / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
@@ -656,14 +620,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		    --print('Textolite')		
 		armor = armor^curve
 		losArmor = losArmor^curve
-	
-		local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA	--RHA Penetration
-	
-		local HitRes = {}
-		
-		-- Projectile caliber. Messy, function signature
-		local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
-				
+
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") then
 			
 			local HEATeffectiveness = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness

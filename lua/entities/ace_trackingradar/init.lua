@@ -151,9 +151,8 @@ function ENT:Think()
 		        	--skip any parented entity
 		        	if scanEnt:GetParent():IsValid() then goto cont end
 
-			        local entvel = scanEnt:GetVelocity() --Test on parented props
+			        local entvel = scanEnt:GetVelocity()
 			        local velLength = entvel:Length()
-
 			        local entpos = scanEnt:WorldSpaceCenter()
 
 			        local difpos = (entpos - thisPos)
@@ -163,7 +162,8 @@ function ENT:Think()
 				    --Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
 			        local errorFromAng = Vector(0.05*(absang.y/self.Cone)^2,0.02*(absang.y/self.Cone)^2,0.02*(absang.p/self.Cone)^2)    
 
-			        if (absang.p < self.Cone and absang.y < self.Cone) then --Entity is within radar cone
+					--Entity is within radar cone
+			        if (absang.p < self.Cone and absang.y < self.Cone) then
 
 				        local LOStr = util.TraceHull( {
 					
@@ -175,22 +175,23 @@ function ENT:Think()
 						
 				        }) --Hits anything in the world.
 
-				        if not LOStr.Hit then --Trace did not hit world
+						--Trace did not hit world
+				        if not LOStr.Hit then 
 					
 					        local DPLR
-					        local evlen = entvel:Length()
+					        local Espeed = entvel:Length()
 						
-					        if evlen > 0.5 then
+					        if Espeed > 0.5 then
 						        DPLR = self:WorldToLocal(thisPos+entvel*2)
 					        else
-						        evlen = 0
+						        Espeed = 0
 						        DPLR = Vector(0.001,0.001,0.001)
 					        end
 					
-					        --print(evlen)
+					        --print(Espeed)
 
-					        local Dopplertest = math.min(math.abs( evlen/math.abs(DPLR.Y))*100,10000)
-					        local Dopplertest2 = math.min(math.abs( evlen/math.abs(DPLR.Z))*100,10000)
+					        local Dopplertest = math.min(math.abs( Espeed/math.abs(DPLR.Y))*100,10000)
+					        local Dopplertest2 = math.min(math.abs( Espeed/math.abs(DPLR.Z))*100,10000)
 
 				            --Also objects not coming directly towards the radar create more error.
 					        local DopplerERR = (((math.abs(DPLR.y)^2+math.abs(DPLR.z)^2)^0.5)/velLength/2)*0.1
@@ -219,7 +220,8 @@ function ENT:Think()
 					        --print(GCdis)
 					        --if GCdis <= 0.5 then --Get canceled by ground clutter
 
-					        if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(evlen+0.0001)) > 0.3) or (GCFr >= 0.4) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+							--Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target
+					        if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(Espeed+0.0001)) > 0.3) or (GCFr >= 0.4) ) then 
 						        --1000 u = ~57 mph
 
 						        --Could do pythagorean stuff but meh, works 98% of time
@@ -232,21 +234,18 @@ function ENT:Think()
 							    end
 						        --print((entpos - thisPos):Length())
 							
-						        table.insert(ownArray, scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+						        table.insert(ownArray, CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
 						        table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
-							    local veltest
-
 							    --IDK if this is more intensive than length
-						        if evlen == 0 then 
-							        veltest = Vector(0,0,0)
-						        else
-							        veltest = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
-							        veltest = Vector(math.Clamp(veltest.x,-7000,7000),math.Clamp(veltest.y,-7000,7000),math.Clamp(veltest.z,-7000,7000))
+							    local finalvel = Vector(0,0,0)
 
+						        if Espeed > 0 then
+							        finalvel = entvel + velLength * ( randinac * errorFromAng + randinac2 * (DopplerERR + GCFr*0.03) )
+							        finalvel = Vector(math.Clamp(finalvel.x,-7000,7000),math.Clamp(finalvel.y,-7000,7000),math.Clamp(finalvel.z,-7000,7000))
 						        end
 							
-						        table.insert(velArray,veltest)
+						        table.insert(velArray,finalvel)
 					        else
 						        --print("DopplerFail")
 					        end
@@ -265,7 +264,8 @@ function ENT:Think()
 
 	        --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
 
-	        if testClosestToBeam != -1 then --Some entity passed the test to be valid
+			--Some entity passed the test to be valid
+	        if testClosestToBeam != -1 then 
 
 		        WireLib.TriggerOutput( self, "Detected", 1 )
 		        WireLib.TriggerOutput( self, "Owner", ownArray )

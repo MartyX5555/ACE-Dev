@@ -22,8 +22,12 @@ local GunTable = ACFEnts.Guns
 		ImpactTr.endpos = self.Origin + self.DirVec*20
 	local Impact = util.TraceLine(ImpactTr)					--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
+
+	local soundlvl = self.Mass*125
+	print('penetration sound level: '..soundlvl)
+	print('velocity: '..self.Velocity)
 	
-	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,5)..".wav", Impact.HitPos, math.Clamp(self.Mass*200,65,500), math.Clamp(self.Velocity*0.01,25,255), 1 )
+	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,5)..".wav", Impact.HitPos, math.Clamp( soundlvl ,80,110), math.Clamp(self.Velocity*0.01,25,150), 1 )
 	
 	--self.Entity:EmitSound( "ambient/explosions/explode_1.wav" , 100 + self.Radius*10, 200 - self.Radius*10 )
 	

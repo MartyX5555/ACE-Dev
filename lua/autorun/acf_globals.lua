@@ -510,19 +510,19 @@ ACF.LegalSettings = {
    ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
-function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip)
+function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentable, NeedsGateParent, CanVisclip )
     
 	
 	local problems = {} --problems table definition
 	local physobj = Ent:GetPhysicsObject()
     
-	if ACF.LegalChecks > 0 then   --checking if admin has allowed legal checks first
+	if ACF.LegalChecks == 0 then return  (#problems == 0), table.concat(problems, ", ") end   --checking if admin has allowed legal checks first
 	
 	-- check it exists
-	if not IsValid(Ent) then return {Legal=false, Problems={"Invalid Ent"}} end
+	if not IsValid(Ent) then return { Legal=false, Problems ={"Invalid Ent"} } end
 	
 	-- check if physics is valid
-	if not IsValid(physobj) then return {Legal=false, Problems={"Invalid Physics"}} end
+	if not IsValid(physobj) then return { Legal=false, Problems ={"Invalid Physics"} } end
 	
 	-- make sure traces can hit it (fade door, propnotsolid)
 	if not Ent:IsSolid() then
@@ -539,6 +539,13 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	-- check mass
 	if MinMass != nil and (physobj:GetMass() < MinMass) then
 		table.insert(problems,"Under min mass")
+	end
+
+	-- check material
+	-- Allowed materials: rha, cast and aluminum
+	local material = Ent.ACF and Ent.ACF.Material or 0
+	if material > 1 then
+		if material ~= 5 then table.insert(problems,"Material not legal") end
 	end
 
 	-- check inertia components
@@ -560,21 +567,14 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, CanMakesphere, Parentab
 	end
 
 	-- if it has a parent, check if legally parented
-	if IsValid( Ent:GetParent() ) then
-
-		-- if no parenting allowed
-		if not (Parentable) then
-			table.insert(problems,"Parented")
-		end
-
+	if Ent:GetParent():IsValid() then
 
 		--Re-used requires wel parent, don't mind me being evil
-		if NeedsGateParent and (not IsValid( Ent:GetParent():GetParent()) ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
+		if NeedsGateParent and not IsValid( Ent:GetParent():GetParent() ) then --Makes sure you parent in a way that doesn't bypass traces, Note that you do not actually need to parent to a gate as that does not matter
 			table.insert(problems,"Not propperly gate parented. Parent the parent entity.")
 		end
 
 	end
-    end
      	
 	-- legal if number of problems is 0
 	return (#problems == 0), table.concat(problems, ", ")

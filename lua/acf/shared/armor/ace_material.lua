@@ -97,7 +97,7 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
       effectiveness         = 0.02,        -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       specialeffectiveness  = 3,
 
-      resiliance            = 0.1,         -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
+      resiliance            = 0.25,        -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
       specialresiliance     = 0.15,        -- same as above, this is special vs HEAT ammunition
       HEresiliance          = 0.3,         -- resiliance vs HE
       Catchresiliance       = 0.05,        -- resiliance from catched AP based bullets. applies when not penetrated

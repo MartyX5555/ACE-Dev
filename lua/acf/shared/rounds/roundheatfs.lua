@@ -3,6 +3,7 @@ AddCSLuaFile()
 
 ACF.AmmoBlacklist.HEATFS =  { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" , "MO" , "RM", "SL", "GL", "HW", "SC", "BOMB" , "GBU", "ASM", "AAM", "SAM", "UAR", "POD", "FFAR", "ATGM", "ARTY", "ECM", "FGL"}
 
+
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
@@ -77,7 +78,7 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugMass = ConeVol*7.9/1000
 	local Rad = math.rad(GUIData.ConeAng/2)
 	Data.SlugCaliber =  Data.Caliber - Data.Caliber * (math.sin(Rad)*0.5+math.cos(Rad)*1.5)/2
-	Data.SlugMV = 1.3*( Data.FillerMass/2 * ACF.HEPower * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScale --keep fillermass/2 so that penetrator stays the same
+	Data.SlugMV = 2.21*( Data.FillerMass/2 * ACF.HEPower * math.sin(math.rad(10+GUIData.ConeAng)/2) /Data.SlugMass)^ACF.HEATMVScale --keep fillermass/2 so that penetrator stays the same --1.3
 	Data.SlugMass = Data.SlugMass*4^2
 	Data.SlugMV = Data.SlugMV/4
 	
@@ -86,9 +87,8 @@ function Round.convert( Crate, PlayerData )
 	Data.SlugDragCoef = ((SlugFrAera/10000)/Data.SlugMass)*800
 	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 	
-	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
-
 	--Random bullshit left
+	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
 	Data.ShovePower = 0.1
 	Data.PenAera = Data.FrAera^ACF.PenAreaMod
 	Data.DragCoef = ((Data.FrAera/10000)/Data.ProjMass)
@@ -383,7 +383,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
 	
 	-------------------------------------------------------------------------------	
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*3.9),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
