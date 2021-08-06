@@ -101,7 +101,7 @@ function ACF_Activate ( Entity , Recalc )
 	Entity.ACF.Mass = PhysObj:GetMass()
 	--Entity.ACF.Density = (PhysObj:GetMass()*1000)/Entity.ACF.Volume
 	
-	if Entity:IsPlayer() || Entity:IsNPC() then
+	if Entity:IsPlayer() or Entity:IsNPC() then
 		Entity.ACF.Type = "Squishy"
 	elseif Entity:IsVehicle() then
 		Entity.ACF.Type = "Vehicle"
@@ -374,11 +374,18 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For HEAT shells & Spall -------------------------->
     --=========================================================================================================/
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
-		
+			print('spalling!!!')
+			print(Type)
 		    local specialeffect = ACE.ArmorTypes[ MaterialID ].specialeffect
 			local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 			local specialresiliance = ACE.ArmorTypes[ MaterialID ].specialresiliance
-			
+
+			local spallresist = ACE.ArmorTypes[ MaterialID ].spallresist
+
+			if Type == 'Spall' then
+				specialeffectiveness = specialeffectiveness*spallresist
+			end
+
 		    local DmgResist = 0.01+math.min(caliber*10/specialeffect,5)*6
 		
 		    -- Breach probability
@@ -422,7 +429,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For HE shells -------------------------->	
     --===============================================================================================/
 		elseif Type == "HE" then
-
+			print('spalling2!!!')
+			print(Type)
             local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 		    local HEresiliance = ACE.ArmorTypes[ MaterialID ].HEresiliance
 			
@@ -467,7 +475,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For AP shells -------------------------->
 	--===============================================================================================/
 		else
-	    
+			print('spalling3!!!')
+			print(Type)	    
 			local Catchresiliance = ACE.ArmorTypes[ MaterialID ].Catchresiliance
 		
 			-- Breach probability
@@ -518,9 +527,26 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		--ERA is more effective vs HEAT than vs kinetic	
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
+		elseif Type == 'HE' or Type == 'HESH' then
+
+			if not maxPenetration ~= maxPenetration then
+
+				--maxPenetration = ((Energy.Penetration / FrAera) * ACF.KEtoRHA ) * 11
+
+				print( 'Energy pen: '..Energy.Penetration )
+				print( 'FrAera: '..FrAera )
+				print( 'KEtoRHA: '..ACF.KEtoRHA )
+
+				maxPenetration = maxPenetration * 11
+			end
 		end
+
+		print('ERA Max pen: '..maxPenetration)
 		
-		if maxPenetration > losArmor then --ERA was penetrated
+		if maxPenetration > losArmor or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
+
+			--Importart to remove the ent before the explosions begin
+			Entity:Remove()
 			
 			HitRes.Damage   = 9999999										-- I have yet to meet one who can survive this Edit: NVM
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
@@ -539,8 +565,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				Flash:SetNormal( Vector(0,0,-1) )
 				Flash:SetRadius( math.max( Radius, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )
-			
-			Entity:Remove()
 			
 			return HitRes
 				
@@ -759,6 +783,7 @@ function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , T
 	if HitRes.Damage >= Entity.ACF.Health then
 		HitRes.Kill = true 
 	else
+
 		Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage
 		Entity.ACF.Armour = Entity.ACF.MaxArmour * (0.5 + Entity.ACF.Health/Entity.ACF.MaxHealth/2) --Simulating the plate weakening after a hit
 		
@@ -778,14 +803,15 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	local Driver = Entity:GetDriver()
 	local validd = Driver:IsValid()
 	if validd then
-		--if Ammo == true then
-		--	Driver.KilledByAmmo = true
-		--end
-		Driver:TakeDamage( HitRes.Damage*40 , Inflictor, Gun )
-		--if Ammo == true then
-		--	Driver.KilledByAmmo = false
-		--end
-		
+
+		local dmg = 40
+
+		if Type == 'Spall' then
+			dmg = 40
+			print(HitRes.Damage*dmg)
+		end
+
+		Driver:TakeDamage( HitRes.Damage*dmg , Inflictor, Gun )
 	end
 
 	HitRes.Kill = false
@@ -871,9 +897,13 @@ function ACF_SquishyDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 	
 	end
 	
-	local dmul = 2.5
-	
-	Entity:TakeDamage( Damage * dmul, Inflictor, Gun )
+	local dmg = 2.5
+
+	if Type == 'Spall' then
+		dmg = 0.03
+		--print(Damage * dmg)
+	end
+	Entity:TakeDamage( Damage * dmg, Inflictor, Gun )
 
 	HitRes.Kill = false
 		

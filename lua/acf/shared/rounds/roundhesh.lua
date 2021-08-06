@@ -117,13 +117,11 @@ end
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 	if ACF_Check( Target ) then
-	print("HitRegistered")
 	
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
 		local Energy = ACF_Kinetic( Speed/4+Bullet.FillerMass*250 , Bullet.ProjMass/4+Bullet.FillerMass*5, Bullet.LimitVel )
---		print("ShellMass: "..Bullet.ProjMass)
 		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*250, Energy, Target, HitPos, HitNormal/10 , Bone )
-		
+
 		table.insert( Bullet.Filter , Target )
 		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*ACF.HEPower , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 	

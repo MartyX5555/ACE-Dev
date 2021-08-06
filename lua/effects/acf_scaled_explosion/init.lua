@@ -69,9 +69,6 @@ function EFFECT:Init( data )
 		end
 	end
 
-	--Main explosion
-	self:Core()
-
 	if not self.HitWater then
 
 		-- when detonation is in midair
@@ -105,9 +102,6 @@ function EFFECT:Init( data )
 			self:Concrete( SmokeColor )
 
 		end
-
-	else
-
 	end
 	
 	if Ground.HitWorld then
@@ -118,26 +112,29 @@ function EFFECT:Init( data )
 		end
 	end
 
-	print('Radius: '..self.Radius)
+	--Main explosion
+	self:Core()
+
+	--print('Radius: '..self.Radius)
 
 	local closeDist = math.Clamp(8.5 * self.Radius/1.5, 105,160)
 	local MidDist = math.Clamp(12.5 * self.Radius/1.5, 130,170)
 	local FarDist = math.Clamp(14 * self.Radius, 155,180)
 	local closepitch =  math.Clamp(1000/self.Radius,25,100)
 
-	print(closeDist)
-	print(MidDist)
-	print(FarDist)
+	--print(closeDist)
+	--print(MidDist)
+	--print(FarDist)
 
-	print('Current Pitch: '..closepitch)
+	--print('Current Pitch: '..closepitch)
 
 	--Sounds
 	--Defined when an explosion is big
 	if self.Radius >= 10 then
 		if not self.HitWater and not self.UnderWater then
-			sound.Play( "acf_mac_sounds/dist_close_"..math.random(1,3)..".wav", self.Origin , closeDist, closepitch, 1)
+			sound.Play( "acf_other/explosions/ambient/dist_close_"..math.random(1,3)..".wav", self.Origin , closeDist, closepitch, 1)
 			if self.Radius >= 25 then
-				print('booom')
+				--print('booom')
 				sound.Play("ambient/explosions/explode_5.wav", self.Origin, closeDist , closepitch, 1)
 			end
 		elseif self.HitWater and not self.UnderWater then
@@ -149,15 +146,15 @@ function EFFECT:Init( data )
 	else
 		--Defined if an explosion is small
 		if not self.HitWater then
-			sound.Play( "acf_other/explosions/cookOff"..math.random(1,4)..".wav", self.Origin , closeDist, closepitch, math.Clamp(300 - self.Radius*25,15,255))
+			sound.Play( "acf_other/explosions/cookoff/cookOff"..math.random(1,4)..".wav", self.Origin , closeDist, closepitch, math.Clamp(300 - self.Radius*25,15,255))
 		end
 	end
 
 	--MidDist sound
-	sound.Play( "acf_mac_sounds/dist_medium_"..math.random(1,3)..".wav", self.Origin , MidDist, math.Clamp(closepitch,95,100), math.Clamp(300 - self.Radius*12,100,255))
+	sound.Play( "acf_other/explosions/ambient/dist_medium_"..math.random(1,3)..".wav", self.Origin , MidDist, math.Clamp(closepitch,95,100), math.Clamp(300 - self.Radius*12,100,255))
 
 	--FarDist sound
-	sound.Play( "acf_mac_sounds/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,100), math.Clamp(300 - self.Radius*12,100,255))
+	sound.Play( "acf_other/explosions/ambient/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,100), math.Clamp(300 - self.Radius*12,100,255))
 
 	self.Emitter:Finish()
 
