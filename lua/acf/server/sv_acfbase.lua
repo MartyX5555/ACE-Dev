@@ -374,8 +374,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For HEAT shells & Spall -------------------------->
     --=========================================================================================================/
 		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" or Type == "Spall") then
-			print('spalling!!!')
-			print(Type)
+			--print('spalling!!!')
+			--print(Type)
 		    local specialeffect = ACE.ArmorTypes[ MaterialID ].specialeffect
 			local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 			local specialresiliance = ACE.ArmorTypes[ MaterialID ].specialresiliance
@@ -429,8 +429,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For HE shells -------------------------->	
     --===============================================================================================/
 		elseif Type == "HE" then
-			print('spalling2!!!')
-			print(Type)
+			--print('spalling2!!!')
+			--print(Type)
             local specialeffectiveness = ACE.ArmorTypes[ MaterialID ].specialeffectiveness
 		    local HEresiliance = ACE.ArmorTypes[ MaterialID ].HEresiliance
 			
@@ -475,8 +475,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     --------------------------------------------------------- For AP shells -------------------------->
 	--===============================================================================================/
 		else
-			print('spalling3!!!')
-			print(Type)	    
+			--print('spalling3!!!')
+			--print(Type)	    
 			local Catchresiliance = ACE.ArmorTypes[ MaterialID ].Catchresiliance
 		
 			-- Breach probability
@@ -502,7 +502,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss     = Penetration / maxPenetration
 				
-				print('Damage applied: '..HitRes.Damage)
+				--print('Damage applied: '..HitRes.Damage)
 				return HitRes
 						
 			end
@@ -533,15 +533,15 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
 				--maxPenetration = ((Energy.Penetration / FrAera) * ACF.KEtoRHA ) * 11
 
-				print( 'Energy pen: '..Energy.Penetration )
-				print( 'FrAera: '..FrAera )
-				print( 'KEtoRHA: '..ACF.KEtoRHA )
+				--print( 'Energy pen: '..Energy.Penetration )
+				--print( 'FrAera: '..FrAera )
+				--print( 'KEtoRHA: '..ACF.KEtoRHA )
 
 				maxPenetration = maxPenetration * 11
 			end
 		end
 
-		print('ERA Max pen: '..maxPenetration)
+		--print('ERA Max pen: '..maxPenetration)
 		
 		if maxPenetration > losArmor or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
 
@@ -808,7 +808,7 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
 
 		if Type == 'Spall' then
 			dmg = 40
-			print(HitRes.Damage*dmg)
+			--print(HitRes.Damage*dmg)
 		end
 
 		Driver:TakeDamage( HitRes.Damage*dmg , Inflictor, Gun )

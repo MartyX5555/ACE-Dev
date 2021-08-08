@@ -58,7 +58,9 @@
 			end
 			
 			local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
-			ParticleEffect( ClassData["muzzleflash"], Muzzle.Pos, Muzzle.Ang, Gun )
+			local Flash = ClassData["muzzleflash"] or '120mm_muzzleflash_noscale'
+
+			ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
 			Gun:Animate( Class, ReloadTime, false )
 		else
 			Gun:Animate( Class, ReloadTime, true )

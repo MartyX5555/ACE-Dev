@@ -31,11 +31,9 @@ CreateConVar( "acf_legalchecks", 1 , FCVAR_ARCHIVE)         -- If true, legal ch
 --CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )          -- Enable the inbuilt damage protection system.     
 
 if CLIENT then
---[[
-
-   --- Client Convars
-
-]]--
+--[[-----------------------------
+		Client Convars
+]]-------------------------------
 
 	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
 	
@@ -63,38 +61,6 @@ ACF.MeshCalcEnabled = false
 ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
-
---ACF.AluminiumEffectiveness=0.34                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.AluminumResialiance = 0.8                  --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.AluminumSpallResist=1.5                    --Lower = less damage from spall
---ACF.AluminumSpallMult =  2                     --Higher = spalls more
---ACF.AluminumHeatMul = 80                       --Higher = More damage from HEAT
-
---ACF.CastEffectiveness=0.5                      --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.CastResilianceFactor = 35                  --Higher = less damage, Lower = more damage. 2x = half damage.
-
---ACF.CeramicEffectiveness=2.4                   --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.CeramicResilianceFactor = 0.8              --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.CeramicPierceDamage = 5                    --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
-	
---ACF.RubberEffectiveness = 0.02
---ACF.RubberResilianceFactor = 0.1               --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.RubberResilianceFactorCatch = 0.05         --Lower = more damage. If someone somehow catches a bullet with rubber use this.
---ACF.RubberSpecialEffect = 30                   --Caliber of gun in mm where damage mult for catched heat jets are based, above this increase, below decrease
---ACF.RubberEffectivenessSpecial = 3             --How effective rubber is versus projectiles that qualify for the above.
---ACF.RubberResilianceFactorSpecial = 0.15       --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.RubberHEVulnerbility = 0.3                 --Lower = more damage
-
---ACF.TextoliteEffectiveness=0.23                --Higher = more resistant to penetration, Lower = less resistant. 0.5 means 1mm of cast is equivelent to 0.5mm of RHA.
---ACF.TextoliteResilianceFactor = 0.005          --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.TextoliteHEATEffectiveness = 0.55          --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteHEATResilianceFactor = 2          --Higher = less damage, Lower = more damage. 2x = half damage.
---ACF.TextoliteHEResistance = 1.3                --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteHEEffectiveness = 0.9             --Higher = more damage on pierce, Lower = less damage on penetration. 2x = double.
---ACF.TextoliteSpallMult = 1.3
-
---ACF.ERAEffectivenessMultHEAT = 20              --How many more times is the detonating ERA than its currentarmor
---ACF.ERAEffectivenessMult = 5                   --How many more times is the detonating ERA than its maxarmor
 
 --ACF Damage Multipler.
 
