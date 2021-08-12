@@ -43,6 +43,8 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.Data14 then PlayerData.Data14 = 0 end
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
 	
+	PlayerData.Type = 'THEATFS'
+
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	local ConeThick = Data.Caliber/50

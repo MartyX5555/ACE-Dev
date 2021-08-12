@@ -28,6 +28,8 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
+	PlayerData.Type = 'HEFS'
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	

@@ -132,9 +132,9 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 	--debugoverlay.Cross(Bullet.Pos,3,15,Color(255,255,255,32), true) --true start
 	--debugoverlay.Box(Bullet.StartTrace,Vector(-2,-2,-2),Vector(2,2,2),15,Color(0,255,0,32), true) --backtrace start
 	--debugoverlay.EntityTextAtPosition(Bullet.StartTrace, 0, "Tr", 15)
-	--debugoverlay.EntityTextAtPosition(Bullet.Pos, 0, "Pos", 15)
+	debugoverlay.EntityTextAtPosition(Bullet.Pos, 0, "Pos", 15)
 	--debugoverlay.Line( Bullet.Pos+Vector(0,0,1), Bullet.StartTrace+Vector(0,0,1), 15, Color(0, 255, 255), true )
-	--debugoverlay.Line( Bullet.NextPos+VectorRand(), Bullet.StartTrace+VectorRand(), 15, ColorRand(), true )
+	debugoverlay.Line( Bullet.NextPos+VectorRand(), Bullet.StartTrace+VectorRand(), 15, ColorRand(), true )
 	
 	--updating timestep timers
 	Bullet.LastThink = ACF.SysTime
@@ -365,7 +365,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 end
 
 function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
-	
+
 	if Type == "Update" then
 		local Effect = EffectData()
 		    
@@ -373,8 +373,9 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
 			
 			if Hit > 0 then		-- If there is a hit then set the effect pos to the impact pos instead of the retry pos
+
 				Effect:SetOrigin( HitPos )		--Bullet Pos
-			else
+		  	else
 				Effect:SetOrigin( Bullet.Pos )
 			end
 			

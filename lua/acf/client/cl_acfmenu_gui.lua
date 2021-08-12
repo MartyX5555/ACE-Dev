@@ -695,6 +695,25 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	
 	acfmenupanel.CustomDisplay:AddItem( Legal )
 	
+	local Spall = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	Spall:SetPos(50,200)
+	Spall:SetText("Enable Spalling")
+	Spall:SetTextColor( Color(10,10,10) )
+	Spall:SetConVar("acf_spalling")
+	Spall:SetValue( false )
+	Spall:SizeToContents()
+	
+	acfmenupanel.CustomDisplay:AddItem( Spall )
+	
+	local HEPush = vgui.Create( "DCheckBoxLabel" , acfmenupanel["CData"]["Options"] )
+	HEPush:SetPos(50,200)
+	HEPush:SetText("Enable HE push")
+	HEPush:SetTextColor( Color(10,10,10) )
+	HEPush:SetConVar("acf_hepush")
+	HEPush:SetValue( false )
+	HEPush:SizeToContents()
+	
+	acfmenupanel.CustomDisplay:AddItem( HEPush )
 	
 --[[ Disabled atm. No idea why convar becomes dumb on dedicated servers
 
