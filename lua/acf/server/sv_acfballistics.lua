@@ -84,13 +84,14 @@ end
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CheckClips( Ent, HitPos )
 
-	if not IsValid(Ent) or (Ent.ClipData == nil)
-		or (not (Ent:GetClass() == "prop_physics"))
+	if not IsValid(Ent) or (Ent.ClipData == nil)	--only valid visclipped ents
+		or (not (Ent:GetClass() == "prop_physics"))	--only props
 		or (Ent:GetPhysicsObject():GetVolume() == nil) -- makesphere
 		then return false end
 	
 	local normal
 	local origin
+
 	for i=1, #Ent.ClipData do
 		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward() 
 		origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
@@ -104,6 +105,7 @@ end
 
 --handles non-terminal ballistics and fusing of bullets
 function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
+
 	-- perf concern: use direct function call stored on bullet over hook system.
 	if Bullet.PreCalcFlight then Bullet:PreCalcFlight() end
 	
@@ -149,7 +151,6 @@ end
 --handles bullet terminal ballistics, fusing, and visclip checking
 function ACF_DoBulletsFlight( Index, Bullet )
 
-
 	local CanDo = hook.Run("ACF_BulletsFlight", Index, Bullet )
 	if CanDo == false then return end
 	if Bullet.FuseLength and Bullet.FuseLength > 0 then
@@ -169,11 +170,13 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
 	--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
 	if Bullet.SkyLvL then
+
 		--We don't want to calculate bullets that will never come back to map
 		if (ACF.CurTime - Bullet.LifeTime) > 100 then
 			ACF_RemoveBullet( Index )
 			return
 		end
+
 		--We don't want rounds to hit the skybox top, but to pass through and come back down
 		if Bullet.NextPos.z + ACF.SkyboxGraceZone > Bullet.SkyLvL then --add in a bit of grace zone
 			Bullet.Pos = Bullet.NextPos
@@ -205,30 +208,32 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	FlightTr.mins = -FlightTr.maxs	
 	
 	--perform the trace for damage	
-		
 	local RetryTrace = true	
 
-	while RetryTrace do			--if trace hits clipped part of prop, add prop to trace filter and retry
+	--if trace hits clipped part of prop, add prop to trace filter and retry
+	while RetryTrace do			
 	    
 		RetryTrace = false  --disabling....
 		FlightTr.start = Bullet.StartTrace
 		FlightTr.endpos = Bullet.NextPos + Bullet.Flight:GetNormalized()*(ACF.PhysMaxVel * 0.025) --compensation 		
 
+		--Defining tracehull at first instance
+		util.TraceHull(FlightTr)    
 		
-		util.TraceHull(FlightTr)    --Defining tracehull at first instance
-		
-		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --if our shell hits visclips, convert the tracehull on traceline.
-		   --print('Traceline!')
-		   util.TraceLine(FlightTr) -- trace result is stored in supplied output FlightRes (at top of file)	
-		  
-		    if not FlightRes.HitNonWorld then -- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
-			
-		        --print('back to tracehull!')
-			    util.TraceHull(FlightTr)
-		   
-		    end
-		   
-		end  
+		--if our shell hits visclips, convert the tracehull on traceline.
+		if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   
+
+			-- trace result is stored in supplied output FlightRes (at top of file)
+			util.TraceLine(FlightTr) 	
+
+			-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
+ 			if not FlightRes.HitNonWorld then
+
+ 				--print('back to tracehull!')
+ 				util.TraceHull(FlightTr)
+
+ 			end
+ 		end  
         
 		--We hit something that's not world, if it's visclipped, filter it out and retry	
         if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   --our shells hit the visclip as traceline, no more double bounds.
@@ -248,31 +253,18 @@ function ACF_DoBulletsFlight( Index, Bullet )
 	--bullet hit something that isn't world and is allowed to hit
 	elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 	
+
 		--If we hit stuff then send the resolution to the bullets damage function
-		
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
 		
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
-
-
-		--local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/(Bullet.Flight:Length() * ACF.VelScale * DeltaTime) * DeltaTime) or 0.01515
 		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
-
---		DTImpact = 1
 
 		--Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
 		local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
 
---		print("GAP")
---		print(DTImpact)
---		print(DeltaTime)
-		--Adjusts bullet speed by time it spent flying into target.
-		--print("Before")
-		--print(Bullet.Flight:Length()/39.37)
-		Bullet.Flight = Bullet.Flight - Drag * DTImpact
-		--print("After")
-		--print(Bullet.Flight:Length()/39.37)
 
+		Bullet.Flight = Bullet.Flight - Drag * DTImpact
 
 
 		local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
@@ -396,16 +388,3 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 	end
 
 end
-
-function ACF_BulletWorldImpact( Bullet, Index, HitPos, HitNormal )
-	--You overwrite this with your own function, defined in the ammo definition file
-end
-
-function ACF_BulletPropImpact( Bullet, Index, Target, HitNormal, HitPos )
-	--You overwrite this with your own function, defined in the ammo definition file
-end
-
-function ACF_BulletEndFlight( Bullet, Index, HitPos )
-	--You overwrite this with your own function, defined in the ammo definition file
-end
-

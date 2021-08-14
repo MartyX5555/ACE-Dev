@@ -320,7 +320,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.0004
 		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
 		local SpallWeight = TotalWeight/Spall*SpallMul*400
-		local SpallVel = (KE*1600000/SpallWeight)^0.5/Spall*SpallMul
+		local SpallVel = (KE*16/SpallWeight)^0.5/Spall*SpallMul
 		local SpallAera = (SpallWeight/7.8)^0.33 
 		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
 
@@ -329,10 +329,16 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 			-- Normal Trace creation
 			local SpallTr = {}
 			SpallTr.start = HitPos
-			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()):GetNormalized()*math.max( SpallVel*10, math.random(450,600) ) --I got bored of spall not going across the tank
+			SpallTr.endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/3):GetNormalized()*math.max( SpallVel*10, math.random(450,600) ) --I got bored of spall not going across the tank
 			SpallTr.filter = HitMask
 
-			ACF_SpallTrace(HitVec, SpallTr , SpallEnergy , SpallAera , Inflictor)	
+			ACF_SpallTrace(HitVec, SpallTr , SpallEnergy , SpallAera , Inflictor)
+
+			--little sound optimization
+			if i < math.max(math.Round(Spall/2), 1) then
+				sound.Play('acf_other/penetratingshots/0000029'..math.Round(math.random(5, 7))..'.wav', spallPos, 75, 100, 0.5)
+			end
+
 		end
 	end
 end
@@ -507,6 +513,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 	local UsedArmor = Armour*ArmorMul
 
 	if SpallMul > 0 and HEFiller/1501*4 > UsedArmor then
+
 		--print('[ACE|INFO]- Spall created')
 
 		--era stops the spalling at the cost of being detonated
@@ -514,7 +521,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 		-- HESH spalling core
 		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 1000
-		local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24) --24
+		local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),48) --24
 		local SpallWeight = TotalWeight/Spall*SpallMul
 		local SpallVel = (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul
 		local SpallAera = (SpallWeight/7.8)^0.33 
@@ -527,8 +534,6 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 			SpallTr.start = spallPos
 			SpallTr.endpos = spallPos + ((fNormal*2500+HitVec):GetNormalized()+VectorRand()/3):GetNormalized()*math.max(SpallVel*10,math.random(450,600)) --I got bored of spall not going across the tank
 			SpallTr.filter = PEnts
-
-			print(fNormal)
 
 			ACF_SpallTrace(HitVec, SpallTr , SpallEnergy , SpallAera , Inflictor, i)
 
