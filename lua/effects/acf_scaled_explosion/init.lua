@@ -117,6 +117,8 @@ function EFFECT:Init( data )
 
 	--print('Radius: '..self.Radius)
 
+	--Distances between each sound level MUST NOT too long, otherwise you will not hear anything at certain distance. Reason of why certain explosions sounds are weak at far distances 
+	--TODO: Remove all this below and build something like acf sound proyect (i did some tests, but i don't have planned to include it yet, maybe next update. Just Admit, it's good enough anyways)
 	local closeDist = math.Clamp( self.Radius*7.25, 70 , 161)
 	local MidDist = math.Clamp( self.Radius*9.25, 70 , 171)
 	local FarDist = math.Clamp( self.Radius*11.25, 70 ,181)
