@@ -26,7 +26,7 @@ function ACF_CreateBullet( BulletData )
 
 	--Those are BulletData settings that are global and shouldn't change round to round	
 	local cvarGrav = GetConVar("sv_gravity")
-	BulletData["Accel"] =  Vector(0,0,cvarGrav:GetInt()*-1)--Vector(0,0,cvarGrav:GetInt()*-1)
+	BulletData["Accel"] =  Vector(0,0,cvarGrav:GetInt()*-1)
 	BulletData["LastThink"] = ACF.SysTime
 	BulletData["FlightTime"] = 0
 	BulletData["TraceBackComp"] = 0
@@ -45,12 +45,8 @@ function ACF_CreateBullet( BulletData )
 	if BulletData["Gun"]:IsValid() then										--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
 
 		BulletData["TraceBackComp"] = math.max(ACF_GetPhysicalParent(BulletData["Gun"]):GetPhysicsObject():GetVelocity():Dot(BulletData["Flight"]:GetNormalized()),0)
-
 		--print(BulletData["TraceBackComp"])
-		if BulletData["Gun"].sitp_inspace then
-			BulletData["Accel"] = Vector(0, 0, 0)
-			BulletData["DragCoef"] = 0
-		end
+
 	end
 	BulletData["Filter"] = { BulletData["Gun"] }
 	BulletData["Index"] = ACF.CurBulletIndex
