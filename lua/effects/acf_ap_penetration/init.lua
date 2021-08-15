@@ -24,8 +24,8 @@ local GunTable = ACFEnts.Guns
 	self.Normal = Impact.HitNormal
 
 	local soundlvl = self.Mass*100
-	print('penetration sound level: '..soundlvl)
-	print('velocity: '..self.Velocity)
+	--print('penetration sound level: '..soundlvl)
+	--print('velocity: '..self.Velocity)
 	
 	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,5)..".wav", Impact.HitPos, math.Clamp( soundlvl ,25,85), math.Clamp(self.Velocity*0.01,25,150), 1 )
 	
@@ -52,7 +52,7 @@ local GunTable = ACFEnts.Guns
 	-- 89 GLASS
 
 	local Mat = Impact.MatType
-	print(Mat)
+	--print(Mat)
 	if Mat == 71 or Mat == 73 or Mat == 77 or Mat == 80 then -- Metal
 		self:Metal()
 	else -- Nonspecific

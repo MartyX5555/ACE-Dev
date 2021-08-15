@@ -528,34 +528,29 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
 		elseif Type == 'HE' or Type == 'HESH' then
-
-			if not maxPenetration ~= maxPenetration then
-
-				--maxPenetration = ((Energy.Penetration / FrAera) * ACF.KEtoRHA ) * 11
-
-				--print( 'Energy pen: '..Energy.Penetration )
-				--print( 'FrAera: '..FrAera )
-				--print( 'KEtoRHA: '..ACF.KEtoRHA )
-
-				maxPenetration = maxPenetration * 11
-			end
+			blastArmor = ACE.ArmorTypes[ MaterialID ].HEeffectiveness * armor
 		end
 
+		--print(( Type and 'Type: '..Type) or 'No type')
 		--print('ERA Max pen: '..maxPenetration)
-		
+		--print('Blast Armor: '..blastArmor)
+
+		--ERA detonates and shell is completely stopped
 		if maxPenetration > losArmor or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
+			--print('Detonated by:'..(Type or 'No type'))			
 
 			--Importart to remove the ent before the explosions begin
 			Entity:Remove()
 			
 			HitRes.Damage   = 9999999										-- I have yet to meet one who can survive this Edit: NVM
-			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0.02,1)						-- Remaining penetration
+			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)		
-				
+
+			--print('Remaining Pen:'..HitRes.Overkill)
 			local HEWeight = armor*0.01			
 			local Radius =( HEWeight*0.0001 )^0.33*8*39.37
 			
-			local Owner = Entity:CPPIGetOwner()
+			local Owner = (CPPI and Entity:CPPIGetOwner()) or NULL
 
 			ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
 			Entity:EmitSound("ambient/explosions/explode_4.wav", math.Clamp(armor*7,350,510), math.Clamp(255-armor*1.8,50,140))
@@ -567,7 +562,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 			util.Effect( "ACF_Scaled_Explosion", Flash )
 			
 			return HitRes
-				
 		else	
 
 			-- Projectile did not breach nor penetrate armor			

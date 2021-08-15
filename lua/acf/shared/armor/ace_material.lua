@@ -129,7 +129,7 @@ if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go 
 
       effectiveness = 5,                   -- penetration resistance multipler. 1x is the effectiveness equivalent to rha
       HEATeffectiveness = 20,
-      HEeffectiveness = 0.01,                 -- penetration resistance vs HE/ HESH
+      HEeffectiveness = 0.5,
       resiliance    = 0.25,                -- resiliance factor of this material. Increasing it means less damage. 1x is the resiliance equivalent to rha
 
       --Spalling config
