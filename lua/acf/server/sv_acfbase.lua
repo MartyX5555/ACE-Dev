@@ -24,14 +24,19 @@ function ACF_GetPhysicalParent( obj )
 end
 
 function ACF_UpdateVisualHealth(Entity)
+
 	if Entity.ACF.PrHealth == Entity.ACF.Health then return end
-	if not ACF_HealthUpdateList then
-		ACF_HealthUpdateList = {}
+
+	ACF_HealthUpdateList = {}
+
+	table.insert(ACF_HealthUpdateList, Entity)
+
+	if #ACF_HealthUpdateList > 0 then
 		timer.Create("ACF_HealthUpdateList", 1, 1, function() // We should send things slowly to not overload traffic.
 			local Table = {}
 			for k,v in pairs(ACF_HealthUpdateList) do
 				if IsValid( v ) then
-					table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, MaxHealth = v.ACF.MaxHealth})
+					table.insert(Table, {ID = v:EntIndex(), Health = v.ACF.Health, MaxHealth = v.ACF.MaxHealth} )
 				end
 			end
 			net.Start("ACF_RenderDamage")
@@ -39,8 +44,9 @@ function ACF_UpdateVisualHealth(Entity)
 			net.Broadcast()
 			ACF_HealthUpdateList = nil
 		end)
+
 	end
-	table.insert(ACF_HealthUpdateList, Entity)
+
 end
 
 function ACF_Activate ( Entity , Recalc )
@@ -527,8 +533,9 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		--ERA is more effective vs HEAT than vs kinetic	
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then		
 		    blastArmor = ACE.ArmorTypes[ MaterialID ].HEATeffectiveness * armor
-		elseif Type == 'HE' or Type == 'HESH' then
+		elseif Type == 'HE' or Type == 'HESH' or Type == 'Frag' then
 			blastArmor = ACE.ArmorTypes[ MaterialID ].HEeffectiveness * armor
+			resiliance = ACE.ArmorTypes[ MaterialID ].HEresiliance
 		end
 
 		--print(( Type and 'Type: '..Type) or 'No type')
@@ -536,13 +543,13 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 		--print('Blast Armor: '..blastArmor)
 
 		--ERA detonates and shell is completely stopped
-		if maxPenetration > losArmor or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
+		if maxPenetration > blastArmor/2 or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated
 			--print('Detonated by:'..(Type or 'No type'))			
 
 			--Importart to remove the ent before the explosions begin
 			Entity:Remove()
-			
-			HitRes.Damage   = 9999999										-- I have yet to meet one who can survive this Edit: NVM
+
+			HitRes.Damage 	= 9999999999999	
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)						-- Remaining penetration
 			HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)		
 
