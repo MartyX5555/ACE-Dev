@@ -27,11 +27,8 @@ function ACF_UpdateVisualHealth(Entity)
 
 	if Entity.ACF.PrHealth == Entity.ACF.Health then return end
 
-	ACF_HealthUpdateList = {}
-
-	table.insert(ACF_HealthUpdateList, Entity)
-
-	if #ACF_HealthUpdateList > 0 then
+	if not ACF_HealthUpdateList  then
+		ACF_HealthUpdateList = {}
 		timer.Create("ACF_HealthUpdateList", 1, 1, function() // We should send things slowly to not overload traffic.
 			local Table = {}
 			for k,v in pairs(ACF_HealthUpdateList) do
@@ -44,7 +41,9 @@ function ACF_UpdateVisualHealth(Entity)
 			net.Broadcast()
 			ACF_HealthUpdateList = nil
 		end)
-
+	end 
+	if #ACF_HealthUpdateList < 1000 then
+		table.insert(ACF_HealthUpdateList, Entity)
 	end
 
 end

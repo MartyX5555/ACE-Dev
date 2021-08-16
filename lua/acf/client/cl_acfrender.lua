@@ -66,6 +66,8 @@ net.Receive("ACF_RenderDamage", function()
     	end
 end)
 
+
+
 --[[
 usermessage.Hook("Atest", function(msg)
 	local ent = ents.GetByIndex( msg:ReadFloat() )

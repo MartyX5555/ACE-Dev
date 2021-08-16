@@ -115,7 +115,7 @@ function EFFECT:Init( data )
 	--Main explosion
 	self:Core()
 
-	print('Radius: '..self.Radius)
+	--print('Radius: '..self.Radius)
 
 	--Distances between each sound level MUST NOT too long, otherwise you will not hear anything at certain distance. Reason of why certain explosions sounds are weak at far distances 
 	--TODO: Remove all this below and build something like acf sound proyect (i did some tests, but i don't have planned to include it yet, maybe next update. Just Admit, it's good enough anyways)
