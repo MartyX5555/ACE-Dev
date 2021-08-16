@@ -761,8 +761,11 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 		
 	local physratio = Target.acfphystotal / Target.acftotal
 		
-	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
-
+	if isvector(Pos) then
+		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
+	else
+		phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio)
+	end
 end
 
 
