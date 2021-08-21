@@ -29,9 +29,9 @@ function Round.convert( Crate, PlayerData )
 	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
 	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
 	if not PlayerData.SCalMult then PlayerData.SCalMult = 0.5 end
-	if not PlayerData["Data5"] then PlayerData["Data5"] = 0.5 end --caliber in mm count
+	if not PlayerData["Data5"] then PlayerData["Data5"] = 0.23 end --caliber in mm count
 	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
-	
+
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
 	local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
@@ -89,6 +89,8 @@ function Round.convert( Crate, PlayerData )
 	
 	end
 	
+	--Used for adapting acf2 apds/apfsds to the new format
+	PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)
 	
 	Data.SCalMult = PlayerData["Data5"]
 	Data.SubFrAera = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2

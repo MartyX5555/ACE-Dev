@@ -332,12 +332,12 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	if SpallMul > 0 and Caliber*10 > UsedArmor and Caliber > 3 then
 
 		-- Normal spalling core
-		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 0.0004
-		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),20)
-		local SpallWeight = TotalWeight/Spall*SpallMul*400
+		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 150
+		local Spall = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33),24)
+		local SpallWeight = TotalWeight/Spall*SpallMul
 		local SpallVel = (KE*16/SpallWeight)^0.5/Spall*SpallMul
 		local SpallAera = (SpallWeight/7.8)^0.33 
-		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 8000 )
+		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
 		for i = 1,Spall do
 
@@ -372,7 +372,7 @@ ACF.VulnerableEnts = {
 }
 
 --Dedicated function for HESH spalling
-function ACF_PropShockwave( HitPos, HitVec, HitMask )
+function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 
 	--Don't even bother at calculating something that doesn't exist
 	if #HitMask == 0 then return end
@@ -402,18 +402,22 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 	--Tracefront general data--
 	local TrFront = {}
 	TrFront.start = HitPos
-	TrFront.endpos = HitPos + HitVec:GetNormalized()*100
+	TrFront.endpos = HitPos + HitVec:GetNormalized()*Caliber*1.5
+	TrFront.ignoreworld = true
 	TrFront.filter = {}
 
 	--Traceback general data--
 	local TrBack = {}
-	TrBack.start = HitPos + HitVec:GetNormalized()*1000
+	TrBack.start = HitPos + HitVec:GetNormalized()*Caliber*1.5
 	TrBack.endpos = HitPos
-	TrBack.filter = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex() ) then return true end end
+	TrBack.ignoreworld = true
+	TrBack.filter = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then print(ent:GetClass()) return true end end
+
 
 	while FindEnd do
 
 		iteration = iteration + 1
+		--print('iteration #'..iteration)
 
 		--In case of total failure, this loop is limited to 1000 iterations, don't make me increase it even more.
 		if iteration >= 1000 then FindEnd = false end
@@ -426,7 +430,7 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 		table.insert( HitFronts, HitFront )
 
 		--distance between the initial hit and hitpos of front plate
-		local distToFront = math.abs( (HitVec - HitFront):Length() )
+		local distToFront = math.abs( (HitPos - HitFront):Length() )
 		table.insert( FrontDists, distToFront)
 
 		--TraceFront's armor entity
@@ -444,9 +448,29 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 				--prop's material
 				local mat = tracefront.Entity.ACF and tracefront.Entity.ACF.Material or 0
 
-				--check if we have spaced armor, spall liners ahead, if so, end here
-				if space > 1 and ( distToFront < BackDists[iteration - 1]) or (tracefront.Entity:IsValid() and ACF.VulnerableEnts[ tracefront.Entity:GetClass() ]) or mat == 3 or mat == 4 or mat == 6 then
 
+				local Hasvoid = false
+				local NotOverlap = false
+
+				--print('DATA TABLE - DONT FUCKING DELETE')
+				--print('distToFront: '..distToFront)
+				--print('BackDists[iteration - 1]: '..BackDists[iteration - 1])
+				--print('DISTS DIFF: '..distToFront - BackDists[iteration - 1])
+				--print('ESTA OVERLAPEADO SI ES +, NO LO ESTA SI ES NEGATIVO')
+
+				--check if we have void
+				if space > 1 then
+					Hasvoid = true
+				end
+
+				--check if we dont have props semi-overlapped
+				if distToFront > BackDists[iteration - 1] then
+					NotOverlap = true
+				end
+
+				--check if we have spaced armor, spall liners ahead, if so, end here
+				if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACF.VulnerableEnts[ tracefront.Entity:GetClass() ]) or mat == 3 or mat == 4 or mat == 6 then
+					--print('stopping')
 					FindEnd = false
 					finalpos = HitBacks[iteration - 1] + HitVec:GetNormalized()*0.1
 					fNormal = Normals[iteration - 1]
@@ -475,7 +499,7 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 		table.insert( HitBacks, HitBack )
 
 		--store the dist between the backhit and the hitvec
-		local distToBack = math.abs( (HitVec - HitBack):Length() )
+		local distToBack = math.abs( (HitPos - HitBack):Length() )
 		table.insert( BackDists, distToBack)
 
 		table.insert( Normals, traceback.HitNormal )
@@ -495,9 +519,9 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 			break
 		end
 
-		--for traceback
+		--for red traceback
 		debugoverlay.Line( traceback.StartPos+Vector(0,0,#EntsToHit*0.1), traceback.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(math.random(100,255),0,0) )
-		--for tracefront
+		--for green tracefront
 		debugoverlay.Line( tracefront.StartPos+Vector(0,0,#EntsToHit*0.1), tracefront.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(0,math.random(100,255),0) )
 	end
 
@@ -506,9 +530,8 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask )
 		--print('Armor prop count: '..i..', Armor value: '..TotalArmor[i])
 		ArmorSum = ArmorSum + TotalArmor[i]
 	end
-	--print('Total Scanned Armor: '..ArmorSum)
 
-
+	--print(ArmorSum)
 	return finalpos, ArmorSum, TrFront.filter, fNormal
 end
 
@@ -517,7 +540,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
     
     local Mat = Material or 0
 
-	spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, HitMask )
+	spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 
 	--if not spallPos then return end
     -- Spall damage
@@ -535,12 +558,14 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 		if Mat == 4 then HitMask[1].ACF.ERAexploding = true return end
 
 		-- HESH spalling core
-		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 1000
+		local TotalWeight = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 2500
 		local Spall = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),48) --24
 		local SpallWeight = TotalWeight/Spall*SpallMul
 		local SpallVel = (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul
 		local SpallAera = (SpallWeight/7.8)^0.33 
 		local SpallEnergy = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+
+
 
 		for i = 1,Spall do
 
@@ -553,7 +578,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 			ACF_SpallTrace(HitVec, SpallTr , SpallEnergy , SpallAera , Inflictor, i)
 
 			--little sound optimization
-			if i < math.max(math.Round(Spall/2), 1) then
+			if i < math.max(math.Round(Spall/4), 1) then
 				sound.Play('acf_other/penetratingshots/0000029'..math.Round(math.random(5, 7))..'.wav', spallPos, 75, 100, 0.5)
 			end
 		end
@@ -581,6 +606,11 @@ function ACF_SpallTrace(HitVec,  SpallTr, SpallEnergy, SpallAera, Inflictor, Spa
 
 		SpallEnergy.Penetration = SpallEnergy.Penetration / spallarmor
 		--SpallEnergy.Momentum = SpallEnergy.Momentum / spallresist
+
+		--extra damage for ents like ammo, engines, etc
+		if ACF.VulnerableEnts[ SpallRes.Entity:GetClass() ] then
+			SpallEnergy.Penetration = SpallEnergy.Penetration * 1.25
+		end
 
 		-- Applies the damage to the impacted entity
 		local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallAera , Angle , Inflictor, 0, nil, "Spall")  --DAMAGE !!
@@ -716,7 +746,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 	local loss = DigRes.FractionLeftSolid
 	
 	if loss == 1 or loss == 0 then --couldn't penetrate
-	    print('Non Penetration! PenValid: '..loss)
+	    --print('Non Penetration! PenValid: '..loss)
 		--print(start)
 		local Ricochet = 0
 		local Speed = Bullet.Flight:Length() / ACF.VelScale
@@ -733,7 +763,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 			HitRes.Ricochet = true
 		end
 	else --penetrated
-	    print('Penetrated! PenValid: '..loss)
+	    --print('Penetrated! PenValid: '..loss)
 		Bullet.Flight = Bullet.Flight * (1 - loss)
 		Bullet.Pos = DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
 		HitRes.Penetrated = true
@@ -760,7 +790,8 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	if not Target.acfphystotal then return end --corner case error check
 		
 	local physratio = Target.acfphystotal / Target.acftotal
-		
+	
+	--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
 	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 
 end
@@ -1073,6 +1104,7 @@ function ACF_ScaledExplosion( ent )
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )
 	
 	local Flash = EffectData()
+		Flash:SetEntity( ent )
 		Flash:SetOrigin( AvgPos )
 		Flash:SetNormal( Vector(0,0,-1) )
 		Flash:SetRadius( math.max( Radius, 1 ) )

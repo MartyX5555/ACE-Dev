@@ -6,6 +6,7 @@
  ---------------------------------------------------------]]
 function EFFECT:Init( data ) 
 	
+	self.Entity = data:GetEntity() or NULL
 	self.Origin = data:GetOrigin()
 	self.DirVec = data:GetNormal()
 	self.Radius = math.max( data:GetRadius() / 50 ,1)
@@ -115,17 +116,63 @@ function EFFECT:Init( data )
 	--Main explosion
 	self:Core()
 
-	--print('Radius: '..self.Radius)
+	--print('Current Radius Explosion: '..self.Radius)
+
+	local closeDist
+	local MidDist
+	local FarDist
 
 	--Distances between each sound level MUST NOT too long, otherwise you will not hear anything at certain distance. Reason of why certain explosions sounds are weak at far distances 
 	--TODO: Remove all this below and build something like acf sound proyect (i did some tests, but i don't have planned to include it yet, maybe next update. Just Admit, it's good enough anyways)
-	local closeDist = math.Clamp( self.Radius*7.25, 70 , 161)
-	local MidDist = math.Clamp( self.Radius*9.25, 70 , 171)
-	local FarDist = math.Clamp( self.Radius*11.25, 70 ,181)
+	--Temporal: make level sound divided into sections, tiny, small, medium and big booms. Maybe there i can adjust all sound scales correctly
 
+	--small arm 
+	if self.Radius <= 3 then
+
+		closeDist = math.Clamp( self.Radius*5, 75, 90 )
+		MidDist = math.Clamp( self.Radius*5.5, 85, 105 )
+		FarDist = math.Clamp( self.Radius*6, 95, 115 )
+
+	--grenade & other small calibers
+	elseif self.Radius > 3 and self.Radius <= 5 then
+
+		closeDist = math.Clamp( self.Radius*7.25, 100, 150)
+		MidDist = math.Clamp( self.Radius*9.25, 150, 170)
+		FarDist = math.Clamp( self.Radius*11.25, 170, 180)
+
+	--most of atgms
+	elseif self.Radius > 5 and self.Radius <= 10 then
+
+		closeDist = math.Clamp( self.Radius*7.25, 100 , 150)
+		MidDist = math.Clamp( self.Radius*9.25, 150 , 170)
+		FarDist = math.Clamp( self.Radius*11.25, 170 ,180)
+
+	--aim9
+	elseif self.Radius > 10 and self.Radius <= 15 then
+
+		closeDist = math.Clamp( self.Radius*7.25, 100 , 150)
+		MidDist = math.Clamp( self.Radius*9.25, 150 , 170)
+		FarDist = math.Clamp( self.Radius*11.25, 170 ,180)
+
+	--aim 120
+	elseif self.Radius > 15 and self.Radius <= 20 then
+
+		closeDist = math.Clamp( self.Radius*6, 105 , 105)
+		MidDist = math.Clamp( self.Radius*8, 150 , 150)
+		FarDist = math.Clamp( self.Radius*10, 170 ,170)
+
+	--big booms
+	elseif self.Radius > 20 then
+
+		closeDist = math.Clamp( self.Radius*6, 150 , 150)
+		MidDist = math.Clamp( self.Radius*8, 170 , 170)
+		FarDist = math.Clamp( self.Radius*10, 180 ,180)
+
+	end
 
 	local closepitch =  math.Clamp(1000/self.Radius,25,130)
 
+	--print('----------Resolution----------')
 	--print('CloseDist: '..closeDist)
 	--print('MidDist: '..MidDist)
 	--print('FarDist: '..FarDist)
@@ -158,13 +205,15 @@ function EFFECT:Init( data )
 		end
 	end
 
+
 	--MidDist sound
 	--print('MidDist activated!')
-	sound.Play( "acf_other/explosions/ambient/dist_medium_"..math.random(1,3)..".wav", self.Origin , MidDist, math.Clamp(closepitch,95,100), 255)
+	sound.Play( "acf_other/explosions/ambient/dist_medium_"..math.random(1,3)..".wav", self.Origin , MidDist, math.Clamp(closepitch,95,130), 255)
 
 	--FarDist sound
 	--print('FarDist activated!')
-	sound.Play( "acf_other/explosions/ambient/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,100), 255)
+	sound.Play( "acf_other/explosions/ambient/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,130), 255)
+
 
 
 	self.Emitter:Finish()
@@ -177,12 +226,15 @@ function EFFECT:Core()
 	local Radius = self.Radius
 	local PMul = self.ParticleMul
 
-	if (Radius*PMul)/2 > 10 then --Smoke Embers
-		for i=0, (0.5*Radius*PMul)^0.7 do	
-			--ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(math.Rand(-Radius*5,Radius*5),math.Rand(-Radius*5,Radius*5),20+Radius), Angle(math.Rand(-10,10),0,math.Rand(-10,10))) --self.DirVec:Angle()
-			ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(0,0,5+Radius*5), Angle(math.Rand(-45,45),0,math.Rand(-45,45))) --self.DirVec:Angle()
-		end
-	end
+	--if explosion is due to the ammo, fuel, create smoke embers
+	--if self.Entity:IsValid() and (self.Entity:GetClass() == 'acf_ammo' or self.Entity:GetClass() == 'acf_fuel') then
+	--	if (Radius*PMul)/2 > 10 then --Smoke Embers
+	--		for i=0, (0.5*Radius*PMul)^0.1 do	
+	--			--ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(math.Rand(-Radius*5,Radius*5),math.Rand(-Radius*5,Radius*5),20+Radius), Angle(math.Rand(-10,10),0,math.Rand(-10,10))) --self.DirVec:Angle()
+	--			ParticleEffect( "EmberCluster", self.Origin+Vector(0,0,5+Radius*5), Angle(math.Rand(-45,45),0,math.Rand(-45,45))) --self.DirVec:Angle()
+	--		end
+	--	end
+	--end
 
 	local RandColor = 0
 
