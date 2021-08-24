@@ -15,7 +15,7 @@ ACE requires **[NADMOD](https://steamcommunity.com/workshop/filedetails/?id=1592
 
 ## Workshop edition
 
-We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2512558788)** branch! Just go and subscribe it
+We have a **[workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2512558788)** branch! If you want, go and download it there instead!
 
 ## Manual Installation
 
