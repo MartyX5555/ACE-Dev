@@ -277,7 +277,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			else
 
 				--reduced damage to era if detonation is from another era by 85%. So we avoid a chain reaction
-				if Gun:IsValid() then
+				if IsValid(Gun) then
 					if Gun:GetClass() == 'prop_physics' then
 						local mat = Gun.ACF and Gun.ACF.Material
 						if mat == 4 then
@@ -286,7 +286,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					end
 				end
 
-				BlastRes = ACF_Damage ( Tar , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
+				BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
 				FragRes = ACF_Damage ( Tar , FragKE , FragAera*FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 				
 				
