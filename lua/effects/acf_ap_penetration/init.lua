@@ -26,9 +26,12 @@ local GunTable = ACFEnts.Guns
 	local soundlvl = self.Mass*100
 	--print('penetration sound level: '..soundlvl)
 	--print('velocity: '..self.Velocity)
-	
-	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,5)..".wav", Impact.HitPos, math.Clamp( soundlvl ,25,85), math.Clamp(self.Velocity*0.01,25,150), 1 )
-	
+
+	sound.Play( "/acf_other/penetratingshots/pen"..math.random(1,6)..".wav", Impact.HitPos, math.Clamp( soundlvl ,70,85), math.Clamp(self.Velocity*1,90,150), 0.65 )
+	sound.Play( "/acf_other/penetratingshots/0000029"..math.random(2,4)..".wav", Impact.HitPos, math.Clamp( soundlvl ,70,85), math.Clamp(self.Velocity*0.01,90,150), 1 )
+
+
+
 	--self.Entity:EmitSound( "ambient/explosions/explode_1.wav" , 100 + self.Radius*10, 200 - self.Radius*10 )
 	
 	-- Material Enum
@@ -59,7 +62,7 @@ local GunTable = ACFEnts.Guns
 		self:Prop()
 	end
 
-	self.Emitter:Finish()
+	if self.Emitter then self.Emitter:Finish() end
  end   
 
 function EFFECT:Metal()

@@ -215,9 +215,7 @@ function EFFECT:Init( data )
 	sound.Play( "acf_other/explosions/ambient/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,130), 255)
 
 
-
-	self.Emitter:Finish()
-
+	if self.Emitter then self.Emitter:Finish() end
 end   
 
 

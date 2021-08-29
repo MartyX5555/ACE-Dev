@@ -351,7 +351,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
 			--little sound optimization
 			if i < math.max(math.Round(Spall/2), 1) then
-				sound.Play('acf_other/penetratingshots/0000029'..math.Round(math.random(5, 7))..'.wav', HitPos, 75, 100, 0.5)
+				sound.Play('/acf_other/penetratingshots/pen'..math.Round(math.random(1, 6))..'.wav', spallPos, 75, 100, 0.5)
 			end
 
 		end
@@ -579,7 +579,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
 			--little sound optimization
 			if i < math.max(math.Round(Spall/4), 1) then
-				sound.Play('acf_other/penetratingshots/0000029'..math.Round(math.random(5, 7))..'.wav', spallPos, 75, 100, 0.5)
+				sound.Play('/acf_other/penetratingshots/pen'..math.Round(math.random(1, 6))..'.wav', spallPos, 75, 100, 0.5)
 			end
 		end
 	end
