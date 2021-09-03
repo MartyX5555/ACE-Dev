@@ -18,7 +18,7 @@ ACF_defineGunClass("SBC", {
 
 ACF_defineGun("50mmSBC", {
 	name = "50mm Smoothbore Cannon",
-	desc = "An small, 50mm Smoothbore cannon, being able to be fitted into a very light tank, it's a decent weapon if you want to create a hole on those ww2 tonks.",
+	desc = "A small, 50mm Smoothbore cannon, being able to be fitted into a very light tank, it's a decent weapon if you want to create a hole on those ww2 tonks.",
 	model = "models/tankgun_new/tankgun_50mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
@@ -63,7 +63,7 @@ ACF_defineGun("100mmSBC", {
 	
 ACF_defineGun("120mmSBC", {
 	name = "120mm Smoothbore Cannon",
-	desc = "120mm Smoothbore, powerful general purpose main battle tank cannon",
+	desc = "120mm Smoothbore cannon, powerful general purpose main battle tank cannon",
 	model = "models/tankgun_new/tankgun_120mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
@@ -78,7 +78,7 @@ ACF_defineGun("120mmSBC", {
 	
 ACF_defineGun("140mmSBC", {
 	name = "140mm Smoothbore Cannon",
-	desc = "140mm Smoothbore, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
+	desc = "140mm Smoothbore cannon, heavy railgun like cannon spawned out of a hatred of 60 tons. 'Your litterly removing the armor tool' -Anon",
 	model = "models/tankgun_new/tankgun_140mm.mdl",
 	canparent = true,
 	gunclass = "SBC",
