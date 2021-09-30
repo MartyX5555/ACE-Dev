@@ -38,7 +38,7 @@ local AllowedEnts = {
 -- insert any new entity to the Contraption List
 hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 	
-	if Ent:IsValid() then 
+	if IsValid(Ent) then 
 	    
 
 	    -- check if ent class is in whitelist
@@ -60,7 +60,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
                 --print('Tracking radar registered count: '..table.Count( ACE.radarEntities ))				
 			    
 				for id, ent in pairs(ACE.radarEntities) do
-		        ACE.radarIDs[ent] = id
+		        	ACE.radarIDs[ent] = id
 	            end
 				
 			end

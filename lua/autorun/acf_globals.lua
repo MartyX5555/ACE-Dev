@@ -12,6 +12,10 @@ print('[ACE | INFO]- loading ACE. . .')
 ACE = {}
 ACE.ArmorTypes = {}
 
+ACF.Weapons = {}
+ACF.Classes = {}
+ACF.RoundTypes = {}
+ACF.IdRounds = {}	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 --[[----------------------------
        ServerSide Convars 
@@ -191,10 +195,8 @@ AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 
 include("acf/shared/acfloader.lua")
-include("acf/shared/acf_missileloader.lua")
 include("acf/shared/armor/ace_material.lua")
 include("autorun/acf_missile/folder.lua")
-
 
 if SERVER then
 
@@ -633,22 +635,12 @@ AddCSLuaFile()
 AddCSLuaFile("autorun/acf_missile/folder.lua")
 include("autorun/acf_missile/folder.lua")
 
-AddCSLuaFile("acf/shared/acf_missileloader.lua")
-include("acf/shared/acf_missileloader.lua")
-
 AddCSLuaFile("autorun/client/cl_acfm_menuinject.lua")
 AddCSLuaFile("autorun/client/cl_acfm_effectsoverride.lua")
 AddCSLuaFile("autorun/printbyname.lua")
 AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
-AddCSLuaFile("includes/modules/markdown.lua")
-
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
-
-
-
-
-
 
 print('[ACE | INFO]- Done!')

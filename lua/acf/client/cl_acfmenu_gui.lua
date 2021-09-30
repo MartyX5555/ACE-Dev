@@ -18,8 +18,8 @@ function PANEL:Init( )
 
     -- //Tables definition
 	self.WeaponData = ACF.Weapons
-	radarClasses = ACF.Classes.Radar
-	radars = ACF.Weapons.Radar
+	radarClasses = list.Get("ACFClasses").Radar
+	radars = list.Get( "ACFEnts").Radar
 	
 --[[=========================
    Table distribution
@@ -354,23 +354,25 @@ function PANEL:Init( )
 	
 	local nods = {}
 	
-	for k, v in pairs(radarClasses) do  --calls subfolders		
-		nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
-	end
-    
-	for Type, Ent in pairs(radars) do --calls subfolders content	
-		local curNode = nods[Ent.class]		
-		if curNode then
-			local EndNode = curNode:AddNode( Ent.name or "No Name" )
-			EndNode.mytable = Ent
-				
-			function EndNode:DoClick()
-				RunConsoleCommand( "acfmenu_type", self.mytable.type )
-				acfmenupanel:UpdateDisplay( self.mytable )
-			end	
-				EndNode.Icon:SetImage( "icon16/newspaper.png" )
+	if radarClasses then
+		for k, v in pairs(radarClasses) do  --calls subfolders		
+			nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
 		end
-	end --end radar folder
+    
+		for Type, Ent in pairs(radars) do --calls subfolders content	
+			local curNode = nods[Ent.class]		
+			if curNode then
+				local EndNode = curNode:AddNode( Ent.name or "No Name" )
+				EndNode.mytable = Ent
+				
+				function EndNode:DoClick()
+					RunConsoleCommand( "acfmenu_type", self.mytable.type )
+					acfmenupanel:UpdateDisplay( self.mytable )
+				end	
+					EndNode.Icon:SetImage( "icon16/newspaper.png" )
+			end
+		end --end radar folder
+	end
 
 --[[=========================
    Settings folder
