@@ -745,8 +745,8 @@ function ContactGUICreate( Table )
 	acfmenupanel["CData"]["Contact"]:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Contact"] )
 	
-	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about what stuff and why we should include it, our discord is a good place for that.')
-	acfmenupanel:CPanelText('desc2','Don´t forget to check out our wiki, contains valuable information about how to use this addon. Its on WIP, but expect more content on future.')
+	acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about new stuff to be added, our discord is a good place.')
+	acfmenupanel:CPanelText("desc2","Don't forget to check out our wiki, contains valuable information about how to use this addon. It's on WIP, but expect more content in future.")
 	
 	local Discord = vgui.Create("DButton")
 	Discord:SetText( "Join our Discord!" )
@@ -766,6 +766,15 @@ function ContactGUICreate( Table )
 	end
 	acfmenupanel.CustomDisplay:AddItem( Wiki )
 	
+	local Guide = vgui.Create("DButton")
+	Guide:SetText( "ACE guidelines" )
+	Guide:SetPos(0,0)
+	Guide:SetSize(250,30)
+	Guide.DoClick = function()
+	    gui.OpenURL( 'https://docs.google.com/document/d/1yaHq4Lfjad4KKa0Jg9s-5lCpPVjV7FE4HXoGaKpi4Fs/edit' )
+	end
+	acfmenupanel.CustomDisplay:AddItem( Guide )
+
 end
 
 --[[=========================

@@ -12,39 +12,22 @@ Round.desc = ACFTranslation.ShellFLR[2]
 Round.netid = 8 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
+
+	local ent = ents.Create( "ace_flare" )
 	
---	ACF_CreateBullet( BulletData )
-	
---	local bdata = ACF.Bullet[BulletData.Index] or {}
+	if ( IsValid( ent ) ) then
 
+		ent:SetPos( BulletData.Pos )
+		ent:SetAngles( BulletData.Flight:Angle() )
+		ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
+		ent:Spawn()
+		ent:SetOwner( Gun.Owner )
 
---	if table.IsEmpty( bdata ) then return false end
-	
---	bdata.CreateTime = SysTime()
-	
---	ACFM_RegisterFlare(bdata)
+		local phys = ent:GetPhysicsObject()
+		phys:SetVelocity( BulletData.Flight )
+		ent.Heat = (BulletData.FillerMass or 1) * 10000
 
-
-local ent = ents.Create( "ace_flare" )
-	
-if ( IsValid( ent ) ) then
-
-
-	ent:SetPos( BulletData.Pos )
-	ent:SetAngles( BulletData.Flight:Angle() )
-	ent.Life = (BulletData.FillerMass or 1) / (0.4*ACFM.FlareBurnMultiplier)
-	ent:Spawn()
-	ent:SetOwner( Gun.Owner )
-
-	local phys = ent:GetPhysicsObject()
-	phys:SetVelocity( BulletData.Flight )
-	ent.Heat = (BulletData.FillerMass or 1) * 10000
-
---	Data.BurnRate = Data.FrAera * ACFM.FlareBurnMultiplier
---	Data.DistractChance = (2 / math.pi) * math.atan(Data.FrAera * ACFM.FlareDistractMultiplier)
---	Data.BurnTime = Data.FillerMass / Data.BurnRate
-
-end
+	end
 
 end
 
@@ -184,14 +167,7 @@ function Round.endflight( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endeffect( Effect, Bullet )
-	
-	-- local Radius = (Bullet.FillerMass)^0.33*8*39.37
-	-- local Flash = EffectData()
-		-- Flash:SetOrigin( Bullet.SimPos )
-		-- Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-		-- Flash:SetRadius( math.max( Radius, 1 ) )
-	-- util.Effect( "ACF_Scaled_Explosion", Flash )
-	
+
 end
 
 function Round.pierceeffect( Effect, Bullet )

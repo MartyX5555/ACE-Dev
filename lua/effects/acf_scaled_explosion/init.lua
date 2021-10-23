@@ -21,7 +21,7 @@ function EFFECT:Init( data )
 
 	local WaterTr = { }
 
-		local startposition = self.Origin + Vector(0,0,100 * self.Radius)
+		local startposition = self.Origin + Vector(0,0,200 * self.Radius)
 		local endposition = self.Origin + Vector(0,0,1)
 
 		WaterTr.start = startposition
@@ -29,13 +29,14 @@ function EFFECT:Init( data )
 		WaterTr.mask = MASK_WATER
 	local Water = util.TraceLine( WaterTr )
 
-	debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
-	debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))
+	--debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
+	--debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))
 
 	self.HitWater = false
 	self.UnderWater = false
 	self.Normal = Ground.HitNormal			
-	
+
+	--print('Radius: '..self.Radius)
 	-- Material Enum
 	-- 65  ANTLION
 	-- 66 BLOODYFLESH
@@ -58,9 +59,6 @@ function EFFECT:Init( data )
 
 	local Mat = Ground.MatType
 	local SmokeColor = Vector(100,100,100)
-
-	--print(Mat)
-	--print( Ground.HitWorld )
 
 	if Water.HitWorld then
 		if not Water.StartSolid then
@@ -114,112 +112,15 @@ function EFFECT:Init( data )
 	end
 
 	--Main explosion
-	self:Core()
+	self:Core( self.HitWater )
 
-	--print('Current Radius Explosion: '..self.Radius)
+	ACEE_SBlast( self.Origin, self.Radius, self.HitWater )
 
-	local closeDist
-	local MidDist
-	local FarDist
-
-	--Distances between each sound level MUST NOT too long, otherwise you will not hear anything at certain distance. Reason of why certain explosions sounds are weak at far distances 
-	--TODO: Remove all this below and build something like acf sound proyect (i did some tests, but i don't have planned to include it yet, maybe next update. Just Admit, it's good enough anyways)
-	--Temporal: make level sound divided into sections, tiny, small, medium and big booms. Maybe there i can adjust all sound scales correctly
-
-	--small arm 
-	if self.Radius <= 3 then
-
-		closeDist = math.Clamp( self.Radius*5, 75, 90 )
-		MidDist = math.Clamp( self.Radius*5.5, 85, 105 )
-		FarDist = math.Clamp( self.Radius*6, 95, 115 )
-
-	--grenade & other small calibers
-	elseif self.Radius > 3 and self.Radius <= 5 then
-
-		closeDist = math.Clamp( self.Radius*7.25, 100, 150)
-		MidDist = math.Clamp( self.Radius*9.25, 150, 170)
-		FarDist = math.Clamp( self.Radius*11.25, 170, 180)
-
-	--most of atgms
-	elseif self.Radius > 5 and self.Radius <= 10 then
-
-		closeDist = math.Clamp( self.Radius*7.25, 100 , 150)
-		MidDist = math.Clamp( self.Radius*9.25, 150 , 170)
-		FarDist = math.Clamp( self.Radius*11.25, 170 ,180)
-
-	--aim9
-	elseif self.Radius > 10 and self.Radius <= 15 then
-
-		closeDist = math.Clamp( self.Radius*7.25, 100 , 150)
-		MidDist = math.Clamp( self.Radius*9.25, 150 , 170)
-		FarDist = math.Clamp( self.Radius*11.25, 170 ,180)
-
-	--aim 120
-	elseif self.Radius > 15 and self.Radius <= 20 then
-
-		closeDist = math.Clamp( self.Radius*6, 105 , 105)
-		MidDist = math.Clamp( self.Radius*8, 150 , 150)
-		FarDist = math.Clamp( self.Radius*10, 170 ,170)
-
-	--big booms
-	elseif self.Radius > 20 then
-
-		closeDist = math.Clamp( self.Radius*6, 150 , 150)
-		MidDist = math.Clamp( self.Radius*8, 170 , 170)
-		FarDist = math.Clamp( self.Radius*10, 180 ,180)
-
-	end
-
-	local closepitch =  math.Clamp(1000/self.Radius,25,130)
-
-	--print('----------Resolution----------')
-	--print('CloseDist: '..closeDist)
-	--print('MidDist: '..MidDist)
-	--print('FarDist: '..FarDist)
-
-	--print('Current Pitch: '..closepitch)
- 
-	--Defined when an explosion is big
-	--CloseDist sound
-	if self.Radius >= 10 then
-		if not self.HitWater and not self.UnderWater then
-			sound.Play( "acf_other/explosions/ambient/dist_close_"..math.random(1,3)..".wav", self.Origin , closeDist, closepitch, 255)
-
-			if self.Radius >= 20 then
-				sound.Play("ambient/explosions/explode_5.wav", self.Origin, closeDist , closepitch, 1)
-
-			end
-		elseif self.HitWater and not self.UnderWater then
-			sound.Play( "ambient/water/water_splash"..math.random(1,3)..".wav", self.Origin, closeDist, closepitch-closepitch*0.25, math.Clamp(300 - self.Radius*12,100,255))
-			sound.Play( "^weapons/underwater_explode3.wav", self.Origin, closeDist, closepitch, math.Clamp(300 - self.Radius*12,100,255))
-
-		else
-			sound.Play( "^weapons/underwater_explode3.wav", self.Origin, closeDist, closepitch, math.Clamp(300 - self.Radius*12,100,255))
-
-		end
-	else
-		--Defined if an explosion is small
-		if not self.HitWater then
-			sound.Play( "acf_other/explosions/cookoff/cookOff"..math.random(1,4)..".wav", self.Origin , closeDist, closepitch, math.Clamp(300 - self.Radius*25,15,255))
-
-		end
-	end
-
-
-	--MidDist sound
-	--print('MidDist activated!')
-	sound.Play( "acf_other/explosions/ambient/dist_medium_"..math.random(1,3)..".wav", self.Origin , MidDist, math.Clamp(closepitch,95,130), 255)
-
-	--FarDist sound
-	--print('FarDist activated!')
-	sound.Play( "acf_other/explosions/ambient/dist_far_"..math.random(1,3)..".wav", self.Origin , FarDist, math.Clamp(closepitch,95,130), 255)
-
-
-	if self.Emitter then self.Emitter:Finish() end
+	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end   
 
 
-function EFFECT:Core()
+function EFFECT:Core( HitWater )
 
 	local Radius = self.Radius
 	local PMul = self.ParticleMul
@@ -234,22 +135,25 @@ function EFFECT:Core()
 	--	end
 	--end
 
-	local RandColor = 0
+	--print('Total de emitters: '..self.Emitter:GetNumActiveParticles())
 
-	for i=0, 1*Radius*PMul * 2 do --Explosion Core
+	local RandColor = 0
+	local WaterColor = Color(255,255,255,100)
+
+	for i=0, 1*Radius*PMul * 3 do --Explosion Core
 	 
 		local Flame = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin)
 		if (Flame) then
 			Flame:SetVelocity( VectorRand() * math.random(50,150*Radius) )
 			Flame:SetLifeTime( 0 )
 			Flame:SetDieTime( 0.2 )
-			Flame:SetStartAlpha( math.Rand( 200, 255 ) )
+			Flame:SetStartAlpha( math.Rand( 220, 255 ) )
 			Flame:SetEndAlpha( 0 )
-			Flame:SetStartSize( 15*Radius )
-			Flame:SetEndSize( 20*Radius )
+			Flame:SetStartSize( 10*Radius )
+			Flame:SetEndSize( 15*Radius )
 			Flame:SetRoll( math.random(120, 360) )
 			Flame:SetRollDelta( math.Rand(-1, 1) )			
-			Flame:SetAirResistance( 300 ) 			 
+			Flame:SetAirResistance( 350 ) 			 
 			Flame:SetGravity( Vector( 0, 0, 4 ) ) 			
 			Flame:SetColor( 255,255,255 )
 		end
@@ -280,11 +184,11 @@ function EFFECT:Core()
 
 	for i=0, 2*Radius*PMul do
 
-		local Whisp = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin + VectorRand() * 10 )
+		local Whisp = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin + VectorRand() * Radius * 11 )
 		if (Whisp) then
 			Whisp:SetVelocity(VectorRand() * math.random( 50,150*Radius) )
 			Whisp:SetLifeTime( 0 )
-			Whisp:SetDieTime( math.Rand( 3 , 5 )*Radius/3  )
+			Whisp:SetDieTime( math.Rand( 0.1 , 3 )*Radius/3  )
 			Whisp:SetStartAlpha( math.Rand( 125, 150 ) )
 			Whisp:SetEndAlpha( 0 )
 			Whisp:SetStartSize( 10*Radius )
@@ -292,10 +196,16 @@ function EFFECT:Core()
 			Whisp:SetRoll( math.Rand(150, 360) )
 			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Whisp:SetAirResistance( 100 ) 			 
-			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -50 ) )
+			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -70 ) )
 
 			RandColor = 100-math.random( 0 , 45 )
-			Whisp:SetColor( RandColor,RandColor,RandColor )		
+
+			if HitWater then
+				RandColor = math.random( 0 , 50 )
+				Whisp:SetColor( WaterColor.r-RandColor, WaterColor.g-RandColor, WaterColor.b-RandColor, 255 )
+			else
+				Whisp:SetColor( RandColor, RandColor, RandColor )
+			end		
 		end
 	end
 
@@ -341,6 +251,11 @@ function EFFECT:Water( Water )
 	local Density = 15*Radius
 	local Angle = Water.HitNormal:Angle()
 
+	local Dist = math.max(math.abs((self.Origin - Water.HitPos):Length())*0.01,1)
+
+	--print('R: '..Radius)
+	--print('D: '..Dist)
+
 	for i=0, Density*self.ParticleMul do	
 
 		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
@@ -373,7 +288,7 @@ function EFFECT:Water( Water )
 			local Randvec = VectorRand()
 			local absvec = math.abs(Randvec.y)
 
-			Whisp:SetVelocity(Vector(Randvec.x,Randvec.y,absvec) * math.random( 100*Radius,150*Radius) * Vector(0.15,0.15,1))
+			Whisp:SetVelocity(Vector(Randvec.x,Randvec.y,absvec) * math.random( 100*Radius/Dist,150*Radius/Dist) * Vector(0.15,0.15,1))
 			Whisp:SetLifeTime( 0 )
 			Whisp:SetDieTime( math.Rand( 3 , 5 )*Radius/3  )
 			Whisp:SetStartAlpha( math.Rand( 100, 125 ) )
@@ -536,14 +451,6 @@ function EFFECT:Airburst( SmokeColor )
 			Debris:SetColor( RandColor,RandColor,RandColor )
 		end
 	end
-	
-		for i=0, (2*Radius*self.ParticleMul)^0.7 do	
-	--		ParticleEffect( "ACF_BlastEmber", self.Origin+Vector(math.Rand(-Radius*5,Radius*5),math.Rand(-Radius*5,Radius*5),20+Radius), Angle(math.Rand(-10,10),0,math.Rand(-10,10))) --self.DirVec:Angle()
-			ParticleEffect( "ACF_AirburstDebris", self.Origin+Vector(0,0,0), self.DirVec:Angle()) --self.DirVec:Angle()
-		end
-
-
-
 end
    
 /*---------------------------------------------------------

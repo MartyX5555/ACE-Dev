@@ -543,7 +543,6 @@ end
 
 
 function ENT:Think()
-	
 
 	if self.Launched and not self.MissileDetonated then
         

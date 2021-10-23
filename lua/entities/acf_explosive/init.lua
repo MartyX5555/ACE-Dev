@@ -268,7 +268,7 @@ function ENT:Detonate(overrideBData)
 		   bdata.NoOcc = 	self
 		   bdata.Gun =     self
 		
-		   debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
+		   --debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
 		
 		   if bdata.Filter then bdata.Filter[#bdata.Filter+1] = self
 		   else bdata.Filter = {self} end
@@ -279,9 +279,7 @@ function ENT:Detonate(overrideBData)
 		   bdata.HandlesOwnIteration = nil
 
 		   ACFM_BulletLaunch(bdata)
-		   
-		
-
+		  
 		   self:SetSolid(SOLID_NONE)
 		   phys:EnableMotion(false)
 		
@@ -300,6 +298,7 @@ end
 --Issues: its possible that bullets created from bomb are creating ricochets (or the bomb itself)
 --Once FillerMass is greater than 1, nan is presented. Idk why but it does.
 function ENT:ClusterNew(bdata)
+
 	local Bomblets = math.Clamp(math.Round(bdata.FillerMass*1.5),3,30)    --30 bomblets original
 	local MuzzlePos = self:LocalToWorld(Vector(10,0,0))
 	local MuzzleVec = self:GetForward()
@@ -315,7 +314,7 @@ function ENT:ClusterNew(bdata)
 	self.BulletData["Caliber"]			= math.Clamp(bdata.Caliber/Bomblets*10,0.05,bdata.Caliber*0.8) --Controls visual size, does nothing else
 	self.BulletData["Crate"]			= bdata.Crate
 	self.BulletData["DragCoef"]			= bdata.DragCoef/Bomblets/2
-	self.BulletData["FillerMass"]		= bdata.FillerMass/Bomblets/2   --nan armor ocurrs when this value is > 1
+	self.BulletData["FillerMass"]		= math.min( bdata.FillerMass/Bomblets/2,1 )   --nan armor ocurrs when this value is > 1
 	
 	--print(bdata.FillerMass)
 	--print(Bomblets)
@@ -347,31 +346,32 @@ function ENT:ClusterNew(bdata)
 	self.BulletData["ShovePower"]		= bdata.ShovePower
 	self.BulletData["Tracer"]			= 0
 	if bdata.Type != "HEAT" and bdata.Type != "AP" and bdata.Type != "SM" and bdata.Type != "HE" and bdata.Type != "APHE" then
-	self.BulletData["Type"]				= "AP" 
+		self.BulletData["Type"]				= "AP" 
 	else
-	self.BulletData["Type"]				= bdata.Type
+		self.BulletData["Type"]				= bdata.Type
 	end
 	
 
-	if(self.BulletData.Type == "HEAT") then
-	self.BulletData["SlugMass"]			= bdata.SlugMass/(Bomblets/6)
-	self.BulletData["SlugCaliber"]		= bdata.SlugCaliber/(Bomblets/6)
-	self.BulletData["SlugDragCoef"]		= bdata.SlugDragCoef/(Bomblets/6)
-	self.BulletData["SlugMV"]			= bdata.SlugMV/(Bomblets/6)
-	self.BulletData["SlugPenAera"]		= bdata.SlugPenAera/(Bomblets/6)
-	self.BulletData["SlugRicochet"]		= bdata.SlugRicochet
-	self.BulletData["ConeVol"] = bdata.SlugMass*1000/7.9/(Bomblets/6)
-	self.BulletData["CasingMass"] = self.BulletData.ProjMass + self.BulletData.FillerMass + (self.BulletData.ConeVol*1000/7.9)
-	self.BulletData["BoomFillerMass"] = self.BulletData.FillerMass/1.5
-	local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
-	local  MaxPen = (SlugEnergy.Penetration/self.BulletData.SlugPenAera)*ACF.KEtoRHA
-	print(MaxPen)
-	
+	if self.BulletData.Type == "HEAT" then
+
+		self.BulletData["SlugMass"]			= bdata.SlugMass/(Bomblets/6)
+		self.BulletData["SlugCaliber"]		= bdata.SlugCaliber/(Bomblets/6)
+		self.BulletData["SlugDragCoef"]		= bdata.SlugDragCoef/(Bomblets/6)
+		self.BulletData["SlugMV"]			= bdata.SlugMV/(Bomblets/6)
+		self.BulletData["SlugPenAera"]		= bdata.SlugPenAera/(Bomblets/6)
+		self.BulletData["SlugRicochet"]		= bdata.SlugRicochet
+		self.BulletData["ConeVol"] = bdata.SlugMass*1000/7.9/(Bomblets/6)
+		self.BulletData["CasingMass"] = self.BulletData.ProjMass + self.BulletData.FillerMass + (self.BulletData.ConeVol*1000/7.9)
+		self.BulletData["BoomFillerMass"] = self.BulletData.FillerMass/1.5
+
+		--local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
+		--local  MaxPen = (SlugEnergy.Penetration/self.BulletData.SlugPenAera)*ACF.KEtoRHA
+		--print(MaxPen)
+
 	end
 
 
 		self.FakeCrate = ents.Create("acf_fakecrate2")
-
 
 		self.FakeCrate:RegisterTo(self.BulletData)
 		
@@ -403,10 +403,6 @@ function ENT:ClusterNew(bdata)
 			end
 		end)
 	end
-end
-
-function ENT:CreateShell()
-	--You overwrite this with your own function, defined in the ammo definition file
 end
 
 --[[
@@ -461,7 +457,6 @@ end
 
 
 function ENT:OnTraceContact(trace)
-
 end
 
 

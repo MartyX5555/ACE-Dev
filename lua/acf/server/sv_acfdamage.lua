@@ -456,7 +456,6 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 				--print('distToFront: '..distToFront)
 				--print('BackDists[iteration - 1]: '..BackDists[iteration - 1])
 				--print('DISTS DIFF: '..distToFront - BackDists[iteration - 1])
-				--print('ESTA OVERLAPEADO SI ES +, NO LO ESTA SI ES NEGATIVO')
 
 				--check if we have void
 				if space > 1 then
@@ -520,9 +519,9 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
 		end
 
 		--for red traceback
-		debugoverlay.Line( traceback.StartPos+Vector(0,0,#EntsToHit*0.1), traceback.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(math.random(100,255),0,0) )
+		--debugoverlay.Line( traceback.StartPos+Vector(0,0,#EntsToHit*0.1), traceback.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(math.random(100,255),0,0) )
 		--for green tracefront
-		debugoverlay.Line( tracefront.StartPos+Vector(0,0,#EntsToHit*0.1), tracefront.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(0,math.random(100,255),0) )
+		--debugoverlay.Line( tracefront.StartPos+Vector(0,0,#EntsToHit*0.1), tracefront.HitPos+Vector(0,0,#EntsToHit*0.1), 20 , Color(0,math.random(100,255),0) )
 	end
 
 	local ArmorSum = 0
@@ -724,20 +723,21 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 	
-	local MaxDig = (( Energy.Penetration * 1.5 / Bullet.PenAera ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4  --adding 0.5x more energy pen cuz some low caliber guns like racs with 60mm pen are supposed to break though thin walls.
+	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenAera ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4  --adding 0.5x more energy pen cuz some low caliber guns like racs with 60mm pen are supposed to break though thin walls.
 	
 	--print('Max Dig: '..MaxDig..'\nEnergy Pen: '..Energy.Penetration..'\n')
 	
 	local HitRes = {Penetrated = false, Ricochet = false}
-			
+	local TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+
 	local DigRes = util.TraceHull( { 
 
-	
+		
 		start = HitPos + Bullet.Flight:GetNormalized()*0.1,
 		endpos = HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1),
 		filter = Bullet.Filter,
-		mins = Vector( -10, -10, -10 ),
-		maxs = Vector( 10, 10, 10 ), 
+		mins = Vector( -TROffset, -TROffset, -TROffset ),
+		maxs = Vector( TROffset, TROffset, TROffset ), 
 		mask = MASK_SOLID_BRUSHONLY
 		
 		} )
@@ -938,9 +938,10 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local phys = Debris:GetPhysicsObject() 
 	local physent = Entity:GetPhysicsObject()
 
-	if phys:IsValid() and physent:IsValid() then	
-		phys:SetMass(physent:GetMass())
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 25, Debris:GetPos()+VectorRand()*600 ) 		   
+	if phys:IsValid() and physent:IsValid() then
+		phys:SetDragCoefficient( -50 )	
+		phys:SetMass( physent:GetMass() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:GetPos()+VectorRand()*10 ) 		   
 	end
 
 	return Debris
@@ -971,19 +972,15 @@ function ACF_APKill( Entity , HitVector , Power )
 		Debris:SetColor(Color(120,120,120,255))
 		Debris:Spawn()
 		Debris:Activate()
-		
-	local BreakEffect = EffectData()				
-		BreakEffect:SetOrigin( Entity:GetPos() )
-		BreakEffect:SetScale( 20 )
-	util.Effect( "WheelDust", BreakEffect )	
 
 	--Applies force to this debris	
 	local phys = Debris:GetPhysicsObject() 
 	local physent = Entity:GetPhysicsObject()
 
-	if phys:IsValid() and physent:IsValid() then	
-		phys:SetMass(physent:GetMass())
-		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*20 )		
+	if phys:IsValid() and physent:IsValid() then
+		phys:SetDragCoefficient( -50 )	
+		phys:SetMass( physent:GetMass() )
+		phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*10)		
 	end
 
 	return Debris

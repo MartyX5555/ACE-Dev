@@ -304,22 +304,6 @@ end
 
 
 function ENT:SetStatusString()
---[[
-	local phys = self:GetPhysicsObject()
-	
-	if(!IsValid(phys)) then
-		self:SetNWString("Status", "Something truly horrifying happened to this rack - it has no physics object.")
-		self:GetOverlayText()
-		return
-	end
-	
-    if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)-1) then
-        self:SetNWString("Status", "Underweight! (should be " .. tostring((self.LegalWeight or self.Mass)-1) .. " kg)")
-		self:GetOverlayText()
-        return
-    end
-]]--    
-
     
 	local Missile = self:PeekMissile()
 	
@@ -344,10 +328,6 @@ function ENT:SetStatusString()
     self:SetNWString("Status", "")
 	self:GetOverlayText()
     
-
-    
-	
-	
 end
 
 
@@ -365,9 +345,6 @@ function ENT:TrimDistantCrates()
     end
     
 end
-
-
-
 
 function ENT:UpdateRefillBonus()
     
@@ -597,6 +574,8 @@ end
 
 function ENT:AddMissile()
 
+    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+
     self:TrimNullMissiles()
     
     local Ammo = table.Count(self.Missiles)
@@ -604,8 +583,6 @@ function ENT:AddMissile()
     
     local Crate = self:FindNextCrate(true)
     if not IsValid(Crate) then return false end
-    
-    local NextIdx = #self.Missiles
     
     local ply = self.Owner
     
@@ -615,46 +592,50 @@ function ENT:AddMissile()
     missile.Launcher = self
     
     local BulletData = ACFM_CompactBulletData(Crate)
-    
     BulletData.IsShortForm = true    
     BulletData.Owner = ply
     missile:SetBulletData(BulletData)
     
+    --For pod based launchers
     local rackmodel = ACF_GetRackValue(self.Id, "rackmdl") or ACF_GetGunValue(BulletData.Id, "rackmdl")
     if rackmodel then 
         missile:SetModelEasy( rackmodel ) 
         missile.RackModelApplied = true
     end
     
-    missile:SetParent(self)
-	missile:SetParentPhysNum(0)
-	
-	timer.Simple(0.02,	
-		function() 
-			if IsValid(missile) then 
-				local attach, muzzle = self:GetMuzzle(NextIdx, missile)
-			
-				if(IsValid(self:GetParent())) then
-					if table.Count(self:GetAttachments()) == 0 then
-						muzzle.Pos = Vector(0,0,0)
-					end
-					missile:SetPos(muzzle.Pos)
-					missile:SetAngles(self:GetAngles())
-				else
-					missile:SetPos(self:WorldToLocal(muzzle.Pos))
-					missile:SetAngles(muzzle.Ang)
+    local NextIdx = #self.Missiles
+	timer.Simple(0.02, function() 
+		if IsValid(missile) then 
+			local attach, muzzle = self:GetMuzzle( NextIdx , missile )
+				
+			--print(muzzle.Pos)
+
+			if IsValid(self:GetParent()) then
+
+				if table.Count(self:GetAttachments()) == 0 then
+
+					muzzle.Pos = Vector(0,0,0)
 				end
-			end 
-		end)
-    
+
+				missile:SetPos( muzzle.Pos )
+				missile:SetAngles(self:GetAngles())
+
+			else
+
+				missile:SetPos(self:WorldToLocal(muzzle.Pos))
+				missile:SetAngles(muzzle.Ang)
+
+			end
+		end 
+	end)
+
+    missile:SetParent(self)
+	missile:SetParentPhysNum(0) 
     
     if self.HideMissile then missile:SetNoDraw(true) end
-    if self.ProtectMissile then missile:SetNotSolid(true) end-- missile.DisableDamage = true end  --this caused some serious exploits when recieving damage.
+    if self.ProtectMissile then missile:SetNotSolid(true) end
     
     missile:Spawn()
-    
-    
-    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
     
     self.Missiles[NextIdx+1] = missile
     
@@ -865,13 +846,11 @@ function ENT:FireMissile()
             filter[#filter+1] = missile
             
             missile.Filter = filter
-            --missile.DisableDamage = false
             
             missile:SetParent(nil)
             missile:SetNoDraw(false)
 			missile:SetNotSolid(false)
-            --missile:SetPos(MuzzlePos)
-            --missile:SetAngles(ShootVec:Angle())
+
             local bdata = missile.BulletData
             
             if !IsValid(self:GetParent()) then
@@ -1049,20 +1028,7 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 		    end
 			
 	    end
-		
-		
-	--if not self.Legal then
-		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-	--end
-		
-	--else
-	
-	--   local txt = '- Empty -'
-		
-	--end
-	
 	
     self:SetOverlayText(txt)
 	
-
 end

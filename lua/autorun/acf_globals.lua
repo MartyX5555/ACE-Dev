@@ -80,7 +80,7 @@ ACF.FLDamageMult = 1.4            --FL Damage Multipler
 ACF.HEATDamageMult = 2            --HEAT Damage Multipler
 ACF.HEDamageMult = 2              --HE Damage Multipler
 ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
-ACF.HPDamageMult = 4              --HP Damage Multipler
+ACF.HPDamageMult = 8              --HP Damage Multipler
 
 
 
@@ -193,6 +193,7 @@ AddCSLuaFile()
 AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
 AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
+AddCSLuaFile( "acf/client/cl_extension.lua" )
 
 include("acf/shared/acfloader.lua")
 include("acf/shared/armor/ace_material.lua")
@@ -224,6 +225,7 @@ elseif CLIENT then
 
 	include("acf/client/cl_acfballistics.lua")
 	include("acf/client/cl_acfrender.lua")
+	include("acf/client/cl_extension.lua")
 	
 	if ACF.EnableDefaultDP then
 	

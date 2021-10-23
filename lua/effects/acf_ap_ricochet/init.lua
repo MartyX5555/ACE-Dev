@@ -11,33 +11,95 @@
 	self.Velocity = data:GetScale() --Velocity of the projectile in gmod units
 	self.Mass = data:GetMagnitude() --Mass of the projectile in kg
 	self.Emitter = ParticleEmitter( self.Origin )
-	
+	self.Entity = data:GetEntity() -- the Ammocrate entity
 	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
+	self.ParticleMul = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
 
-	--self.Entity:EmitSound( "ambient/explosions/explode_1.wav" , 100 + self.Radius*10, 200 - self.Radius*10 )
-	
-	local BulletEffect = {}
-		BulletEffect.Num = 1
-		BulletEffect.Src = self.Origin - self.DirVec
-		BulletEffect.Dir = self.DirVec
-		BulletEffect.Spread = Vector(0,0,0)
-		BulletEffect.Tracer = 0
-		BulletEffect.Force = 0
-		BulletEffect.Damage = 0	 
-	LocalPlayer():FireBullets(BulletEffect) 
+	local Tr = {}
+	Tr.start = self.Origin + self.DirVec
+	Tr.endpos = self.Origin - self.DirVec*12000
+	local SurfaceTr = util.TraceLine( Tr )
 
-	local soundlvl = self.Mass*2.6
-	--print('rico sound level: '..soundlvl)
+	util.Decal("Impact.Concrete", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10 )
 
-	--how i love the sound level.....
-	--TODO: Other sounds for small weapons, since the current is for >100mm cannons
-	sound.Play(  "/acf_other/ricochets/richo"..math.random(1,7)..".wav", self.Origin, math.Clamp(soundlvl, 80,150), math.Clamp(self.Velocity*0.01,25,125), 1)
+	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
+	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin - self.DirVec*2000, 2 , Color(math.random(100,255),0,0) )
 
-	util.Decal("ExplosiveGunshot", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10)
-	
-	if self.Emitter then self.Emitter:Finish() end
- end   
-   
+	self.Cal = self.Entity:GetNWString("Caliber", 2 )
+	ACEE_SRico( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
+
+	local Mat = SurfaceTr.MatType
+
+	--concrete
+	local SmokeColor = Vector(100,100,100)
+
+	-- Dirt
+	if Mat == 68 or Mat == 79 or Mat == 85 then 
+		SmokeColor = Vector(117,101,70)
+
+	-- Sand
+	elseif Mat == 78 then 
+		SmokeColor = Vector(200,180,116)
+ 
+	end
+			
+	self:Dust( SmokeColor )
+
+	-- Material Enum
+	-- 65  ANTLION
+	-- 66 BLOODYFLESH
+	-- 67 CONCRETE / NODRAW
+	-- 68 DIRT
+	-- 70 FLESH
+	-- 71 GRATE
+	-- 72 ALIENFLESH
+	-- 73 CLIP
+	-- 76 PLASTIC
+	-- 77 METAL
+	-- 78 SAND
+	-- 79 FOLIAGE
+	-- 80 COMPUTER
+	-- 83 SLOSH
+	-- 84 TILE
+	-- 86 VENT
+	-- 87 WOOD
+	-- 89 GLASS
+
+
+	if IsValid(self.Emitter) then self.Emitter:Finish() end
+end   
+
+function EFFECT:Dust( SmokeColor )
+
+	local PMul = self.ParticleMul
+	local Vel = self.Velocity/2500
+	local Mass = self.Mass
+
+	--KE main formula
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.005,2)
+
+	for i=0, math.max(self.Cal/3,1) do
+
+		local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
+		if (Dust) then
+			Dust:SetVelocity(VectorRand() * math.random( 25,35*Energy) )
+			Dust:SetLifeTime( 0 )
+			Dust:SetDieTime( math.Rand( 0.1 , 3 )*math.max(Energy,2)/3  )
+			Dust:SetStartAlpha( math.Rand( 125, 150 ) )
+			Dust:SetEndAlpha( 0 )
+			Dust:SetStartSize( 20*Energy )
+			Dust:SetEndSize( 30*Energy )
+			Dust:SetRoll( math.Rand(150, 360) )
+			Dust:SetRollDelta( math.Rand(-0.2, 0.2) )			
+			Dust:SetAirResistance( 100 ) 			 
+			Dust:SetGravity( Vector( math.random(-5,5)*Energy, math.random(-5,5)*Energy, -70 ) )
+
+			Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )		
+		end
+	end
+
+end
+
 /*---------------------------------------------------------
    THINK
 ---------------------------------------------------------*/
