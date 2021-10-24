@@ -95,22 +95,22 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 					if Dist < CloseDist then
 						--print('you are close')
 
-						VolFix = 2
+						VolFix = 8
 						PitchFix = 1
 						Sound = "acf_other/explosions/ambient/tiny/close/close"..math.random(1,4)..".wav"
 
 						if Radius >= SmallEx then
-							VolFix = 2
+							VolFix = 8
 							PitchFix = 1
 							Sound = "acf_other/explosions/ambient/small/close/close"..math.random(1,4)..".wav"
 
 							if Radius >= MediumEx then
-								VolFix = 2
+								VolFix = 8
 								PitchFix = 1
 								Sound = "acf_other/explosions/ambient/medium/close/close"..math.random(1,4)..".wav"
 
 								if Radius >= LargeEx then
-									VolFix = 2
+									VolFix = 8
 									PitchFix = 1
 									Sound = "acf_other/explosions/ambient/large/close/close"..math.random(1,4)..".wav"
 
@@ -127,22 +127,22 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 					elseif Dist >= CloseDist and Dist < MediumDist then
 						--print('you are mid')
 
-						VolFix = 2
+						VolFix = 8
 						PitchFix = 1
 						Sound = "acf_other/explosions/ambient/tiny/mid/mid"..math.random(1,4)..".wav"
 
 						if Radius >= SmallEx then
-							VolFix = 2
+							VolFix = 8
 							PitchFix = 1
 							Sound = "acf_other/explosions/ambient/small/mid/mid"..math.random(1,4)..".wav"
 
 							if Radius >= MediumEx then
-								VolFix = 2
+								VolFix = 8
 								PitchFix = 1
 								Sound = "acf_other/explosions/ambient/medium/mid/mid"..math.random(1,3)..".wav"
 
 								if Radius >= LargeEx then
-									VolFix = 2
+									VolFix = 8
 									PitchFix = 1
 									Sound = "acf_other/explosions/ambient/large/mid/mid"..math.random(1,4)..".wav"
 
@@ -154,22 +154,22 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 					elseif Dist >= MediumDist then
 						--print('you are far')
 
-						VolFix = 4.5
+						VolFix = 17
 						PitchFix = 1
 						Sound = "acf_other/explosions/ambient/tiny/far/far"..math.random(1,4)..".wav"
 
 						if Radius >= SmallEx then
-							VolFix = 4.5
+							VolFix = 17
 							PitchFix = 1
 							Sound = "acf_other/explosions/ambient/small/far/far"..math.random(1,4)..".wav"
 
 							if Radius >= MediumEx then
-								VolFix = 4.5
+								VolFix = 17
 								PitchFix = 1
 								Sound = "acf_other/explosions/ambient/medium/far/far"..math.random(1,3)..".wav"
 
 								if Radius >= LargeEx then
-									VolFix = 4.5
+									VolFix = 17
 									PitchFix = 1
 									Sound = "acf_other/explosions/ambient/large/far/far"..math.random(1,3)..".wav"
 

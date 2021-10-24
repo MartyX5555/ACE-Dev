@@ -26,22 +26,39 @@
 	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
 	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec*10, 2 , Color(math.random(100,255),0,0) )
 
-	local Mat = SurfaceTr.MatType
+	--the dust is for non-explosive rounds, so lets skip this
+	local TypeIgnore = {
+		APHE = true,
+		APHECBC = true,
+		HE = true,
+		HEFS = true,
+		HESH = true,
+		HEAT = true,
+		HEATFS = true,
+		THEAT = true,
+		THEATFS = true
+	}
 
-	--concrete
-	local SmokeColor = Vector(100,100,100)
+ 	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
+	if not TypeIgnore[self.Ent.RoundType] and self.Ent.RoundType ~= nil then
 
-	-- Dirt
-	if Mat == 68 or Mat == 79 or Mat == 85 then 
-		SmokeColor = Vector(117,101,70)
+		local Mat = SurfaceTr.MatType
 
-	-- Sand
-	elseif Mat == 78 then 
-		SmokeColor = Vector(200,180,116)
+		--concrete
+		local SmokeColor = Vector(100,100,100)
+
+		-- Dirt
+		if Mat == 68 or Mat == 79 or Mat == 85 then 
+			SmokeColor = Vector(117,101,70)
+
+		-- Sand
+		elseif Mat == 78 then 
+			SmokeColor = Vector(200,180,116)
  
+		end
+	
+		self:Dust( SmokeColor )
 	end
-			
-	self:Dust( SmokeColor )
 
 	local BulletEffect = {}
 		BulletEffect.Num = 1

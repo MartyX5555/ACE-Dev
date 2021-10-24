@@ -28,43 +28,38 @@
 	self.Cal = self.Entity:GetNWString("Caliber", 2 )
 	ACEE_SRico( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
 
-	local Mat = SurfaceTr.MatType
+	--the dust is for non-explosive rounds, so lets skip this. Note that APHE variants still require it in case of rico vs ground.
+	local TypeIgnore = {
+		HE = true,
+		HEFS = true,
+		HESH = true,
+		HEAT = true,
+		HEATFS = true,
+		THEAT = true,
+		THEATFS = true
+	}
 
-	--concrete
-	local SmokeColor = Vector(100,100,100)
+	 --do this if we are dealing with non-explosive rounds
+	if not TypeIgnore[self.Entity.RoundType] then
 
-	-- Dirt
-	if Mat == 68 or Mat == 79 or Mat == 85 then 
-		SmokeColor = Vector(117,101,70)
+		local Mat = SurfaceTr.MatType
 
-	-- Sand
-	elseif Mat == 78 then 
-		SmokeColor = Vector(200,180,116)
+		--concrete
+		local SmokeColor = Vector(100,100,100)
+
+		-- Dirt
+		if Mat == 68 or Mat == 79 or Mat == 85 then 
+			SmokeColor = Vector(117,101,70)
+
+		-- Sand
+		elseif Mat == 78 then 
+			SmokeColor = Vector(200,180,116)
  
+		end
+	
+		self:Dust( SmokeColor )
+
 	end
-			
-	self:Dust( SmokeColor )
-
-	-- Material Enum
-	-- 65  ANTLION
-	-- 66 BLOODYFLESH
-	-- 67 CONCRETE / NODRAW
-	-- 68 DIRT
-	-- 70 FLESH
-	-- 71 GRATE
-	-- 72 ALIENFLESH
-	-- 73 CLIP
-	-- 76 PLASTIC
-	-- 77 METAL
-	-- 78 SAND
-	-- 79 FOLIAGE
-	-- 80 COMPUTER
-	-- 83 SLOSH
-	-- 84 TILE
-	-- 86 VENT
-	-- 87 WOOD
-	-- 89 GLASS
-
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end   

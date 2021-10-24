@@ -29,6 +29,8 @@ function ENT:Think()
 
 	if self.FuseTime < 0 then
 		
+		self:Remove()
+		
 		local HEWeight=4	
 		local Radius = (HEWeight)^0.33*8*39.37
 
@@ -40,7 +42,7 @@ function ENT:Think()
 		Flash:SetRadius( math.max( Radius, 1 ) )
 		util.Effect( "ACF_Scaled_Explosion", Flash )
 
-		self:Remove()
+		
 	end
 
 

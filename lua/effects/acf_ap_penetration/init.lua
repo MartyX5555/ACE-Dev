@@ -50,8 +50,8 @@ local GunTable = ACFEnts.Guns
 	--if Mat == 71 or Mat == 73 or Mat == 77 or Mat == 80 then -- Metal
 		--self:World()
 	--else -- Nonspecific
-		self:Prop()
-	--end
+
+	self:Prop()
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
  end   
