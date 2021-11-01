@@ -7,6 +7,7 @@
  function EFFECT:Init( data ) 
 	
 	self.Ent = data:GetEntity()
+	self.Id = self.Ent:GetNWString( "AmmoType", "AP" )
 	self.Caliber = self.Ent:GetNWFloat( "Caliber", 10 )
 	self.Origin = data:GetOrigin()
 	self.DirVec = data:GetNormal() 
@@ -26,8 +27,18 @@
 	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
 	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec*10, 2 , Color(math.random(100,255),0,0) )
 
+	--this is crucial for subcaliber, this will boost the dust's size.
+	self.SubCalBoost = {
+		APDS = true,
+		APDSS = true,
+		APFSDS = true,
+		APFSDSS = true,
+		APCR = true,
+		HVAP = true
+	}
+
 	--the dust is for non-explosive rounds, so lets skip this
-	local TypeIgnore = {
+	self.TypeIgnore = {
 		APHE = true,
 		APHECBC = true,
 		HE = true,
@@ -39,25 +50,33 @@
 		THEATFS = true
 	}
 
+	self.Ignore = {
+		npc = true,
+		player =true
+	}
+
  	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
-	if not TypeIgnore[self.Ent.RoundType] and self.Ent.RoundType ~= nil then
+	if not self.TypeIgnore[self.Id] and self.Id ~= nil then
 
-		local Mat = SurfaceTr.MatType
+		if SurfaceTr.HitWorld or (IsValid(SurfaceTr.Entity) and self.Ignore[SurfaceTr.Entity:GetClass()]) then
 
-		--concrete
-		local SmokeColor = Vector(100,100,100)
+			local Mat = SurfaceTr.MatType
 
-		-- Dirt
-		if Mat == 68 or Mat == 79 or Mat == 85 then 
-			SmokeColor = Vector(117,101,70)
+			--concrete
+			local SmokeColor = Vector(100,100,100)
 
-		-- Sand
-		elseif Mat == 78 then 
-			SmokeColor = Vector(200,180,116)
+			-- Dirt
+			if Mat == 68 or Mat == 79 or Mat == 85 then 
+				SmokeColor = Vector(117,101,70)
+
+			-- Sand
+			elseif Mat == 78 then 
+				SmokeColor = Vector(200,180,116)
  
-		end
+			end
 	
-		self:Dust( SmokeColor )
+			self:Dust( SmokeColor )
+		end
 	end
 
 	local BulletEffect = {}
@@ -73,22 +92,27 @@
 	if self.Emitter then self.Emitter:Finish() end
  end   
 
+
+--Sounds for impacts are coming soon
 function EFFECT:Dust( SmokeColor )
 
 	local PMul = self.ParticleMul
 	local Vel = self.Velocity/2500
 	local Mass = self.Mass
 
+	--this is the size boost fo subcaliber rounds
+	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
+
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.005,2)
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
 
 	for i=0, math.max(self.Caliber/3,1) do
 
-		local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
+		local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin - self.DirVec*5 )
 		if (Dust) then
 			Dust:SetVelocity(VectorRand() * math.random( 25,35*Energy) )
 			Dust:SetLifeTime( 0 )
-			Dust:SetDieTime( math.Rand( 0.1 , 3 )*math.max(Energy,2)/3  )
+			Dust:SetDieTime( math.Rand( 0.1 , 4 )*math.max(Energy,2)/3  )
 			Dust:SetStartAlpha( math.Rand( 125, 150 ) )
 			Dust:SetEndAlpha( 0 )
 			Dust:SetStartSize( 20*Energy )

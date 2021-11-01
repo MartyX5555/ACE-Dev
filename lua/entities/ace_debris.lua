@@ -9,7 +9,9 @@ if CLIENT then return end
 
 function ENT:Initialize()
 	
-	self.Timer = CurTime() + 30
+	if ACF.DebrisLifeTime > 0 then
+		self.Timer = CurTime() + ACF.DebrisLifeTime
+	end
 	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_VPHYSICS )
@@ -26,9 +28,13 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	
-	if self.Timer < CurTime() then self:Remove() end
-	
-	self:NextThink( CurTime() + 30 )	
-	return true	
+	if ACF.DebrisLifeTime > 0 then
+		if self.Timer < CurTime() then self:Remove() end
+
+		self:NextThink( CurTime() + ACF.DebrisLifeTime)	
+		return true	
+	else
+		return false
+	end
 end
+

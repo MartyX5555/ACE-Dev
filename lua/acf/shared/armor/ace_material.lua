@@ -33,7 +33,7 @@ ACE_ConfigureMaterial( 0 , {                 -- Unique ID
    )
 
 
-if ACF.EnableNewContent and ACF.Year >= 1955 then  --Any other material must go below this
+if ACF.Year >= 1955 then  --Any other material must go below this
 
       ACE_ConfigureMaterial( 1 , {             -- Unique ID
 

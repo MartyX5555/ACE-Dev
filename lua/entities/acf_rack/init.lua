@@ -65,7 +65,7 @@ function ENT:Initialize()
 	self.NextFire = 1
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	self.LastSend = 0
@@ -77,9 +77,9 @@ function ENT:Initialize()
     self.LastThink = CurTime()
 	
     self.BulletData = {}
-		self.BulletData.Type = "Empty"
-		self.BulletData.PropMass = 0
-		self.BulletData.ProjMass = 0
+	self.BulletData.Type = "Empty"
+	self.BulletData.PropMass = 0
+	self.BulletData.ProjMass = 0
 	
 	self.Inaccuracy 	= 1
 	
@@ -263,7 +263,7 @@ end
 
 function ENT:TriggerInput( iname , value )
 	
-	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled ) then
+	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
 			self.User = self:GetUser(self.Inputs["Fire"].Src)
 			if not IsValid(self.User) then self.User = self.Owner end
@@ -390,9 +390,15 @@ end
 
 function ENT:Think()
 
-    self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true, false, true)
-	self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+	if ACF.CurTime > self.NextLegalCheck then
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, self.Mass, self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+		--self:SetOverlayText(txt)
 
+		if not self.Legal and self.Firing then
+			self.Firing = false
+		end
+	end
 
     local Ammo = table.Count(self.Missiles or {})
     
@@ -986,8 +992,8 @@ end
 
 function ENT:GetOverlayText()   --New Overlay text that is shown when you are looking at the rack. 
 
-	local name          = self:GetNWString("WireName")   
-	local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
+	--local name          = self:GetNWString("WireName")   
+	--local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
 	local Ammo          = self:GetNWInt("Ammo")          --Ammo count
 	local FireRate      = self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
     local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
@@ -1029,6 +1035,10 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
 			
 	    end
 	
+	--if not self.Legal then
+		--txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	--end
+
     self:SetOverlayText(txt)
 	
 end

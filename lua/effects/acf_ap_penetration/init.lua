@@ -14,16 +14,20 @@ local GunTable = ACFEnts.Guns
 	self.Velocity = data:GetScale() --Mass of the projectile in kg
 	self.Mass = data:GetMagnitude() --Velocity of the projectile in gmod units
 	self.Emitter = ParticleEmitter( self.Origin )
+	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
 	
 	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
 
 	local ImpactTr = { }
 		ImpactTr.start = self.Origin - self.DirVec*20
-		ImpactTr.endpos = self.Origin + self.DirVec*20
+		ImpactTr.endpos = self.Origin + self.DirVec*100
 	local Impact = util.TraceLine(ImpactTr)					--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
 
-	ACEE_SPen( self.Origin, self.Velocity, self.Mass )
+	if IsValid(Impact.Entity) then
+		debugoverlay.Text(self.Origin - self.DirVec*20, Impact.Entity:GetClass(), 5)
+	end
+	debugoverlay.Line(self.Origin - self.DirVec*20, Impact.HitPos , 5, Color(0,255,255))
 
 	-- Material Enum
 	-- 65  ANTLION
@@ -47,85 +51,19 @@ local GunTable = ACFEnts.Guns
 
 	--local Mat = Impact.MatType
 	--print(Mat)
-	--if Mat == 71 or Mat == 73 or Mat == 77 or Mat == 80 then -- Metal
-		--self:World()
-	--else -- Nonspecific
 
 	self:Prop()
 
+	ACE_SPen( self.Origin, self.Velocity, self.Mass )
+
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
  end   
-
-function EFFECT:World()
-	util.Decal("GunShot1", self.Origin + self.DirVec*10, self.Origin - self.DirVec*10, self.Ent)
-
-	local BulletEffect = {}
-		BulletEffect.Num = 1
-		BulletEffect.Src = self.Origin - self.DirVec
-		BulletEffect.Dir = self.DirVec
-		BulletEffect.Spread = Vector(0,0,0)
-		BulletEffect.Tracer = 0
-		BulletEffect.Force = 0
-		BulletEffect.Damage = 0	 
-	LocalPlayer():FireBullets(BulletEffect) 
-
-	for i=0, 4*self.Scale do
-	
-		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
-		if (Debris) then
-			Debris:SetVelocity ( self.Normal * math.random( 20,40*self.Scale) + VectorRand() * math.random( 25,50*self.Scale) )
-			Debris:SetLifeTime( 0 )
-			Debris:SetDieTime( math.Rand( 1.5 , 3 )*self.Scale/3 )
-			Debris:SetStartAlpha( 255 )
-			Debris:SetEndAlpha( 0 )
-			Debris:SetStartSize( 1*self.Scale )
-			Debris:SetEndSize( 1*self.Scale )
-			Debris:SetRoll( math.Rand(0, 360) )
-			Debris:SetRollDelta( math.Rand(-3, 3) )			
-			Debris:SetAirResistance( 100 ) 			 
-			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
-			Debris:SetColor( 120,120,120 )
-		end
-	end
-
-		
-	for i=0, 5*self.Scale do
-	
-		local Embers = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin )
-		if (Embers) then
-			Embers:SetVelocity ( (self.Normal - VectorRand()) * math.random(30*self.Scale,80*self.Scale) )
-			Embers:SetLifeTime( 0 )
-			Embers:SetDieTime( math.Rand( 0.3 , 1 )*self.Scale/5 )
-			Embers:SetStartAlpha( 255 )
-			Embers:SetEndAlpha( 0 )
-			Embers:SetStartSize( 2*self.Scale )
-			Embers:SetEndSize( 0*self.Scale )
-			Embers:SetStartLength( 5*self.Scale )
-			Embers:SetEndLength ( 0*self.Scale )
-			Embers:SetRoll( math.Rand(0, 360) )
-			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
-			Embers:SetAirResistance( 20 ) 			 
-			Embers:SetGravity( VectorRand()*10 ) 			
-			Embers:SetColor( 200,200,200 )
-		end
-	end
-
-	local Sparks = EffectData()
-		Sparks:SetOrigin( self.Origin )
-		Sparks:SetNormal( self.Normal+VectorRand()*1.5 )
-		Sparks:SetMagnitude( self.Scale )
-		Sparks:SetScale( self.Scale )
-		Sparks:SetRadius( self.Scale )
-	util.Effect( "Sparks", Sparks )
-	
-end
-
 
 function EFFECT:Prop()
   
 	util.Decal("Impact.Concrete", self.Origin - self.DirVec*50, self.Origin + self.DirVec*50, self.Ent )
 
-	for i=0, 4*self.Scale do
+	for i=0, self.Scale*self.ParticleMul do
 	
 		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Debris) then
@@ -144,7 +82,7 @@ function EFFECT:Prop()
 		end
 	end
 	
-	for i=0, 3*self.Scale do
+	for i=0, self.Scale*self.ParticleMul do
 	
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
 		if (Smoke) then
@@ -164,7 +102,7 @@ function EFFECT:Prop()
 	
 	end
 	
-	for i=0, 1.5*self.Scale do
+	for i=0, self.Scale*self.ParticleMul do
 	
 		local Embers = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin )
 		if (Embers) then
@@ -191,8 +129,8 @@ function EFFECT:Prop()
 		Sparks:SetMagnitude( self.Scale )
 		Sparks:SetScale( self.Scale )
 		Sparks:SetRadius( self.Scale )
-	util.Effect( "Sparks", Sparks )
-	
+	util.Effect( "sparks", Sparks )
+
 end
 
 /*---------------------------------------------------------

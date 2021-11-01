@@ -84,6 +84,8 @@ function EFFECT:Init( data )
 
 		BulletData.LastThink = CurTime() --ACF.CurTime
 		BulletData.Effect = self.Entity
+		BulletData.CrackCreated = false
+
 
 		--Add all that data to the bullet table, overwriting if needed
 		ACF.BulletEffect[self.Index] = BulletData		
@@ -143,6 +145,16 @@ function EFFECT:ApplyMovement( Bullet )
 	if( setPos.z < 16380 ) then
 		self:SetPos( setPos )--Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
+
+
+
+		--sonic crack sound
+		if not Bullet.CrackCreated then
+			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) then 
+				print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
+				ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+			end
+		end
 	end
 
 	if Bullet.Tracer and IsValid(Bullet.Tracer) then

@@ -11,7 +11,7 @@ function EFFECT:Init( data )
 	self.DirVec = data:GetNormal()
 	self.Radius = math.max( data:GetRadius() / 50 ,1)
 	self.Emitter = ParticleEmitter( self.Origin )
-	self.ParticleMul = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
+	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
 	
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)
@@ -114,7 +114,7 @@ function EFFECT:Init( data )
 	--Main explosion
 	self:Core( self.HitWater )
 
-	ACEE_SBlast( self.Origin, self.Radius, self.HitWater )
+	ACEE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end   
@@ -140,7 +140,9 @@ function EFFECT:Core( HitWater )
 	local RandColor = 0
 	local WaterColor = Color(255,255,255,100)
 
-	for i=0, 1*Radius*PMul * 3 do --Explosion Core
+	local NumRand, Texture, TScale
+
+	for i=0, Radius*PMul * 3 do --Explosion Core
 	 
 		local Flame = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin)
 		if (Flame) then
@@ -192,11 +194,11 @@ function EFFECT:Core( HitWater )
 			Whisp:SetStartAlpha( math.Rand( 125, 150 ) )
 			Whisp:SetEndAlpha( 0 )
 			Whisp:SetStartSize( 10*Radius )
-			Whisp:SetEndSize( 80*Radius )
+			Whisp:SetEndSize( 80*Radius)
 			Whisp:SetRoll( math.Rand(150, 360) )
 			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Whisp:SetAirResistance( 100 ) 			 
-			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -70 ) )
+			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -140 ) )
 
 			RandColor = 100-math.random( 0 , 45 )
 
@@ -213,10 +215,12 @@ end
 
 function EFFECT:Shockwave( Ground, SmokeColor )
 
+	local PMul = self.ParticleMul
+
 	local Radius = (1-Ground.Fraction)*self.Radius
 	local Density = 15*Radius
 	local Angle = Ground.HitNormal:Angle()
-	for i=0, Density*self.ParticleMul do
+	for i=0, Density*PMul do
 
 		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
 		local ShootVector = Angle:Up()
@@ -245,6 +249,8 @@ end
 
 function EFFECT:Water( Water )
 
+	local PMul = self.ParticleMul
+
 	local WaterColor = Color(255,255,255,100)
 
 	local Radius = self.Radius
@@ -256,11 +262,11 @@ function EFFECT:Water( Water )
 	--print('R: '..Radius)
 	--print('D: '..Dist)
 
-	for i=0, Density*self.ParticleMul do	
+	for i=0, Density*PMul do	
 
 		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
 		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), Water.HitPos + Vector(0,0,5) )
+		local Smoke = self.Emitter:Add( "effects/splash4", Water.HitPos + Vector(0,0,5) )
 
 		if (Smoke) then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,100*Radius) )
@@ -280,9 +286,9 @@ function EFFECT:Water( Water )
 		end	
 	end
 
-	for i=0, 2*Radius*self.ParticleMul do
+	for i=0, 2*Radius*PMul do
 
-		local Whisp = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), Water.HitPos )
+		local Whisp = self.Emitter:Add( "effects/splash4", Water.HitPos )
 
 		if (Whisp) then
 			local Randvec = VectorRand()
@@ -381,20 +387,29 @@ end
 function EFFECT:Dirt( SmokeColor )
 
 	for i=0, 3*self.Radius*self.ParticleMul do
-	
-		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
+
+		NumRand = math.random(-1, 2)
+		TScale = 1
+		Texture = "particle/smokesprites_000"..math.random(1,9)
+
+		if NumRand then
+			TScale = 0.75
+			Texture = "effects/splash4"
+		end
+
+		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if (Smoke) then
-			Smoke:SetVelocity( self.Normal * math.random( 50,80*self.Radius) + VectorRand() * math.random( 30,60*self.Radius) )
+			Smoke:SetVelocity( self.Normal * math.random( 50,80*self.Radius) + VectorRand() * math.random( 40,80*self.Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 5 )*self.Radius/3  )
-			Smoke:SetStartAlpha( math.Rand( 50, 150 ) )
+			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
 			Smoke:SetEndAlpha( 0 )
-			Smoke:SetStartSize( 5*self.Radius )
-			Smoke:SetEndSize( 30*self.Radius )
+			Smoke:SetStartSize( 15*self.Radius * TScale )
+			Smoke:SetEndSize( 30*self.Radius * TScale )
 			Smoke:SetRoll( math.Rand(150, 360) )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
-			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
+			Smoke:SetGravity( Vector( math.random(-2,2)*self.Radius, math.random(-2,2)*self.Radius, -300 ) ) 			
 			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	
@@ -405,20 +420,29 @@ end
 function EFFECT:Sand( SmokeColor )
 
 	for i=0, 3*self.Radius*self.ParticleMul*2 do
-	
-		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
+
+		NumRand = math.random(-1, 2)
+		TScale = 1
+		Texture = "particle/smokesprites_000"..math.random(1,9)
+
+		if NumRand then
+			TScale = 0.75
+			Texture = "effects/splash4"
+		end
+
+		local Smoke = self.Emitter:Add( Texture, self.Origin )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 50,80*self.Radius) + VectorRand() * math.random( 30,60*self.Radius) )
 			Smoke:SetLifeTime( 0 )
 			Smoke:SetDieTime( math.Rand( 1 , 5 )*self.Radius/3  )
-			Smoke:SetStartAlpha( math.Rand( 50, 150 ) )
+			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
 			Smoke:SetEndAlpha( 0 )
-			Smoke:SetStartSize( 5*self.Radius )
-			Smoke:SetEndSize( 30*self.Radius )
+			Smoke:SetStartSize( 15*self.Radius * TScale )
+			Smoke:SetEndSize( 30*self.Radius * TScale )
 			Smoke:SetRoll( math.Rand(150, 360) )
 			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Smoke:SetAirResistance( 100 ) 			 
-			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -50 ) ) 			
+			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -275 ) ) 			
 			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
 	

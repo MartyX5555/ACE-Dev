@@ -11,7 +11,8 @@
 	self.Velocity = data:GetScale() --Velocity of the projectile in gmod units
 	self.Mass = data:GetMagnitude() --Mass of the projectile in kg
 	self.Emitter = ParticleEmitter( self.Origin )
-	self.Entity = data:GetEntity() -- the Ammocrate entity
+	self.Ent = data:GetEntity() -- the Ammocrate entity
+	self.Id = self.Ent:GetNWString( "AmmoType", "AP" )
 	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
 	self.ParticleMul = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
 
@@ -28,7 +29,18 @@
 	self.Cal = self.Entity:GetNWString("Caliber", 2 )
 	ACEE_SRico( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
 
-	--the dust is for non-explosive rounds, so lets skip this. Note that APHE variants still require it in case of rico vs ground.
+	--this is crucial for subcaliber, this will boost the dust's size.
+	self.SubCalBoost = {
+		APDS = true,
+		APDSS = true,
+		APFSDS = true,
+		APFSDSS = true,
+		APCR = true,
+		HVAP = true
+	}
+
+	--the dust is for non-explosive rounds, so lets skip this. 
+	--Note that APHE variants are not listed here but they still require it in case of rico vs ground.
 	local TypeIgnore = {
 		HE = true,
 		HEFS = true,
@@ -40,7 +52,7 @@
 	}
 
 	 --do this if we are dealing with non-explosive rounds
-	if not TypeIgnore[self.Entity.RoundType] then
+	if not TypeIgnore[self.Id] then
 
 		local Mat = SurfaceTr.MatType
 
@@ -70,8 +82,11 @@ function EFFECT:Dust( SmokeColor )
 	local Vel = self.Velocity/2500
 	local Mass = self.Mass
 
+	--this is the size boost fo subcaliber rounds
+	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
+
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.005,2)
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
 
 	for i=0, math.max(self.Cal/3,1) do
 
@@ -79,7 +94,7 @@ function EFFECT:Dust( SmokeColor )
 		if (Dust) then
 			Dust:SetVelocity(VectorRand() * math.random( 25,35*Energy) )
 			Dust:SetLifeTime( 0 )
-			Dust:SetDieTime( math.Rand( 0.1 , 3 )*math.max(Energy,2)/3  )
+			Dust:SetDieTime( math.Rand( 0.1 , 4 )*math.max(Energy,2)/3  )
 			Dust:SetStartAlpha( math.Rand( 125, 150 ) )
 			Dust:SetEndAlpha( 0 )
 			Dust:SetStartSize( 20*Energy )

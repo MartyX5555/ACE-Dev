@@ -1,58 +1,114 @@
 --Featuring functions which manage the current built in ace sound extension system
 --TODO: Refactor all this, making ONE function for every sound event
 
---i would like to have a way of having realtime volume/pitch depending if approaching/going away, 
+--NOTE: i would like to have a way of having realtime volume/pitch depending if approaching/going away, 
 --as having a way to switch sounds between indoor & outdoor zones. They will sound fine, issue it would be when you pass from an area to another when the sound is being played
 
+--NOTE: For proper doppler effect where pitch/volume is dynamically changed, we need something like soundcreate() instead of ply:emitsound. 
+--Downside of this, that due to gmod limits, one scripted sound per entity can be used at once. Which idk if it would be good for us. 
+--We'll have more than one dynamic sound at once :/ weird
 
 ACE = ACE or {}
 
---Defines the delay time caused by the distance between the explosion and you. Increasing it will increment the required time to hear a distant event
+ACE.Sounds = {}
+
+ACE.Sounds.LOSWhitelist = {
+	prop_dynamic = true,
+	prop_physics = true
+}
+
+--Defines the delay time caused by the distance between the event and you. Increasing it will increment the required time to hear a distant event
 ACE.DelayMultipler = 1
 
 --Defines the distance range for close, mid and far sounds. Incrementing it will increase the distances between sounds
 ACE.DistanceMultipler = 1
 
---Handles Explosions
-function ACEE_SBlast( HitPos, Radius, HitWater )
+--Defines the distance range which sonic cracks will be heard by the player
+ACE.CrackDistanceMultipler = 1
+
+--Defines the distance where ring ears start to affect to player
+ACE.TinnitusZoneMultipler = 1
+
+--Gets the player's point of view if he's using a camera
+function ACE_SGetPOV( ply )
+	if not IsValid(ply) then return false, ply end
+	local ent
+
+	if ply:GetViewEntity() ~= ply then --print('player using another POV')
+		ent = ply:GetViewEntity()
+	end
+
+	return ent
+end
+
+--Used for those extremely quiet sounds, which should be heard close to the player
+function ACE_SInDistance( Pos, Mdist )
 
 	--Don't start this without a player
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+	local plyPos = entply:GetPos()
+
+	local Dist = math.abs((plyPos - Pos):Length())
+
+	--return true if the distance is lower than the maximum distance
+	if Dist <= Mdist then return true end
+	return false
+
+end
+
+--Used to see if the player has line of sight with the event
+function ACE_SHasLOS( EventPos )
+
+	local ply = LocalPlayer()
+	if not IsValid( ply ) then return end
+
+	local plyPos = ply:GetPos()
+	local headPos = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
+
+	local LOSTr = {}
+	LOSTr.start = EventPos + Vector(0,0,10)
+	LOSTr.endpos = headPos
+	LOSTr.filter = function( ent ) if ( ACE.Sounds.LOSWhitelist[ent:GetClass()] ) then return true end end --Only hits the whitelisted ents
+	local LOS = util.TraceLine(LOSTr)
+
+	debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
+
+	if not LOS.Hit then return true end
+	return false
+end
+
+--Handles Explosions
+function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
+
+	--Don't start this without a player
+	local ply = LocalPlayer()
+	if not IsValid( ply ) then return end
+
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
 	local count = 1
 	local countToFinish = nil
 	local Emitted = false --Was the sound played?
-	local ide = 'ACEBoom#'..math.random(1,1000)
-	--print('timer created! ID: '..ide)
-
-	--Making sure that this timer is unique
-	if timer.Exists( ide ) then
-		ide = ide..math.random(1,1000)
-		--print('Found timer with this identifier. Changed to: '..ide)
-	end
+	local ide = 'ACEBoom#'..math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then print('i would like to know: how did you saturate this? ooof') return end
+	if timer.Exists( ide ) then return end
 	timer.Create( ide , 0.1, 0, function()
 
 		count = count + 1
 
-		local plyPos = ply:GetPos()
-		--print(plyPos)
-
-		local Dist = math.abs((plyPos - HitPos):Length())
-		--print('distance from explosion: '..Dist)
-
-		local Volume = ( 1/(Dist/500)*Radius*0.2 ) 
-		--print('Vol: '..Volume)
-
-		local Pitch =  math.Clamp(1000/Radius,25,130)
-		--print('pitch: '..Pitch)
-
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler
-		--print('amount to match: '..Delay)
-
+		local plyPos = entply:GetPos() --print(plyPos)
+		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Radius*0.2 ) --print('Vol: '..Volume)
+		local Pitch =  math.Clamp(1000/Radius,25,130) --print('pitch: '..Pitch)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		
 		if count > Delay then
 
 			--done so we keep calculating for post-explosion effects (doppler, volume, etc)
@@ -61,16 +117,16 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 			--if its not already emitted
 			if not Emitted then
 
-				--print('timer has emitted the sound in the time: '..count)
-				Emitted = true
+				Emitted = true --print('timer has emitted the sound in the time: '..count)
 
 				--Ground explosions
 				if not HitWater then
 
+					--the sound definition. Strings are below
 					local Sound
 
 					--This defines the distance between areas for close, mid and far sounds
-					local CloseDist = Radius * 250 * ACE.DistanceMultipler
+					local CloseDist = Radius * 275 * ACE.DistanceMultipler
 
 					--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
 					local MediumDist = CloseDist*4.25 
@@ -91,9 +147,9 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 					--Required radius to be considered a huge explosion. IDK what thing could pass this, but there is it :)
 					local HugeEx = 150
 
+					--TODO: Make a way to use tables instead
 					--Close distance
-					if Dist < CloseDist then
-						--print('you are close')
+					if Dist < CloseDist then --print('you are close')
 
 						VolFix = 8
 						PitchFix = 1
@@ -124,8 +180,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 						end
 
 					--Medium distance
-					elseif Dist >= CloseDist and Dist < MediumDist then
-						--print('you are mid')
+					elseif Dist >= CloseDist and Dist < MediumDist then --print('you are mid')
 
 						VolFix = 8
 						PitchFix = 1
@@ -151,8 +206,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 						end
 
 					--Far distance				
-					elseif Dist >= MediumDist then
-						--print('you are far')
+					elseif Dist >= MediumDist then --print('you are far')
 
 						VolFix = 17
 						PitchFix = 1
@@ -179,23 +233,35 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 
 					end
 
-					--NOTE: For proper doppler effect where pitch/volume is dynamically changed, we need something like soundcreate() instead of ply:emitsound. 
-					--Downside of this, that due to gmod limits, one scripted sound per entity can be used at once. Which idk if it would be good for us. 
-					--We'll have more than one dynamic sound at once :/ weird
+					--Tinnitus function
+					local TinZone = math.max(Radius*80,250)*ACE.TinnitusZoneMultipler
+					if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
+						timer.Simple(0.01, function()
+							entply:SetDSP( 32, true )
+							entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
+						end)
 
+					end
 
-					ply:EmitSound( Sound, 75, Pitch * PitchFix, Volume * VolFix )
+					debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
+
+					entply:EmitSound( Sound, 75, Pitch * PitchFix, Volume * VolFix )
+
+					--play dirt sounds
+					if Radius >= SmallEx and HitWorld then
+						sound.Play("acf_other/explosions/debris/grass/debris"..math.Round(math.random(1,4))..".wav", plyPos, 75, (Pitch * PitchFix), Volume * VolFix / 25)
+						sound.Play("acf_other/explosions/debris/concrete/debris"..math.Round(math.random(1,6))..".wav", plyPos, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 25)
+					end
 
 					--Underwater Explosions
 				else
-					ply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, Pitch * 0.75, Volume * 0.25)
-					ply:EmitSound( "^weapons/underwater_explode3.wav", 75, Pitch * 0.75, Volume * 0.25)
+					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, Pitch * 0.75, Volume * 0.25)
+					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, Pitch * 0.75, Volume * 0.25)
 				end
 			end
 
 			--its time has ended
-			if count > countToFinish then
-				--print('timer "'..ide..'"" has been repeated '..count..' times. stopping & removing it...')
+			if count > countToFinish then --print('timer "'..ide..'"" has been repeated '..count..' times. stopping & removing it...')
 				timer.Stop( ide )
 				timer.Remove( ide )
 			end
@@ -204,67 +270,46 @@ function ACEE_SBlast( HitPos, Radius, HitWater )
 
 end
 
-function ACEE_SPen( HitPos, Velocity, Mass )
+function ACE_SPen( HitPos, Velocity, Mass )
 
 	--Don't start this without a player
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
-	local count = 1
-	local countToFinish = nil
-	local Emitted = false --Was the sound played?
-	local ide = 'ACEPen#'..math.random(1,1000)
-	--print('timer created! ID: '..ide)
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-	--Making sure that this timer is unique
-	if timer.Exists( ide ) then
-		ide = ide..math.random(1,1000)
-		--print('Found timer with this identifier. Changed to: '..ide)
-	end
+	local count = 1
+	local Emitted = false --Was the sound played?
+	local ide = 'ACEPen#'..math.random(1,100000) 	--print('timer created! ID: '..ide)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then print('i would like to know: how did you saturate this? ooof') return end
+	if timer.Exists( ide ) then return end
 	timer.Create( ide , 0.1, 0, function()
 
 		count = count + 1
 
-		local plyPos = ply:GetPos()
-		--print(plyPos)
-
-		local Dist = math.abs((plyPos - HitPos):Length())
-		--print('distance from explosion: '..Dist)
-
-		--print('Mass: '..Mass)
-
-		local Volume = ( 1/(Dist/500)*Mass/17.5 ) 
-		--print('Vol: '..Volume)
-
+		local plyPos = entply:GetPos() --print(plyPos)
+		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Mass/17.5 ) --print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*1,90,150)
-
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler
-		--print('amount to match: '..Delay)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
 		if count > Delay then
 
-			--done so we keep calculating for post explosion effects (doppler, volume, etc)
-			if not countToFinish then countToFinish = count*3 end
+			if not Emitted then --print('timer has emitted the sound in the time: '..count)
 
-			if not Emitted then
-				--print('timer has emitted the sound in the time: '..count)
 				Emitted = true
 
-				--TODO: change this for soundCreate instead
-				--ply:EmitSound( "/acf_other/penetratingshots/0000029"..math.random(2,4)..".wav", 75, Pitch, Volume )
-				ply:EmitSound( "/acf_other/penetratingshots/pen"..math.random(1,6)..".wav", 75, Pitch, Volume )
+				local Sound = "acf_other/penetratingshots/pen"..math.random(1,6)..".wav"
+				local VolFix = 1
+
+				entply:EmitSound( Sound, 75, Pitch, Volume * VolFix)
 
 			end
 
-			--its time has ended
-			if count > countToFinish then
-				--print('timer "'..ide..'"" has been repeated '..count..' times. stopping & removing it...')
-				timer.Stop( ide )
-				timer.Remove( ide )
-			end
+			timer.Stop( ide )
+			timer.Remove( ide )	
 		end
 	end )
 end
@@ -275,71 +320,139 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
 	local count = 1
-	local countToFinish = nil
 	local Emitted = false --Was the sound played?
-	local ide = 'ACERico#'..math.random(1,1000)
+
+	local ide = 'ACERico#'..math.random(1,100000)
 	--print('timer created! ID: '..ide)
 
-	--Making sure that this timer is unique
-	if timer.Exists( ide ) then
-		ide = ide..math.random(1,1000)
-		--print('Found timer with this identifier. Changed to: '..ide)
-	end
-
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
-	if timer.Exists( ide ) then print('i would like to know: how did you saturate this? ooof') return end
+	if timer.Exists( ide ) then return end
 	timer.Create( ide , 0.1, 0, function()
 
 		count = count + 1
 
-		local plyPos = ply:GetPos()
-		--print(plyPos)
-
-		local Dist = math.abs((plyPos - HitPos):Length())
-		--print('distance from explosion: '..Dist)
-
-		local Volume = ( 1/(Dist/500)*Velocity/130000 ) 
-		--print('Vol: '..Volume)
-
-		local Pitch =  math.Clamp(Velocity*0.001,90,150)
-		--print('pitch: '..Pitch)
-
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler
-		--print('amount to match: '..Delay)
+		local plyPos = entply:GetPos() --print(plyPos)
+		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Velocity/130000 ) --print('Vol: '..Volume)
+		local Pitch =  math.Clamp(Velocity*0.001,90,150) --print('pitch: '..Pitch)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
 		if count > Delay then
 
-			--done so we keep calculating for post explosion effects (doppler, volume, etc)
-			if not countToFinish then countToFinish = count*3 end
+			if not Emitted then --print('timer has emitted the sound in the time: '..count)
 
-			if not Emitted then
-				--print('timer has emitted the sound in the time: '..count)
 				Emitted = true
 
-				if not HitWorld then
-					local Sound =  "acf_other/ricochets/large/close/richo"..math.random(1,7)..".wav"
-					local VolFix = 4
+				local Sound = ""
+				local VolFix = 0
 
+				if not HitWorld then
+
+					--any big gun above 50mm
+					Sound =  "acf_other/ricochets/large/close/richo"..math.random(1,7)..".wav"
+					VolFix = 4
+
+					--50mm guns and below
 					if Caliber <= 5 then
 						Sound = "acf_other/ricochets/medium/richo"..math.random(1,6)..".wav"
 						VolFix = 1
 
+						--lower than 20mm
 						if Caliber <= 2 then
 							Sound = "acf_other/ricochets/small/richo"..math.random(1,2)..".wav"
 							VolFix = 1.25
 						end
 					end
-					ply:EmitSound( Sound , 75, Pitch, Volume * VolFix )
+
+				else
+					--Small weapons sound
+					if Caliber <=2 then
+						Sound = "acf_other/ricochets/props/small/richo"..math.random(1,2)..".wav"
+						VolFix = 1.25
+	
+					end
+				end
+
+				if Sound ~= "" then
+					entply:EmitSound( Sound , 75, Pitch, Volume * VolFix )
 				end
 			end
 
-			--its time has ended
-			if count > countToFinish then
-				--print('timer "'..ide..'"" has been repeated '..count..' times. stopping & removing it...')
-				timer.Stop( ide )
-				timer.Remove( ide )
+			timer.Stop( ide )
+			timer.Remove( ide )	
+		end
+	end )
+end
+
+function ACE_SBulletImpact()
+
+end
+
+--TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
+function ACE_SBulletCrack( BulletData, Caliber )
+
+	--Don't start this without a player
+	local ply = LocalPlayer()
+	if not IsValid( ply ) then return end
+
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+	--flag this, so we are not playing this sound for this bullet next time
+	BulletData.CrackCreated = true
+
+	debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
+
+	local count = 1
+	local Emitted = false --Was the sound played?
+
+	local ide = 'ACECrack#'..math.random(1,100000)
+	--print('timer created! ID: '..ide)
+
+	if timer.Exists( ide ) then return end
+	timer.Create( ide , 0.1, 0, function()
+
+		count = count + 1
+
+		local plyPos = entply:GetPos() --print(plyPos)
+
+		--Delayed event report.
+		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
+
+		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: '..Dist)
+
+		local Volume = ( 10000/Dist) --print('Vol: '..Volume)
+
+		--local Pitch =  math.Clamp(Velocity*0.001,90,150) print('pitch: '..Pitch)
+
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+
+		if count > Delay then
+			if not Emitted then
+				Emitted = true
+
+				--Small arm guns
+				local Sound = "acf_other/fly/small/fly"..math.random(1,22)..".wav"
+
+				--30mm gun and above
+				if Caliber >= 3 then
+					Sound = "acf_other/fly/medium/fly"..math.random(1,10)..".wav"
+
+					--above 100mm cannons
+					if Caliber >= 10 then
+						Sound = "acf_other/fly/large/fly"..math.random(1,5)..".wav"
+					end
+				end
+
+				entply:EmitSound( Sound , 75, 100, Volume )
+
 			end
+			timer.Stop( ide )
+			timer.Remove( ide )	
 		end
 	end )
 end

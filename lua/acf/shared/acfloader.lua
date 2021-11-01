@@ -141,17 +141,6 @@ function ACF_DefineRadarClass( id, data )
 	RadarClasses[ id ] = data
 end
 
---ACF.Weapons = ACF.Weapons or {}
-
---ACF.Weapons.Rack = ACF.Weapons.Rack or {}
---ACF.Classes.Rack = ACF.Classes.Rack or {}
-
---ACF.Weapons.Radar = ACF.Weapons.Radar or {}
---ACF.Classes.Radar = ACF.Classes.Radar or {}
-
---ACF.Classes.GunClass = GunClasses
---ACF.Weapons.Guns = GunTable
-
 -- Getters for guidance names, for use in missile definitions.
 local function GetAllInTableExcept(tbl, list)
 

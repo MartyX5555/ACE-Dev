@@ -132,7 +132,7 @@ function ENT:Initialize()
 	self.LastLoadDuration = 0
 	self.Owner = self
 	self.Parentable = false
-	self.NextLegalCheck = ACF.CurTime + 30 -- give any spawning issues time to iron themselves out
+	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal = true
 	self.LegalIssues = ""
 	self.FuseTime = 0
@@ -330,18 +330,8 @@ function ENT:UpdateOverlayText()
 	local isReloading = not isEmpty and CurTime() < self.NextFire and (self.MagSize == 1 or (self.LastLoadDuration > self.ReloadTime))
 	local gunStatus = isReloading and "reloading" or (clipLeft .. " in gun")
 	
-	--print(self.MagSize or "nil", isEmpty, clipLeft, self.CurrentShot)
-	
-	--print(self.LastLoadDuration, self.ReloadTime, self.LastLoadDuration > self.ReloadTime, gunStatus)
-	
 	local text = roundType .. " - " .. ammoLeft .. (ammoLeft == 1 and " shot left" or " shots left ( " .. gunStatus .. " )")
-	--[[
-	local RoundData = ACF.RoundTypes[ self.BulletData.Type ]
-	
-	if RoundData and RoundData.cratetxt then
-		text = text .. "\n" .. RoundData.cratetxt( self.BulletData )
-	end
-	--]]
+
 	text = text .. "\nRounds Per Minute: " .. math.Round( self.RateOfFire or 0, 2 )
 	
 	if not self.Legal then
@@ -633,18 +623,19 @@ end
 
 function ENT:Think()
 	
-----Legality check 	
 	if ACF.CurTime > self.NextLegalCheck then
 
+		--print('legality checks initialized!')
+
 		-- check gun is legal
-		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, false, true)
-		self.NextLegalCheck = ACF.LegalSettings:NextCheck(self.Legal)
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, nil, true)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
 		-- check the seat is legal
 		local seat = IsValid(self.User) and self.User:GetVehicle() or nil
 
 		if IsValid(seat) then
-			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, false, false)
+			local legal, issues = ACF_CheckLegal(seat, nil, nil, nil, nil, false)
 			if not legal then
 				self.Legal = false
 				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
@@ -656,8 +647,10 @@ function ENT:Think()
 		if not self.Legal then
 			if self.Firing then self:TriggerInput("Fire",0) end
 		end
-		
+
 	end
+
+
 
 	local PhysObj = self:GetPhysicsObject()
 	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
