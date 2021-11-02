@@ -85,6 +85,7 @@ function EFFECT:Init( data )
 		BulletData.LastThink = CurTime() --ACF.CurTime
 		BulletData.Effect = self.Entity
 		BulletData.CrackCreated = false
+		BulletData.InitialPos = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
 
 
 		--Add all that data to the bullet table, overwriting if needed
@@ -146,11 +147,9 @@ function EFFECT:ApplyMovement( Bullet )
 		self:SetPos( setPos )--Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 
-
-
 		--sonic crack sound
 		if not Bullet.CrackCreated then
-			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) then 
+			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) and not ACE_SInDistance( Bullet.InitialPos, 500 ) then 
 				print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
 				ACE_SBulletCrack(Bullet, Bullet.Caliber) 
 			end

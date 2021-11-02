@@ -148,20 +148,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					TraceInit.maxs = Vector( 0, 0, 0 ) 
 
 					util.TraceHull( TraceInit )
-
-					--[[
-					--retry for prop center if no hits at all, might have whiffed through bounding box and missed phys hull
-					--nearestpoint uses intersect of bbox from source point to origin (getpos), this is effectively just redoing the same thing
-					if ( !Occ.Hit and Hitpos != Hitat ) then
-						local Hitat = Tar:GetPos()
-						local Occlusion = {}
-							Occlusion.start = Hitpos
-							Occlusion.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-							Occlusion.filter = OccFilter
-							Occlusion.mask = MASK_SOLID
-						Occ = util.TraceLine( Occlusion )	
-					end
-					--]]
 					
 					--HE has direct view with the prop, so lets damage it
 					if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
@@ -899,7 +885,6 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
 			    -- ignore some of the debris props to save lag
 				if rand < ACF.DebrisChance then 
-					child.ACF = {}
 					ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
 				else
 
@@ -937,8 +922,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
 
 	--ERA props should not create debris
-	if not Entity.ACF then return end
-	local Mat = Entity.ACF.Material or 0
+	local Mat = (Entity.ACF and Entity.ACF.Material) or 0
 	if Mat == 4 then return end
 	
 	constraint.RemoveAll( Entity )
@@ -947,15 +931,13 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	if(Entity:BoundingRadius() < ACF.DebrisScale) then return nil end
 	
 	local Debris = ents.Create( "ace_debris" )
-		Debris:SetModel( Entity:GetModel() )
-		Debris:SetAngles( Entity:GetAngles() )
-		Debris:SetPos( Entity:GetPos() )
-		Debris:SetMaterial("models/props_wasteland/metal_tram001a")
-		Debris:Spawn()
+	Debris:SetModel( Entity:GetModel() )
+	Debris:SetAngles( Entity:GetAngles() )
+	Debris:SetPos( Entity:GetPos() )
+	Debris:SetMaterial("models/props_wasteland/metal_tram001a")
+	Debris:Spawn()
 		
-	if math.random() < ACF.DebrisIgniteChance then
-		Debris:Ignite(math.Rand(5,45),0)
-	end
+	if math.random() < ACF.DebrisIgniteChance then Debris:Ignite(math.Rand(5,45),0) end
 	
 	Debris:Activate()
 
@@ -980,8 +962,7 @@ function ACF_APKill( Entity , HitVector , Power )
 	ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
 	--ERA props should not create debris
-	if not Entity.ACF then return end
-	local Mat = Entity.ACF.Material or 0
+	local Mat = (Entity.ACF and Entity.ACF.Material) or 0
 	if Mat == 4 then return end
       
 	constraint.RemoveAll( Entity )
