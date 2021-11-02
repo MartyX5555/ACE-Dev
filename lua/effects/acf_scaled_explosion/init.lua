@@ -262,11 +262,16 @@ function EFFECT:Water( Water )
 	--print('R: '..Radius)
 	--print('D: '..Dist)
 
-	for i=0, Density*PMul do	
+	for i=0, Density*PMul do
+
+		local TextureTb = {
+			"particle/smokesprites_000"..math.random(1,9),
+			"effects/splash4"
+		}
 
 		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
 		local ShootVector = Angle:Up()
-		local Smoke = self.Emitter:Add( "effects/splash4", Water.HitPos + Vector(0,0,5) )
+		local Smoke = self.Emitter:Add( TextureTb[math.random(1,2)], Water.HitPos + Vector(0,0,5) )
 
 		if (Smoke) then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,100*Radius) )
@@ -288,7 +293,12 @@ function EFFECT:Water( Water )
 
 	for i=0, 2*Radius*PMul do
 
-		local Whisp = self.Emitter:Add( "effects/splash4", Water.HitPos )
+		local TextureTb = {
+			"particle/smokesprites_000"..math.random(1,9),
+			"effects/splash4"
+		}
+
+		local Whisp = self.Emitter:Add( TextureTb[math.random(1,2)], Water.HitPos )
 
 		if (Whisp) then
 			local Randvec = VectorRand()

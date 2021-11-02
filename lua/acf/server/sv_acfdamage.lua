@@ -4,6 +4,7 @@
 local TraceRes = { }
 local TraceInit = { output = TraceRes }
 
+--Used for filter certain undesired ents inside of HE processing
 ACF.HEFilter = {
 	gmod_wire_hologram = true,
 	prop_vehicle_crane, true,
@@ -12,6 +13,19 @@ ACF.HEFilter = {
 	gmod_ent_ttc = true,
 	gmod_ent_ttc_auto = true,
 	ace_flares = true
+}
+
+--Used for tracebug HE workaround
+ACE.CritEnts = {
+	acf_gun = true,
+	acf_ammo = true,
+	acf_engine = true,
+	acf_gearbox = true,
+	acf_fueltank = true,
+	acf_rack = true,
+	acf_missile = true,
+	prop_vehicle_prisoner_pod = true,
+	gmod_wire_gate = true
 }
 
 --I don't want HE processing every ent that it has in range
@@ -50,7 +64,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 	local Amp = math.min(Power/2000,50)
 	util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
 
-	debugoverlay.Sphere(Hitpos, Radius, 15, Color(255,0,0,32), 1) --developer 1   in console to see
+	debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
 	
 	--Will give tiny HE just a pinch of radius to help it hit the player
 	local Targets = ACF_HEFind( Hitpos, Radius )
@@ -83,19 +97,20 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 					local Hitat = nil
 
-					--A little hack so it doesn't check occlusion at the feet of players
+					--Done for dealing damage vs players and npcs
 					if Type == "Squishy" then 	
 
 						local hugenumber = 99999999999
 
 						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
-						Hitat = Tar:NearestPoint( Hitpos )					
+						--This is for scanning potential victims, damage goes later.
+						Hitat = Tar:NearestPoint( Hitpos )
+
 						local cldist = Hitpos:Distance( Hitat ) or hugenumber
 						local Tpos
 						local Tdis = hugenumber
 						
 						local Eyes = Tar:LookupAttachment("eyes")
-
 						if Eyes then
 
 							local Eyeat = Tar:GetAttachment( Eyes )
@@ -120,22 +135,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					else
 						Hitat = Tar:NearestPoint( Hitpos )
 					end
-					
-					debugoverlay.Line(Hitpos, Hitat, 5, Color(255,150,0))
 
 					--if hitpos inside hitbox of victim prop, nearest point doesn't work as intended
 					if Hitat == Hitpos then Hitat = Tar:GetPos() end
 					
-					--[[see if we have a clean view to victim prop
-					local Occlusion = {}
-						Occlusion.start = Hitpos
-						Occlusion.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
-						Occlusion.filter = OccFilter
-						Occlusion.mask = MASK_SOLID
-					local Occ = util.TraceLine( Occlusion )	
-					]]--
-
-
+					--see if we have a clean view to victim prop. Updates TraceRes
 					TraceInit.start = Hitpos
 					TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
 					TraceInit.filter = OccFilter
@@ -143,7 +147,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					TraceInit.mins = Vector( 0, 0, 0 )
 					TraceInit.maxs = Vector( 0, 0, 0 ) 
 
-					--util.TraceLine( TraceInit ) -- automatically stored in output table: TraceRes
 					util.TraceHull( TraceInit )
 
 					--[[
@@ -160,17 +163,15 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					end
 					--]]
 					
-					if ( !TraceRes.Hit ) then
-						--no hit
-					elseif ( TraceRes.Hit and TraceRes.Entity:EntIndex() != Tar:EntIndex() ) then
-						--occluded, no hit
-					else
-						Targets[i] = nil	--Remove the thing we just hit from the table so we don't hit it again in the next round
+					--HE has direct view with the prop, so lets damage it
+					if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
+
+						Targets[i] = NULL	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
 							
 						Table.Ent = Tar
 
-						if Tar:GetClass() == "acf_engine" or Tar:GetClass() == "acf_ammo" or Tar:GetClass() == "acf_fueltank" then
+						if ACE.CritEnts[Tar:GetClass()] then
 							Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), Tar:GetPos(), Tar:GetAngles())
 						end
 
@@ -190,13 +191,14 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 				else
 
-					Targets[i] = nil	--Target was invalid, so let's ignore it
+					Targets[i] = NULL	--Target was invalid, so let's ignore it
 					table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 				end	
 			end
 			::cont::
 		end
 		
+		--Now that we have the props to damage, apply it here
 		for i,Table in pairs(Damage) do
 			
 			local Tar = Table.Ent
@@ -204,10 +206,9 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			local AeraFraction = Table.Aera/TotalAera
 			local PowerFraction = Power * AeraFraction	--How much of the total power goes to that prop
 			local AreaAdjusted = (Tar.ACF.Aera / ACF.Threshold) * Feathering
-			
+
 			local BlastRes
 			local Blast = {
-				--Momentum = PowerFraction/(math.max(1,Table.Dist/200)^0.05), --not used for anything
 				Penetration = PowerFraction^ACF.HEBlastPen*AreaAdjusted
 			}
 			
@@ -222,8 +223,9 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			-- erroneous HE penetration bug workaround; retries trace on crit ents after a short delay to ensure a hit.
 			-- we only care about hits on critical ents, saves on processing power
 			-- not going to re-use tables in the timer, shouldn't make too much difference
-			if Tar:GetClass() == "acf_engine" or Tar:GetClass() == "acf_ammo" or Tar:GetClass() == "acf_fueltank" then
-				timer.Simple(0.015*2, function() 
+
+			if ACE.CritEnts[Tar:GetClass()] then
+				timer.Simple(0.03, function() 
 					if not IsValid(Tar) then return end
 					
 					--recreate the hitpos and hitat, add slight jitter to hitpos and move it away some
@@ -297,14 +299,13 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 				
 				if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 
-				    --print('RIP') 
 					--Add the debris created to the ignore so we don't hit it in other rounds
 					local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
 					table.insert( OccFilter , Debris )						
 					LoopKill = true --look for fresh targets since we blew a hole somewhere
 
 				else
-				    --print('NO RIP')
+
 				    --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
 					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 15 * (GetConVarNumber("acf_hepush") or 1) ) 
 
@@ -312,6 +313,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			end
 
 			PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
+
+			local min,max = Tar:GetCollisionBounds()
+			--This is to see what props are inside of explosion radius.
+			debugoverlay.BoxAngles(Tar:GetPos(), min, max, Tar:GetAngles(), 5, Color(255,255,0,100))
+
 		end
 
 		Power = math.max(Power - PowerSpent,0)	

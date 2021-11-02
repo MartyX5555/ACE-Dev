@@ -17,7 +17,12 @@ function ENT:Initialize()
 	self.FuseTime = 4
 	self.phys = phys
 	self.LastTime = CurTime()
-	if ( IsValid( phys ) ) then phys:Wake() end
+	if ( IsValid( phys ) ) then 
+		phys:Wake() 
+		phys:SetBuoyancyRatio( 5 ) 
+		phys:SetDragCoefficient( 1 )
+		phys:SetDamping( 0.75, 0.75 )
+	end
 end
 
 

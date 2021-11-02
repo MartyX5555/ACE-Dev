@@ -349,142 +349,139 @@ function ENT:Link( Target )
 	if not IsValid( Target ) then
 		return false, "Target not a valid entity!"		
 	end
-	
+
+	-- CrewLink
+	-- the gunner
 	if Target:GetClass() == "ace_crewseat_gunner" then
-	--CrewLink
-
-    --Don't link if it's already linked
-	for k, v in pairs( self.CrewLink ) do
-		if v == Target then
-			return false, "That crewseat is already linked to this gun!"
+	
+    	--Don't link if it's already linked
+		for k, v in pairs( self.CrewLink ) do
+			if v == Target then
+				return false, "That crewseat is already linked to this gun!"
+			end
 		end
-	end
 	
-	--Don't link if it's too far from this gun
-	if RetDist( self, Target ) > 100 * self.LinkRangeMul then
-	    return false, "That crewseat is too far to be linked to this gun!"
-	end
+		--Don't link if it's too far from this gun
+		if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+	    	return false, "That crewseat is too far to be linked to this gun!"
+		end
 	
-	--Don't link if it's already linked
-	if self.HasGunner == 1 then
-	return false, "The gun already has a gunner!"	
-	end
+		--Don't link if it's already linked
+		if self.HasGunner == 1 then
+			return false, "The gun already has a gunner!"	
+		end
 	
-	table.insert( self.CrewLink, Target )
-	table.insert( Target.Master, self )
+		table.insert( self.CrewLink, Target )
+		table.insert( Target.Master, self )
 	
-	self.HasGunner = 1
---	table.insert( Target.Master, self )
+		self.HasGunner = 1
 
-	return true, "Link successful!"
-	
-	
+		return true, "Link successful!"
+
+	-- the loader
 	elseif Target:GetClass() == "ace_crewseat_loader" then
 
-	-- Don't link if it's already linked
-	for k, v in pairs( self.CrewLink ) do
-		if v == Target then
-			return false, "That crewseat is already linked to this gun!"
-		end
-	end
-
-	--Don't link if it's too far from this gun
-	if RetDist( self, Target ) > 100 * self.LinkRangeMul then
-	    return false, "That crewseat is too far to be linked to this gun!"
-	end
-
-	if self.HasGunner == 0 then --IK there is going to be an exploit to delete the gunner after placing a loader but idk how to fix *shrugs*
-	return false, "You need a gunner before you can have a loader!"	
-	end
-	
-	if self.LoaderCount >= 3 then
-	return false, "The gun already has 3 loaders!"	
-	end
---	print(Gun.Class)
-	if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" or self.Class == "AL" then
-	return false, "This gun cannot have a loader!"	
-	end	
-	
-	table.insert( self.CrewLink, Target )
-	table.insert( Target.Master, self )
-	
-	self.LoaderCount = self.LoaderCount + 1
-
---	table.insert( Target.Master, self )
-
-	return true, "Link successful!"
-	
-	
-	-----------------------------------------
-	elseif Target:GetClass() == "acf_ammo" then --Ammo Link
-	
-	--We have to change the Id manually here
-	if self.Id == '20mmHRAC' then
-	    self.Id = '20mmRAC'
-	elseif self.Id == '30mmHRAC' then
-	    self.Id = '30mmRAC'	
-	elseif self.Id == '105mmSB' then
-	    self.Id = '100mmSBC'
-	elseif self.Id == '120mmSB' then
-	    self.Id = '120mmSBC'
-	elseif self.Id == '140mmSB' then
-	    self.Id = '140mmSBC'
-	elseif self.Id == '170mmSB' then
-	    self.Id = '170mmSBC'
-	end
-	
-	-- Don't link if it's not the right ammo type
-	if Target.BulletData.Id ~= self.Id then 
-        return false, "Wrong ammo type!"
-	end
-	
-	-- Don't link if it's a refill crate
-	if Target.RoundType == "Refill" then
-		return false, "Refill crates cannot be linked!"
-	end
-	
-	-- Don't link if it's a blacklisted round type for this gun
-	local Blacklist = ACF.AmmoBlacklist[ Target.RoundType ] or {}
-	
-	if table.HasValue( Blacklist, self.Class ) then
-		return false, "That round type cannot be used with this gun!"
-	end
-	
-	-- Dont't link if it's too far from this gun
-	if RetDist( self, Target ) > 512 * self.LinkRangeMul then
-	    return false, "That crate is too far to be connected with this gun!"
-	end
-	
-	-- Don't link if it's already linked
-	for k, v in pairs( self.AmmoLink ) do
-		if v == Target then
-			return false, "That crate is already linked to this gun!"
-		end
-	end
-	
-	table.insert( self.AmmoLink, Target )
-	table.insert( Target.Master, self )
-	
-	if self.BulletData.Type == "Empty" and Target.Load then
-		self:UnloadAmmo()
-		--self.Reloading = true
-	end
-	
-			local ReloadBuff = 1
-			if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-			ReloadBuff = 1.25-(self.LoaderCount*0.25)
+		-- Don't link if it's already linked
+		for k, v in pairs( self.CrewLink ) do
+			if v == Target then
+				return false, "That crewseat is already linked to this gun!"
 			end
-	
-	self.ReloadTime = math.max(( ( math.max(Target.BulletData.RoundVolume,self.MinLengthBonus) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * ReloadBuff, self.ROFLimit)
-	self.RateOfFire = 60 / self.ReloadTime
-	Wire_TriggerOutput( self, "Fire Rate", self.RateOfFire )
-	Wire_TriggerOutput( self, "Muzzle Weight", math.floor( Target.BulletData.ProjMass * 1000 ) )
-	Wire_TriggerOutput( self, "Muzzle Velocity", math.floor( Target.BulletData.MuzzleVel * ACF.VelScale ) )
+		end
 
-	return true, "Link successful!"
+		--Don't link if it's too far from this gun
+		if RetDist( self, Target ) > 100 * self.LinkRangeMul then
+			return false, "That crewseat is too far to be linked to this gun!"
+		end
+
+		if self.HasGunner == 0 then --IK there is going to be an exploit to delete the gunner after placing a loader but idk how to fix *shrugs*
+			return false, "You need a gunner before you can have a loader!"	
+		end
+	
+		if self.LoaderCount >= 3 then
+			return false, "The gun already has 3 loaders!"	
+		end
+
+		if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" or self.Class == "AL" then
+			return false, "This gun cannot have a loader!"	
+		end	
+	
+		table.insert( self.CrewLink, Target )
+		table.insert( Target.Master, self )
+	
+		self.LoaderCount = self.LoaderCount + 1
+
+		return true, "Link successful!"
+	
+	--Ammo Link
+	elseif Target:GetClass() == "acf_ammo" then 
+	
+		--We have to change the Id manually here
+		if self.Id == '20mmHRAC' then
+	    	self.Id = '20mmRAC'
+		elseif self.Id == '30mmHRAC' then
+	    	self.Id = '30mmRAC'	
+		elseif self.Id == '105mmSB' then
+	    	self.Id = '100mmSBC'
+		elseif self.Id == '120mmSB' then
+	    	self.Id = '120mmSBC'
+		elseif self.Id == '140mmSB' then
+	    	self.Id = '140mmSBC'
+		elseif self.Id == '170mmSB' then
+	    	self.Id = '170mmSBC'
+		end
+	
+		-- Don't link if it's not the right ammo type
+		if Target.BulletData.Id ~= self.Id then 
+        	return false, "Wrong ammo type!"
+		end
+	
+		-- Don't link if it's a refill crate
+		if Target.RoundType == "Refill" then
+			return false, "Refill crates cannot be linked!"
+		end
+	
+		-- Don't link if it's a blacklisted round type for this gun
+		local Blacklist = ACF.AmmoBlacklist[ Target.RoundType ] or {}
+	
+		if table.HasValue( Blacklist, self.Class ) then
+			return false, "That round type cannot be used with this gun!"
+		end
+	
+		-- Dont't link if it's too far from this gun
+		if RetDist( self, Target ) > 512 * self.LinkRangeMul then
+	    	return false, "That crate is too far to be connected with this gun!"
+		end
+	
+		-- Don't link if it's already linked
+		for k, v in pairs( self.AmmoLink ) do
+			if v == Target then
+				return false, "That crate is already linked to this gun!"
+			end
+		end
+	
+		table.insert( self.AmmoLink, Target )
+		table.insert( Target.Master, self )
+	
+		if self.BulletData.Type == "Empty" and Target.Load then
+			self:UnloadAmmo()
+		end
+	
+		local ReloadBuff = 1
+		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
+			ReloadBuff = 1.25-(self.LoaderCount*0.25)
+		end
+	
+		self.ReloadTime = math.max(( ( math.max(Target.BulletData.RoundVolume,self.MinLengthBonus) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * ReloadBuff, self.ROFLimit)
+		self.RateOfFire = 60 / self.ReloadTime
+
+		Wire_TriggerOutput( self, "Fire Rate", self.RateOfFire )
+		Wire_TriggerOutput( self, "Muzzle Weight", math.floor( Target.BulletData.ProjMass * 1000 ) )
+		Wire_TriggerOutput( self, "Muzzle Velocity", math.floor( Target.BulletData.MuzzleVel * ACF.VelScale ) )
+
+		return true, "Link successful!"
 	
 	else
-			return false, "Guns can only be linked to ammo crates or crew seats!"
+		return false, "Guns can only be linked to ammo crates or crew seats!"
 	end
 	
 end
@@ -623,9 +620,8 @@ end
 
 function ENT:Think()
 	
+	--Legality check part
 	if ACF.CurTime > self.NextLegalCheck then
-
-		--print('legality checks initialized!')
 
 		-- check gun is legal
 		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, nil, true)
@@ -953,10 +949,12 @@ function ENT:LoadAmmo( AddTime, Reload )
 		end
 		
 		local Adj = not self.BulletData.LengthAdj and 1 or self.BulletData.LengthAdj --FL firerate bonus adjustment
-			local ReloadBuff = 1
-			if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
+		local ReloadBuff = 1
+
+		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
 			ReloadBuff = 1.25-(self.LoaderCount*0.25)
-			end
+		end
+		
 		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * cb * ReloadBuff, self.ROFLimit)
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 		
@@ -1081,33 +1079,31 @@ end
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 	if (Ent.EntityMods) and (Ent.EntityMods.ACFAmmoLink) and (Ent.EntityMods.ACFAmmoLink.entities) then
+
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
+
 		if AmmoLink.entities and table.Count(AmmoLink.entities) > 0 then
+
 			for _,AmmoID in pairs(AmmoLink.entities) do
+
 				local Ammo = CreatedEntities[ AmmoID ]
+
 				if Ammo and Ammo:IsValid() then
 				
-				if Ammo:GetClass() == "acf_ammo" then
-				self:Link( Ammo )
-				elseif Ammo:GetClass() == "ace_crewseat_gunner" then
-				self:Link( Ammo )
-				elseif Ammo:GetClass() == "ace_crewseat_loader" then
-				self:Link( Ammo )
+					if Ammo:GetClass() == "acf_ammo" then
+						self:Link( Ammo )
+					elseif Ammo:GetClass() == "ace_crewseat_gunner" then
+						self:Link( Ammo )
+					elseif Ammo:GetClass() == "ace_crewseat_loader" then
+						self:Link( Ammo )
+					end
 				end
-				
-				
-				
-				end
-				
-				
-				
-				
 			end
 		end
+
 		Ent.EntityMods.ACFAmmoLink = nil
 	end
 	
 	--Wire dupe info
 	self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
-
 end

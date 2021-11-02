@@ -82,7 +82,7 @@ function ACE_SHasLOS( EventPos )
 	return false
 end
 
---Handles Explosions
+--Handles Explosion sounds
 function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 	--Don't start this without a player
@@ -270,6 +270,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 end
 
+--Handles penetration sounds
 function ACE_SPen( HitPos, Velocity, Mass )
 
 	--Don't start this without a player
@@ -314,6 +315,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 	end )
 end
 
+--Handles ricochet sounds
 function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 	--Don't start this without a player
@@ -392,6 +394,10 @@ function ACE_SBulletImpact()
 
 end
 
+function ACE_SGunFire()
+
+end
+
 --TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr
 function ACE_SBulletCrack( BulletData, Caliber )
 
@@ -422,13 +428,8 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
 		--Delayed event report.
 		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
-
 		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: '..Dist)
-
 		local Volume = ( 10000/Dist) --print('Vol: '..Volume)
-
-		--local Pitch =  math.Clamp(Velocity*0.001,90,150) print('pitch: '..Pitch)
-
 		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
 		if count > Delay then
