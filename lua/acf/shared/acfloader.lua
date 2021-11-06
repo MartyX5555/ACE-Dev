@@ -3,16 +3,16 @@
 
 AddCSLuaFile()
 
-local GunClasses = {}
-local GunTable = {}
+local GunClasses    = {}
+local GunTable      = {}
 local MobilityTable = {}
 local FuelTankTable = {}
 
-local Racks =  {}--ACF.Weapons.Rack
-local RackClasses = {}--ACF.Classes.Rack
+local Racks         = {}
+local RackClasses   = {}
 
-local Radars = {}--ACF.Weapons.Radar
-local RadarClasses = {}--ACF.Classes.Radar
+local Radars        = {}
+local RadarClasses  = {}
 
 -- setup base classes
 local gun_base = {
@@ -57,6 +57,10 @@ if CLIENT then
 
 	radar_base.guicreate = function( Panel, Table ) ACFRadarGUICreate( Table ) end
 	radar_base.guiupdate = function() return end
+end
+
+if game.IsDedicated() then
+	ACE.IsDedicated = true
 end
 
 -- some factory functions for defining ents

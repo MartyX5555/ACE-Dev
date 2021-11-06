@@ -672,7 +672,6 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	local ply = LocalPlayer()
 	if not IsValid(ply) then return end
 	if not ply:IsSuperAdmin() then return end
-	if not ply:IsListenServerHost() then return end --For dedicated servers, change the values directly in code. Weird
 
 	local Server = acfmenupanel["CData"]["Options"]
 
@@ -690,6 +689,8 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	Sub:SetText("Server Side parameters can be adjusted here")
 	Sub:SizeToContents()  
 	acfmenupanel.CustomDisplay:AddItem( Sub )
+
+	if ACE.IsDedicated then ACFSVGUIERROR() return end --For dedicated servers, change the values directly in code. Weird
 
 	local General = vgui.Create( "DForm" )
 	General:SetName("General")
@@ -775,6 +776,17 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	acfmenupanel.CustomDisplay:AddItem( PP )
 ]]--
 end
+function ACFSVGUIERROR()
+
+	local Note = vgui.Create( "DLabel" )
+	Note:SetPos( 0, 0 )
+	Note:SetColor( Color(10,10,10) ) 
+	Note:SetText("Not available in this moment")
+	Note:SizeToContents()  
+	acfmenupanel.CustomDisplay:AddItem( Note )
+
+end
+
 
 --[[=========================
    Contact folder content
