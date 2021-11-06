@@ -56,6 +56,7 @@ CreateConVar("acf_healthmod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_armormod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_ammomod", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_gunfire", 1, FCVAR_ARCHIVE)
+--CreateConVar("acf_year", ACF.Year, FCVAR_ARCHIVE)
 
 -- Debris
 CreateConVar("acf_debris_lifetime", 15, FCVAR_ARCHIVE)
@@ -74,7 +75,7 @@ if CLIENT then
 ]]-------------------------------
 
 	CreateClientConVar( "ACFM_MissileLights", 0 ) --Should missiles emit light while their motors are burning?  Looks nice but hits framerate. Set to 1 to enable, set to 0 to disable, set to another number to set minimum light-size.
-	
+
 end
 
 ACF.DebrisChance = GetConVar('acf_debris_children'):GetFloat()
@@ -491,6 +492,8 @@ function ACF_CalcMassRatio( obj, pwr )
 end
 
 function ACF_CVarChangeCallback(CVar, Prev, New)
+	--if( Cvar == "acf_year" ) then
+		--ACF.Year = math.Clamp(New,1900,2021)
 	if( CVar == "acf_healthmod" ) then
 		ACF.Threshold = 264.7 / math.max(New, 0.01)
 	elseif( CVar == "acf_armormod" ) then
@@ -510,6 +513,7 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
 	end
 end
 
+--cvars.AddChangeCallback("acf_year", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_healthmod", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_armormod", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_ammomod", ACF_CVarChangeCallback)

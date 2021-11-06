@@ -67,7 +67,7 @@ function EFFECT:Prop()
 	
 		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Debris) then
-			Debris:SetVelocity ( self.Normal * math.random( 20,40*self.Scale) + VectorRand() * math.random( 25,50*self.Scale) )
+			Debris:SetVelocity ( self.Normal * math.random( 20,140*self.Scale) + VectorRand() * math.random( 25,150*self.Scale) )
 			Debris:SetLifeTime( 0 )
 			Debris:SetDieTime( math.Rand( 1.5 , 3 )*self.Scale/3 )
 			Debris:SetStartAlpha( 255 )

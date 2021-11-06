@@ -355,7 +355,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 	end
 end
 
---ents that should recieve the spall instead of being used as shockwave transfer
+--ents that should receive the spall instead of being used as shockwave transfer
 ACF.VulnerableEnts = {
 
 	acf_gun = true,

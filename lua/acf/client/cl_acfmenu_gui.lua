@@ -672,6 +672,7 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 	local ply = LocalPlayer()
 	if not IsValid(ply) then return end
 	if not ply:IsSuperAdmin() then return end
+	if not ply:IsListenServerHost() then return end --For dedicated servers, change the values directly in code. Weird
 
 	local Server = acfmenupanel["CData"]["Options"]
 
@@ -704,6 +705,9 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 
 	General:NumSlider( "Child debris chance", "acf_debris_children", 0, 1, 2 )
 	General:ControlHelp( "Adjusts the chance of create debris when a contraption's gate have been destroyed" )
+
+	--General:NumSlider( "Year", "acf_year", 1900, 2021, 0 )
+	--General:ControlHelp( "Changes the year. This will affect the available weaponry (requires restart)." )
 
 	acfmenupanel.CustomDisplay:AddItem( General )
 

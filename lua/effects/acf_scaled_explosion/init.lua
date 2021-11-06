@@ -14,14 +14,14 @@ function EFFECT:Init( data )
 	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
 	
 	local GroundTr = { }
-		GroundTr.start = self.Origin + Vector(0,0,1)
+		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius
 		GroundTr.endpos = self.Origin - Vector(0,0,1)*self.Radius*10
 		GroundTr.mask = MASK_NPCWORLDSTATIC
 	local Ground = util.TraceLine( GroundTr )
 
 	local WaterTr = { }
 
-		local startposition = self.Origin + Vector(0,0,200 * self.Radius)
+		local startposition = self.Origin + Vector(0,0,40 * self.Radius)
 		local endposition = self.Origin + Vector(0,0,1)
 
 		WaterTr.start = startposition
@@ -29,8 +29,8 @@ function EFFECT:Init( data )
 		WaterTr.mask = MASK_WATER
 	local Water = util.TraceLine( WaterTr )
 
-	--debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
-	--debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))
+	debugoverlay.Line( startposition, endposition, 10, Color(255,0,0))
+	debugoverlay.Cross( Water.HitPos, 10, 10, Color( 0, 0, 255 ))
 
 	self.HitWater = false
 	self.UnderWater = false

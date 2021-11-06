@@ -1,5 +1,5 @@
 --Featuring functions which manage the current built in ace sound extension system
---TODO: Refactor all this, making ONE function for every sound event
+--TODO: Refactor all this, making ONE function for every sound event. Using tables here fit better than this
 
 --NOTE: i would like to have a way of having realtime volume/pitch depending if approaching/going away, 
 --as having a way to switch sounds between indoor & outdoor zones. They will sound fine, issue it would be when you pass from an area to another when the sound is being played
@@ -12,6 +12,7 @@ ACE = ACE or {}
 
 ACE.Sounds = {}
 
+--Entities which should be the only thing to block the sight
 ACE.Sounds.LOSWhitelist = {
 	prop_dynamic = true,
 	prop_physics = true
@@ -29,6 +30,7 @@ ACE.CrackDistanceMultipler = 1
 --Defines the distance where ring ears start to affect to player
 ACE.TinnitusZoneMultipler = 1
 
+
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
 	if not IsValid(ply) then return false, ply end
@@ -36,6 +38,8 @@ function ACE_SGetPOV( ply )
 
 	if ply:GetViewEntity() ~= ply then --print('player using another POV')
 		ent = ply:GetViewEntity()
+	else --print('Out of other POV')
+		
 	end
 
 	return ent
@@ -79,6 +83,23 @@ function ACE_SHasLOS( EventPos )
 	debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
 
 	if not LOS.Hit then return true end
+	return false
+end
+
+function ACE_SIsInDoor()
+	local ply = LocalPlayer()
+	if not IsValid(ply) then return end
+
+	local plyPos = ply:GetPos()
+
+	local CeilTr = {}
+	CeilTr.start = plyPos
+	CeilTr.endpos = plyPos + Vector(0,0,2000)
+	CeilTr.filter = {}
+	CeilTr.mask = MASK_SOLID_BRUSHONLY
+	local Ceil = util.TraceLine(CeilTr)
+
+	if Ceil.Hit and Ceil.HitWorld then return true end
 	return false
 end
 
@@ -243,6 +264,12 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					end
 
+					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+						print('Inside of building')
+						VolFix = VolFix*0.05
+					end
+
 					debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
 
 					entply:EmitSound( Sound, 75, Pitch * PitchFix, Volume * VolFix )
@@ -303,7 +330,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 				Emitted = true
 
 				local Sound = "acf_other/penetratingshots/pen"..math.random(1,6)..".wav"
-				local VolFix = 1
+				local VolFix = 0.5
 
 				entply:EmitSound( Sound, 75, Pitch, Volume * VolFix)
 
@@ -394,8 +421,122 @@ function ACE_SBulletImpact()
 
 end
 
-function ACE_SGunFire()
+--Time to think about how to put 3049230 sounds into this. SHIT
+function ACE_SGunFire( Pos, Sound ,Class, Propellant )
 
+	Propellant = math.max(Propellant,50)
+	print(Propellant)
+
+	--Don't start this without a player
+	local ply = LocalPlayer()
+	if not IsValid( ply ) then return end
+
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+	local count = 1
+	local Emitted = false --Was the sound played?
+	local ide = 'ACEFire#'..math.random(1,100000) 	--print('timer created! ID: '..ide)
+
+	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
+	if timer.Exists( ide ) then return end
+	timer.Create( ide , 0.1, 0, function()
+
+		count = count + 1
+
+		local plyPos = entply:GetPos() --print(plyPos)
+		local Dist = math.abs((plyPos - Pos):Length()) print('distance from gun: '..Dist)
+		local Volume = ( 1/(Dist/500)*Propellant/17.5 ) --print('Vol: '..Volume)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+
+		if count > Delay then
+
+			if not Emitted then --print('timer has emitted the sound in the time: '..count)
+
+				Emitted = true
+
+				--This defines the distance between areas for close, mid and far sounds
+				local CloseDist = Propellant * 25 * ACE.DistanceMultipler print('Propellant: '..Propellant) print('CloseDist: '..CloseDist)
+
+				--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
+				local MediumDist = CloseDist*4.25 print('MidDist: '..MediumDist)
+
+				local FarDist = MediumDist*2 print('FarDist: '..FarDist)
+
+				--this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
+				local VolFix = 1
+
+				-- The reason of why this requires tables. I can polish this later
+				if Dist >= CloseDist and Dist < MediumDist then print('Close')
+					if Class == 'MG' then
+						Sound = "acf_other/gunfire/machinegun/close/close"..math.random(1,4)..".wav"
+						VolFix = 3
+					elseif Class == 'HMG' then
+						Sound = "acf_other/gunfire/heavymachinegun/close/close"..math.random(1,4)..".wav"
+						VolFix = 1
+					elseif Class == 'RAC' then
+						Sound = "acf_other/gunfire/gatling/close/close"..math.random(1,4)..".wav"
+						VolFix = 2						
+					elseif Class == 'AC' then
+						Sound = "acf_other/gunfire/autocannon/close/close"..math.random(1,4)..".wav"
+						VolFix = 3						
+					elseif Class == 'C' then
+						Sound = "acf_other/gunfire/cannon/close/close"..math.random(1,4)..".wav"
+						VolFix = 2						
+					elseif Class == 'HW' then
+						Sound = "acf_other/gunfire/howitzer/close/close"..math.random(1,4)..".wav"
+						VolFix = 1
+					end
+				elseif Dist >= MediumDist and Dist < FarDist then print('Mid')
+					if Class == 'MG' then
+						Sound = "acf_other/gunfire/machinegun/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 3
+					elseif Class == 'HMG' then
+						Sound = "acf_other/gunfire/heavymachinegun/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 1
+					elseif Class == 'RAC' then
+						Sound = "acf_other/gunfire/gatling/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 2						
+					elseif Class == 'AC' then
+						Sound = "acf_other/gunfire/autocannon/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 3						
+					elseif Class == 'C' then
+						Sound = "acf_other/gunfire/cannon/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 2						
+					elseif Class == 'HW' then
+						Sound = "acf_other/gunfire/howitzer/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 1
+					end
+				elseif Dist >= FarDist then print('Far')
+					if Class == 'MG' then
+						Sound = "acf_other/gunfire/machinegun/far/far"..math.random(1,6)..".wav"
+						VolFix = 3
+					elseif Class == 'HMG' then
+						Sound = "acf_other/gunfire/heavymachinegun/far/far"..math.random(1,4)..".wav"
+						VolFix = 1
+					elseif Class == 'RAC' then
+						Sound = "acf_other/gunfire/gatling/far/far"..math.random(1,4)..".wav"
+						VolFix = 1						
+					elseif Class == 'AC' then
+						Sound = "acf_other/gunfire/autocannon/far/far"..math.random(1,6)..".wav"
+						VolFix = 3						
+					elseif Class == 'C' then
+						Sound = "acf_other/gunfire/cannon/far/far"..math.random(1,6)..".wav"
+						VolFix = 2						
+					elseif Class == 'HW' then
+						Sound = "acf_other/gunfire/howitzer/far/far"..math.random(1,4)..".wav"
+						VolFix = 1
+					end
+				end
+
+				entply:EmitSound( Sound, 75, 100, Volume * VolFix)
+
+			end
+
+			timer.Stop( ide )
+			timer.Remove( ide )	
+		end
+	end )
 end
 
 --TODO: Leave 5 sounds per caliber type. 22 7.26mm sounds go brrrr

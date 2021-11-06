@@ -8,7 +8,7 @@ ENT.PrintName = "Debris"
 if CLIENT then return end
 
 function ENT:Initialize()
-	
+
 	if ACF.DebrisLifeTime > 0 then
 		self.Timer = CurTime() + ACF.DebrisLifeTime
 	end
@@ -28,7 +28,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if ACF.DebrisLifeTime > 0 then
+	if ACF.DebrisLifeTime > 0 and self.Timer then
 		if self.Timer < CurTime() then self:Remove() end
 
 		self:NextThink( CurTime() + ACF.DebrisLifeTime)	

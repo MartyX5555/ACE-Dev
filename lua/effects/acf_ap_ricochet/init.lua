@@ -57,19 +57,26 @@
 		local Mat = SurfaceTr.MatType
 
 		--concrete
-		local SmokeColor = Vector(100,100,100)
+		local SmokeColor = Color(100,100,100,150)
 
 		-- Dirt
 		if Mat == 68 or Mat == 79 or Mat == 85 then 
-			SmokeColor = Vector(117,101,70)
+			SmokeColor = Color(117,101,70,150)
 
 		-- Sand
 		elseif Mat == 78 then 
-			SmokeColor = Vector(200,180,116)
+			SmokeColor = Color(200,180,116,150)
  
+ 		-- Glass
+		elseif Mat == 89 then
+			SmokeColor = Color(255,255,255,50)
 		end
 	
-		self:Dust( SmokeColor )
+		if Mat ~= 77 and Mat ~= 86 and Mat ~= 80 then
+			self:Dust( SmokeColor )
+		else
+			self:Metal()
+		end
 
 	end
 
@@ -95,7 +102,7 @@ function EFFECT:Dust( SmokeColor )
 			Dust:SetVelocity(VectorRand() * math.random( 25,35*Energy) )
 			Dust:SetLifeTime( 0 )
 			Dust:SetDieTime( math.Rand( 0.1 , 4 )*math.max(Energy,2)/3  )
-			Dust:SetStartAlpha( math.Rand( 125, 150 ) )
+			Dust:SetStartAlpha( math.Rand( math.max(SmokeColor.a-25,10), SmokeColor.a ) )
 			Dust:SetEndAlpha( 0 )
 			Dust:SetStartSize( 20*Energy )
 			Dust:SetEndSize( 30*Energy )
@@ -107,6 +114,18 @@ function EFFECT:Dust( SmokeColor )
 			Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )		
 		end
 	end
+
+end
+
+function EFFECT:Metal()
+
+	local Sparks = EffectData()
+		Sparks:SetOrigin( self.Origin )
+		Sparks:SetNormal( self.DirVec+VectorRand()*1.5)
+		Sparks:SetMagnitude( self.Scale/1.5 )
+		Sparks:SetScale( self.Scale/1.5 )
+		Sparks:SetRadius( self.Scale/1.5 )
+	util.Effect( "stunstickimpact", Sparks )
 
 end
 
