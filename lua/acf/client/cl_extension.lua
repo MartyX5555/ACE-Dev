@@ -255,7 +255,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					end
 
 					--Tinnitus function
-					local TinZone = math.max(Radius*80,250)*ACE.TinnitusZoneMultipler
+					local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
 					if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
 						timer.Simple(0.01, function()
 							entply:SetDSP( 32, true )
@@ -422,7 +422,7 @@ function ACE_SBulletImpact()
 end
 
 --Time to think about how to put 3049230 sounds into this. SHIT
-function ACE_SGunFire( Pos, Sound ,Class, Propellant )
+function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 	Propellant = math.max(Propellant,50)
 	print(Propellant)
@@ -476,7 +476,11 @@ function ACE_SGunFire( Pos, Sound ,Class, Propellant )
 						VolFix = 1
 					elseif Class == 'RAC' then
 						Sound = "acf_other/gunfire/gatling/close/close"..math.random(1,4)..".wav"
-						VolFix = 2						
+						VolFix = 2
+						if Caliber >= 20 then
+							Sound = "acf_other/gunfire/heavymachinegun/close/close"..math.random(1,4)..".wav"
+							VolFix = 5		
+						end											
 					elseif Class == 'AC' then
 						Sound = "acf_other/gunfire/autocannon/close/close"..math.random(1,4)..".wav"
 						VolFix = 3						
@@ -496,7 +500,11 @@ function ACE_SGunFire( Pos, Sound ,Class, Propellant )
 						VolFix = 1
 					elseif Class == 'RAC' then
 						Sound = "acf_other/gunfire/gatling/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 2						
+						VolFix = 2
+						if Caliber >= 20 then
+							Sound = "acf_other/gunfire/heavymachinegun/mid/mid"..math.random(1,4)..".wav"
+							VolFix = 5		
+						end						
 					elseif Class == 'AC' then
 						Sound = "acf_other/gunfire/autocannon/mid/mid"..math.random(1,4)..".wav"
 						VolFix = 3						
@@ -516,7 +524,11 @@ function ACE_SGunFire( Pos, Sound ,Class, Propellant )
 						VolFix = 1
 					elseif Class == 'RAC' then
 						Sound = "acf_other/gunfire/gatling/far/far"..math.random(1,4)..".wav"
-						VolFix = 1						
+						VolFix = 1	
+						if Caliber >= 20 then
+							Sound = "acf_other/gunfire/heavymachinegun/far/far"..math.random(1,4)..".wav"
+							VolFix = 5		
+						end					
 					elseif Class == 'AC' then
 						Sound = "acf_other/gunfire/autocannon/far/far"..math.random(1,6)..".wav"
 						VolFix = 3						

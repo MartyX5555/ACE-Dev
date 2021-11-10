@@ -54,7 +54,7 @@ if CLIENT then
 		end
 		
 	end
-	
+
 	function ENT:Animate( Class, ReloadTime, LoadOnly )
 		
 		if self.CloseAnim and self.CloseAnim > 0 then
@@ -82,14 +82,17 @@ if CLIENT then
 			
 		acfmenupanel:CPanelText("Name", Table.name)
 		
-		acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
-			acfmenupanel.CData.DisplayModel:SetModel( Table.model )
-			acfmenupanel.CData.DisplayModel:SetCamPos( Vector( 250, 500, 250 ) )
-			acfmenupanel.CData.DisplayModel:SetLookAt( Vector( 0, 0, 0 ) )
-			acfmenupanel.CData.DisplayModel:SetFOV( 20 )
-			acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-			acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
-		acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
+		local GunDisplay = acfmenupanel.CData.DisplayModel
+
+		GunDisplay = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
+		GunDisplay:SetModel( Table.model )
+		GunDisplay:SetCamPos( Vector( 250, 500, 250 ) )
+		GunDisplay:SetLookAt( Vector( 0, 0, 0 ) )
+		GunDisplay:SetFOV( 20 )
+		GunDisplay:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
+		GunDisplay.LayoutEntity = function( panel, entity ) end
+		acfmenupanel.CustomDisplay:AddItem( GunDisplay )
+
 		local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
 		acfmenupanel:CPanelText("ClassDesc", GunClass.desc)	
 		acfmenupanel:CPanelText("GunDesc", Table.desc)
@@ -97,16 +100,13 @@ if CLIENT then
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 		acfmenupanel:CPanelText("Year", "Year : "..Table.year)
 		
-		--PrintTable(Table)
 		if not Table.rack then
 			local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 			local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 			acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
 			if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
 			acfmenupanel:CPanelText("Spread", "Spread : "..GunClass.spread.." degrees")
-		end
-		
-		if Table.canparent then
+
 			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.")
 		end
 		
@@ -258,6 +258,7 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	
 	Gun:SetNWString( "WireName", Lookup.name )
 	Gun:SetNWString( "Class", Gun.Class )
+	Gun:SetNWInt( "Caliber", Gun.Caliber )
 	Gun:SetNWString( "ID", Gun.Id )
 	Gun.Muzzleflash = ClassData.muzzleflash
 	Gun.RoFmod = ClassData.rofmod

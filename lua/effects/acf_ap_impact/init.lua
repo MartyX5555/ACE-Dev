@@ -128,10 +128,10 @@ function EFFECT:Dust( SmokeColor )
 	local Mass = self.Mass
 
 	--this is the size boost fo subcaliber rounds
-	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
+	local Boost = ( self.SubCalBoost[self.Id] and 3) or 1
 
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,3)
 
 	for i=0, math.max(self.Caliber/3,1) do
 
@@ -192,10 +192,10 @@ function EFFECT:Metal( SmokeColor )
 	local Sparks = EffectData()
 		Sparks:SetOrigin( self.Origin )
 		Sparks:SetNormal( self.DirVec+VectorRand()*1.5)
-		Sparks:SetMagnitude( self.Scale/10 )
-		Sparks:SetScale( self.Scale/10 )
-		Sparks:SetRadius( self.Scale/10 )
-	util.Effect( "stunstickimpact", Sparks )
+		Sparks:SetMagnitude( self.Scale/1.75 )
+		Sparks:SetScale( self.Scale/1.75 )
+		Sparks:SetRadius( self.Scale/1.75 )
+	util.Effect( "Sparks", Sparks )
 
 end
 

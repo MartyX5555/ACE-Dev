@@ -1,5 +1,7 @@
 
-   
+
+
+
 --[[--------------------------------------------------------- 
     Initializes the effect. The data is a table of data  
     which was passed from the server. 
@@ -9,26 +11,18 @@
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
 	
-	local Sound = Gun:GetNWString( "Sound" )
 	local Propellant = data:GetScale()
 	local ReloadTime = data:GetMagnitude()
 	
-	local Class = Gun:GetNWString( "Class" )
+	local Sound = Gun:GetNWString( "Sound", "" )
+	local Class = Gun:GetNWString( "Class", "C" )
+	local Caliber = Gun:GetNWInt( "Caliber", 1 ) * 10 print('Caliber: '..Caliber)
 
+	--This tends to fail
 	local ClassData = list.Get("ACFClasses").GunClass[Class] or {}
 	
---[[	
-
-	longbarrel = {
-		index = 2, 
-		submodel = 4, 
-		newpos = "muzzle2"
-	}
-
-]]--
-	
 	local Attachment = "muzzle"
-	local longbarrel = ClassData.longbarrel or nil
+	local longbarrel = (ClassData and ClassData.longbarrel) or nil
 	
 	if longbarrel ~= nil then
 		if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
@@ -46,7 +40,7 @@
 		if Propellant > 0 then
 
 			if not nosound then
-				ACE_SGunFire( Gun:GetPos(), Sound ,Class, Propellant )
+				ACE_SGunFire( Gun:GetPos(), Sound ,Class, Caliber , Propellant )
 			end
 			
 			local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }

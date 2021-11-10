@@ -122,8 +122,8 @@ function Round.cratetxt( BulletData )
 	{
 		"Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
 		"Burn Rate: ", math.Round(DData.BurnRate, 1), " kg/s\n",
-		"Burn Duration: ", math.Round(DData.BurnTime, 1), " s\n",
-		"Distract Chance: ", math.floor(DData.DistractChance * 100), " %"
+		"Burn Duration: ", math.Round(DData.BurnTime, 1), " s\n"--,
+		--"Distract Chance: ", math.floor(DData.DistractChance * 100), " %"
 	}
 	
 	return table.concat(str)
@@ -210,7 +210,7 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BurnRateDisplay", "")	--Proj muzzle penetration (Name, Desc)
 	acfmenupanel:CPanelText("BurnDurationDisplay", "")	--HE Blast data (Name, Desc)
-	acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
+	--acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
 	
 	Round.guiupdate( Panel, Table )
 	
@@ -266,7 +266,7 @@ function Round.guiupdate( Panel, Table )
 	
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
 	acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")
-	acfmenupanel:CPanelText("DistractChanceDisplay", "Distraction Chance : " .. math.floor(Data.DistractChance * 100) .. " %")
+	--acfmenupanel:CPanelText("DistractChanceDisplay", "Distraction Chance : " .. math.floor(Data.DistractChance * 100) .. " %")
 	
 end
 

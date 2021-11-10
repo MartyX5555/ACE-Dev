@@ -78,6 +78,11 @@ if CLIENT then
 
 end
 
+ACFM = ACFM or {}
+
+ACFM.FlareBurnMultiplier = 0.5
+ACFM.FlareDistractMultiplier = 1 / 35
+
 ACF.DebrisChance = GetConVar('acf_debris_children'):GetFloat()
 ACF.DebrisLifeTime = GetConVar('acf_debris_lifetime'):GetInt()
 
@@ -106,20 +111,20 @@ ACF.BoomMult = 1.5                             --How much more do ammocrates blo
 --ACF Damage Multipler.
 
 ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
-ACF.APCDamageMult = 1.5           --APC Damage Multipler           -1.1
-ACF.APBCDamageMult = 1.5         --APBC Damage Multipler           -1.05
-ACF.APCBCDamageMult = 1.0        --APCBC Damage Multipler           -1.05
-ACF.APHEDamageMult = 1.0          --APHE Damage Multipler          
-ACF.APDSDamageMult = 1.5          --APDS Damage Multipler          
-ACF.APDSSDamageMult = 1.55        --APDSS Damage Multipler
-ACF.HVAPDamageMult = 1.65         --HVAP/APCR Damage Multipler
-ACF.FLDamageMult = 1.4            --FL Damage Multipler
-ACF.HEATDamageMult = 2            --HEAT Damage Multipler
-ACF.HEDamageMult = 2              --HE Damage Multipler
-ACF.HESHDamageMult = 1.2          --HESH Damage Multipler
-ACF.HPDamageMult = 8              --HP Damage Multipler
+ACF.APCDamageMult = 1.5         --APC Damage Multipler           -1.1
+ACF.APBCDamageMult = 1.5        --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult = 1.0       --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult = 1.0        --APHE Damage Multipler          
+ACF.APDSDamageMult = 1.5        --APDS Damage Multipler          
+ACF.APDSSDamageMult = 1.55      --APDSS Damage Multipler
+ACF.HVAPDamageMult = 1.65       --HVAP/APCR Damage Multipler
+ACF.FLDamageMult = 1.4          --FL Damage Multipler
+ACF.HEATDamageMult = 2          --HEAT Damage Multipler
+ACF.HEDamageMult = 2            --HE Damage Multipler
+ACF.HESHDamageMult = 1.2        --HESH Damage Multipler
+ACF.HPDamageMult = 8            --HP Damage Multipler
 
-
+--ACF HE
 
 ACF.HEDamageFactor = 50
 
@@ -150,7 +155,7 @@ ACF.PDensity = 1.6	                 --Gun propellant density (Real powders go fr
 ACF.TorqueBoost = 1.25               --torque multiplier from using fuel
 ACF.DriverTorqueBoost = 0.25         --torque multiplier from having a driver
 ACF.FuelRate = 10                    --multiplier for fuel usage, 1.0 is approx real world
-ACF.ElecRate = 2                      --multiplier for electrics                                   --BEFORE to balance: 0.458
+ACF.ElecRate = 2                     --multiplier for electrics                                   --BEFORE to balance: 0.458
 ACF.TankVolumeMul = 1                -- multiplier for fuel tank capacity, 1.0 is approx real world
 
 
@@ -158,15 +163,13 @@ ACF.NormalizationFactor = 0.15       --at 0.1(10%) a round hitting a 70 degree p
 
 ACF.AllowCSLua = 0
 
-
-
-ACF.LiIonED = 0.27                --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
+ACF.LiIonED = 0.27                   --li-ion energy density: kw hours / liter --BEFORE to balance: 0.458
 ACF.CuIToLiter = 0.0163871           -- cubic inches to liters
 
 ACF.RefillDistance = 400             --Distance in which ammo crate starts refilling.
 ACF.RefillSpeed = 250                -- (ACF.RefillSpeed / RoundMass) / Distance 
 
---ACF.ChildDebris = 50                 -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
+--ACF.ChildDebris = 50               -- used to calculate probability for children to become debris, higher is more;  Chance =  ACF.ChildDebris / num_children
 ACF.DebrisIgniteChance = 0.25
 ACF.DebrisScale = 20                 -- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale = 16		         -- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
@@ -176,7 +179,7 @@ ACF.GunInaccuracyBias = 2            -- Higher numbers make shots more likely to
 ACF.EnableDefaultDP = true --GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
 ACF.EnableKillicons = true           -- Enable killicons overwriting.
 
-
+--Fuel Density
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
 	Petrol = 0.745,
@@ -343,11 +346,8 @@ end
 
 
 ACF.Weapons = list.Get("ACFEnts")
-	
 ACF.Classes = list.Get("ACFClasses")
-
 ACF.RoundTypes = list.Get("ACFRoundTypes")
-
 ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 
@@ -641,11 +641,6 @@ else
 	net.Receive("acf_smokewind", recvSmokeWind)
 end
 cleanup.Register( "aceexplosives" )
-
-ACFM = ACFM or {}
-
-ACFM.FlareBurnMultiplier = 0.5
-ACFM.FlareDistractMultiplier = 1 / 35
 
 AddCSLuaFile()
 

@@ -80,6 +80,16 @@
 
 	end
 
+		local BulletEffect = {}
+		BulletEffect.Num = 1
+		BulletEffect.Src = self.Origin - self.DirVec
+		BulletEffect.Dir = self.DirVec
+		BulletEffect.Spread = Vector(0,0,0)
+		BulletEffect.Tracer = 0
+		BulletEffect.Force = 0
+		BulletEffect.Damage = 0	 
+	LocalPlayer():FireBullets(BulletEffect) 
+
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end   
 
@@ -93,7 +103,7 @@ function EFFECT:Dust( SmokeColor )
 	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
 
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.0075 * Boost ,2)
 
 	for i=0, math.max(self.Cal/3,1) do
 
@@ -104,8 +114,8 @@ function EFFECT:Dust( SmokeColor )
 			Dust:SetDieTime( math.Rand( 0.1 , 4 )*math.max(Energy,2)/3  )
 			Dust:SetStartAlpha( math.Rand( math.max(SmokeColor.a-25,10), SmokeColor.a ) )
 			Dust:SetEndAlpha( 0 )
-			Dust:SetStartSize( 20*Energy )
-			Dust:SetEndSize( 30*Energy )
+			Dust:SetStartSize( 25*Energy )
+			Dust:SetEndSize( 35*Energy )
 			Dust:SetRoll( math.Rand(150, 360) )
 			Dust:SetRollDelta( math.Rand(-0.2, 0.2) )			
 			Dust:SetAirResistance( 100 ) 			 
@@ -122,10 +132,10 @@ function EFFECT:Metal()
 	local Sparks = EffectData()
 		Sparks:SetOrigin( self.Origin )
 		Sparks:SetNormal( self.DirVec+VectorRand()*1.5)
-		Sparks:SetMagnitude( self.Scale/1.5 )
-		Sparks:SetScale( self.Scale/1.5 )
-		Sparks:SetRadius( self.Scale/1.5 )
-	util.Effect( "stunstickimpact", Sparks )
+		Sparks:SetMagnitude( self.Scale/1.75 )
+		Sparks:SetScale( self.Scale/1.75 )
+		Sparks:SetRadius( self.Scale/1.75 )
+	util.Effect( "Sparks", Sparks )
 
 end
 

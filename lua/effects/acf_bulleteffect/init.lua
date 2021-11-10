@@ -147,11 +147,16 @@ function EFFECT:ApplyMovement( Bullet )
 		self:SetPos( setPos )--Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 
+		local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length()) 
+
 		--sonic crack sound
 		if not Bullet.CrackCreated then
-			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) and not ACE_SInDistance( Bullet.InitialPos, 500 ) then 
-				print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
-				ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,500) ) and not ACE_SInDistance( Bullet.InitialPos, 500 ) then
+				if Speed > 250 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
+					print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
+					print('Bullet Speed: '..Speed)
+					ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+				end
 			end
 		end
 	end
