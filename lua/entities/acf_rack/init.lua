@@ -979,9 +979,6 @@ end
 
 hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
-
-
-
 function ENT:OnRemove()
 	Wire_Remove(self.Entity)
 end

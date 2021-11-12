@@ -115,7 +115,6 @@ if CLIENT then
 	end
 	
 	return
-	
 end
 
 function ENT:Initialize()

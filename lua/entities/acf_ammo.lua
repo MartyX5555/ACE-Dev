@@ -143,7 +143,7 @@ function ENT:Initialize()
 	self.LegalIssues = ""
 	self.Active = false
 	
-	print(self.NextLegalCheck)
+	--print(self.NextLegalCheck)
 
 	self.Master = {}
 	self.Sequence = 0
@@ -244,18 +244,18 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
 
 	local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
 	if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-	Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
-	CMul = 6
+		Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
+		CMul = 6
 	elseif Type == "HE" then
-	CMul = 3	
+		CMul = 3	
 	end	
 
 	local DetRand = 0	
 
 	if (self.BulletData.Type == "Refill") then
-	DetRand = 0.75
+		DetRand = 0.75
 	else
-	DetRand = math.Rand(0,1) * CMul
+		DetRand = math.Rand(0,1) * CMul
 	end
 	
 	if DetRand >= 0.95 then --Tests if cooks off

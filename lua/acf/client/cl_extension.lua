@@ -266,7 +266,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--If a wall is in front of the player and is indoor, reduces its vol at 50%
 					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-						print('Inside of building')
+						--print('Inside of building')
 						VolFix = VolFix*0.05
 					end
 
@@ -425,7 +425,7 @@ end
 function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 	Propellant = math.max(Propellant,50)
-	print(Propellant)
+	--print(Propellant)
 
 	--Don't start this without a player
 	local ply = LocalPlayer()
@@ -445,7 +445,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 		count = count + 1
 
 		local plyPos = entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - Pos):Length()) print('distance from gun: '..Dist)
+		local Dist = math.abs((plyPos - Pos):Length()) --print('distance from gun: '..Dist)
 		local Volume = ( 1/(Dist/500)*Propellant/17.5 ) --print('Vol: '..Volume)
 		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
@@ -456,18 +456,18 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 				Emitted = true
 
 				--This defines the distance between areas for close, mid and far sounds
-				local CloseDist = Propellant * 25 * ACE.DistanceMultipler print('Propellant: '..Propellant) print('CloseDist: '..CloseDist)
+				local CloseDist = Propellant * 25 * ACE.DistanceMultipler --print('Propellant: '..Propellant) print('CloseDist: '..CloseDist)
 
 				--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-				local MediumDist = CloseDist*4.25 print('MidDist: '..MediumDist)
+				local MediumDist = CloseDist*4.25 --print('MidDist: '..MediumDist)
 
-				local FarDist = MediumDist*2 print('FarDist: '..FarDist)
+				local FarDist = MediumDist*2 --print('FarDist: '..FarDist)
 
 				--this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
 				local VolFix = 1
 
 				-- The reason of why this requires tables. I can polish this later
-				if Dist >= CloseDist and Dist < MediumDist then print('Close')
+				if Dist >= CloseDist and Dist < MediumDist then --print('Close')
 					if Class == 'MG' then
 						Sound = "acf_other/gunfire/machinegun/close/close"..math.random(1,4)..".wav"
 						VolFix = 3
@@ -491,7 +491,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						Sound = "acf_other/gunfire/howitzer/close/close"..math.random(1,4)..".wav"
 						VolFix = 1
 					end
-				elseif Dist >= MediumDist and Dist < FarDist then print('Mid')
+				elseif Dist >= MediumDist and Dist < FarDist then --print('Mid')
 					if Class == 'MG' then
 						Sound = "acf_other/gunfire/machinegun/mid/mid"..math.random(1,4)..".wav"
 						VolFix = 3
@@ -515,7 +515,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						Sound = "acf_other/gunfire/howitzer/mid/mid"..math.random(1,4)..".wav"
 						VolFix = 1
 					end
-				elseif Dist >= FarDist then print('Far')
+				elseif Dist >= FarDist then --print('Far')
 					if Class == 'MG' then
 						Sound = "acf_other/gunfire/machinegun/far/far"..math.random(1,6)..".wav"
 						VolFix = 3

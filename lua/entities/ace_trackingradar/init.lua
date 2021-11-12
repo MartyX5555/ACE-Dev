@@ -22,7 +22,6 @@ function ENT:Initialize()
 	self.ThinkDelay = 0.1
 
 	self.Active = false
-	curTime = 0
 
 	self:SetModel( "models/missiles/radar_big.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
@@ -47,7 +46,6 @@ function ENT:Initialize()
 end
 
 --ATGMs tracked
-
 function ENT:isLegal()
 
 	if self:GetPhysicsObject():GetMass() < 600 then return false end
@@ -293,22 +291,6 @@ function ENT:Think()
 		        WireLib.TriggerOutput( self, "Velocity", {} )
 		        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )	
 	        end
-
 	    end
     end
-
 end
-
-
-function ENT:OnRemove()
-
-end
-
-
-
-
-
-
-
-
-

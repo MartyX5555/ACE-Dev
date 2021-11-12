@@ -22,7 +22,6 @@ function ENT:Initialize()
 	self.ThinkDelay = 0.1
 
 	self.Active = false
-	curTime = 0
 
 	self:SetModel( "models/props_lab/monitor01b.mdl" )
 	self:PhysicsInit(SOLID_VPHYSICS)
@@ -232,13 +231,3 @@ function ENT:Think()
 		end
 	end
 end
-
-
-
-
-
-
-
-
-
-

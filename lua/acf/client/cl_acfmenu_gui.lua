@@ -484,11 +484,10 @@ end
 function ACFHomeGUICreate( Table )
 
 	if not acfmenupanel.CustomDisplay then return end
-	--start version
---Trebuchet18
 
 	local color
 	local versionstring
+
 	if ACF.CurrentVersion > 0 then
 	if ACF.Version >= ACF.CurrentVersion then
 		versionstring = "Up To Date"
@@ -503,9 +502,9 @@ function ACFHomeGUICreate( Table )
 		color = Color(225,0,0,255)
 	end
 
-	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
-	
 	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+
+	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)	
 	acfmenupanel["CData"]["VersionInit"]:SetTextColor( Color( 0, 0, 0) )
 	acfmenupanel["CData"]["VersionInit"]:SizeToContents()

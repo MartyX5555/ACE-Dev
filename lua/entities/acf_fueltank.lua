@@ -88,8 +88,8 @@ if CLIENT then
 		local FuelID = acfmenupanel.FuelTankData.FuelID
 		local Dims = Tanks[TankID].dims
 		
-		print(Dims.V)
-		print(Dims.S)
+		--print(Dims.V)
+		--print(Dims.S)
 
 		local Wall = 0.03937 --wall thickness in inches (1mm)
 		local Volume = Dims.V - (Dims.S * Wall) -- total volume of tank (cu in), reduced by wall thickness

@@ -25,7 +25,6 @@ function ENT:Initialize()
 	end
 end
 
-
 function ENT:Think()
 
 	local curtime = CurTime()
@@ -46,22 +45,5 @@ function ENT:Think()
 		Flash:SetNormal( Vector(0,0,-1) )
 		Flash:SetRadius( math.max( Radius, 1 ) )
 		util.Effect( "ACF_Scaled_Explosion", Flash )
-
-		
 	end
-
-
 end
-
-
-function ENT:OnRemove()
-end
-
-
-
-
-
-
-
-
-
