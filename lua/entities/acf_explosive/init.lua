@@ -26,8 +26,6 @@ function ENT:Initialize()
 
 end
 
-
-
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )
 	self.ACF.Armour = 0.1
@@ -43,17 +41,11 @@ function ENT:ACF_OnDamage( Entity , Energy , FrAera , Angle , Inflictor )
 	return table.Copy(nullhit) --This function needs to return HitRes
 end
 
-
-
-
 function ENT:TriggerInput( inp, value )
 	if inp == "Detonate" and value ~= 0 then
 		self:Detonate()
 	end
 end
-
-
-
 
 function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, Data11, Data12, Data13, Data14, Data15)
 
@@ -89,9 +81,6 @@ end
 list.Set( "ACFCvars", "acf_explosive", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "mdl", "data11", "data12", "data13", "data14", "data15"} )
 duplicator.RegisterEntityClass("acf_explosive", MakeACF_Explosive, "Pos", "Angle", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10", "Model" , "RoundData11" , "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
 
-
-
-
 function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Mdl, bdata,Data11 ,Data12, Data13 ,Data14, Data15)
 
 	self:SetModelEasy(Mdl)
@@ -120,9 +109,6 @@ function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, 
 	
 end
 
-
-
-
 function ENT:SetModelEasy(mdl)
 	local curMdl = self:GetModel()
 	
@@ -146,9 +132,6 @@ function ENT:SetModelEasy(mdl)
 		phys:SetMass( 10 ) 
 	end 
 end
-
-
-
 
 function ENT:SetBulletData(bdata)
 
@@ -178,9 +161,6 @@ function ENT:SetBulletData(bdata)
 	self:ConfigBulletDataShortForm(bdata)
 end
 
-
-
-
 function ENT:ConfigBulletDataShortForm(bdata)
 	bdata = ACFM_ExpandBulletData(bdata)
 	
@@ -197,9 +177,6 @@ function ENT:ConfigBulletDataShortForm(bdata)
 	self:RefreshClientInfo()
 end
 
-
-
-
 local trace = {}
 
 function ENT:TraceFunction()
@@ -214,9 +191,6 @@ function ENT:TraceFunction()
 	end
 end
 
-
-
-
 function ENT:Think()
  	
 	if self.ShouldTrace then
@@ -229,13 +203,9 @@ function ENT:Think()
 		
 end
 
-
-
-
 function ENT:Detonate(overrideBData)
 
 	if self.Detonated then return end
-	
 	self.Detonated = true
 	
 	local bdata = overrideBData or self.BulletData
@@ -249,48 +219,48 @@ function ENT:Detonate(overrideBData)
 	
 	if overrideBData then     --check if overrideBData is presented
 	    if overrideBData.Entity.Fuse.Cluster == nil then
-		   
-		   bdata.Owner = 	bdata.Owner or self.Owner
-		   
-		   if bdata.Type == 'HEAT' or 'THEAT' then  --check if missile is HEAT based
-		     if not self.DetonateOffset then    --just cuz lua doesnt like me	  
-			  bdata.Pos = pos + bdata.Flight:GetNormalized()
-			  
-			  else
-		      --print('offset changed to be used with HEAT and THEAT')      
-		      bdata.Pos = pos + (self.DetonateOffset * 100 or bdata.Flight:GetNormalized())--We define this new offset because HEAT/THEAT bullets are created a little in front of missile detonation, causing some weird rico sounds.
-		      end
-		   else
-		      --print('offset changed to be used with HE')
-		      bdata.Pos = pos + (self.DetonateOffset or bdata.Flight:GetNormalized())--Due to endflight, HE offset is ok.   
-		   end
-		    
-		   bdata.NoOcc = 	self
-		   bdata.Gun =     self
-		
-		   --debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
-		
-		   if bdata.Filter then bdata.Filter[#bdata.Filter+1] = self
-		   else bdata.Filter = {self} end
-		
-		   bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
-		   bdata.ProjMass = bdata.ProjMass or bdata.RoundMass 
-		
-		   bdata.HandlesOwnIteration = nil
 
-		   ACFM_BulletLaunch(bdata)
-		  
-		   self:SetSolid(SOLID_NONE)
-		   phys:EnableMotion(false)
-		
-		   self:DoReplicatedPropHit(bdata)
-		
-		   self:SetNoDraw(true)
-	   else
-		   self:SetNoDraw(true)
-		   
-		   self:ClusterNew(bdata)
-	   end
+	    	bdata.Owner = 	bdata.Owner or self.Owner
+
+	    	if bdata.Type == 'HEAT' or 'THEAT' then  --check if missile is HEAT based
+
+	    		if not self.DetonateOffset then    --just cuz lua doesnt like me	  
+	    			bdata.Pos = pos + bdata.Flight:GetNormalized()
+	    		else
+	    			--print('offset changed to be used with HEAT and THEAT')      
+	    			bdata.Pos = pos + (self.DetonateOffset * 100 or bdata.Flight:GetNormalized())--We define this new offset because HEAT/THEAT bullets are created a little in front of missile detonation, causing some weird rico sounds.
+	    		end
+	    	else
+
+	    		--print('offset changed to be used with HE')
+	    		bdata.Pos = pos + (self.DetonateOffset or bdata.Flight:GetNormalized())--Due to endflight, HE offset is ok.   
+	    	end
+
+	    	bdata.NoOcc = 	self
+	    	bdata.Gun =     self
+
+	    	--debugoverlay.Line(bdata.Pos, bdata.Pos + bdata.Flight, 10, Color(255, 128, 0))
+
+	    	if bdata.Filter then bdata.Filter[#bdata.Filter+1] = self
+	    	else bdata.Filter = {self} end
+
+	    	bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
+	    	bdata.ProjMass = bdata.ProjMass or bdata.RoundMass 
+
+	    	bdata.HandlesOwnIteration = nil
+
+	    	ACFM_BulletLaunch(bdata)
+
+	    	self:SetSolid(SOLID_NONE)
+	    	phys:EnableMotion(false)
+
+	    	self:DoReplicatedPropHit(bdata)
+	    	self:SetNoDraw(true)
+
+	    else
+	    	self:SetNoDraw(true)
+	    	self:ClusterNew(bdata)
+	    end
 	end
 end
 
@@ -346,12 +316,11 @@ function ENT:ClusterNew(bdata)
 	self.BulletData["ShovePower"]		= bdata.ShovePower
 	self.BulletData["Tracer"]			= 0
 	if bdata.Type != "HEAT" and bdata.Type != "AP" and bdata.Type != "SM" and bdata.Type != "HE" and bdata.Type != "APHE" then
-		self.BulletData["Type"]				= "AP" 
+		self.BulletData["Type"]			= "AP" 
 	else
-		self.BulletData["Type"]				= bdata.Type
+		self.BulletData["Type"]			= bdata.Type
 	end
 	
-
 	if self.BulletData.Type == "HEAT" then
 
 		self.BulletData["SlugMass"]			= bdata.SlugMass/(Bomblets/6)
@@ -360,9 +329,9 @@ function ENT:ClusterNew(bdata)
 		self.BulletData["SlugMV"]			= bdata.SlugMV/(Bomblets/6)
 		self.BulletData["SlugPenAera"]		= bdata.SlugPenAera/(Bomblets/6)
 		self.BulletData["SlugRicochet"]		= bdata.SlugRicochet
-		self.BulletData["ConeVol"] = bdata.SlugMass*1000/7.9/(Bomblets/6)
-		self.BulletData["CasingMass"] = self.BulletData.ProjMass + self.BulletData.FillerMass + (self.BulletData.ConeVol*1000/7.9)
-		self.BulletData["BoomFillerMass"] = self.BulletData.FillerMass/1.5
+		self.BulletData["ConeVol"] 			= bdata.SlugMass*1000/7.9/(Bomblets/6)
+		self.BulletData["CasingMass"] 		= self.BulletData.ProjMass + self.BulletData.FillerMass + (self.BulletData.ConeVol*1000/7.9)
+		self.BulletData["BoomFillerMass"] 	= self.BulletData.FillerMass/1.5
 
 		--local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
 		--local  MaxPen = (SlugEnergy.Penetration/self.BulletData.SlugPenAera)*ACF.KEtoRHA
@@ -406,8 +375,8 @@ function ENT:ClusterNew(bdata)
 end
 
 --[[
-The following function has been completely reworked, since we have tracehulls, the old one had stopped working for any reason, anyways that didnt look that it was necessary
-so i changed the way from getting Retry info from FlightRes to bullet.type
+	The following function has been completely reworked, since we have tracehulls, the old one had stopped working for any reason, anyways that didnt look that it was necessary
+	so i changed the way from getting Retry info from FlightRes to bullet.type
 ]]--
 
 function ENT:DoReplicatedPropHit(Bullet)  
@@ -453,22 +422,14 @@ function ENT:DoReplicatedPropHit(Bullet)
 	
 end
 
-
-
-
 function ENT:OnTraceContact(trace)
 end
-
-
 
 function ENT:SetShouldTrace(bool)
 	self.ShouldTrace = bool and true
 
 	self:NextThink(CurTime())
 end
-
-
-
 
 function ENT:EnableClientInfo(bool)
 	self.ClientInfo = bool
@@ -478,8 +439,6 @@ function ENT:EnableClientInfo(bool)
 		self:RefreshClientInfo()
 	end
 end
-
-
 
 function ENT:RefreshClientInfo()
 

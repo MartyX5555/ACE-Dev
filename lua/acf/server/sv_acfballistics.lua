@@ -394,8 +394,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 	if Type == "Update" then
 		local Effect = EffectData()
 		   
-		   Effect:SetMaterialIndex( Index )
-			--Effect:SetAttachment( Index )		--Bulet Index
+		   Effect:SetMaterialIndex( Index )		--Bulet Index	
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
 			
 			if Hit > 0 then		-- If there is a hit then set the effect pos to the impact pos instead of the retry pos
@@ -411,9 +410,8 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
 		local Effect = EffectData()
 			local Filler = 0
-			if Bullet["FillerMass"] then Filler = Bullet["FillerMass"]*15 end
-			--Effect:SetAttachment( Index )		--Bullet Index
-			Effect:SetMaterialIndex( Index )
+			if Bullet["FillerMass"] then Filler = Bullet["FillerMass"]*15 end	
+			Effect:SetMaterialIndex( Index ) --Bullet Index
 			Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
 			Effect:SetOrigin( Bullet.Pos )
 			Effect:SetEntity( Entity(Bullet["Crate"]) )

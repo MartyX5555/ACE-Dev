@@ -30,16 +30,13 @@ ACE.CrackDistanceMultipler = 1
 --Defines the distance where ring ears start to affect to player
 ACE.TinnitusZoneMultipler = 1
 
-
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
 	if not IsValid(ply) then return false, ply end
 	local ent
 
-	if ply:GetViewEntity() ~= ply then --print('player using another POV')
-		ent = ply:GetViewEntity()
-	else --print('Out of other POV')
-		
+	if ply:GetViewEntity() ~= ply then --print('player using another POV (Gmod based Camera)')
+		ent = ply:GetViewEntity()	
 	end
 
 	return ent
@@ -276,7 +273,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--play dirt sounds
 					if Radius >= SmallEx and HitWorld then
-						sound.Play("acf_other/explosions/debris/grass/debris"..math.Round(math.random(1,4))..".wav", plyPos, 75, (Pitch * PitchFix), Volume * VolFix / 25)
+						sound.Play("acf_other/explosions/debris/grass/debris"..math.Round(math.random(1,4))..".wav", plyPos, 90, (Pitch * PitchFix), Volume * VolFix / 25)
 						sound.Play("acf_other/explosions/debris/concrete/debris"..math.Round(math.random(1,6))..".wav", plyPos, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 25)
 					end
 
@@ -417,10 +414,6 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	end )
 end
 
-function ACE_SBulletImpact()
-
-end
-
 --Time to think about how to put 3049230 sounds into this. SHIT
 function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
@@ -446,7 +439,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 		local plyPos = entply:GetPos() --print(plyPos)
 		local Dist = math.abs((plyPos - Pos):Length()) --print('distance from gun: '..Dist)
-		local Volume = ( 1/(Dist/500)*Propellant/17.5 ) --print('Vol: '..Volume)
+		local Volume = ( 1/(Dist/500)*Propellant/18 ) --print('Vol: '..Volume)
 		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
 		if count > Delay then
@@ -454,9 +447,10 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 			if not Emitted then --print('timer has emitted the sound in the time: '..count)
 
 				Emitted = true
+				local RSound = Sound
 
 				--This defines the distance between areas for close, mid and far sounds
-				local CloseDist = Propellant * 25 * ACE.DistanceMultipler --print('Propellant: '..Propellant) print('CloseDist: '..CloseDist)
+				local CloseDist = Propellant * 40 * ACE.DistanceMultipler --print('Propellant: '..Propellant) print('CloseDist: '..CloseDist)
 
 				--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
 				local MediumDist = CloseDist*4.25 --print('MidDist: '..MediumDist)
@@ -467,81 +461,80 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 				local VolFix = 1
 
 				-- The reason of why this requires tables. I can polish this later
-				if Dist >= CloseDist and Dist < MediumDist then --print('Close')
-					if Class == 'MG' then
-						Sound = "acf_other/gunfire/machinegun/close/close"..math.random(1,4)..".wav"
-						VolFix = 3
-					elseif Class == 'HMG' then
-						Sound = "acf_other/gunfire/heavymachinegun/close/close"..math.random(1,4)..".wav"
-						VolFix = 1
-					elseif Class == 'RAC' then
-						Sound = "acf_other/gunfire/gatling/close/close"..math.random(1,4)..".wav"
-						VolFix = 2
-						if Caliber >= 20 then
-							Sound = "acf_other/gunfire/heavymachinegun/close/close"..math.random(1,4)..".wav"
-							VolFix = 5		
-						end											
-					elseif Class == 'AC' then
-						Sound = "acf_other/gunfire/autocannon/close/close"..math.random(1,4)..".wav"
-						VolFix = 3						
-					elseif Class == 'C' then
-						Sound = "acf_other/gunfire/cannon/close/close"..math.random(1,4)..".wav"
-						VolFix = 2						
-					elseif Class == 'HW' then
-						Sound = "acf_other/gunfire/howitzer/close/close"..math.random(1,4)..".wav"
-						VolFix = 1
-					end
-				elseif Dist >= MediumDist and Dist < FarDist then --print('Mid')
+				if Dist >= CloseDist and Dist < MediumDist then --print('Mid') print(Class)
+
+					Sound = "acf_other/gunfire/cannon/small/mid/mid"..math.random(1,4)..".wav"
+					VolFix = 100
+
 					if Class == 'MG' then
 						Sound = "acf_other/gunfire/machinegun/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 3
+						VolFix = 1.5
 					elseif Class == 'HMG' then
 						Sound = "acf_other/gunfire/heavymachinegun/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 1
+						VolFix = 1.75
 					elseif Class == 'RAC' then
-						Sound = "acf_other/gunfire/gatling/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 2
-						if Caliber >= 20 then
-							Sound = "acf_other/gunfire/heavymachinegun/mid/mid"..math.random(1,4)..".wav"
-							VolFix = 5		
-						end						
+						Sound = "acf_other/gunfire/rotaryautocannon/mid/mid"..math.random(1,3)..".wav"
+						VolFix = 1					
 					elseif Class == 'AC' then
-						Sound = "acf_other/gunfire/autocannon/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 3						
-					elseif Class == 'C' then
-						Sound = "acf_other/gunfire/cannon/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 2						
-					elseif Class == 'HW' then
-						Sound = "acf_other/gunfire/howitzer/mid/mid"..math.random(1,4)..".wav"
-						VolFix = 1
+						Sound = "acf_other/gunfire/cannon/small/mid/mid"..math.random(1,4)..".wav"--"acf_other/gunfire/autocannon/mid/mid"..math.random(1,8)..".wav"
+						VolFix = 1					
+					elseif Class == 'C' or Class == 'HW' or Class == 'ATR' then
+
+						Sound = "acf_other/gunfire/heavymachinegun/mid/mid"..math.random(1,4)..".wav"
+						VolFix = 1.75
+
+						if Caliber >= 21 then
+							Sound = "acf_other/gunfire/cannon/small/mid/mid"..math.random(1,4)..".wav"
+							VolFix = 100
+						elseif Caliber >= 75 then
+							Sound = "acf_other/gunfire/cannon/medium/mid/mid"..math.random(1,4)..".wav"
+							VolFix = 100
+						elseif Caliber >= 100 then
+							Sound = "acf_other/gunfire/cannon/large/mid/mid"..math.random(1,4)..".wav"
+							VolFix = 100
+						end						
+					elseif Class == 'FGL' or Class == 'SM' then
+						Sound = RSound
+						VolFix = 0.5
 					end
-				elseif Dist >= FarDist then --print('Far')
+				elseif Dist >= MediumDist then print('Far')
+
+					Sound = "acf_other/gunfire/cannon/small/far/far"..math.random(1,4)..".wav"
+					VolFix = 100
+
 					if Class == 'MG' then
-						Sound = "acf_other/gunfire/machinegun/far/far"..math.random(1,6)..".wav"
-						VolFix = 3
+						Sound = "acf_other/gunfire/machinegun/far/far"..math.random(1,4)..".wav"
+						VolFix = 1.5
 					elseif Class == 'HMG' then
 						Sound = "acf_other/gunfire/heavymachinegun/far/far"..math.random(1,4)..".wav"
-						VolFix = 1
+						VolFix = 2
 					elseif Class == 'RAC' then
-						Sound = "acf_other/gunfire/gatling/far/far"..math.random(1,4)..".wav"
-						VolFix = 1	
-						if Caliber >= 20 then
-							Sound = "acf_other/gunfire/heavymachinegun/far/far"..math.random(1,4)..".wav"
-							VolFix = 5		
-						end					
+						Sound = "acf_other/gunfire/rotaryautocannon/mid/mid"..math.random(1,3)..".wav"
+						VolFix = 3					
 					elseif Class == 'AC' then
-						Sound = "acf_other/gunfire/autocannon/far/far"..math.random(1,6)..".wav"
-						VolFix = 3						
-					elseif Class == 'C' then
-						Sound = "acf_other/gunfire/cannon/far/far"..math.random(1,6)..".wav"
-						VolFix = 2						
-					elseif Class == 'HW' then
-						Sound = "acf_other/gunfire/howitzer/far/far"..math.random(1,4)..".wav"
-						VolFix = 1
+						Sound = "acf_other/gunfire/cannon/small/far/far"..math.random(1,4)..".wav"--"acf_other/gunfire/autocannon/mid/mid"..math.random(1,8)..".wav"
+						VolFix = 1						
+					elseif Class == 'C' or Class == 'HW' or Class == 'ATR' then
+
+						Sound = "acf_other/gunfire/heavymachinegun/far/far"..math.random(1,4)..".wav"
+						VolFix = 1.75
+
+						if Caliber >= 21 then
+							Sound = "acf_other/gunfire/cannon/small/far/far"..math.random(1,4)..".wav"
+							VolFix = 100
+						elseif Caliber >= 75 then
+							Sound = "acf_other/gunfire/cannon/medium/far/far"..math.random(1,4)..".wav"
+							VolFix = 100
+						elseif Caliber >= 120 then
+							Sound = "acf_other/gunfire/cannon/large/far/far"..math.random(1,4)..".wav"
+							VolFix = 100
+						end					
+					elseif Class == 'FGL' or Class == 'SM' then
+						Sound = RSound
+						VolFix = 0.1
 					end
 				end
-
-				entply:EmitSound( Sound, 75, 100, Volume * VolFix)
+				sound.Play(Sound, plyPos, 90, 100, Volume * VolFix) --print('final vol: '..Volume * VolFix) 
 
 			end
 
@@ -610,3 +603,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 		end
 	end )
 end
+
+--Coming soon
+--function ACE_SBulletImpact()
+--end
