@@ -379,17 +379,17 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 				if not HitWorld then
 
 					--any big gun above 50mm
-					Sound =  "acf_other/ricochets/large/close/richo"..math.random(1,7)..".wav"
+					Sound =  "acf_other/ricochets/props/large/close/richo"..math.random(1,7)..".wav"
 					VolFix = 4
 
 					--50mm guns and below
 					if Caliber <= 5 then
-						Sound = "acf_other/ricochets/medium/richo"..math.random(1,6)..".wav"
+						Sound = "acf_other/ricochets/props/medium/richo"..math.random(1,6)..".wav"
 						VolFix = 1
 
 						--lower than 20mm
 						if Caliber <= 2 then
-							Sound = "acf_other/ricochets/small/richo"..math.random(1,2)..".wav"
+							Sound = "acf_other/ricochets/props/small/richo"..math.random(1,2)..".wav"
 							VolFix = 1.25
 						end
 					end
@@ -492,7 +492,9 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						elseif Caliber >= 100 then
 							Sound = "acf_other/gunfire/cannon/large/mid/mid"..math.random(1,4)..".wav"
 							VolFix = 100
-						end						
+						end	
+					elseif Class == 'GL' then
+						VolFix = 0.5				
 					elseif Class == 'FGL' or Class == 'SM' then
 						Sound = RSound
 						VolFix = 0.5
@@ -528,7 +530,9 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						elseif Caliber >= 120 then
 							Sound = "acf_other/gunfire/cannon/large/far/far"..math.random(1,4)..".wav"
 							VolFix = 100
-						end					
+						end
+					elseif Class == 'GL' then
+						VolFix = 0.5
 					elseif Class == 'FGL' or Class == 'SM' then
 						Sound = RSound
 						VolFix = 0.1
