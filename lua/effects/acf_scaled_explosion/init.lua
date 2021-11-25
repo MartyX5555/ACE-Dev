@@ -21,7 +21,7 @@ function EFFECT:Init( data )
 
 	local WaterTr = { }
 
-		local startposition = self.Origin + Vector(0,0,40 * self.Radius)
+		local startposition = self.Origin + Vector(0,0,60 * self.Radius)
 		local endposition = self.Origin + Vector(0,0,1)
 
 		WaterTr.start = startposition
@@ -61,9 +61,9 @@ function EFFECT:Init( data )
 	local SmokeColor = Vector(100,100,100)
 
 	if Water.HitWorld then
-		if not Water.StartSolid then
-			self.HitWater = true
-		else
+
+		self.HitWater = true
+		if Water.StartSolid then
 			self.UnderWater = true
 		end
 	end
@@ -104,7 +104,7 @@ function EFFECT:Init( data )
 	end
 	
 	if Ground.HitWorld then
-		if self.HitWater then
+		if self.HitWater and not self.UnderWater then
 			self:Water( Water )
 		else
 			self:Shockwave( Ground, SmokeColor )
@@ -202,7 +202,7 @@ function EFFECT:Core( HitWater )
 
 			RandColor = 100-math.random( 0 , 45 )
 
-			if HitWater then
+			if HitWater or Underwater then
 				RandColor = math.random( 0 , 50 )
 				Whisp:SetColor( WaterColor.r-RandColor, WaterColor.g-RandColor, WaterColor.b-RandColor, 255 )
 			else
@@ -350,24 +350,25 @@ end
 
 function EFFECT:Concrete( SmokeColor )
 
-	for i=0, 3*self.Radius*self.ParticleMul do --Flying Debris
+	for i=0, 5*self.Radius*self.ParticleMul do --Flying Debris
 	
 	local Fragments = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 	if (Fragments) then
-		Fragments:SetVelocity ( VectorRand() * math.random(150*self.Radius,250*self.Radius) )
+		Fragments:SetVelocity ( VectorRand() * math.random(50*self.Radius,150*self.Radius) )
 		Fragments:SetLifeTime( 0 )
-		Fragments:SetDieTime( math.Rand( 1.5 , 2 )*self.Radius/3 )
+		Fragments:SetDieTime( math.Rand( 1 , 2 )*self.Radius/3 )
 		Fragments:SetStartAlpha( 255 )
 		Fragments:SetEndAlpha( 0 )
-		Fragments:SetStartSize( 0.5*self.Radius )
-		Fragments:SetEndSize( 0.5*self.Radius )
+		Fragments:SetStartSize( 0.25*self.Radius )
+		Fragments:SetEndSize( 0.25*self.Radius )
 		Fragments:SetRoll( math.Rand(0, 360) )
 		Fragments:SetRollDelta( math.Rand(-3, 3) )			
-		Fragments:SetAirResistance( 125 ) 			 
+		Fragments:SetAirResistance( 5 ) 			 
 		Fragments:SetGravity( Vector( 0, 0, -650 ) ) 			
-		Fragments:SetColor( 120,120,120 )
-
+		
 		RandColor = 80-math.random( 0 , 50 )
+
+		Fragments:SetColor( RandColor,RandColor,RandColor )
 		Fragments:SetColor( RandColor,RandColor,RandColor )
 	end
 end

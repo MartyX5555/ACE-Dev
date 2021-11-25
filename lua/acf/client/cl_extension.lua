@@ -87,7 +87,10 @@ function ACE_SIsInDoor()
 	local ply = LocalPlayer()
 	if not IsValid(ply) then return end
 
-	local plyPos = ply:GetPos()
+	local entply = ply
+	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+	local plyPos = entply:GetPos()
 
 	local CeilTr = {}
 	CeilTr.start = plyPos
@@ -261,7 +264,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					end
 
-					--If a wall is in front of the player and is indoor, reduces its vol at 50%
+					--If a wall is in front of the player and is indoor, reduces its vol
 					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
 						--print('Inside of building')
 						VolFix = VolFix*0.05
@@ -328,6 +331,12 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 				local Sound = "acf_other/penetratingshots/pen"..math.random(1,6)..".wav"
 				local VolFix = 0.5
+
+				--If a wall is in front of the player and is indoor, reduces its vol at 50%
+				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+					--print('Inside of building')
+					VolFix = VolFix*0.5
+				end
 
 				entply:EmitSound( Sound, 75, Pitch, Volume * VolFix)
 
@@ -401,6 +410,12 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 						VolFix = 1.25
 	
 					end
+				end
+
+				--If a wall is in front of the player and is indoor, reduces its vol at 50%
+				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
+					--print('Inside of building')
+					VolFix = VolFix*0.5
 				end
 
 				if Sound ~= "" then
@@ -512,7 +527,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						VolFix = 2
 					elseif Class == 'RAC' then
 						Sound = "acf_other/gunfire/rotaryautocannon/mid/mid"..math.random(1,3)..".wav"
-						VolFix = 3					
+						VolFix = 1.25					
 					elseif Class == 'AC' then
 						Sound = "acf_other/gunfire/cannon/small/far/far"..math.random(1,4)..".wav"--"acf_other/gunfire/autocannon/mid/mid"..math.random(1,8)..".wav"
 						VolFix = 1						
@@ -538,6 +553,13 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						VolFix = 0.1
 					end
 				end
+
+				--If a wall is in front of the player and is indoor, reduces its vol at 50%
+				if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
+					--print('Inside of building')
+					VolFix = VolFix*0.5
+				end
+
 				sound.Play(Sound, plyPos, 90, 100, Volume * VolFix) --print('final vol: '..Volume * VolFix) 
 
 			end
@@ -586,6 +608,8 @@ function ACE_SBulletCrack( BulletData, Caliber )
 			if not Emitted then
 				Emitted = true
 
+				local VolFix = 1
+
 				--Small arm guns
 				local Sound = "acf_other/fly/small/fly"..math.random(1,22)..".wav"
 
@@ -596,10 +620,22 @@ function ACE_SBulletCrack( BulletData, Caliber )
 					--above 100mm cannons
 					if Caliber >= 10 then
 						Sound = "acf_other/fly/large/fly"..math.random(1,5)..".wav"
+
+						--Some fly sounds don´t fit really well. Special case here.
+						if Caliber >= 20 then
+							Sound = "acf_other/fly/large/fly"..math.random(1,3)..".wav"
+							VolFix = 0.75
+						end
 					end
 				end
 
-				entply:EmitSound( Sound , 75, 100, Volume )
+				--If a wall is in front of the player and is indoor, reduces its vol
+				if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
+					--print('Inside of building')
+					VolFix = VolFix*0.025
+				end
+
+				entply:EmitSound( Sound , 75, 100, Volume * VolFix )
 
 			end
 			timer.Stop( ide )
