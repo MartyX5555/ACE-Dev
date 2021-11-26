@@ -51,9 +51,9 @@ cvars.AddChangeCallback('acf_legal_ignore_parent',ACF_LegalityCallBack)
 
 
 
-ACF.Legal.Min = 1 			-- min seconds between checks --5
-ACF.Legal.Max = 2 			-- max seconds between checks --25
-ACF.Legal.Lockout = 5		-- lockout time on not legal  --35
+ACF.Legal.Min = 5 			-- min seconds between checks --5
+ACF.Legal.Max = 25 			-- max seconds between checks --25
+ACF.Legal.Lockout = 35		-- lockout time on not legal  --35
 ACF.Legal.NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math.random(ACF.Legal.Min, ACF.Legal.Max) or ACF.Legal.Lockout) end
 
 
