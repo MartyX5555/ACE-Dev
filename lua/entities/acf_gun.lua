@@ -882,7 +882,13 @@ function ENT:FireShell()
 			
 			local PhysObj = self:GetPhysicsObject()
 			local HasPhys = not self:GetParent():IsValid()
-			ACF_KEShove(self, HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos(), -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )
+
+
+			local LocalPos = HasPhys and util.LocalToWorld(self, self:GetPhysicsObject():GetMassCenter(), 0) or self:GetPos()
+			local Dir = -self:GetForward()
+			local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
+
+			ACF_KEShove(self, LocalPos , Dir , KE )
 
 			--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
 			--ACF_KEShove(self, nil, -self:GetForward(), (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1) )

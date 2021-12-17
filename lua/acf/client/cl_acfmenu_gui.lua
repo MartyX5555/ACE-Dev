@@ -874,7 +874,7 @@ function PANEL:AmmoSelect( Blacklist )
 		acfmenupanel.CData.CrateDisplay:SetModel(cratemodel)
 		acfmenupanel:CPanelText("CrateDesc", ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].desc)
 
-		DisEnt = acfmenupanel.CData.CrateDisplay:GetEntity()
+		--DisEnt = acfmenupanel.CData.CrateDisplay:GetEntity()
 
 	end
 
@@ -990,7 +990,8 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 	
 end
 
-function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, slider text title, slider decimeals, description text below slider 
+-- Variable name in the table, slider text title, slider decimeals, description text below slider 
+function PANEL:AmmoCheckbox(Name, Title, Desc) 
 
 	if not acfmenupanel["CData"][Name] then
 
@@ -1006,11 +1007,11 @@ function PANEL:AmmoCheckbox(Name, Title, Desc) --Variable name in the table, sli
 		end
 
 		acfmenupanel["CData"][Name].OnChange = function( check, bval )
-		acfmenupanel.AmmoData[Name] = bval
+			acfmenupanel.AmmoData[Name] = bval
 
-		self:UpdateAttribs( {Name, bval} )
+			self:UpdateAttribs( {Name, bval} )
 
-	end
+		end
 
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name] )
 
@@ -1048,12 +1049,13 @@ end
 	2-Desc: The content of this text
 
 ]]---------------------------------------
-function PANEL:CPanelText(Name, Desc)
+function PANEL:CPanelText(Name, Desc, Font)
 
 	if not acfmenupanel["CData"][Name.."_text"] then
 
 		acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
 		acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
+		acfmenupanel["CData"][Name.."_text"]:SetFont( Font or "Default" )
 		acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
 		acfmenupanel["CData"][Name.."_text"]:SetWrap(true)
 		acfmenupanel["CData"][Name.."_text"]:SetAutoStretchVertical( true )

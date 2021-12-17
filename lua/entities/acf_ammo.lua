@@ -473,6 +473,9 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
 		local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
 	
+		debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
+		debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
+
 		self.Volume = vol*Efficiency
 
 		--Vertical placement

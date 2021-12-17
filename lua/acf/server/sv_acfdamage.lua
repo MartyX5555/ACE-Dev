@@ -91,11 +91,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 			if Power > 0 and not Tar.Exploding then
 
-				local Type = ACF_Check(Tar)
+				local Type = ACF_Check(Tar) --print(Type)
 
 				if Type then
 
-					local Hitat = nil
+					local Hitat = Tar:NearestPoint( Hitpos )					
 
 					--Done for dealing damage vs players and npcs
 					if Type == "Squishy" then 	
@@ -104,7 +104,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
 						--This is for scanning potential victims, damage goes later.
-						Hitat = Tar:NearestPoint( Hitpos )
+						
 
 						local cldist = Hitpos:Distance( Hitat ) or hugenumber
 						local Tpos
@@ -131,26 +131,36 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 							Hitat = Tpos
 							cldist = cldist
 						end
-
-					else
-						Hitat = Tar:NearestPoint( Hitpos )
 					end
 
 					--if hitpos inside hitbox of victim prop, nearest point doesn't work as intended
 					if Hitat == Hitpos then Hitat = Tar:GetPos() end
 					
-					--see if we have a clean view to victim prop. Updates TraceRes
+					--Check if we have direct LOS with the victim prop
 					TraceInit.start = Hitpos
-					TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
+					TraceInit.endpos = Tar:WorldSpaceCenter()
 					TraceInit.filter = OccFilter
 					TraceInit.mask = MASK_SOLID
 					TraceInit.mins = Vector( 0, 0, 0 )
 					TraceInit.maxs = Vector( 0, 0, 0 ) 
-
 					util.TraceHull( TraceInit )
-					
+
+					if not TraceRes.Hit then
+						--print('Center prop is being occluded. Trying by nearest point')
+						--if the first failed, check if we have the nearest point to victim prop visible
+						TraceInit.start = Hitpos
+						TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
+						TraceInit.filter = OccFilter
+						TraceInit.mask = MASK_SOLID
+						TraceInit.mins = Vector( 0, 0, 0 )
+						TraceInit.maxs = Vector( 0, 0, 0 ) 
+						util.TraceHull( TraceInit )
+					end
+					debugoverlay.Line(TraceInit.start, TraceInit.endpos, 10, Color(0,255,0))
+
 					--HE has direct view with the prop, so lets damage it
 					if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
+						--print('DAMAGE')
 
 						Targets[i] = NULL	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
@@ -173,10 +183,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 						-- is it adding it too late?
 						TotalAera = TotalAera + Table.Aera
+					else
+						--print('Occluded')
 					end
 
 				else
-
 					Targets[i] = NULL	--Target was invalid, so let's ignore it
 					table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 				end	
@@ -775,7 +786,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 	return HitRes
 end
 
---Handles HE push forces
+--Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE )
 
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
@@ -798,10 +809,10 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 
 	debugoverlay.Cross( Pos, 10, 5, Color(0,255,0) )
-	debugoverlay.Text(Pos, 'Pos', 5)
+	debugoverlay.Text(Pos, 'PushPos', 5)
 
-	debugoverlay.Cross( Pos, 10, 5, Color(0,255,0) )
-	debugoverlay.Text(Pos, 'Pos', 5)
+	debugoverlay.Cross( Pos+Vec, 10, 5, Color(0,255,0) )
+	debugoverlay.Text(Pos+Vec, 'PushDir', 5)
 
 end
 
@@ -879,18 +890,15 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    	--Skip any invalid entity
 			    if not IsValid(child) then goto cont end
 
-			    local rand = math.random(0,100)/100 print(rand) print(ACF.DebrisChance)
-
-			    print( rand < ACF.DebrisChance )
+			    local rand = math.random(0,100)/100 --print(rand) print(ACF.DebrisChance)
 
 			    -- ignore some of the debris props to save lag
-				if rand < ACF.DebrisChance then 
-					ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
-				else
+				if rand > ACF.DebrisChance then goto cont end
 
-					constraint.RemoveAll( child )
-					child:Remove()
-				end
+				ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
+
+				constraint.RemoveAll( child )
+				child:Remove()
 
 				::cont::
 		    end

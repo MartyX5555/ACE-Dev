@@ -47,6 +47,11 @@ function ENT:Initialize()
 	end
 	
 	self.offsetLength = self.velocity * self.secondsOffset	--how far off the forward offset is for the targeting position
+
+	self.LastVel = Vector(0,0,0)
+	self.CurPos = self:GetPos()
+	ACF_ActiveMissiles[self] = true
+
 end
 
 function ENT:Think()
@@ -55,44 +60,46 @@ function ENT:Think()
 
 		local TimeNew = CurTime()
 
-			if self.KillTime<TimeNew then
-				self:Remove()
-			end
+		if self.KillTime<TimeNew then
+			self:Remove()
+		end
 			
-			local d = Vector(0,0,0)
-			local dir = AngleRand()*0.01
-			local Dist = 0.01--100/10000
+		local d = Vector(0,0,0)
+		local dir = AngleRand()*0.01
+		local Dist = 0.01--100/10000
 
-			if IsValid(self.Guidance) and self.Guidance:GetPos():Distance(self:GetPos())<self.Distance then
-				local di = self.Guidance:WorldToLocalAngles((self:GetPos() - self.Guidance:GetPos()):Angle())
-				if di.p<15 and di.p>-15 and di.y<15 and di.y>-15 then
-					local glpos = self.Guidance:GetPos()+self.Guidance:GetForward()
-					if not self.Optic then
-						glpos = self.Guidance:GetAttachment(1).Pos+self.Guidance:GetForward()*20
-					end
-
-					local tr = util.QuickTrace( glpos, self.Guidance:GetForward()*(self.Guidance:GetPos():Distance(self:GetPos())+self.offsetLength), {self.Guidance,self,self.Entity})
-
-					d = ( tr.HitPos - self:GetPos())
-					dir = self:WorldToLocalAngles(d:Angle())*0.02 --0.01 controls agility but is not scaled to timestep; bug poly
-					Dist = self.Guidance:GetPos():Distance(self:GetPos())/39.37/10000
+		if IsValid(self.Guidance) and self.Guidance:GetPos():Distance(self:GetPos())<self.Distance then
+			local di = self.Guidance:WorldToLocalAngles((self:GetPos() - self.Guidance:GetPos()):Angle())
+			if di.p<15 and di.p>-15 and di.y<15 and di.y>-15 then
+				local glpos = self.Guidance:GetPos()+self.Guidance:GetForward()
+				if not self.Optic then
+					glpos = self.Guidance:GetAttachment(1).Pos+self.Guidance:GetForward()*20
 				end
-			end
-			local Spiral = d:Length()/39370 or 0.5
 
-			if self.Sub then
-				Spiral = self.SpiralAm + (math.random(-self.SpiralAm*0.5,self.SpiralAm) )--Spaghett
-			end
+				local tr = util.QuickTrace( glpos, self.Guidance:GetForward()*(self.Guidance:GetPos():Distance(self:GetPos())+self.offsetLength), {self.Guidance,self,self.Entity})
 
-			local Inacc = math.random(-1,1)*Dist
-			self:SetAngles(self:LocalToWorldAngles(dir+Angle(Inacc,-Inacc,5)))
-			self:SetPos(self:LocalToWorld(Vector((self.velocity)*(TimeNew - self.Time),Spiral,0)))
-			local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter) 
+				d = ( tr.HitPos - self:GetPos())
+				dir = self:WorldToLocalAngles(d:Angle())*0.02 --0.01 controls agility but is not scaled to timestep; bug poly
+				Dist = self.Guidance:GetPos():Distance(self:GetPos())/39.37/10000
+			end
+		end
+		local Spiral = d:Length()/39370 or 0.5
+
+		if self.Sub then
+			Spiral = self.SpiralAm + (math.random(-self.SpiralAm*0.5,self.SpiralAm) )--Spaghett
+		end
+
+		local Inacc = math.random(-1,1)*Dist
+		self:SetAngles(self:LocalToWorldAngles(dir+Angle(Inacc,-Inacc,5)))
+		self:SetPos(self:LocalToWorld(Vector((self.velocity)*(TimeNew - self.Time),Spiral,0)))
+		local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter) 
 			
-			self.Time = TimeNew
-			if(tr.Hit)then
-				self:Detonate()
-			end
+		self.Time = TimeNew
+		if(tr.Hit)then
+			self:Detonate()
+		end
+
+		self.CurPos = self:GetPos()
 
 		self:NextThink( CurTime() + 0.0001 )
 		return true
@@ -166,6 +173,8 @@ function ENT:Detonate()
 		timer.Simple(0.1, function()
 			if(IsValid(self)) then
 				self:Remove()
+
+				ACF_ActiveMissiles[self] = nil
 			end
 		end)
 	end
