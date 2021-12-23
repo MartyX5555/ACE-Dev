@@ -1042,23 +1042,26 @@ function PANEL:AmmoStats(RoundLenght, MaxTotalLenght ,MuzzleVel ,MaxPen)
 end
 
 --[[-------------------------------------
-
-    PANEL:CPanelText(Name, Desc)
+    PANEL:CPanelText(Name, Desc, Font)
 	
 	1-Name: Identifier of this text
 	2-Desc: The content of this text
-
+	3-Font: The Font to be used in this text. Leave it empty or nil to use the default one
 ]]---------------------------------------
 function PANEL:CPanelText(Name, Desc, Font)
 
 	if not acfmenupanel["CData"][Name.."_text"] then
 
 		acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
+
 		acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
-		acfmenupanel["CData"][Name.."_text"]:SetFont( Font or "Default" )
 		acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
+
+		if Font then acfmenupanel["CData"][Name.."_text"]:SetFont( Font ) end
+
 		acfmenupanel["CData"][Name.."_text"]:SetWrap(true)
 		acfmenupanel["CData"][Name.."_text"]:SetAutoStretchVertical( true )
+
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
 
 	end

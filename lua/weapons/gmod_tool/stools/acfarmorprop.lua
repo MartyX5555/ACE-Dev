@@ -31,7 +31,7 @@ if CLIENT then
 	language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
 	language.Add( "tool.acfarmorprop.desc", ACFTranslation.ArmorPropertiesText[2] )
 	language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
---	print(ACFTranslation.ArmorPropertiesText[1])
+
 	function TOOL.BuildCPanel( panel )
 		
 		local Presets = vgui.Create( "ControlPresets" )
@@ -159,11 +159,11 @@ local function ApplySettings( ply, ent, data )
 	end
 	
 	if ACF.Year >= 1955 then	
-	if data.Material then
-		ent.ACF = ent.ACF or {}
-		ent.ACF.Material = data.Material
-		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
-	end
+		if data.Material then
+			ent.ACF = ent.ACF or {}
+			ent.ACF.Material = data.Material
+			duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
+		end
 	end
 	
 end
@@ -181,14 +181,12 @@ function TOOL:LeftClick( trace )
 	
 	local ply = self:GetOwner()
 
-	
 	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
 	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
 	
 	local MaterialID = 0
 	
 	if ACF.Year >= 1955 then
-	
 	    MaterialID = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
 	end
 	

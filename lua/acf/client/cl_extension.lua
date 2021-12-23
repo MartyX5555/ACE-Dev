@@ -27,118 +27,11 @@ ACE.DistanceMultipler = 1
 --Defines the distance range which sonic cracks will be heard by the player
 ACE.CrackDistanceMultipler = 1
 
+--Enables/Disables Ear ringing effect. Done for those cases where ringing could be annoying
+ACE.EnableTinnitus = 1
+
 --Defines the distance where ring ears start to affect to player
 ACE.TinnitusZoneMultipler = 1
-
---Table Main concept. function for all sounds needs to be function ACE_Sound(HitPos ,Energy ,HitWorld ,HitWater, Type). This will cover:
-	--Explosions
-	--Penetrations
-	--Ricochets
-	--Impacts (if added)
---Where:
-	--Hitpos: The pos where effect was created
-	--Energy: Common value to be used to calculate pitch/volume. Each effect has different values to calculate this
-	--HitWorld: Boolean if the effect hit world
-	--HitWater: Boolean if the effect hit water
-	--Type: Type of effect. Here will define if its a blast, penetration, etc....
---Due to different values, a GunFire sound function will be required by separated, as caliber is required there.
-	--Rack Missile need this another function too. Since they are weapons as guns
---This concept must be stored in the same way as rest of shared files if used manually. Otherwise, using a file discovery system is better
-
-
---Blasts. This will store all sounds related to blasts, includes underwater sounds
-ACE.Sounds.Blasts = {
-	tiny = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	small = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	medium = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	large = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	underwater = {
-		close = {}
-	}
-}
-
--- Debris. They will not follow the main concept, but this will be called alongside blasts, so doesnt conflict with the main one
-ACE.Sounds.Debris = {
-	low = {
-
-	},
-	high = {
-
-	}
-}
-
---Penetrations. Note that it has underwater table as blast one.
-ACE.Sounds.Penetrations = {
-	tiny = {
-		close = {}
-	},
-	small = {
-		close = {}
-	},
-	medium = {
-		close = {}	
-	},
-	large = {
-		close = {}
-	},
-	underwater = {
-		close = {}
-	}
-}
-
---Ricochets. Same format than pen table
-ACE.Sounds.Ricochets = {
-	tiny = {
-		close = {}	
-	},
-	small = {
-		close = {}		
-	},
-	medium = {
-		close = {}
-	},
-	large = {
-		close = {}
-	},
-	underwater = {
-		close = {}
-	}
-}
-
---Cracks. Same format atm
-ACE.Sounds.Cracks = {
-	tiny = {
-		close = {}		
-	},
-	small = {
-		close = {}		
-	},
-	medium = {
-		close = {}
-	},
-	large = {
-		close = {}
-	},
-	underwater = {
-		close = {}
-	}
-}
 
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
@@ -235,10 +128,10 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 		count = count + 1
 
 		local plyPos = entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
-		local Volume = ( 1/(Dist/500)*Radius*0.2 ) --print('Vol: '..Volume)
-		local Pitch =  math.Clamp(1000/Radius,25,130) --print('pitch: '..Pitch)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Radius*0.2 ) 			--print('Vol: '..Volume)
+		local Pitch =  math.Clamp(1000/Radius,25,130) 		--print('pitch: '..Pitch)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
 		
 		if count > Delay then
 
@@ -365,13 +258,14 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					end
 
 					--Tinnitus function
-					local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
-					if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
-						timer.Simple(0.01, function()
-							entply:SetDSP( 32, true )
-							entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
-						end)
-
+					if ACE.EnableTinnitus then
+						local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
+						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
+							timer.Simple(0.01, function()
+								entply:SetDSP( 32, true )
+								entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
+							end)
+						end
 					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol
@@ -427,11 +321,11 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
-		local Volume = ( 1/(Dist/500)*Mass/17.5 ) --print('Vol: '..Volume)
+		local plyPos = entply:GetPos() 						--print(plyPos)
+		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Mass/17.5 ) 			--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*1,90,150)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
 
 		if count > Delay then
 
@@ -481,10 +375,10 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 		count = count + 1
 
 		local plyPos = entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - HitPos):Length()) --print('distance from explosion: '..Dist)
-		local Volume = ( 1/(Dist/500)*Velocity/130000 ) --print('Vol: '..Volume)
-		local Pitch =  math.Clamp(Velocity*0.001,90,150) --print('pitch: '..Pitch)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
+		local Volume = ( 1/(Dist/500)*Velocity/130000 ) 	--print('Vol: '..Volume)
+		local Pitch =  math.Clamp(Velocity*0.001,90,150) 	--print('pitch: '..Pitch)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
 
 		if count > Delay then
 
@@ -562,10 +456,10 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - Pos):Length()) --print('distance from gun: '..Dist)
-		local Volume = ( 1/(Dist/500)*Propellant/18 ) --print('Vol: '..Volume)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local plyPos = entply:GetPos() 						--print(plyPos)
+		local Dist = math.abs((plyPos - Pos):Length()) 		--print('distance from gun: '..Dist)
+		local Volume = ( 1/(Dist/500)*Propellant/18 ) 		--print('Vol: '..Volume)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
 
 		if count > Delay then
 
@@ -622,7 +516,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						VolFix = 0.5				
 					elseif Class == 'FGL' or Class == 'SL' then
 						Sound = RSound
-						VolFix = 0.5
+						VolFix = 0.1
 					end
 				elseif Dist >= MediumDist then print('Far')
 
@@ -710,9 +604,9 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
 		--Delayed event report.
 		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
-		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: '..Dist)
-		local Volume = ( 10000/Dist) --print('Vol: '..Volume)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local Dist = math.abs((plyPos - CrackPos):Length()) 							--print('distance from bullet: '..Dist)
+		local Volume = ( 10000/Dist) 													--print('Vol: '..Volume)
+		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 								--print('amount to match: '..Delay)
 
 		if count > Delay then
 			if not Emitted then
