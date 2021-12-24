@@ -518,7 +518,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 						Sound = RSound
 						VolFix = 0.1
 					end
-				elseif Dist >= MediumDist then print('Far')
+				elseif Dist >= MediumDist then --print('Far')
 
 					Sound = "acf_other/gunfire/cannon/small/far/far"..math.random(1,4)..".wav"
 					VolFix = 100
