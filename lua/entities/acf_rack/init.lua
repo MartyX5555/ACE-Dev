@@ -63,7 +63,7 @@ function ENT:Initialize()
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
-	self.InitLoad = false
+	self.InitLoaded = false
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
 	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
@@ -287,7 +287,7 @@ end
 function ENT:Reload()
 
 
-    if self.InitLoad and (self.Ready or not IsValid(self:PeekMissile())) then
+    if self.InitLoaded and (self.Ready or not IsValid(self:PeekMissile())) then
         self:LoadAmmo(true)
     end
     
@@ -403,7 +403,7 @@ function ENT:Think()
 
     local Ammo = table.Count(self.Missiles or {})
 
-	if not self.InitLoad then self:LoadAmmoInit() end
+	if not self.InitLoaded and not self.InitLoading then self:LoadAmmoInit() end
     
 	local Time = CurTime()
 	if self.LastSend+1 <= Time then
@@ -661,8 +661,19 @@ end
 function ENT:LoadAmmoInit()
 	if not self:CanReload() then return false end
 
-	timer.Create("LoadAmmoInit"..tostring(self), 0.2, self.MagSize, function()
-		self:AddMissile(false, true)
+	self.InitLoading = true
+	local Curr = 0
+
+	timer.Create("LoadAmmoInit"..tostring(self), 0.5, self.MagSize, function()
+		if IsValid(self) then
+			self:AddMissile(false, true)
+			Curr = Curr + 1
+			print(Curr)
+		end
+
+		if Curr == self.MagSize then
+			self.InitLoaded = true
+		end
 	end)
 
 	return true
