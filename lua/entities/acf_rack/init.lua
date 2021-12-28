@@ -63,6 +63,7 @@ function ENT:Initialize()
 	self.Ready = true
 	self.Firing = nil
 	self.NextFire = 1
+	self.InitLoad = false
 	self.PostReloadWait = CurTime()
     self.WaitFunction = self.GetFireDelay
 	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
@@ -96,7 +97,7 @@ function ENT:Initialize()
 	self.lastCol = self:GetColor() or Color(255, 255, 255)
 	self.nextColCheck = CurTime() + 2
     
-    self.Missiles = {}   
+    self.Missiles = {}
 
 	self.AmmoLink = {}
 	
@@ -273,7 +274,7 @@ function ENT:TriggerInput( iname , value )
 		self.Firing = true
 	elseif ( iname == "Fire" and value == 0 ) then
 		self.Firing = false
-    elseif (iname == "Reload" and value ~= 0 ) then
+    elseif (iname == "Reload" and value ~= 0) then
         self:Reload()
     elseif (iname == "Target Pos") then
         Wire_TriggerOutput(self, "Position", value)
@@ -286,7 +287,7 @@ end
 function ENT:Reload()
 
 
-    if self.Ready or not IsValid(self:PeekMissile()) then
+    if self.InitLoad and (self.Ready or not IsValid(self:PeekMissile())) then
         self:LoadAmmo(true)
     end
     
@@ -401,6 +402,8 @@ function ENT:Think()
 	end
 
     local Ammo = table.Count(self.Missiles or {})
+
+	if not self.InitLoad then self:LoadAmmoInit() end
     
 	local Time = CurTime()
 	if self.LastSend+1 <= Time then
@@ -578,7 +581,8 @@ end
 
 
 
-function ENT:AddMissile()
+function ENT:AddMissile(UseAmmo)
+	local AmmoConsume = isbool(UseAmmo) and (UseAmmo and 1 or 0) or 1
 
     self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
 
@@ -645,7 +649,7 @@ function ENT:AddMissile()
     
     self.Missiles[NextIdx+1] = missile
     
-    Crate.Ammo = Crate.Ammo - 1
+    Crate.Ammo = Crate.Ammo - (AmmoConsume or 1)
     
     self:SetLoadedWeight()
     
@@ -654,7 +658,15 @@ function ENT:AddMissile()
 end
 
 
+function ENT:LoadAmmoInit()
+	if not self:CanReload() then return false end
 
+	timer.Create("LoadAmmoInit"..tostring(self), 0.2, self.MagSize, function()
+		self:AddMissile(false)
+	end)
+
+	return true
+end
 
 function ENT:LoadAmmo( Reload )
     
