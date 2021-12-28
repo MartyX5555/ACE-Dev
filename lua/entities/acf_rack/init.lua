@@ -581,10 +581,10 @@ end
 
 
 
-function ENT:AddMissile(UseAmmo)
-	local AmmoConsume = isbool(UseAmmo) and (UseAmmo and 1 or 0) or 1
+function ENT:AddMissile(UseAmmo, NoSound)
+	local AmmoConsume = UseAmmo and 1 or 0
 
-    self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+    if not NoSound then self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 ) end
 
     self:TrimNullMissiles()
     
@@ -649,7 +649,7 @@ function ENT:AddMissile(UseAmmo)
     
     self.Missiles[NextIdx+1] = missile
     
-    Crate.Ammo = Crate.Ammo - (AmmoConsume or 1)
+    Crate.Ammo = Crate.Ammo - AmmoConsume
     
     self:SetLoadedWeight()
     
@@ -662,7 +662,7 @@ function ENT:LoadAmmoInit()
 	if not self:CanReload() then return false end
 
 	timer.Create("LoadAmmoInit"..tostring(self), 0.2, self.MagSize, function()
-		self:AddMissile(false)
+		self:AddMissile(false, true)
 	end)
 
 	return true
