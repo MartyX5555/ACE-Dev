@@ -9,7 +9,7 @@ TOOL.ConfigName	= ""
 TOOL.ClientConVar["thickness"] = 1
 TOOL.ClientConVar["ductility"] = 0
 if ACF.Year >= 1955 then
-TOOL.ClientConVar["material"] = 0
+	TOOL.ClientConVar["material"] = 0
 end
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
@@ -31,6 +31,8 @@ if CLIENT then
 	language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
 	language.Add( "tool.acfarmorprop.desc", ACFTranslation.ArmorPropertiesText[2] )
 	language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
+
+	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
 
 	function TOOL.BuildCPanel( panel )
 		
@@ -59,8 +61,6 @@ if CLIENT then
 		end
 	end
 	
-	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
-	
 	-- clamp thickness if the change in ductility puts mass out of range
 	cvars.AddChangeCallback( "acfarmorprop_ductility", function( cvar, oldvalue, value )
 	
@@ -73,7 +73,7 @@ if CLIENT then
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
 		local material = 0
 		if ACF.Year >= 1955 then
-		local material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 4 )
+			material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )), 0, 6 )
 		end
 		local mass = CalcArmor( area, ductility, thickness , material)
 		
@@ -84,8 +84,6 @@ if CLIENT then
 		else
 			return
 		end
-		
-		
 		
 		thickness = mass * 1000 / ( area + area * ductility ) / 0.78
 		RunConsoleCommand( "acfarmorprop_thickness", thickness )
@@ -104,7 +102,7 @@ if CLIENT then
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
 		local material = 0
 		if ACF.Year >= 1955 then
-		material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )+0.5), 0, 6 )
+			material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )), 0, 6 )
 		end
 		local mass = CalcArmor( area, ductility, thickness , material )
 		

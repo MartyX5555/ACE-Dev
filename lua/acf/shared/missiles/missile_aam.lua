@@ -56,7 +56,7 @@ ACF_defineGun("AIM-9 AAM", { 								-- id
 						["1xRK_small"] = true
 					},   
 
-    seekcone    	= 25,   								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+    seekcone    	= 10,   								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
     viewcone    	= 50,   								-- getting outside this cone will break the lock.  Divided by 2.		--was 30
 
     agility     	= 3,  									-- multiplier for missile turn-rate.      --was 5
@@ -102,7 +102,7 @@ ACF_defineGun("AIM-120 AAM", { 								-- id
 						["2xRK"] = true
 					},   
 
-    seekcone    	= 25,   								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
+    seekcone    	= 10,   								-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 20
     viewcone    	= 50,   								-- getting outside this cone will break the lock.  Divided by 2.	--was 25
 
     agility     	= 3,    								-- multiplier for missile turn-rate. -- was 2
@@ -146,7 +146,7 @@ ACF_defineGun("AIM-54 AAM", { 								-- id
 
 	racks       	= {["1xRK"] = true},   					-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-    seekcone    	= 12.5,   									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
+    seekcone    	= 10,   									-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)  --was 4
     viewcone    	= 50,   								-- getting outside this cone will break the lock.  Divided by 2.
 
     agility     	= 3,    								-- multiplier for missile turn-rate.  --was 0.7

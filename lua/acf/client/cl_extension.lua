@@ -266,6 +266,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 								entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
 							end)
 						end
+
+						debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
 					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol
@@ -274,7 +276,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 						VolFix = VolFix*0.05
 					end
 
-					debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
+					
 
 					entply:EmitSound( Sound, 75, Pitch * PitchFix, Volume * VolFix )
 

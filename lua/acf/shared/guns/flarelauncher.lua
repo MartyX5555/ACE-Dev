@@ -20,7 +20,6 @@ ACF_defineGun("40mmFGL", { --id
 	desc = "Put on an all-American fireworks show with this flare launcher: high fire rate, low distraction rate.  Fill the air with flare.  Careful of your reload time.",
 	model = "models/missiles/blackjellypod.mdl",
 	gunclass = "FGL",
-	canparent = true,
 	caliber = 4.0,
 	weight = 75,
 	magsize = 30,

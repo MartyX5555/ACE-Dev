@@ -91,52 +91,11 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 			if Power > 0 and not Tar.Exploding then
 
-				local Type = ACF_Check(Tar) --print(Type)
+				local Type = ACF_Check(Tar)
 
 				if Type then
-
-					local Hitat = Tar:NearestPoint( Hitpos )					
-
-					--Done for dealing damage vs players and npcs
-					if Type == "Squishy" then 	
-
-						local hugenumber = 99999999999
-
-						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
-						--This is for scanning potential victims, damage goes later.
-						
-
-						local cldist = Hitpos:Distance( Hitat ) or hugenumber
-						local Tpos
-						local Tdis = hugenumber
-						
-						local Eyes = Tar:LookupAttachment("eyes")
-						if Eyes then
-
-							local Eyeat = Tar:GetAttachment( Eyes )
-							if Eyeat then
-								--Msg("Hitting Eyes\n")
-								Tpos = Eyeat.Pos
-								Tdis = Hitpos:Distance( Tpos ) or hugenumber
-								if Tdis < cldist then
-									Hitat = Tpos
-									cldist = cldist
-								end
-							end
-						end
-
-						Tpos = Tar:WorldSpaceCenter()
-						Tdis = Hitpos:Distance( Tpos ) or hugenumber
-						if Tdis < cldist then
-							Hitat = Tpos
-							cldist = cldist
-						end
-					end
-
-					--if hitpos inside hitbox of victim prop, nearest point doesn't work as intended
-					if Hitat == Hitpos then Hitat = Tar:GetPos() end
 					
-					--Check if we have direct LOS with the victim prop
+					--Check if we have direct LOS with the victim prop. Laggiest part of HE
 					TraceInit.start = Hitpos
 					TraceInit.endpos = Tar:WorldSpaceCenter()
 					TraceInit.filter = OccFilter
@@ -144,10 +103,49 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 					TraceInit.mins = Vector( 0, 0, 0 )
 					TraceInit.maxs = Vector( 0, 0, 0 ) 
 					util.TraceHull( TraceInit )
-
+					
+					--if above failed getting the target. Try again by nearest point instead.
 					if not TraceRes.Hit then
-						--print('Center prop is being occluded. Trying by nearest point')
-						--if the first failed, check if we have the nearest point to victim prop visible
+
+						local Hitat = Tar:NearestPoint( Hitpos )					
+
+						--Done for dealing damage vs players and npcs
+						if Type == "Squishy" then 	
+
+							local hugenumber = 99999999999
+
+							--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
+							--This is for scanning potential victims, damage goes later.
+							local cldist = Hitpos:Distance( Hitat ) or hugenumber
+							local Tpos
+							local Tdis = hugenumber
+						
+							local Eyes = Tar:LookupAttachment("eyes")
+							if Eyes then
+
+								local Eyeat = Tar:GetAttachment( Eyes )
+								if Eyeat then
+									--Msg("Hitting Eyes\n")
+									Tpos = Eyeat.Pos
+									Tdis = Hitpos:Distance( Tpos ) or hugenumber
+									if Tdis < cldist then
+										Hitat = Tpos
+										cldist = cldist
+									end
+								end
+							end
+
+							Tpos = Tar:WorldSpaceCenter()
+							Tdis = Hitpos:Distance( Tpos ) or hugenumber
+							if Tdis < cldist then
+								Hitat = Tpos
+								cldist = cldist
+							end
+						end
+
+						--if hitpos is inside of hitbox of the victim prop, nearest point will not work as intended
+						if Hitat == Hitpos then Hitat = Tar:GetPos() end
+
 						TraceInit.start = Hitpos
 						TraceInit.endpos = Hitat + (Hitat-Hitpos):GetNormalized()*100
 						TraceInit.filter = OccFilter
@@ -160,7 +158,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
 					--HE has direct view with the prop, so lets damage it
 					if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
-						--print('DAMAGE')
+						--print('Applying Damage...')
 
 						Targets[i] = NULL	--Remove the thing we just hit from the table so we don't hit it again in the next round
 						local Table = {}
@@ -193,11 +191,12 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 				end	
 			end
 			::cont::
+
 		end
 		
 		--Now that we have the props to damage, apply it here
 		for i,Table in pairs(Damage) do
-			
+
 			local Tar = Table.Ent
 			local Feathering = (1-math.min(1,Table.Dist/Radius)) ^ ACF.HEFeatherExp
 			local AeraFraction = Table.Aera/TotalAera
@@ -220,6 +219,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			-- erroneous HE penetration bug workaround; retries trace on crit ents after a short delay to ensure a hit.
 			-- we only care about hits on critical ents, saves on processing power
 			-- not going to re-use tables in the timer, shouldn't make too much difference
+
+			-- Really required?
 
 			if ACE.CritEnts[Tar:GetClass()] then
 				timer.Simple(0.03, function() 
@@ -270,7 +271,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then					
 							local Debris = ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 0.333 * (GetConVarNumber("acf_hepush") or 1) ) --0.333
+							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVarNumber("acf_hepush") or 1) ) --0.333
 						end
 					end
 				end)
@@ -304,7 +305,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 				else
 
 				    --Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
-					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 15 * (GetConVarNumber("acf_hepush") or 1) ) 
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 20 * (GetConVarNumber("acf_hepush") or 1) ) 
 
 				end
 			end
@@ -314,7 +315,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 			local min,max = Tar:GetCollisionBounds()
 			--This is to see what props are inside of explosion radius.
 			debugoverlay.BoxAngles(Tar:GetPos(), min, max, Tar:GetAngles(), 5, Color(255,255,0,100))
-
 		end
 
 		Power = math.max(Power - PowerSpent,0)	
@@ -792,28 +792,38 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	local CanDo = hook.Run("ACF_KEShove", Target, Pos, Vec, KE )
 	if CanDo == false then return end
 
+	--Gets the baseplate of target
 	local parent = ACF_GetPhysicalParent(Target)
 	local phys = parent:GetPhysicsObject()
 	
-	if not phys:IsValid() then return end
+	if not IsValid(phys) then return end
 	
 	if not Target.acflastupdatemass or ((Target.acflastupdatemass + 10) < CurTime()) then
 		ACF_CalcMassRatio(Target)
 	end
-		
-	if not Target.acfphystotal then return end --corner case error check
-		
+	
+	--corner case error check
+	if not Target.acfphystotal then return end 
+
+	-- todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this	
 	local physratio = Target.acfphystotal / Target.acftotal
 	
-	--todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this
-	phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
+	if isvector(Pos) then
+		
+		local Scaling = 1
+		if Target:EntIndex() ~= parent:EntIndex() then
+			Scaling = 100
+		end
 
-	debugoverlay.Cross( Pos, 10, 5, Color(0,255,0) )
-	debugoverlay.Text(Pos, 'PushPos', 5)
+		local Local = parent:WorldToLocal(Pos) / Scaling
+		local Res = Local + phys:GetMassCenter()
+		Pos = parent:LocalToWorld(Res)
 
-	debugoverlay.Cross( Pos+Vec, 10, 5, Color(0,255,0) )
-	debugoverlay.Text(Pos+Vec, 'PushDir', 5)
+		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 
+	else
+		phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
+	end
 end
 
 

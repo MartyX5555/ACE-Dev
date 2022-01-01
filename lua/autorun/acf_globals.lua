@@ -59,7 +59,7 @@ CreateConVar("acf_gunfire", 1, FCVAR_ARCHIVE)
 --CreateConVar("acf_year", ACF.Year, FCVAR_ARCHIVE)
 
 -- Debris
-CreateConVar("acf_debris_lifetime", 15, FCVAR_ARCHIVE)
+CreateConVar("acf_debris_lifetime", 30, FCVAR_ARCHIVE)
 CreateConVar("acf_debris_children", 1, FCVAR_ARCHIVE)
 
 -- Spalling

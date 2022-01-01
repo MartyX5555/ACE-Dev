@@ -96,19 +96,21 @@ if CLIENT then
 	end
 	
 	usermessage.Hook("ACF_RefillEffect", function( msg )
+
 		local EntFrom, EntTo, Weapon = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() ), msg:ReadString()
 		if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
-		//local List = list.Get( "ACFRoundTypes")	
-		--local Mdl = ACF.Weapons.Guns[Weapon].round.model or "models/munitions/round_100mm_shot.mdl" --[Weapon] returns an invalid no
+
 		local Mdl = "models/munitions/round_100mm_shot.mdl"
+
 		EntFrom.RefillAmmoEffect = EntFrom.RefillAmmoEffect or {}
 		table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )
 	end)
 	
 	usermessage.Hook("ACF_StopRefillEffect", function( msg )
+
 		local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
-        //print("stop", EntFrom, EntTo)
 		if not IsValid( EntFrom ) or not IsValid( EntTo )or not EntFrom.RefillAmmoEffect then return end
+
 		for k,v in pairs( EntFrom.RefillAmmoEffect ) do
 			if v.EntTo == EntTo then
 				if #EntFrom.RefillAmmoEffect<=1 then 
@@ -375,8 +377,7 @@ function ENT:UpdateOverlayText()
 	end
 	
 	local text = roundType .. " - " .. self.Ammo .. " / " .. self.Capacity
-	--text = text .. "\nRound Type: " .. self.RoundType
-	
+
 	local RoundData = ACF.RoundTypes[ self.RoundType ]
 	
 	if RoundData and RoundData.cratetxt then
@@ -425,20 +426,20 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 
 	--Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 
-	self.RoundType = ( Data2 or "AP"	)   --Type of round, IE AP, HE, HEAT ...
-	self.RoundPropellant = ( Data3 or 0 )   --Lenght of propellant
-	self.RoundProjectile = ( Data4 or 0 )   --Lenght of the projectile
-	self.RoundData5 = ( Data5 or 0 )
-	self.RoundData6 = ( Data6 or 0 )
-	self.RoundData7 = ( Data7 or 0 )
-	self.RoundData8 = ( Data8 or 0 )
-	self.RoundData9 = ( Data9 or 0 )
-	self.RoundData10 = ( Data10 or 0 )
-	self.RoundData11 = ( Data11 or 0 )	
-	self.RoundData12 = ( Data12 or 0 )	
-	self.RoundData13 = ( Data13 or 0 )	
-	self.RoundData14 = ( Data14 or 0 )	
-	self.RoundData15 = ( Data15 or 0 )
+	self.RoundType 			= ( Data2 or "AP"	)   --Type of round, IE AP, HE, HEAT ...
+	self.RoundPropellant 	= ( Data3 or 0 )   --Lenght of propellant
+	self.RoundProjectile 	= ( Data4 or 0 )   --Lenght of the projectile
+	self.RoundData5 		= ( Data5 or 0 )
+	self.RoundData6 		= ( Data6 or 0 )
+	self.RoundData7 		= ( Data7 or 0 )
+	self.RoundData8 		= ( Data8 or 0 )
+	self.RoundData9 		= ( Data9 or 0 )
+	self.RoundData10 		= ( Data10 or 0 )
+	self.RoundData11 		= ( Data11 or 0 )	
+	self.RoundData12 		= ( Data12 or 0 )	
+	self.RoundData13 		= ( Data13 or 0 )	
+	self.RoundData14 		= ( Data14 or 0 )	
+	self.RoundData15 		= ( Data15 or 0 )
 	
 	
 	local PlayerData = {}   --what a mess
@@ -638,30 +639,31 @@ function ENT:Think()
 		if CrateType == "Refill" then
 		
 			self:Remove()
-			
-		elseif self.Ammo <= 1 or self.Damaged < CurTime() then -- immediately detonate if there's 1 or 0 shells
+		
+		-- immediately detonate if there's 1 or 0 shells
+		elseif self.Ammo <= 1 or self.Damaged < CurTime() then 
 		
 			ACF_ScaledExplosion( self ) -- going to let empty crates harmlessly poot still, as an audio cue it died
 			
 		else
 		
-				if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
+			if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 				
 				
-					self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
-					local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
+				self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
+				local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
-					self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
-					self.BulletData.Flight = (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
-					self.BulletData.Owner = self.Inflictor or self.Owner
-					self.BulletData.Gun = self
-					self.BulletData.Crate = self:EntIndex()
-					self.CreateShell = ACF.RoundTypes[CrateType].create
-					self:CreateShell( self.BulletData )
+				self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
+				self.BulletData.Flight = (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
+				self.BulletData.Owner = self.Inflictor or self.Owner
+				self.BulletData.Gun = self
+				self.BulletData.Crate = self:EntIndex()
+				self.CreateShell = ACF.RoundTypes[CrateType].create
+				self:CreateShell( self.BulletData )
 					
-					self.Ammo = self.Ammo - 1
+				self.Ammo = self.Ammo - 1
 					
-				end
+			end
 				
 			self:NextThink( CurTime() + 0.01 + self.BulletData.RoundVolume^0.5/100 )
 					
@@ -741,14 +743,6 @@ function ENT:StopRefillEffect( TargetID )
 		umsg.Float( self:EntIndex() )
 		umsg.Float( TargetID )
 	umsg.End()
-end
-
-function ENT:ConvertData()
-	--You overwrite this with your own function, defined in the ammo definition file
-end
-
-function ENT:NetworkData()
-	--You overwrite this with your own function, defined in the ammo definition file
 end
 
 function ENT:OnRemove()
