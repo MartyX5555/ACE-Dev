@@ -110,19 +110,19 @@ ACF.BoomMult = 1.5                             --How much more do ammocrates blo
 
 --ACF Damage Multipler.
 
-ACF.APDamageMult = 2            --AP Damage Multipler             -1.1
-ACF.APCDamageMult = 1.5         --APC Damage Multipler           -1.1
-ACF.APBCDamageMult = 1.5        --APBC Damage Multipler           -1.05
-ACF.APCBCDamageMult = 1.0       --APCBC Damage Multipler           -1.05
-ACF.APHEDamageMult = 1.0        --APHE Damage Multipler          
-ACF.APDSDamageMult = 1.5        --APDS Damage Multipler          
-ACF.APDSSDamageMult = 1.55      --APDSS Damage Multipler
-ACF.HVAPDamageMult = 1.65       --HVAP/APCR Damage Multipler
-ACF.FLDamageMult = 1.4          --FL Damage Multipler
-ACF.HEATDamageMult = 2          --HEAT Damage Multipler
-ACF.HEDamageMult = 2            --HE Damage Multipler
-ACF.HESHDamageMult = 1.2        --HESH Damage Multipler
-ACF.HPDamageMult = 8            --HP Damage Multipler
+ACF.APDamageMult 		= 2            --AP Damage Multipler             -1.1
+ACF.APCDamageMult 		= 1.5         --APC Damage Multipler           -1.1
+ACF.APBCDamageMult 		= 1.5        --APBC Damage Multipler           -1.05
+ACF.APCBCDamageMult 	= 1.0       --APCBC Damage Multipler           -1.05
+ACF.APHEDamageMult 		= 1.5        --APHE Damage Multipler          
+ACF.APDSDamageMult 		= 1.5        --APDS Damage Multipler          
+ACF.APDSSDamageMult 	= 1.55      --APDSS Damage Multipler
+ACF.HVAPDamageMult 		= 1.65       --HVAP/APCR Damage Multipler
+ACF.FLDamageMult 		= 1.4          --FL Damage Multipler
+ACF.HEATDamageMult 		= 2          --HEAT Damage Multipler
+ACF.HEDamageMult 		= 2            --HE Damage Multipler
+ACF.HESHDamageMult 		= 1.2        --HESH Damage Multipler
+ACF.HPDamageMult 		= 8            --HP Damage Multipler
 
 --ACF HE
 

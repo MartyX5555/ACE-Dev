@@ -221,7 +221,7 @@ function ENT:Detonate(overrideBData)
 	if overrideBData and overrideBData.Entity.Fuse.Cluster == nil then
 
 		bdata.Owner = bdata.Owner or self.Owner
-		bdata.Pos 	= pos + (self.DetonateOffset or bdata.Flight:GetNormalized()) * 7.5 
+		bdata.Pos 	= pos + (self.DetonateOffset or bdata.Flight:GetNormalized()) * 20
 
 		bdata.NoOcc =	self
 		bdata.Gun 	=	self
@@ -358,12 +358,12 @@ end
 --Restored old PropHit function, with some modifications so it doenst fuck up
 function ENT:DoReplicatedPropHit(Bullet)
 
-	local FlightRes = { Entity = self, HitNormal = Bullet.Flight, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC }
+	local FlightRes = { Entity = self, HitNormal = self.HitNorm, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC }
 	local Index = Bullet.Index
 	
 	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
-	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity ,  -Bullet.Flight , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
-	
+	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity ,  FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
+
 	debugoverlay.Line(FlightRes.HitPos, FlightRes.HitPos+Bullet.Flight:GetNormalized(), 5, Color(255,255,0))
 
 	--Internally used in case of HEAT hitting world, penetrating or not
@@ -374,7 +374,7 @@ function ENT:DoReplicatedPropHit(Bullet)
 		if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 		ACF_BulletClient( Index, Bullet, "Update" , 2 , FlightRes.HitPos  )
 		ACF_CalcBulletFlight( Index, Bullet, true )
-	else						--Else end the flight here
+	else
 
 		if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, FlightRes) end
 		ACF_BulletClient( Index, Bullet, "Update" , 1 , FlightRes.HitPos  )

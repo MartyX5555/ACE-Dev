@@ -622,10 +622,6 @@ function ENT:Think()
 	
 	local cvarGrav = GetConVar("sv_gravity")
 	local vec = Vector(0,0,cvarGrav:GetInt()*-1)
-	
-	if( self.sitp_inspace ) then
-		vec = Vector(0, 0, 0)
-	end
 		
 	self:SetNWVector("Accel", vec)
 		
@@ -635,7 +631,8 @@ function ENT:Think()
 	if self.Damaged then
 	
 		CrateType = self.BulletData.Type or "Refill"
-		
+
+		--If that is a refill, remove it
 		if CrateType == "Refill" then
 		
 			self:Remove()
@@ -649,16 +646,15 @@ function ENT:Think()
 		
 			if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 				
-				
 				self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )	
 				local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
-				self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
-				self.BulletData.Flight = (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
-				self.BulletData.Owner = self.Inflictor or self.Owner
-				self.BulletData.Gun = self
-				self.BulletData.Crate = self:EntIndex()
-				self.CreateShell = ACF.RoundTypes[CrateType].create
+				self.BulletData.Pos 	= self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
+				self.BulletData.Flight 	= (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
+				self.BulletData.Owner 	= self.Inflictor or self.Owner
+				self.BulletData.Gun 	= self
+				self.BulletData.Crate 	= self:EntIndex()
+				self.CreateShell 		= ACF.RoundTypes[CrateType].create
 				self:CreateShell( self.BulletData )
 					
 				self.Ammo = self.Ammo - 1
@@ -671,7 +667,6 @@ function ENT:Think()
 
 	-- Completely new, fresh, genius, beautiful, flawless refill system.
 	elseif self.RoundType == "Refill" and self.Load then
-	
 	
 		for _,Ammo in pairs( ACF.AmmoCrates ) do
 		

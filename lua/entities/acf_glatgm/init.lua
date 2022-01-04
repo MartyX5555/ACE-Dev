@@ -19,56 +19,73 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
-	
-	timer.Simple(0.1,function() ParticleEffectAttach("Rocket_Smoke_Trail",4, self,1)  end)
 
 	self.PhysObj = self:GetPhysicsObject()
 	self.PhysObj:EnableGravity( false )
 	self.PhysObj:EnableMotion( false )
-	self.KillTime = CurTime()+20
-	self.Time = CurTime()
-	self.Filter = {self,self.Entity,self.Guidance}
 
-	for k, v in pairs( ents.FindInSphere( self.Guidance:GetPos(), 250 ) ) do
-		if v:GetClass() == "acf_opticalcomputer" and v:CPPIGetOwner() == self.Owner then
-			self.Guidance = v
-			self.Optic = true
-		end
-	end
+	--Radar stuff
+	self.LastVel 			 = Vector(0,0,0)
+	self.CurPos 			 = self:GetPos()
+	ACF_ActiveMissiles[self] = true
 
-	self.velocity = 5000 		--self.velocity of the missile per second
-	self.secondsOffset = 0.5	--seconds of forward flight to aim towards, to affect the beam-riding simulation
+	--Missile stuff
+	self.KillTime 			 = CurTime()+20
+	self.Time 				 = CurTime()
+	self.Filter 			 = {self,self.Entity,self.Guidance}
+	self.velocity 			 = 5000 						-- self.velocity of the missile per second
+	self.secondsOffset 		 = 0.5							-- seconds of forward flight to aim towards, to affect the beam-riding simulation
 	
+	--This only affects caliber below 100mm (10cms)
 	self.Sub = self.BulletData.Caliber<10 
 	if self.Sub then 
 		self.velocity = 2500
 		self.secondsOffset = 0.25
-		self.SpiralAm = (10-self.BulletData.Caliber)*0.5 -- amount of artifical spiraling for <100 shells, caliber in acf is in cm
+		self.SpiralAm = (10-self.BulletData.Caliber)*0.25 -- amount of artifical spiraling for <100 shells, caliber in acf is in cm
 	end
 	
-	self.offsetLength = self.velocity * self.secondsOffset	--how far off the forward offset is for the targeting position
+	-- how far off the forward offset is for the targeting position
+	self.offsetLength = self.velocity * self.secondsOffset	
 
-	self.LastVel = Vector(0,0,0)
-	self.CurPos = self:GetPos()
-	ACF_ActiveMissiles[self] = true
+	--Gets the Closest computer to spawned missile to override gun´s guidance
+	--Dont bother at using this if the table is empty
+	if not table.IsEmpty( ACE.Opticals ) then
+		for k, Optical in pairs( ACE.Opticals ) do 
+
+			if not IsValid(Optical) then goto cont end
+
+			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
+			if Optical:GetPos():DistToSqr(self:GetPos()) < 250^2 and Optical:CPPIGetOwner() == self.Owner then
+
+				--print('Attaching Nearest Computer...')
+				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
+
+				self.Guidance = Optical
+				self.Optic = true
+
+			end
+
+			::cont::
+		end
+	end
+
+	--Rocket Trail effect
+	timer.Simple(0.1,function() ParticleEffectAttach("Rocket_Smoke_Trail",4, self,1)  end)
 
 end
 
 function ENT:Think()
 
-	if(IsValid(self)) then
+	if IsValid(self) then
 
 		local TimeNew = CurTime()
 
-		if self.KillTime<TimeNew then
-			self:Remove()
-		end
-			
 		local d = Vector(0,0,0)
 		local dir = AngleRand()*0.01
 		local Dist = 0.01--100/10000
 
 		if IsValid(self.Guidance) and self.Guidance:GetPos():Distance(self:GetPos())<self.Distance then
+
 			local di = self.Guidance:WorldToLocalAngles((self:GetPos() - self.Guidance:GetPos()):Angle())
 			if di.p<15 and di.p>-15 and di.y<15 and di.y>-15 then
 				local glpos = self.Guidance:GetPos()+self.Guidance:GetForward()
@@ -83,6 +100,7 @@ function ENT:Think()
 				Dist = self.Guidance:GetPos():Distance(self:GetPos())/39.37/10000
 			end
 		end
+
 		local Spiral = d:Length()/39370 or 0.5
 
 		if self.Sub then
@@ -95,7 +113,8 @@ function ENT:Think()
 		local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter) 
 			
 		self.Time = TimeNew
-		if(tr.Hit)then
+
+		if tr.Hit then
 			self:Detonate()
 		end
 
@@ -108,14 +127,10 @@ end
 
 function ENT:Detonate()
 	
-	if IsValid(self) and !self.Detonated then
-		self.Detonated = true
+	if IsValid(self) and not self.Detonated then
 
-		local Flash = EffectData()
-		Flash:SetOrigin( self:GetPos() )
-		Flash:SetNormal( self:GetForward() )
-		Flash:SetRadius((self.BulletData.FillerMass)^0.33*8*39.37/5 )
-		util.Effect( "ACF_Scaled_Explosion", Flash )
+		ACF_ActiveMissiles[self] = nil
+		self.Detonated = true
 
 		btdat = {}
 		btdat["Type"]			= "HEAT" 
@@ -125,7 +140,7 @@ function ENT:Detonate()
 		btdat["Crate"]			= self.BulletData.Crate
 		btdat["DragCoef"]		= self.BulletData.DragCoef
 		btdat["FillerMass"]		= self.BulletData.FillerMass
-		btdat["Filter"]			= {self,self.Entity}
+		btdat["Filter"]			= { self , self.Entity }
 		btdat["Flight"]			= self.BulletData.Flight
 		btdat["FlightTime"]		= 0
 		btdat["FrAera"]			= self.BulletData.FrAera
@@ -166,16 +181,22 @@ function ENT:Detonate()
 	
 		btdat["Flight"] = self:GetForward():GetNormalized() * btdat["MuzzleVel"] * 39.37
 	
-		btdat.Pos = self:GetPos()
+		btdat.Pos = self:GetPos() + self:GetForward() * 2
+
+		--debugoverlay.Cross(btdat.Pos, 10, 5, Color(255,255,0),true)
+
 		self.CreateShell = ACF.RoundTypes[btdat.Type].create
 		self:CreateShell( btdat )
-	
-		timer.Simple(0.1, function()
-			if(IsValid(self)) then
-				self:Remove()
 
-				ACF_ActiveMissiles[self] = nil
-			end
-		end)
+		timer.Simple(0.1, function()
+			self:Remove()
+		end )
+		
+		local Flash = EffectData()
+			Flash:SetOrigin( self:GetPos() )
+			Flash:SetNormal( self:GetForward() )
+			Flash:SetRadius((self.BulletData.FillerMass)^0.33*8*39.37 )
+		util.Effect( "ACF_Scaled_Explosion", Flash )
+
 	end
 end

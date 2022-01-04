@@ -897,7 +897,7 @@ function ENT:FireShell()
 			--nil is due to using applyforcecenter in KEShove function, so masscenter no longer required.
 			local LocalPos = HasPhys and nil or self:GetPos()
 			local Dir = -self:GetForward()
-			local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3000 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
+			local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
 
 			ACF_KEShove(self, LocalPos , Dir , KE )
 			

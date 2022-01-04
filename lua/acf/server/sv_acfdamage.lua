@@ -661,73 +661,64 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 	Bullet.Ricochets = Bullet.Ricochets or 0
 
 	local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
-	local HitRes = ACF_Damage ( --DAMAGE !!
-		Target,
-		Energy,
-		Bullet["PenAera"],
-		Angle,
-		Bullet["Owner"],
-		Bone,
-		Bullet["Gun"],
-		Bullet["Type"]
-	)
+	local HitRes = ACF_Damage ( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
+	HitRes.Ricochet = false
 
 	local Ricochet = 0
-	local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
 	local ricoProb = 1
 
-	--print(Angle)
+	--Missiles are special. This should be dealt with guns only
+	if (IsValid(Bullet["Gun"]) and Bullet["Gun"]:GetClass() ~= "acf_missile") or not IsValid(Bullet["Gun"]) then
 
-	if Angle > 85 then
-		ricoProb = 0 --Guarenteed Richochet
-	elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
-		ricoProb = 1 --Guarenteed to not richochet
-	else
-		ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
+		local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
+
+		--Guarenteed Richochet
+		if Angle > 85 then 
+			ricoProb = 0 
+
+		--Guarenteed to not richochet
+		elseif Bullet.Caliber*3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
+			ricoProb = 1 
+
+		else
+			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter*4),1)
+		end
 	end
 
-
-	-- Checking for ricochet
-	if ricoProb < math.random() and Angle < 90 then --The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
+	-- Checking for ricochet. The angle value is clamped but can cause game crashes if this overflow check doesnt exist. Why?
+	if ricoProb < math.random() and Angle < 90 then 
 		Ricochet       = math.Clamp(Angle / 90, 0.1, 1) -- atleast 10% of energy is kept
 		HitRes.Loss    = 1 - Ricochet
 		Energy.Kinetic = Energy.Kinetic * HitRes.Loss
 	end	
-
-	
-	ACF_KEShove(
-		Target,
-		HitPos,
-		Bullet["Flight"]:GetNormalized(),
-		Energy.Kinetic * HitRes.Loss * 1000 * Bullet["ShovePower"] * (GetConVarNumber("acf_recoilpush") or 1)
-	)
 	
 	if HitRes.Kill then
 		local Debris = ACF_APKill( Target , (Bullet["Flight"]):GetNormalized() , Energy.Kinetic )
 		table.insert( Bullet["Filter"] , Debris )
 	end	
-	
-	HitRes.Ricochet = false
+
 	if Ricochet > 0 and Bullet.Ricochets < 3 and IsValid(Target) then
-		Bullet.Ricochets = Bullet.Ricochets + 1
-		Bullet["Pos"] = HitPos + HitNormal * 0.75
-		Bullet.FlightTime = 0
-		Bullet.Flight = (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.025):GetNormalized() * Speed * Ricochet
+		
+		Bullet.Ricochets 	= Bullet.Ricochets + 1	
+		Bullet["Pos"] 		= HitPos + HitNormal * 0.75
+		Bullet.FlightTime 	= 0
+		Bullet.Flight 		= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.025):GetNormalized() * Speed * Ricochet
 		
 		if IsValid( ACF_GetPhysicalParent(Target):GetPhysicsObject() ) then
 		    Bullet.TraceBackComp = math.max(ACF_GetPhysicalParent(Target):GetPhysicsObject():GetVelocity():Dot(Bullet["Flight"]:GetNormalized()),0)
-		else 
-		    --print('holy crap, how this is possible??!?!')
 		end
 		
 		HitRes.Ricochet = true
+
 	end
-	
+
+	ACF_KEShove( Target, HitPos, Bullet["Flight"]:GetNormalized(), Energy.Kinetic * HitRes.Loss * 1000 * Bullet["ShovePower"] * (GetConVarNumber("acf_recoilpush") or 1))
+
 	return HitRes
 end
 
 --Handles Ground penetrations
-function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull show again
+function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 	
@@ -751,9 +742,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )   --tracehull 
 
 	debugoverlay.Box( DigRes.StartPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
   	debugoverlay.Box( DigRes.HitPos, Vector( -TROffset, -TROffset, -TROffset ), Vector( TROffset, TROffset, TROffset ), 5, Color(0,math.random(100,255),0) )
-
 	debugoverlay.Line( DigRes.StartPos, HitPos + Bullet.Flight:GetNormalized()*(MaxDig+0.1), 5 , Color(0,math.random(100,255),0) )
-	--print(util.GetSurfacePropName(DigRes.SurfaceProps))
 	
 	local loss = DigRes.FractionLeftSolid
 	
@@ -805,14 +794,15 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	--corner case error check
 	if not Target.acfphystotal then return end 
 
-	-- todo: https://github.com/MartyX5555/ACE-Dev/pull/1 --> see this	
 	local physratio = Target.acfphystotal / Target.acftotal
 	
 	if isvector(Pos) then
 		
 		local Scaling = 1
+
+		--Scale down the offset relative to chassis if the gun is parented
 		if Target:EntIndex() ~= parent:EntIndex() then
-			Scaling = 100
+			Scaling = 87.5
 		end
 
 		local Local = parent:WorldToLocal(Pos) / Scaling
@@ -959,7 +949,7 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	
 	Debris:Activate()
 
-	--Applies force to this debris
+	-- Applies force to this debris
 	local phys = Debris:GetPhysicsObject() 
 	local physent = Entity:GetPhysicsObject()
 

@@ -208,9 +208,12 @@ function ENT:CalcFlight()
 	tracedata.start = Pos
 	tracedata.endpos = EndPos
 	tracedata.filter = self.Filter
+	tracedata.mins = Vector(0,0,0)
+	tracedata.maxs = Vector(0,0,0)
+
 	--tracedata.mins = Vector(-MRadius,-MRadius,-MRadius)
 	--tracedata.maxs = Vector(MRadius,MRadius,MRadius)
-	local trace = util.TraceLine(tracedata)
+	local trace = util.TraceHull(tracedata)
 
 	if trace.Hit then
 
@@ -451,7 +454,7 @@ function ENT:Detonate()
 
     --print('MuzzleVel')
     --print(self.BulletData.MuzzleVel)
-    self.BulletData.Flight = self:GetForward()-- * (self.BulletData.MuzzleVel or 10) 
+    self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10) 
     debugoverlay.Line(self.BulletData.Pos, self.BulletData.Pos + self.BulletData.Flight, 10, Color(255, 0, 0))
 
     self:ForceDetonate()
