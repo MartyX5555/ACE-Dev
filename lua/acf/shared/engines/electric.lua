@@ -13,8 +13,6 @@ ACF_DefineEngine( "Electric-Small", {
 	torque = 384,
 	flywheelmass = 0.3,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 5000
@@ -32,8 +30,6 @@ ACF_DefineEngine( "Electric-Medium", {
 	torque = 1152,
 	flywheelmass = 1.5,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 7000,
 	iselec = true,
 	flywheeloverride = 8000
@@ -51,8 +47,6 @@ ACF_DefineEngine( "Electric-Large", {
 	torque = 3360,
 	flywheelmass = 11.2,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 4500,
 	iselec = true,
 	flywheeloverride = 6000
@@ -71,8 +65,6 @@ ACF_DefineEngine( "Electric-Tiny-NoBatt", {
 	torque = 40,
 	flywheelmass = 0.025,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 500
@@ -91,8 +83,6 @@ ACF_DefineEngine( "Electric-Small-NoBatt", {
 	torque = 384,
 	flywheelmass = 0.3,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 5000
@@ -111,8 +101,6 @@ ACF_DefineEngine( "Electric-Medium-NoBatt", {
 	torque = 1152,
 	flywheelmass = 1.5,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 7000,
 	iselec = true,
 	flywheeloverride = 8000
@@ -131,8 +119,6 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	torque = 3360,
 	flywheelmass = 11.2,
 	idlerpm = 10,
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 4500,
 	iselec = true,
 	flywheeloverride = 6000
@@ -157,8 +143,6 @@ ACF_DefineEngine( "Induction motor, Tiny", {
 	torque = 190, --30
 	flywheelmass = 0.3,
 	idlerpm = 1, --40
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 4750
@@ -177,8 +161,6 @@ ACF_DefineEngine( "Induction motor, Small, Standalone", {
 	torque = 425,
 	flywheelmass = 0.3,
 	idlerpm = 1, --40
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 10000,
 	iselec = true,
 	flywheeloverride = 4750
@@ -197,8 +179,6 @@ ACF_DefineEngine( "Induction motor, Medium, Standalone", {
 	torque = 910, --810
 	flywheelmass = 0.3, --0.3
 	idlerpm = 1, --40
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 13000, --9500
 	iselec = true,
 	flywheeloverride = 7500 --7500
@@ -217,8 +197,6 @@ ACF_DefineEngine( "Induction motor, Large, Standalone", {
 	torque = 2125,
 	flywheelmass = 0.35, --0.35
 	idlerpm = 1, --40(?)
-	peakminrpm = 1,
-	peakmaxrpm = 1,
 	limitrpm = 15000, --12000
 	iselec = true,
 	flywheeloverride = 8000 --8000

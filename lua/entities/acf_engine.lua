@@ -41,11 +41,13 @@ if CLIENT then
 			
 		acfmenupanel:CPanelText("Desc", Table.desc)
 		
-		local peakkw
-		local peakkwrpm
-		local pbmin
-		local pbmax
+		local peakkw = Table.peakpower
+		local peakkwrpm = Table.peakpowerrpm
+		local peaktqrpm = Table.peaktqrpm
+		local pbmin = Table.peakminrpm
+		local pbmax = Table.peakmaxrpm
 		
+		--[[
 		if (Table.iselec == true )then --elecs and turbs get peak power in middle of rpm range
 			peakkw = ( Table.torque * ( 1 + Table.peakmaxrpm / Table.limitrpm )) * Table.limitrpm / (4*9548.8) --adjust torque to 1 rpm maximum, assuming a linear decrease from a max @ 1 rpm to min @ limiter
 			peakkwrpm = math.floor(Table.limitrpm / 2)
@@ -57,16 +59,17 @@ if CLIENT then
 			pbmin = Table.peakminrpm
 			pbmax = Table.peakmaxrpm
 		end
-		
+		--]]
+
 		if Table.requiresfuel then --if fuel required, show max power with fuel at top, no point in doing it twice
-			acfmenupanel:CPanelText("Power", "\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..peakkwrpm.." RPM")
-			acfmenupanel:CPanelText("Torque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb")
+			acfmenupanel:CPanelText("Power", "\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..math.Round(peakkwrpm).." RPM")
+			acfmenupanel:CPanelText("Torque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb @ "..math.Round(peaktqrpm).." RPM")
 		else
-			acfmenupanel:CPanelText("Power", "\nPeak Power : "..math.floor(peakkw).." kW / "..math.Round(peakkw*1.34).." HP @ "..peakkwrpm.." RPM")
-			acfmenupanel:CPanelText("Torque", "Peak Torque : "..(Table.torque).." n/m  / "..math.Round(Table.torque*0.73).." ft-lb")
+			acfmenupanel:CPanelText("Power", "\nPeak Power : "..math.floor(peakkw).." kW / "..math.Round(peakkw*1.34).." HP @ "..math.Round(peakkwrpm).." RPM")
+			acfmenupanel:CPanelText("Torque", "Peak Torque : "..(Table.torque).." n/m  / "..math.Round(Table.torque*0.73).." ft-lb @ "..math.Round(peaktqrpm).." RPM")
 		end
 
-		acfmenupanel:CPanelText("RPM", "Idle : "..(Table.idlerpm).." RPM\nPowerband : "..(pbmin).."-"..(pbmax).." RPM\nRedline : "..(Table.limitrpm).." RPM")
+		acfmenupanel:CPanelText("RPM", "Idle : "..(Table.idlerpm).." RPM\nPowerband : "..(math.Round(pbmin / 10) * 10).."-"..(math.Round(pbmax / 10) * 10).." RPM\nRedline : "..(Table.limitrpm).." RPM")
 		acfmenupanel:CPanelText("Weight", "Weight : "..(Table.weight).." kg")
 		
 		
@@ -78,18 +81,18 @@ if CLIENT then
 		elseif Table.fuel == "Multifuel" then
 			local petrolcons = ACF.FuelRate * ACF.Efficiency[Table.enginetype] * ACF.TorqueBoost * peakkw / (60 * ACF.FuelDensity.Petrol)
 			local dieselcons = ACF.FuelRate * ACF.Efficiency[Table.enginetype] * ACF.TorqueBoost * peakkw / (60 * ACF.FuelDensity.Diesel)
-			acfmenupanel:CPanelText("FuelConsP", "Petrol Use at "..peakkwrpm.." rpm : "..math.Round(petrolcons,2).." liters/min / "..math.Round(0.264*petrolcons,2).." gallons/min")
-			acfmenupanel:CPanelText("FuelConsD", "Diesel Use at "..peakkwrpm.." rpm : "..math.Round(dieselcons,2).." liters/min / "..math.Round(0.264*dieselcons,2).." gallons/min")
+			acfmenupanel:CPanelText("FuelConsP", "Petrol Use at "..math.Round(peakkwrpm).." rpm : "..math.Round(petrolcons,2).." liters/min / "..math.Round(0.264*petrolcons,2).." gallons/min")
+			acfmenupanel:CPanelText("FuelConsD", "Diesel Use at "..math.Round(peakkwrpm).." rpm : "..math.Round(dieselcons,2).." liters/min / "..math.Round(0.264*dieselcons,2).." gallons/min")
 		else
 			local fuelcons = ACF.FuelRate * ACF.Efficiency[Table.enginetype] * ACF.TorqueBoost * peakkw / (60 * ACF.FuelDensity[Table.fuel])
-			acfmenupanel:CPanelText("FuelCons", (Table.fuel).." Use at "..peakkwrpm.." rpm : "..math.Round(fuelcons,2).." liters/min / "..math.Round(0.264*fuelcons,2).." gallons/min")
+			acfmenupanel:CPanelText("FuelCons", (Table.fuel).." Use at "..math.Round(peakkwrpm).." rpm : "..math.Round(fuelcons,2).." liters/min / "..math.Round(0.264*fuelcons,2).." gallons/min")
 		end
 		
 		if Table.requiresfuel then
 			acfmenupanel:CPanelText("Fuelreq", "REQUIRES FUEL")
 		else
-			acfmenupanel:CPanelText("FueledPower", "\nWhen supplied with fuel:\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..peakkwrpm.." RPM")
-			acfmenupanel:CPanelText("FueledTorque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb")
+			acfmenupanel:CPanelText("FueledPower", "\nWhen supplied with fuel:\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..math.Round(peakkwrpm).." RPM")
+			acfmenupanel:CPanelText("FueledTorque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb @ "..math.Round(peaktqrpm).." RPM")
 		end
 		
 		acfmenupanel.CustomDisplay:PerformLayout()
@@ -159,6 +162,8 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.SoundPath = Lookup.sound
 	Engine.Weight = Lookup.weight
 	Engine.PeakTorque = Lookup.torque
+	Engine.peakkw = Lookup.peakpower
+	Engine.PeakKwRPM = Lookup.peakpowerrpm
 	Engine.PeakTorqueHeld = Lookup.torque
 	Engine.IdleRPM = Lookup.idlerpm
 	Engine.PeakMinRPM = Lookup.peakminrpm
@@ -170,6 +175,8 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.IsTrans = Lookup.istrans -- driveshaft outputs to the side
 	Engine.FuelType = Lookup.fuel or "Petrol"
 	Engine.EngineType = Lookup.enginetype or "GenericPetrol"
+	Engine.TorqueCurve = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
+	Engine.CurveFactor = Lookup.curvefactor
 	Engine.RequiresFuel = Lookup.requiresfuel
 	Engine.SoundPitch = Lookup.pitch or 1
 	Engine.SpecialHealth = true
@@ -177,9 +184,10 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	Engine.TorqueMult = 1
 	Engine.FuelTank = 0
 	Engine.Heat= ACE.AmbientTemp
-	
+
 	Engine.TorqueScale = ACF.TorqueScale[Engine.EngineType]
 	
+	--[[
 	--calculate boosted peak kw
 	if Engine.EngineType == "Turbine" or Engine.EngineType == "Electric" then
 		Engine.peakkw = ( Engine.PeakTorque * ( 1 + Engine.PeakMaxRPM / Engine.LimitRPM )) * Engine.LimitRPM / (4*9548.8) --adjust torque to 1 rpm maximum, assuming a linear decrease from a max @ 1 rpm to min @ limiter
@@ -188,6 +196,7 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 		Engine.peakkw = Engine.PeakTorque * Engine.PeakMaxRPM / 9548.8
 		Engine.PeakKwRPM = Engine.PeakMaxRPM
 	end
+	--]]
 	
 	--calculate base fuel usage
 	if Engine.EngineType == "Electric" then
@@ -258,6 +267,8 @@ function ENT:Update( ArgsTable )
 	self.SoundPath = Lookup.sound
 	self.Weight = Lookup.weight
 	self.PeakTorque = Lookup.torque
+	self.peakkw = Lookup.peakPower
+	self.PeakKwRPM = Lookup.peakPowerRPM
 	self.PeakTorqueHeld = Lookup.torque
 	self.IdleRPM = Lookup.idlerpm
 	self.PeakMinRPM = Lookup.peakminrpm
@@ -278,6 +289,7 @@ function ENT:Update( ArgsTable )
 	
 	self.TorqueScale = ACF.TorqueScale[self.EngineType]
 	
+	--[[
 	--calculate boosted peak kw
 	if self.EngineType == "Turbine" or self.EngineType == "Electric" then
 		self.peakkw = ( self.PeakTorque * ( 1 + self.PeakMaxRPM / self.LimitRPM )) * self.LimitRPM / (4*9548.8) --adjust torque to 1 rpm maximum, assuming a linear decrease from a max @ 1 rpm to min @ limiter
@@ -286,7 +298,8 @@ function ENT:Update( ArgsTable )
 		self.peakkw = self.PeakTorque * self.PeakMaxRPM / 9548.8
 		self.PeakKwRPM = self.PeakMaxRPM
 	end
-	
+	--]]
+
 	--calculate base fuel usage
 	if self.EngineType == "Electric" then
 		self.FuelUse = ACF.ElecRate / (ACF.Efficiency[self.EngineType] * 60 * 60) --elecs use current power output, not max
@@ -313,9 +326,10 @@ end
 
 function ENT:UpdateOverlayText()
 
-	local pbmin
-	local pbmax
+	local pbmin = self.PeakMinRPM
+	local pbmax = self.PeakMaxRPM
 	
+	--[[
 	if (self.iselec == true )then --elecs and turbs get peak power in middle of rpm range
 		pbmin = self.IdleRPM
 		pbmax = math.floor(self.LimitRPM / 2)
@@ -323,10 +337,12 @@ function ENT:UpdateOverlayText()
 		pbmin = self.PeakMinRPM
 		pbmax = self.PeakMaxRPM
 	end
+	--]]
+
 	local SpecialBoost = self.RequiresFuel and ACF.TorqueBoost or 1
 	local text = "Power: " .. math.Round( self.peakkw * SpecialBoost ) .. " kW / " .. math.Round( self.peakkw * SpecialBoost * 1.34 ) .. " hp\n"
 	text = text .. "Torque: " .. math.Round( self.PeakTorque * SpecialBoost ) .. " Nm / " .. math.Round( self.PeakTorque * SpecialBoost * 0.73 ) .. " ft-lb\n"
-	text = text .. "Powerband: " .. pbmin .. " - " .. pbmax .. " RPM\n"
+	text = text .. "Powerband: " .. (math.Round(pbmin / 10) * 10) .. " - " .. (math.Round(pbmax / 10) * 10) .. " RPM\n"
 	text = text .. "Redline: " .. self.LimitRPM .. " RPM"
 
 	if not self.Legal then
@@ -599,8 +615,11 @@ function ENT:CalcRPM()
 	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1+self.HasDriver*ACF.DriverTorqueBoost)
 
 	-- Calculate the current torque from flywheel RPM
-	self.Torque = boost * self.Throttle * math.max( self.PeakTorque * math.min( self.FlyRPM / self.PeakMinRPM, (self.LimitRPM - self.FlyRPM) / (self.LimitRPM - self.PeakMaxRPM), 1 ), 0 )
+	--self.Torque = boost * self.Throttle * math.max( self.PeakTorque * math.min( self.FlyRPM / self.PeakMinRPM, (self.LimitRPM - self.FlyRPM) / (self.LimitRPM - self.PeakMaxRPM), 1 ), 0 )
 	
+	local perc = (self.FlyRPM - self.IdleRPM) / self.CurveFactor / self.LimitRPM
+	self.Torque = boost * self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
+
 	local Drag 
 	if self.iselec == true then
 		 Drag = self.PeakTorque * (math.max( self.FlyRPM - self.IdleRPM, 0) / self.FlywheelOverride) * (1 - self.Throttle) / self.Inertia
