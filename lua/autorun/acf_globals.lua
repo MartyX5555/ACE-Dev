@@ -213,6 +213,111 @@ ACF.EngineHPMult = { --health multiplier for engines
 	Electric = 0.75
 }
 
+--Use this to help design torque curves https://gist.github.com/CheezusChrust/7ccce5f5196d3adc95ab9573009f735a
+ACF.GenericTorqueCurves = { --Default curves for engines that don't have one defined
+	GenericPetrol = {0.3, 0.55, 0.7, 0.85, 1, 0.9, 0.7},
+	GenericDiesel = {0.3, 0.9, 0.97, 1, 0.95, 0.9, 0.8, 0.65},
+	Turbine = {0.8, 1, 0.9, 0.8, 0.6, 0.4, 0.2, 0.1},
+	Wankel = {0.35, 0.7, 0.85, 0.95, 1, 0.9, 0.7},
+	Radial = {0.6, 0.75, 0.85, 0.95, 0.98, 0.6},
+	Electric = {1, 1, 0.5, 0.2}
+}
+
+--Calculates a position along a catmull-rom spline (as defined on https://www.mvps.org/directx/articles/catmull/)
+--This is used for calculating engine torque curves
+function ACF_CalcCurve(Points, Pos)
+	if #Points < 3 then
+		return 0
+	end
+
+	local T = 0
+	if Pos <= 0 then
+		T = 0
+	elseif Pos >= 1 then
+		T = 1
+	else
+		T = Pos * (#Points - 1)
+		T = T % 1
+	end
+
+	local CurrentPoint = math.floor(Pos * (#Points - 1) + 1)
+	local P0 = Points[math.Clamp(CurrentPoint - 1, 1, #Points - 2)]
+	local P1 = Points[math.Clamp(CurrentPoint, 1, #Points - 1)]
+	local P2 = Points[math.Clamp(CurrentPoint + 1, 2, #Points)]
+	local P3 = Points[math.Clamp(CurrentPoint + 2, 3, #Points)]
+
+	return 0.5 * ((2 * P1) +
+		(P2 - P0) * T +
+		(2 * P0 - 5 * P1 + 4 * P2 - P3) * T ^ 2 +
+		(3 * P1 - P0 - 3 * P2 + P3) * T ^ 3)
+end
+
+--Calculates the performance characteristics of an engine, given a torque curve, max torque (in nm), idle, and redline rpm
+function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
+	local peakTq = 0
+	local peakTqRPM
+	local peakPower = 0
+	local powerbandMinRPM
+	local powerbandMaxRPM
+	local powerTable = {} --Power at each point on the curve for use in powerband calc
+	local powerbandTable = {} --(torque + power) / 2 at each point on the curve
+	local powerbandPeak = 0 --Highest value of (torque + power) / 2
+	local res = 32 --Iterations for use in calculating the curve, higher is more accurate
+	local curveFactor = (redline - idle) / redline --Torque curves all start after idle RPM is reached
+
+	--Calculate peak torque/power rpm.
+	for i = 0, res do
+		local rpm = i / res * redline
+		local perc = (rpm - idle) / curveFactor / redline
+		local curTq = ACF_CalcCurve(curve, perc)
+		local power = maxTq * curTq * rpm / 9548.8
+		powerTable[i] = power
+		if power > peakPower then
+			peakPower = power
+			peakPowerRPM = rpm
+		end
+
+		if math.Clamp(curTq, 0, 1) > peakTq then
+			peakTq = curTq
+			peakTqRPM = rpm
+		end
+	end
+
+	--Loop two, to calculate the powerband's peak.
+	for i = 0, res do
+		local power = powerTable[i] / peakPower
+		local tq = ACF_CalcCurve(curve, i / res)
+		local powerband = power + tq --This seems like the best way I was given to calculate the powerband range - maybe improve eventually?
+		powerbandTable[i] = powerband
+
+		if powerband > powerbandPeak then
+			powerbandPeak = powerband
+		end
+	end
+
+	--Loop three, to actually figure out where the bounds of the powerband are (within 10% of max).
+	for i = 0, res do
+		local powerband = powerbandTable[i] / powerbandPeak
+		local rpm = i / res * redline
+
+		if powerband > 0.9 and not powerbandMinRPM then
+			powerbandMinRPM = rpm
+		end
+
+		if (powerbandMinRPM and powerband < 0.9 and not powerbandMaxRPM) or (i == res and not powerbandMaxRPM) then
+			powerbandMaxRPM = rpm
+		end
+	end
+
+	return {
+		peakTqRPM = peakTqRPM,
+		peakPower = peakPower,
+		peakPowerRPM = peakPowerRPM,
+		powerbandMinRPM = powerbandMinRPM,
+		powerbandMaxRPM = powerbandMaxRPM
+	}
+end
+
 --[[
     ACE translations section
 ]]--

@@ -55,13 +55,8 @@ end
 
 local function getMaxPower(ent)
 	if not isEngine(ent) then return 0 end
-	local peakpower
-	if ent.iselec then
-		peakpower = math.floor(ent.PeakTorque * ent.LimitRPM / (38195.2)) --(4*9548.8)
-	else
-		peakpower = math.floor(ent.PeakTorque * ent.PeakMaxRPM / 9548.8)
-	end
-	return peakpower or 0
+
+	return ent.peakkw or 0
 end
 
 local function isLinkableACFEnt(ent)
@@ -325,21 +320,13 @@ end
 -- Returns the powerband min of an ACF engine
 e2function number entity:acfPowerbandMin()
 	if not isEngine(this) then return 0 end
-	if ( this.iselec == true ) then
-		return math.max(this.IdleRPM, this.PeakMinRPM) 
-	else
-		return this.PeakMinRPM or 0
-	end
+	return (math.Round(this.PeakMinRPM / 10) * 10) or 0
 end
 
 -- Returns the powerband max of an ACF engine
 e2function number entity:acfPowerbandMax()
 	if not isEngine(this) then return 0 end
-	if ( this.iselec == true ) then
-		return math.floor(this.LimitRPM / 2) 
-	else
-		return this.PeakMaxRPM or 0
-	end
+	return (math.Round(this.PeakMaxRPM / 10) * 10) or 0
 end
 
 -- Returns the redline rpm of an ACF engine
@@ -388,17 +375,9 @@ e2function number entity:acfInPowerband()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	
-	local pbmin
-	local pbmax
-	
-	if (this.iselec == true )then
-		pbmin = this.IdleRPM
-		pbmax = math.floor(this.LimitRPM / 2)
-	else
-		pbmin = this.PeakMinRPM
-		pbmax = this.PeakMaxRPM
-	end
-	
+	pbmin = this.PeakMinRPM
+	pbmax = this.PeakMaxRPM
+
 	if (this.FlyRPM < pbmin) then return 0 end
 	if (this.FlyRPM > pbmax) then return 0 end
 	

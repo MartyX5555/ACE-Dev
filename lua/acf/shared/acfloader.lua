@@ -99,6 +99,14 @@ end
 --Engine definition
 function ACF_DefineEngine( id, data )
 	if (data.year or 0) < ACF.Year then
+		local engineData = ACF_CalcEnginePerformanceData(data.torquecurve or ACF.GenericTorqueCurves[data.enginetype], data.torque, data.idlerpm, data.limitrpm)
+
+		data.peaktqrpm = engineData.peakTqRPM
+		data.peakpower = engineData.peakPower
+		data.peakpowerrpm = engineData.peakPowerRPM
+		data.peakminrpm = engineData.powerbandMinRPM
+		data.peakmaxrpm = engineData.powerbandMaxRPM
+		data.curvefactor = (data.limitrpm - data.idlerpm) / data.limitrpm
 	    data.id = id
 	    table.Inherit( data, engine_base )
 	    MobilityTable[ id ] = data
