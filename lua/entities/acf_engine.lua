@@ -267,8 +267,8 @@ function ENT:Update( ArgsTable )
 	self.SoundPath = Lookup.sound
 	self.Weight = Lookup.weight
 	self.PeakTorque = Lookup.torque
-	self.peakkw = Lookup.peakPower
-	self.PeakKwRPM = Lookup.peakPowerRPM
+	self.peakkw = Lookup.peakpower
+	self.PeakKwRPM = Lookup.peakpowerrpm
 	self.PeakTorqueHeld = Lookup.torque
 	self.IdleRPM = Lookup.idlerpm
 	self.PeakMinRPM = Lookup.peakminrpm
