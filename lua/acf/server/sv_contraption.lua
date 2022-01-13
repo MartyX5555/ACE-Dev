@@ -9,6 +9,7 @@ ACE.radarEntities 	= {}	--for tracking radar usage
 ACE.radarIDs 		= {}	--ID radar purpose
 ACE.ECMPods 		= {}	--ECM usage
 ACE.Opticals 		= {}	--GLATGM optical computers
+ACE.Explosives		= {}	--Explosive entities like ammocrates & fueltanks go here
 
 ACE.Debris 			= {}	--Debris count
 
@@ -38,6 +39,25 @@ local AllowedEnts = {
 
 }
 
+--used mostly by contraption. Put here any entity which contains IsExplosive boolean
+ACE.ExplosiveEnts = {
+
+	[ "acf_ammo" ] 					= true,
+	[ "acf_fueltank" ] 				= true
+
+}
+
+-- whitelist for things that can be turned into debris
+ACF.Debris = {
+	["acf_gun"] 					= true,
+	["acf_rack"] 					= true,
+	["acf_gearbox"] 				= true,
+	["acf_engine"] 					= true,
+	["prop_physics"] 				= true,
+	["prop_vehicle_prisoner_pod"] 	= true
+}
+
+
 -- insert any new entity to the Contraption List
 -- Maybe in a future: Change if-else chains by tables
 hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
@@ -65,6 +85,11 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 		elseif Ent:GetClass() == 'acf_opticalcomputer' then
 
 			table.insert( ACE.Opticals, Ent )  					--print('[ACE | INFO]- GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))	
+
+		--Insert Ammocrates and other explosive stuff here
+		elseif ACE.ExplosiveEnts[ Ent:GetClass() ] then
+
+			table.insert(ACE.Explosives, Ent)				--print('[ACE | INFO]- Explosive registered count: '..table.Count( ACE.Explosives ))
 
 		end
 
@@ -140,6 +165,22 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 							
 						    --print('[ACE | INFO]- the Optical '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
 							--print('GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))				
+							
+							break
+						end						
+				    end		
+                end					
+			elseif ACE.ExplosiveEnts[ Ent:GetClass() ] then
+			    for i = 1, table.Count( ACE.Explosives ) do
+				    if ACE.Explosives[i]:IsValid() and Ent:IsValid() then
+					
+					    local Explosive = ACE.Explosives[i]
+						
+						if Explosive:EntIndex() == Ent:EntIndex() then						
+							table.remove( ACE.Explosives , i)
+							
+						    --print('[ACE | INFO]- the Explosive '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+							--print('[ACE | INFO]- Explosive registered count: '..table.Count( ACE.Explosives ))			
 							
 							break
 						end						

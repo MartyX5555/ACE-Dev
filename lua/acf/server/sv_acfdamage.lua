@@ -816,23 +816,6 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	end
 end
 
-
--- whitelist for things that can be turned into debris
-ACF.Debris = {
-	acf_gun = true,
-	acf_rack = true,
-	acf_gearbox = true,
-	acf_engine = true,
-	prop_physics = true,
-	prop_vehicle_prisoner_pod = true
-}
-
--- things that should have scaledexplosion called on them instead of being turned into debris
-ACF.Splosive = {
-	acf_ammo = true,
-	acf_fueltank = true	
-}
-
 -- helper function to process children of an acf-destroyed prop
 -- AP will HE-kill children props like a detonation; looks better than a directional spray of unrelated debris from the AP kill
 local function ACF_KillChildProps( Entity, BlastPos, Energy )  
@@ -863,7 +846,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		    else
 
 			    -- remove this ent from children table and move it to the explosive table
-			    if ACF.Splosive[class] and not ent.Exploding then
+			    if ACE.ExplosiveEnts[class] and not ent.Exploding then
 
 				    table.insert( boom , ent ) 
 				    children[ent] = nil
@@ -1036,62 +1019,72 @@ function ACF_ScaledExplosion( ent )
 
 	while Search do
 	
-		for key,Found in pairs( ACF_HEFind( Pos, Radius ) ) do
 
-			local EOwner = CPPI and Found:CPPIGetOwner() or NULL
+		if #ACE.Explosives > 1 then
+			for _,Found in pairs( ACE.Explosives ) do
+
+				if not IsValid(Found) then goto cont end
+				if Found:GetPos():DistToSqr(Pos) > Radius^2 then goto cont end
+
+				local EOwner = CPPI and Found:CPPIGetOwner() or NULL
 		    
-			if Found.IsExplosive and not Found.Exploding and Owner == EOwner then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
-				local Hitat = Found:NearestPoint( Pos )
+				if not Found.Exploding and Owner == EOwner then	--So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
+					local Hitat = Found:NearestPoint( Pos )
 				
-				local Occlusion = {}
-					Occlusion.start = Pos
-					Occlusion.endpos = Hitat
-					Occlusion.filter = FilterTraceHull
-					Occlusion.mins = Vector( 0, 0, 0 )
-					Occlusion.maxs = Vector( 0, 0, 0 ) 
-				local Occ = util.TraceHull( Occlusion )
-				
-				if ( Occ.Fraction == 0 ) then
-					table.insert(Filter,Occ.Entity)
 					local Occlusion = {}
 						Occlusion.start = Pos
 						Occlusion.endpos = Hitat
-						Occlusion.filter = Filter
+						Occlusion.filter = FilterTraceHull
 						Occlusion.mins = Vector( 0, 0, 0 )
 						Occlusion.maxs = Vector( 0, 0, 0 ) 
-					Occ = util.TraceHull( Occlusion )
-					--print("Ignoring nested prop")
-				end
-					
-				if ( Occ.Hit and Occ.Entity:EntIndex() != Found.Entity:EntIndex() ) then 
-						--Msg("Target Occluded\n")
-				else
-					local FoundHEWeight
-					if Found:GetClass() == "acf_fueltank" then
-						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.25
-					else
-						local HE, Propel
-						if Found.RoundType == "Refill" then
-							HE = 0.00001
-							Propel = 0.00001
-						else 
-							HE = Found.BulletData["FillerMass"] or 0
-							Propel = Found.BulletData["PropMass"] or 0
-						end
-						FoundHEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*Found.Ammo
+					local Occ = util.TraceHull( Occlusion )
+				
+					if Occ.Fraction == 0 then
+
+						table.insert(Filter,Occ.Entity)
+						local Occlusion = {}
+							Occlusion.start = Pos
+							Occlusion.endpos = Hitat
+							Occlusion.filter = Filter
+							Occlusion.mins = Vector( 0, 0, 0 )
+							Occlusion.maxs = Vector( 0, 0, 0 ) 
+						Occ = util.TraceHull( Occlusion )
+						--print("Ignoring nested prop")
+
 					end
 					
-					table.insert(ExplodePos, Found:LocalToWorld(Found:OBBCenter()))
-					HEWeight = HEWeight + FoundHEWeight
-					Found.IsExplosive = false
-					Found.DamageAction = false
-					Found.KillAction = false
-					Found.Exploding = true
-					table.insert(Filter,Found)
-					Found:Remove()
-				end			
-			end
-		end	
+					if ( Occ.Hit and Occ.Entity:EntIndex() != Found.Entity:EntIndex() ) then 
+						--Msg("Target Occluded\n")
+					else
+						local FoundHEWeight
+						if Found:GetClass() == "acf_fueltank" then
+						FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.25
+						else
+							local HE, Propel
+							if Found.RoundType == "Refill" then
+								HE 		= 0.00001
+								Propel 	= 0.00001
+							else 
+								HE 		= Found.BulletData["FillerMass"] 	or 0
+								Propel 	= Found.BulletData["PropMass"] 		or 0
+							end
+							FoundHEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*Found.Ammo
+						end
+					
+						table.insert(ExplodePos, Found:LocalToWorld(Found:OBBCenter()))
+						HEWeight = HEWeight + FoundHEWeight
+						Found.IsExplosive 	= false
+						Found.DamageAction 	= false
+						Found.KillAction 	= false
+						Found.Exploding 	= true
+						table.insert(Filter,Found)
+						Found:Remove()
+					end			
+				end
+
+				::cont::
+			end	
+		end
 		
 		if HEWeight > LastHE then
 			Search = true
@@ -1109,11 +1102,11 @@ function ACF_ScaledExplosion( ent )
 
 	ent:Remove()
 	
-	HEWeight = HEWeight*ACF.BoomMult
-	Radius = (HEWeight)^0.33*8*39.37
+	HEWeight 	= HEWeight*ACF.BoomMult
+	Radius 		= (HEWeight)^0.33*8*39.37
 			
 	ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )
-	
+
 	local Flash = EffectData()
 		Flash:SetEntity( ent )
 		Flash:SetOrigin( AvgPos )

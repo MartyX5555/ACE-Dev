@@ -728,13 +728,14 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	
 	local gundef = List[Id] or error("Couldn't find the " .. tostring(Id) .. " gun-definition!")
 	
-    Rack.MinCaliber = gundef.mincaliber
-    Rack.MaxCaliber = gundef.maxcaliber
-	Rack.Caliber	= gundef["caliber"]
-	Rack.Model      = gundef["model"]
-	Rack.Mass       = gundef["weight"]
-    Rack.LegalWeight = Rack.Mass
-	Rack.Class      = gundef["gunclass"]
+    Rack.MinCaliber 	= gundef.mincaliber
+    Rack.MaxCaliber 	= gundef.maxcaliber
+	Rack.Caliber		= gundef["caliber"]
+	Rack.Model      	= gundef["model"]
+	Rack.Mass       	= gundef["weight"]
+    Rack.LegalWeight 	= Rack.Mass
+    Rack.name 			= gundef["name"]
+	Rack.Class      	= gundef["gunclass"]
     
 	-- Custom BS for karbine. Per Rack ROF.
 	Rack.PGRoFmod = 1
@@ -767,6 +768,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
     Rack.WhitelistOnly      = ACF_GetRackValue(Id, "whitelistonly")
     
+    Rack:SetNWString("WireName",Rack.name)
 	Rack:SetNWString( "Class",  Rack.Class )
 	Rack:SetNWString( "ID",     Rack.Id )
 	Rack:SetNWString( "Sound",  Rack.Sound )
