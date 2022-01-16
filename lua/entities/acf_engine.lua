@@ -345,6 +345,10 @@ function ENT:UpdateOverlayText()
 	text = text .. "Powerband: " .. (math.Round(pbmin / 10) * 10) .. " - " .. (math.Round(pbmax / 10) * 10) .. " RPM\n"
 	text = text .. "Redline: " .. self.LimitRPM .. " RPM"
 
+	if self.HasDriver > 0 then
+		text = text .. "\nHas Driver: Yes"	--fuck yeah
+	end
+
 	if not self.Legal then
 		text = text .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
 	end
@@ -668,21 +672,26 @@ function ENT:CalcRPM()
 	
 	self.Heat = ACE_HeatFromEngine( self )
 
-if ((self.ACF.Health/self.ACF.MaxHealth) < 0.95) then
+	local HealthRatio = self.ACF.Health/self.ACF.MaxHealth
 
-	if (CurTime()-self.LastDamageTime) > 0.6 then
-	self.LastDamageTime=CurTime()
---	print("Engine Failing")
-	self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10))	
+	if HealthRatio < 0.95 then
+
+		if HealthRatio > 0.025 then
+			--[[
+			if (CurTime()-self.LastDamageTime) > 0.6 then
+				self.LastDamageTime=CurTime()
+
+				self:EmitSound(Sound("acf_extra/tankfx/guns/20mm_0"..math.random(1,5)..".wav"),100, 70+math.random(-10,10))	
+			end
+			]]
+			HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
+		else
+
+			--Turns Off due to massive damage
+			self:TriggerInput( "Active", 0 )
+		end
+
 	end
-
-	HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
-
-			--if HitRes.Kill then
-			--ACF_HEKill( self, VectorRand() , 0)
-			--end
-
-end
 
 
 --	self.Heat = self.FuelUse 
@@ -776,7 +785,9 @@ function ENT:Link( Target )
 	table.insert( Target.Master, self )
 	
 	self.HasDriver = 1
-	
+	self:UpdateOverlayText()
+
+
 	return true, "Link successful!"
 	
 	end
@@ -825,9 +836,11 @@ function ENT:Unlink( Target )
 	end
 	
 	
-		if Target:GetClass() == "ace_crewseat_driver" then 
+	if Target:GetClass() == "ace_crewseat_driver" then 
 
-	self.HasDriver = 0
+		self.HasDriver = 0
+		self:UpdateOverlayText()
+
 
 		for Key,Value in pairs(self.CrewLink) do
 		if Value == Target then
