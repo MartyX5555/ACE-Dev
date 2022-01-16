@@ -37,10 +37,20 @@ ACE.TinnitusZoneMultipler = 1
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
 	if not IsValid(ply) then return false, ply end
-	local ent
+	local ent = ply
 
 	if ply:GetViewEntity() ~= ply then --print('player using another POV (Gmod based Camera)')
 		ent = ply:GetViewEntity()	
+	end
+
+	--3rd person and cam controller support
+	local ThirdPersonPos = hook.Call( "CalcView" ) or {}
+	--print(ThirdPersonPos and ThirdPersonPos.origin or "Nothing")
+
+	ent.aceposoverride = nil
+
+	if ThirdPersonPos and ThirdPersonPos.origin then
+		ent.aceposoverride = ThirdPersonPos.origin
 	end
 
 	return ent
@@ -72,7 +82,7 @@ function ACE_SHasLOS( EventPos )
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
-	local plyPos = ply:GetPos()
+	local plyPos = ply.aceposoverride or ply:GetPos()
 	local headPos = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
 
 	local LOSTr = {}
@@ -94,7 +104,7 @@ function ACE_SIsInDoor()
 	local entply = ply
 	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-	local plyPos = entply:GetPos()
+	local plyPos = entply.aceposoverride or entply:GetPos()
 
 	local CeilTr = {}
 	CeilTr.start = plyPos
@@ -115,7 +125,6 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local countToFinish = nil
@@ -128,7 +137,9 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() --print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Radius*0.2 ) 			--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(1000/Radius,25,130) 		--print('pitch: '..Pitch)
@@ -261,7 +272,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					--Tinnitus function
 					if ACE.EnableTinnitus then
 						local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
-						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
+						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
 							timer.Simple(0.01, function()
 								entply:SetDSP( 32, true )
 								entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
@@ -312,7 +323,6 @@ function ACE_SPen( HitPos, Velocity, Mass )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -324,7 +334,9 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() 						--print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() 						--print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Mass/17.5 ) 			--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*1,90,150)
@@ -363,7 +375,6 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -377,7 +388,9 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() --print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Velocity/130000 ) 	--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*0.001,90,150) 	--print('pitch: '..Pitch)
@@ -447,7 +460,6 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -459,7 +471,9 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() 						--print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() 						--print(plyPos)
 		local Dist = math.abs((plyPos - Pos):Length()) 		--print('distance from gun: '..Dist)
 		local Volume = ( 1/(Dist/500)*Propellant/18 ) 		--print('Vol: '..Volume)
 		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
@@ -585,7 +599,6 @@ function ACE_SBulletCrack( BulletData, Caliber )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	--flag this, so we are not playing this sound for this bullet next time
 	BulletData.CrackCreated = true
@@ -603,7 +616,9 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
 
 		--Delayed event report.
 		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000

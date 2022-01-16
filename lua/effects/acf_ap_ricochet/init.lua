@@ -103,7 +103,7 @@ function EFFECT:Dust( SmokeColor )
 	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
 
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.0075 * Boost ,2)/2.5
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.0075 * Boost ,5)/2.5
 
 	for i=0, math.max(self.Cal/3,1) do
 
