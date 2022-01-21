@@ -20,7 +20,7 @@ function PANEL:Init( )
 	self.WeaponData = ACF.Weapons
 	radarClasses = list.Get("ACFClasses").Radar
 	radars = list.Get( "ACFEnts").Radar
-	
+
 --[[=========================
    Table distribution
 ]]--=========================
@@ -348,20 +348,28 @@ function PANEL:Init( )
 --[[=========================
    Sensor folder
 ]]--=========================
-	local sensors = HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
-	local radar = sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
+	local sensors 		= HomeNode:AddNode("Sensors" , "icon16/transmit.png") --Sensor folder name
+	local radar 		= sensors:AddNode("Radar" , "icon16/brick.png"  ) --Radar subfolder
 	local antimissile = radar:AddNode("Anti-Missile Radar" , "icon16/brick.png"  )
+	local tracking 	= radar:AddNode("Tracking Radar", "icon16/brick.png")
 	
 	local nods = {}
 	
 	if radarClasses then
-		for k, v in pairs(radarClasses) do  --calls subfolders		
-			nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )	
+		for k, v in pairs(radarClasses) do  --calls subfolders
+			if v.type == "Tracking-Radar" then
+				nods[k] = tracking:AddNode( v.name or "No Name" , "icon16/brick.png"   )
+			elseif v.type == "Anti-missile" then
+				nods[k] = antimissile:AddNode( v.name or "No Name" , "icon16/brick.png"   )
+			end
 		end
-    
-		for Type, Ent in pairs(radars) do --calls subfolders content	
-			local curNode = nods[Ent.class]		
+
+		for _, Ent in pairs(radars) do --calls subfolders content	
+
+			local curNode = nods[Ent.class]		print(Ent.class)
+
 			if curNode then
+
 				local EndNode = curNode:AddNode( Ent.name or "No Name" )
 				EndNode.mytable = Ent
 				
@@ -372,6 +380,7 @@ function PANEL:Init( )
 					EndNode.Icon:SetImage( "icon16/newspaper.png" )
 			end
 		end --end radar folder
+  
 	end
 
 --[[=========================

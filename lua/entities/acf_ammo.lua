@@ -128,56 +128,54 @@ end
 
 function ENT:Initialize()
 	
-	self.SpecialHealth = true	--If true needs a special ACF_Activate function
-	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
-	self.IsExplosive = true
-	self.Exploding = false
-	self.Damaged = false
-	self.CanUpdate = true
-	self.Load = false
-	self.EmptyMass = 1
-	self.AmmoMassMax = 0
+	self.SpecialHealth 	= true	--If true needs a special ACF_Activate function
+	self.SpecialDamage 	= true	--If true needs a special ACF_OnDamage function
+	self.IsExplosive 	= true
+	self.Exploding 		= false
+	self.Damaged 		= false
+	self.CanUpdate 		= true
+	self.Load 			= false
+	self.EmptyMass 		= 1
+	self.AmmoMassMax 	= 0
 	self.NextMassUpdate = 0
-	self.Ammo = 0
-	self.IsTwoPiece = false
+	self.Ammo 			= 0
+	self.IsTwoPiece 	= false
 	self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal = true
-	self.LegalIssues = ""
-	self.Active = false
-	
-	--print(self.NextLegalCheck)
+	self.Legal 			= true
+	self.LegalIssues 	= ""
+	self.Active 		= false
 
-	self.Master = {}
-	self.Sequence = 0
+	self.Master 		= {}
+	self.Sequence 		= 0
 	
-	self.Inputs = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
-	self.Outputs = Wire_CreateOutputs( self, { "Munitions" } )
+	self.Inputs 		= Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
+	self.Outputs 		= Wire_CreateOutputs( self, { "Munitions" } )
 		
-	self.NextThink = CurTime() +  1
+	self.NextThink 		= CurTime() +  1
 	
-	ACF.AmmoCrates = ACF.AmmoCrates or {}
+	ACF.AmmoCrates 		= ACF.AmmoCrates or {}
 
-	self.Capacity = 1
-	self.AmmoMassMax =  1
-	self.Caliber = 1
-	self.RoFMul = 1
-	self.LastMass = 1
+	self.Capacity 		= 1
+	self.AmmoMassMax 	= 1
+	self.Caliber 		= 1
+	self.RoFMul 		= 1
+	self.LastMass 		= 1
 
-	self.RoundId = ( self.RoundId or "100mmC"	)	--Weapon this round loads into, ie 140mmC, 105mmH ...
-	self.RoundType = ( self.RoundType or "AP"	) --Type of round, IE AP, HE, HEAT ...
-	self.RoundPropellant = ( self.RoundPropellant or 0 )--Lenght of propellant
-	self.RoundProjectile = ( self.RoundProjectile or 0 )--Lenght of the projectile
-	self.RoundData5 = ( self.RoundData5 or 0 )
-	self.RoundData6 = ( self.RoundData6 or 0 )
-	self.RoundData7 = ( self.RoundData7 or 0 )
-	self.RoundData8 = ( self.RoundData8 or 0 )
-	self.RoundData9 = ( self.RoundData9 or 0 )
-	self.RoundData10 = ( self.RoundData10 or 0 )
-	self.RoundData11 = ( self.RoundData11 or 0 )	
-	self.RoundData12 = ( self.RoundData12 or 0 )	
-	self.RoundData13 = ( self.RoundData13 or 0 )	
-	self.RoundData14 = ( self.RoundData14 or 0 )	
-	self.RoundData15 = ( self.RoundData15 or 0 )
+	self.RoundId 			= ( self.RoundId or "100mmC"	)	-- Weapon this round loads into, ie 140mmC, 105mmH ...
+	self.RoundType 			= ( self.RoundType or "AP"	) 		-- Type of round, IE AP, HE, HEAT ...
+	self.RoundPropellant 	= ( self.RoundPropellant or 0 )		-- Lenght of propellant
+	self.RoundProjectile 	= ( self.RoundProjectile or 0 )		-- Lenght of the projectile
+	self.RoundData5 		= ( self.RoundData5 or 0 )
+	self.RoundData6 		= ( self.RoundData6 or 0 )
+	self.RoundData7 		= ( self.RoundData7 or 0 )
+	self.RoundData8 		= ( self.RoundData8 or 0 )
+	self.RoundData9 		= ( self.RoundData9 or 0 )
+	self.RoundData10 		= ( self.RoundData10 or 0 )
+	self.RoundData11 		= ( self.RoundData11 or 0 )	
+	self.RoundData12 		= ( self.RoundData12 or 0 )	
+	self.RoundData13 		= ( self.RoundData13 or 0 )	
+	self.RoundData14 		= ( self.RoundData14 or 0 )	
+	self.RoundData15 		= ( self.RoundData15 or 0 )
 end
 
 function ENT:ACF_Activate( Recalc )
@@ -194,22 +192,22 @@ function ENT:ACF_Activate( Recalc )
 		self.ACF.Volume = PhysObj:GetVolume() * 16.38
 	end
 	
-	local Armour = EmptyMass*1000 / self.ACF.Aera / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone 
-	local Percent = 1 
+	local Armour 	= EmptyMass*1000 / self.ACF.Aera / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Health 	= self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone 
+	local Percent 	= 1 
 	
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
 		Percent = self.ACF.Health/self.ACF.MaxHealth
 	end
 	
-	self.ACF.Health = Health * Percent
-	self.ACF.MaxHealth = Health
-	self.ACF.Armour = Armour * (0.5 + Percent/2)
-	self.ACF.MaxArmour = Armour
-	self.ACF.Type = nil
-	self.ACF.Mass = self.Mass
-	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
-	self.ACF.Type = "Prop"
+	self.ACF.Health 	= Health * Percent
+	self.ACF.MaxHealth 	= Health
+	self.ACF.Armour 	= Armour * (0.5 + Percent/2)
+	self.ACF.MaxArmour 	= Armour
+	self.ACF.Type 		= nil
+	self.ACF.Mass 		= self.Mass
+	self.ACF.Density 	= (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
+	self.ACF.Type 		= "Prop"
 	
 end
 
@@ -281,6 +279,7 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 	
 	local Ammo = ents.Create("acf_ammo")
 	if not Ammo:IsValid() then return false end
+
 	Ammo:SetAngles(Angle)
 	Ammo:SetPos(Pos)
 	Ammo:Spawn()
@@ -463,21 +462,19 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 	self.ConvertData = ACF.RoundTypes[self.RoundType].convert
 	self.BulletData = self:ConvertData( PlayerData )
 	
-	local Min,Max = self:GetCollisionBounds()  --Getting entity´s dimensions
-	local Size = (Max - Min)
-    --print(Size)
 	local Efficiency = 0.1576 * ACF.AmmoMod
 	local vol = math.floor(self:GetPhysicsObject():GetVolume())
+	self.Volume = vol*Efficiency
 
-	if not (self.BulletData.Type == "Refill") then   --ammo capacity start code
+	--ammo capacity start code
+	if self.BulletData.Type ~= "Refill" then   
+
+		--Getting entity´s dimensions
+		local Min,Max = self:GetCollisionBounds()  
+		local Size = (Max - Min)
 
 		local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
 		local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
-	
-		debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
-		debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
-
-		self.Volume = vol*Efficiency
 
 		--Vertical placement
 		local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
@@ -492,30 +489,30 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
 		--Horizontal 2 piece  placement 2
 		local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
 
+		local tval1 = math.max(cap1,cap2,cap3)
+		local tval2 = math.max(cap4,cap5,cap6)
 
-	local tval1 = math.max(cap1,cap2,cap3)
-	local tval2 = math.max(cap4,cap5,cap6)
+		if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
+			self.Capacity = tval2
+			self.IsTwoPiece = true
+		else
+			self.Capacity = tval1
+			self.IsTwoPiece = false
+		end
 
-	if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
-		self.Capacity = tval2
-		self.IsTwoPiece = true
-	else
-		self.Capacity = tval1
-		self.IsTwoPiece = false
-	end
+		self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
 
+		debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
+		debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
 
-	self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
-	
-	else -- for refill ammocrates Calculations 
+	-- for refill ammocrates Calculations 
+	else 
+		
+		self.Capacity = 99999999
+		self.AmmoMassMax = vol*1	
 
-	local vol = math.floor(self:GetPhysicsObject():GetVolume())
-	self.Volume = vol*Efficiency
-	
-	self.Capacity = 99999999
-	self.AmmoMassMax = vol*1	
-	
-	end -- end capacity calculations
+	-- end capacity calculations
+	end 
 	
 	self.Caliber = GunData.caliber or 1
 	self.RoFMul = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
@@ -574,7 +571,6 @@ function ENT:TriggerInput( iname, value )
 			self.Active = false
 			self.Load = false
 		end
-	elseif (iname == "Fuse Length" and value > 0 and (self.BulletData.RoundType == "HE" or self.BulletData.RoundType == "APHE")) then
 	end
 
 end

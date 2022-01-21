@@ -1,4 +1,4 @@
-AddCSLuaFile( "acf/shared/rounds/roundfunctions.lua" )
+AddCSLuaFile( "acf/shared/rounds/ace_roundfunctions.lua" )
 
 
 function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
@@ -116,7 +116,7 @@ function ACF_CalcCrateStats( CrateVol, RoundVol )
 end
 
 --This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
-function AmmoCapacity( ProjLenght, PropLenght, Caliber )
+function ACE_AmmoCapacity( ProjLenght, PropLenght, Caliber )
 
     local Cal = (Caliber)/ACF.AmmoWidthMul/1.6
 	local shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
@@ -156,4 +156,25 @@ function AmmoCapacity( ProjLenght, PropLenght, Caliber )
 	end
     
     return Cap, CapMul, RoFMul, TwoPiece
+end
+
+--General Ammo Capacity diplay shown on ammo config
+function ACE_AmmoCapacityDisplay( Data )
+
+	local Cap, CapMul, RoFMul, TwoPiece = ACE_AmmoCapacity( Data.ProjLength, Data.PropLength, Data.Caliber )
+	
+	local plur = 'Contains '..Cap..' round'
+	
+	if Cap > 1 then
+	    plur = 'Contains '..Cap..' rounds'
+	end
+	
+	local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, +"..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
+	
+	if TwoPiece then	
+		bonustxt = bonustxt..'. Uses 2 piece ammo.'	
+	end
+	
+	acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+
 end

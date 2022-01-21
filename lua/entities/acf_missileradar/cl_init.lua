@@ -27,7 +27,7 @@ function ENT:Draw()
 end
 
 function ACFRadarGUICreate( Table )
-		
+	
 	acfmenupanel:CPanelText("Name", Table.name)
 	
 	local RadarMenu = acfmenupanel.CData.DisplayModel

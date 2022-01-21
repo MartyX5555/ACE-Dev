@@ -40,6 +40,10 @@ local radar_base = {
 	ent =   "acf_missileradar",
 	type =  "Radar"
 }
+local trackradar_base = {
+	ent =   "ace_trackingradar",
+	type =  "Radar"
+}
 
 -- add gui stuff to base classes if this is client
 if CLIENT then
@@ -57,6 +61,10 @@ if CLIENT then
 
 	radar_base.guicreate = function( Panel, Table ) ACFRadarGUICreate( Table ) end
 	radar_base.guiupdate = function() return end
+
+	trackradar_base.guicreate = function( Panel, Table ) ACFTrackRadarGUICreate( Table ) end or nil
+	trackradar_base.guiupdate = function() return end
+
 end
 
 if game.IsDedicated() then
@@ -149,6 +157,19 @@ end
 
 -- Radar Class definition
 function ACF_DefineRadarClass( id, data )
+	data.id = id
+	RadarClasses[ id ] = data
+end
+
+-- Tracking Radar definition
+function ACF_DefineTrackRadar( id, data )
+	data.id = id
+	table.Inherit( data, trackradar_base )
+	Radars[ id ] = data
+end
+
+-- Tracking Radar Class definition
+function ACF_DefineTrackRadarClass( id, data )
 	data.id = id
 	RadarClasses[ id ] = data
 end

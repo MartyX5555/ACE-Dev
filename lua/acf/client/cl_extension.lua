@@ -10,7 +10,7 @@
 
 ACE = ACE or {}
 
-ACE.Sounds = {}
+ACE.Sounds = ACE.Sounds or {}
 
 --Entities which should be the only thing to block the sight
 ACE.Sounds.LOSWhitelist = {
@@ -33,13 +33,24 @@ ACE.EnableTinnitus = 1
 --Defines the distance where ring ears start to affect to player
 ACE.TinnitusZoneMultipler = 1
 
+
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
 	if not IsValid(ply) then return false, ply end
-	local ent
+	local ent = ply
 
 	if ply:GetViewEntity() ~= ply then --print('player using another POV (Gmod based Camera)')
 		ent = ply:GetViewEntity()	
+	end
+
+	--3rd person and cam controller support
+	local ThirdPersonPos = hook.Call( "CalcView" ) or {}
+	--print(ThirdPersonPos and ThirdPersonPos.origin or "Nothing")
+
+	ent.aceposoverride = nil
+
+	if ThirdPersonPos and ThirdPersonPos.origin then
+		ent.aceposoverride = ThirdPersonPos.origin
 	end
 
 	return ent
@@ -71,7 +82,7 @@ function ACE_SHasLOS( EventPos )
 	local ply = LocalPlayer()
 	if not IsValid( ply ) then return end
 
-	local plyPos = ply:GetPos()
+	local plyPos = ply.aceposoverride or ply:GetPos()
 	local headPos = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
 
 	local LOSTr = {}
@@ -93,7 +104,7 @@ function ACE_SIsInDoor()
 	local entply = ply
 	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-	local plyPos = entply:GetPos()
+	local plyPos = entply.aceposoverride or entply:GetPos()
 
 	local CeilTr = {}
 	CeilTr.start = plyPos
@@ -114,7 +125,6 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local countToFinish = nil
@@ -127,7 +137,9 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() --print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Radius*0.2 ) 			--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(1000/Radius,25,130) 		--print('pitch: '..Pitch)
@@ -173,57 +185,57 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--TODO: Make a way to use tables instead
 					--Close distance
-					if Dist < CloseDist then --print('you are close')
+					if Dist < CloseDist then --print('you are close') --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
 
 						VolFix = 8
 						PitchFix = 1
-						Sound = "acf_other/explosions/ambient/tiny/close/close"..math.random(1,4)..".wav"
+						Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
 
 						if Radius >= SmallEx then
 							VolFix = 8
 							PitchFix = 1
-							Sound = "acf_other/explosions/ambient/small/close/close"..math.random(1,4)..".wav"
+							Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
 
 							if Radius >= MediumEx then
 								VolFix = 8
 								PitchFix = 1
-								Sound = "acf_other/explosions/ambient/medium/close/close"..math.random(1,4)..".wav"
+								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
 
 								if Radius >= LargeEx then
 									VolFix = 8
 									PitchFix = 1
-									Sound = "acf_other/explosions/ambient/large/close/close"..math.random(1,4)..".wav"
+									Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
 
 									if Radius >= HugeEx then
 										VolFix = 2000000  -- rip your ears
 										PitchFix = 3
-										Sound = "acf_other/explosions/ambient/huge/bigboom.wav"
+										Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
 									end
 								end
 							end
 						end
 
 					--Medium distance
-					elseif Dist >= CloseDist and Dist < MediumDist then --print('you are mid')
+					elseif Dist >= CloseDist and Dist < MediumDist then --print('you are mid') 
 
 						VolFix = 8
 						PitchFix = 1
-						Sound = "acf_other/explosions/ambient/tiny/mid/mid"..math.random(1,4)..".wav"
+						Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
 
 						if Radius >= SmallEx then
 							VolFix = 8
 							PitchFix = 1
-							Sound = "acf_other/explosions/ambient/small/mid/mid"..math.random(1,4)..".wav"
+							Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
 
 							if Radius >= MediumEx then
 								VolFix = 8
 								PitchFix = 1
-								Sound = "acf_other/explosions/ambient/medium/mid/mid"..math.random(1,3)..".wav"
+								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
 
 								if Radius >= LargeEx then
 									VolFix = 8
 									PitchFix = 1
-									Sound = "acf_other/explosions/ambient/large/mid/mid"..math.random(1,4)..".wav"
+									Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
 
 								end
 							end
@@ -234,22 +246,22 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 						VolFix = 17
 						PitchFix = 1
-						Sound = "acf_other/explosions/ambient/tiny/far/far"..math.random(1,4)..".wav"
+						Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
 
 						if Radius >= SmallEx then
 							VolFix = 17
 							PitchFix = 1
-							Sound = "acf_other/explosions/ambient/small/far/far"..math.random(1,4)..".wav"
+							Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
 
 							if Radius >= MediumEx then
 								VolFix = 17
 								PitchFix = 1
-								Sound = "acf_other/explosions/ambient/medium/far/far"..math.random(1,3)..".wav"
+								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
 
 								if Radius >= LargeEx then
 									VolFix = 17
 									PitchFix = 1
-									Sound = "acf_other/explosions/ambient/large/far/far"..math.random(1,3)..".wav"
+									Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
 
 								end
 							end
@@ -260,7 +272,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					--Tinnitus function
 					if ACE.EnableTinnitus then
 						local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
-						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply then
+						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
 							timer.Simple(0.01, function()
 								entply:SetDSP( 32, true )
 								entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )		
@@ -311,7 +323,6 @@ function ACE_SPen( HitPos, Velocity, Mass )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -323,7 +334,9 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() 						--print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() 						--print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Mass/17.5 ) 			--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*1,90,150)
@@ -335,7 +348,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 				Emitted = true
 
-				local Sound = "acf_other/penetratingshots/pen"..math.random(1,6)..".wav"
+				local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])]
 				local VolFix = 0.5
 
 				--If a wall is in front of the player and is indoor, reduces its vol at 50%
@@ -362,7 +375,6 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -376,7 +388,9 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() --print(plyPos)
 		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
 		local Volume = ( 1/(Dist/500)*Velocity/130000 ) 	--print('Vol: '..Volume)
 		local Pitch =  math.Clamp(Velocity*0.001,90,150) 	--print('pitch: '..Pitch)
@@ -394,17 +408,17 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 				if not HitWorld then
 
 					--any big gun above 50mm
-					Sound =  "acf_other/ricochets/props/large/close/richo"..math.random(1,7)..".wav"
+					Sound =  ACE.Sounds["Ricochets"]["large"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["large"]["close"])]
 					VolFix = 4
 
 					--50mm guns and below
 					if Caliber <= 5 then
-						Sound = "acf_other/ricochets/props/medium/richo"..math.random(1,6)..".wav"
+						Sound = ACE.Sounds["Ricochets"]["medium"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["medium"]["close"])]
 						VolFix = 1
 
 						--lower than 20mm
 						if Caliber <= 2 then
-							Sound = "acf_other/ricochets/props/small/richo"..math.random(1,2)..".wav"
+							Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
 							VolFix = 1.25
 						end
 					end
@@ -412,7 +426,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 				else
 					--Small weapons sound
 					if Caliber <=2 then
-						Sound = "acf_other/ricochets/props/small/richo"..math.random(1,2)..".wav"
+						Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
 						VolFix = 1.25
 	
 					end
@@ -446,7 +460,6 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	local count = 1
 	local Emitted = false --Was the sound played?
@@ -458,7 +471,9 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() 						--print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or  entply:GetPos() 						--print(plyPos)
 		local Dist = math.abs((plyPos - Pos):Length()) 		--print('distance from gun: '..Dist)
 		local Volume = ( 1/(Dist/500)*Propellant/18 ) 		--print('Vol: '..Volume)
 		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
@@ -584,7 +599,6 @@ function ACE_SBulletCrack( BulletData, Caliber )
 	if not IsValid( ply ) then return end
 
 	local entply = ply
-	if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
 	--flag this, so we are not playing this sound for this bullet next time
 	BulletData.CrackCreated = true
@@ -602,7 +616,9 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
 		count = count + 1
 
-		local plyPos = entply:GetPos() --print(plyPos)
+		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
+
+		local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
 
 		--Delayed event report.
 		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
@@ -617,20 +633,20 @@ function ACE_SBulletCrack( BulletData, Caliber )
 				local VolFix = 1
 
 				--Small arm guns
-				local Sound = "acf_other/fly/small/fly"..math.random(1,22)..".wav"
+				local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
 
 				--30mm gun and above
 				if Caliber >= 3 then
-					Sound = "acf_other/fly/medium/fly"..math.random(1,10)..".wav"
+					Sound = ACE.Sounds["Cracks"]["medium"]["close"][math.random(1,#ACE.Sounds["Cracks"]["medium"]["close"])]
 
 					--above 100mm cannons
 					if Caliber >= 10 then
-						Sound = "acf_other/fly/large/fly"..math.random(1,5)..".wav"
+						Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
 
 						--Some fly sounds don´t fit really well. Special case here.
 						if Caliber >= 20 then
-							Sound = "acf_other/fly/large/fly"..math.random(1,3)..".wav"
-							VolFix = 0.75
+							Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+							VolFix = 0.5
 						end
 					end
 				end

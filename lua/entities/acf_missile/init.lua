@@ -11,8 +11,6 @@ DEFINE_BASECLASS("acf_explosive")
 
 function ENT:Initialize()
 
-
-
 	self.BaseClass.Initialize(self)
 
 	if !IsValid(self.Entity.Owner) then
@@ -571,7 +569,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Aera / 0.78) 	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop aera gone
 	local Percent = 1
 
@@ -579,14 +577,14 @@ function ENT:ACF_Activate( Recalc )
 		Percent = self.ACF.Health/self.ACF.MaxHealth
 	end
 
-	self.ACF.Health = Health * Percent
-	self.ACF.MaxHealth = Health
-	self.ACF.Armour = Armour * (0.5 + Percent/2)
-	self.ACF.MaxArmour = Armour
-	self.ACF.Type = nil
-	self.ACF.Mass = self.Mass
-	self.ACF.Density = (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
-	self.ACF.Type = "Prop"
+	self.ACF.Health 	= Health * Percent
+	self.ACF.MaxHealth 	= Health
+	self.ACF.Armour 	= Armour * (0.5 + Percent/2)
+	self.ACF.MaxArmour 	= Armour
+	self.ACF.Type 		= nil
+	self.ACF.Mass 		= self.Mass
+	self.ACF.Density 	= (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
+	self.ACF.Type 		= "Prop"
    
 end
 
