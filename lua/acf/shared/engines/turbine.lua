@@ -265,11 +265,12 @@ ACF_DefineEngine( "AGT 1500 Large Turbine", {
 	enginetype = "Turbine",
 	requiresfuel = true,
 	weight = 2500,
-	torque = 2203,
+	torque = 5355 / 1.25, --Engines with fuel required get a 25% torque boost, divide by 1.25 to use proper torque value
+	torquecurve = {0.9, 1, 0.99, 0.98, 0.95, 0.9, 0.83, 0.77, 0.72, 0.67},
 	flywheelmass = 10.5,
-	idlerpm = 2000,
-	limitrpm = 13500,
+	idlerpm = 750,
+	limitrpm = 3000,
 	iselec = true,
-        pitch = 1.3,
+	pitch = 1.3,
 	flywheeloverride = 5300
 } )
