@@ -80,7 +80,7 @@ if CLIENT then
 
 	function ACFGunGUICreate( Table )
 			
-		acfmenupanel:CPanelText("Name", Table.name)
+		acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 		
 		local GunDisplay = acfmenupanel.CData.DisplayModel
 
@@ -100,14 +100,17 @@ if CLIENT then
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 		acfmenupanel:CPanelText("Year", "Year : "..Table.year)
 		
-		if not Table.rack then
+		if Table.rack then
+			if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
+			if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
+		else
 			local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 			local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 			acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
 			if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
 			acfmenupanel:CPanelText("Spread", "Spread : "..GunClass.spread.." degrees")
 
-			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.")
+			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
 		end
 		
 		acfmenupanel.CustomDisplay:PerformLayout()
@@ -514,12 +517,11 @@ function ENT:Unlink( Target )
 	for Key,Value in pairs(self.CrewLink) do
 		if Value == Target then
 			if Target:GetClass() == "ace_crewseat_gunner" then
-			self.HasGunner = 0			
+				self.HasGunner = 0			
 			elseif Target:GetClass() == "ace_crewseat_loader" then
-			self.LoaderCount = self.LoaderCount - 1			
-
-			
+				self.LoaderCount = self.LoaderCount - 1			
 			end
+
 			table.remove(self.CrewLink,Key)
 			Success = true
 		end
@@ -638,6 +640,30 @@ local function RetDist( enta, entb )
 	return dist
 end
 
+function ENT:Heat_Function()
+	
+	--print(DeltaTime)
+	
+	self.Heat = ACE_HeatFromGun( self , self.Heat, self.DeltaTime )
+	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
+
+	-- TODO: instead of breaking the gun by heat, decrease accurancy and jam it
+	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
+	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
+
+        local phys = self:GetPhysicsObject()
+	    local Mass = phys:GetMass()
+	
+	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
+
+		if HitRes.Kill then
+			ACF_HEKill( self, VectorRand() , 0)
+		end
+			
+	end
+
+end
+
 function ENT:Think()
 	
 	--Legality check part
@@ -666,44 +692,21 @@ function ENT:Think()
 
 	end
 
-
-
+	-- IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
 	local PhysObj = self:GetPhysicsObject()
-	if not IsValid(PhysObj) then return	end --IDK how an object can break this bad but it did. Hopefully this fixes the 1 in a million bug
+	if not IsValid(PhysObj) then return	end 
 
+	self.DeltaTime = CurTime() - self.LastThink	
 
-----Heat function
-	DeltaTime = CurTime() - self.LastThink	
-	
-	--print(DeltaTime)
-	
-	self.Heat = ACE_HeatFromGun( self , self.Heat, DeltaTime )
-	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
-
- 
-
-----TODO: instead of breaking the gun by heat, decrease accurancy and jam it
-	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
-	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
-
-        local phys = self:GetPhysicsObject()
-	    local Mass = phys:GetMass()
-	
-	    HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
-
-		if HitRes.Kill then
-			ACF_HEKill( self, VectorRand() , 0)
-		end
-			
-	end
-
+	self:Heat_Function()
 	
 	local Time = CurTime()
 	if self.LastSend+1 <= Time then
-		local Ammo = 0
-		local CrateBonus = {}
-		local rofbonus = 0
-		local totalcap = 0
+
+		local Ammo 			= 0
+		local CrateBonus 	= {}
+		local rofbonus 		= 0
+		local totalcap 		= 0
 		
 		for Key, Crate in pairs(self.AmmoLink) do --UnlinkDistance
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
@@ -776,8 +779,10 @@ function ENT:Think()
 			self.Reloading = false
 		end
 	end
-		self.LastThink = ACF.CurTime
+
+	self.LastThink = ACF.CurTime
 	self:NextThink(Time)
+
 	return true
 end
 
@@ -838,7 +843,7 @@ function ENT:FireShell()
 
 	--print('FireShell2')	
 		
-		Blacklist = {}
+		local Blacklist = {}
 		if not ACF.AmmoBlacklist[self.BulletData.Type] then
 			Blacklist = {}
 		else
@@ -864,7 +869,7 @@ function ENT:FireShell()
 			--Traceback component
 			TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
 
-			self.BulletData.Pos = MuzzlePos + TestVel * DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
+			self.BulletData.Pos = MuzzlePos + TestVel * self.DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
 			self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
 			self.BulletData.Owner = self.User
 			self.BulletData.Gun = self

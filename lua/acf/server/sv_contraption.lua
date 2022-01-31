@@ -100,6 +100,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 			--print('[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!')
 			--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
 		end
+
 	elseif Ent:GetClass() == 'ace_debris' then 
 		table.insert( ACE.Debris , Ent ) --print('Adding - Count: '..#ACE.Debris)
 	end

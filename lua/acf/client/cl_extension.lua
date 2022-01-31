@@ -33,27 +33,35 @@ ACE.EnableTinnitus = 1
 --Defines the distance where ring ears start to affect to player
 ACE.TinnitusZoneMultipler = 1
 
-
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
 	if not IsValid(ply) then return false, ply end
 	local ent = ply
 
-	if ply:GetViewEntity() ~= ply then --print('player using another POV (Gmod based Camera)')
-		ent = ply:GetViewEntity()	
+	--Gmod camera POV
+	if ply:GetViewEntity() ~= ply then
+		print("Gmod camera POV")
+		ent = ply:GetViewEntity()
+		return ent
 	end
 
-	--3rd person and cam controller support
-	local ThirdPersonPos = hook.Call( "CalcView" ) or {}
-	--print(ThirdPersonPos and ThirdPersonPos.origin or "Nothing")
+	ACE.Sounds.HookTable = ACE.Sounds.HookTable or hook.GetTable()
+
+	--print("\n\nINICIO TABLE =======================================\n\n")
+	--PrintTable(hook.GetTable())
+
+	-- wire cam controller support. I would wish not to have a really hardcoded way to make everything consistent but well...
+	local CameraPos =  ACE.Sounds.HookTable["CalcView"]["wire_camera_controller_calcview"]
+	local ThirdPersonPos = CameraPos()
 
 	ent.aceposoverride = nil
 
 	if ThirdPersonPos and ThirdPersonPos.origin then
-		ent.aceposoverride = ThirdPersonPos.origin
+		ent.aceposoverride = ThirdPersonPos.origin --print(ThirdPersonPos.origin)
+		return ent
 	end
 
-	return ent
+	return NULL
 end
 
 --Used for those extremely quiet sounds, which should be heard close to the player
@@ -126,10 +134,10 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 	local entply = ply
 
-	local count = 1
+	local count 		= 1
 	local countToFinish = nil
-	local Emitted = false --Was the sound played?
-	local ide = 'ACEBoom#'..math.random(1,100000)
+	local Emitted 		= false --Was the sound played?
+	local ide 			= 'ACE_Explosion#'..math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
 	if timer.Exists( ide ) then return end
@@ -139,11 +147,11 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos = entply.aceposoverride or  entply:GetPos() --print(plyPos)
-		local Dist = math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
-		local Volume = ( 1/(Dist/500)*Radius*0.2 ) 			--print('Vol: '..Volume)
-		local Pitch =  math.Clamp(1000/Radius,25,130) 		--print('pitch: '..Pitch)
-		local Delay = ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
+		local plyPos 	= entply.aceposoverride or  entply:GetPos() --print(plyPos)
+		local Dist 		= math.abs((plyPos - HitPos):Length()) 	--print('distance from explosion: '..Dist)
+		local Volume 	= ( 1/(Dist/500)*Radius*0.2 ) 			--print('Vol: '..Volume)
+		local Pitch 	=  math.Clamp(1000/Radius,25,130) 		--print('pitch: '..Pitch)
+		local Delay 	= ( Dist/1500 ) * ACE.DelayMultipler 	--print('amount to match: '..Delay)
 		
 		if count > Delay then
 
@@ -326,7 +334,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 	local count = 1
 	local Emitted = false --Was the sound played?
-	local ide = 'ACEPen#'..math.random(1,100000) 	--print('timer created! ID: '..ide)
+	local ide = 'ACE_Penetration#'..math.random(1,100000) 	--print('timer created! ID: '..ide)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
 	if timer.Exists( ide ) then return end
@@ -379,7 +387,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	local count = 1
 	local Emitted = false --Was the sound played?
 
-	local ide = 'ACERico#'..math.random(1,100000)
+	local ide = 'ACE_Ricochet#'..math.random(1,100000)
 	--print('timer created! ID: '..ide)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.

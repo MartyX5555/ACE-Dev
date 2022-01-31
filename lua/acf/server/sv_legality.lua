@@ -63,6 +63,12 @@ ACF.Legal.NextCheck = function(self, Legal) return ACF.CurTime + (Legal and math
    ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
+local AllowedMaterials = {
+	RHA = true,
+	CHA = true,
+	Alum = true
+}
+
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
 
 	local problems = {} --problems table definition
@@ -97,9 +103,10 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
 	-- check material
 	-- Allowed materials: rha, cast and aluminum
 	if ACF.Legal.Ignore.Material <= 0 then
-		local material = Ent.ACF and Ent.ACF.Material or 0
-		if material > 1 then
-			if material ~= 5 then table.insert(problems,"Material not legal") end
+		local material = Ent.ACF and Ent.ACF.Material or "RHA"
+
+		if not AllowedMaterials[material] then
+			table.insert(problems,"Material not legal")
 		end
 	end
 

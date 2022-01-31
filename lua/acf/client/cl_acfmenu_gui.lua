@@ -1080,3 +1080,4 @@ function PANEL:CPanelText(Name, Desc, Font)
 	acfmenupanel["CData"][Name.."_text"]:SizeToContentsY()
 
 end
+

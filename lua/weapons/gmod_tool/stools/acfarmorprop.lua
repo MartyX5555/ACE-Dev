@@ -6,25 +6,33 @@ TOOL.Name		= "#tool.acfarmorprop.name"
 TOOL.Command	= nil
 TOOL.ConfigName	= ""
 
-TOOL.ClientConVar["thickness"] = 1
-TOOL.ClientConVar["ductility"] = 0
-if ACF.Year >= 1955 then
-	TOOL.ClientConVar["material"] = 0
-end
+TOOL.ClientConVar["thickness"] 	= 1
+TOOL.ClientConVar["ductility"] 	= 0
+TOOL.ClientConVar["material"] 	= "RHA"
+
+--Used by the panel. If i can to use the TOOL itself for this, i would be really appreciated
+local ToolPanel = ToolPanel or {}
+
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
 -- Calculates mass, armor, and health given prop area and desired ductility and thickness.
-local function CalcArmor( Area, Ductility, Thickness, MaterialID )
+local function CalcArmor( Area, Ductility, Thickness, Mat )
 
-	local MassMod = ACE.ArmorTypes[ MaterialID ].massMod
+	Mat = Mat or "RHA"
+
+	local MaterialTypes = ACE.Armors
+	local MatData 		= MaterialTypes[Mat]
+
+	local MassMod 		= MatData.massMod
 	
-	local mass =  Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
-	local armor = ACF_CalcArmor( Area, Ductility, mass / MassMod )
-	local health = ( Area + Area * Ductility ) / ACF.Threshold
+	local mass 			= Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
+	local armor 		= ACF_CalcArmor( Area, Ductility, mass / MassMod )
+	local health 		= ( Area + Area * Ductility ) / ACF.Threshold
 	
 	return mass, armor, health
 	
 end
+
 
 if CLIENT then
 
@@ -34,17 +42,78 @@ if CLIENT then
 
 	surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
 
+	--Replicated from PANEL:CPanelText(Name, Desc, Font). No idea why this doesnt work with this function out of this file
+	local function ArmorPanelText( name, panel, desc, font )
+
+		if not PanelTxt then PanelTxt = {} end
+
+		if not PanelTxt[name.."_aText"] then
+			PanelTxt[name.."_aText"] = panel:Help(desc)
+			PanelTxt[name.."_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
+			PanelTxt[name.."_aText"]:SetAutoStretchVertical(true)
+			if font then PanelTxt[name.."_aText"]:SetFont( font ) end
+			PanelTxt[name.."_aText"]:SizeToContents()
+	
+			panel:AddItem(PanelTxt[name.."_aText"])
+
+		end
+
+		PanelTxt[name.."_aText"]:SetText( desc )
+		PanelTxt[name.."_aText"]:SetSize( panel:GetWide(), 10 )
+		PanelTxt[name.."_aText"]:SizeToContentsY()
+
+	end
+
+	-- Material ComboBox creation
+	local function MaterialTable( panel, tool )
+
+		local MaterialTypes = ACE.Armors
+		if not MaterialTypes then return end
+		local MaterialData 	= MaterialTypes[GetConVarString("acfarmorprop_material")] or MaterialTypes["RHA"]
+
+		ArmorPanelText( "ComboBox", panel, "Material" )
+
+		if not ToolPanel.ComboMat then
+
+			ToolPanel.panel = panel
+
+			ToolPanel.ComboMat = vgui.Create( "DComboBox" )
+			ToolPanel.ComboMat:SetPos( 5, 30 )
+			ToolPanel.ComboMat:SetSize( 100, 20 )
+			ToolPanel.ComboMat:SetValue( MaterialData.sname )
+			ToolPanel.panel:AddItem(ToolPanel.ComboMat)
+
+			for k, Mat  in pairs(MaterialTypes) do
+				if ACF.Year >= Mat.year then
+					ToolPanel.ComboMat:AddChoice(Mat.sname, Mat.id )
+				end
+			end
+
+			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
+			ArmorPanelText( "ComboDesc"	, ToolPanel.panel, MaterialData.desc.."\n" )
+
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MaterialData.curve) )
+			ArmorPanelText( "ComboMass"	, ToolPanel.panel, "Mass : "..(MaterialData.massMod) .."x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MaterialData.effectiveness ) .."x RHA" )
+			ArmorPanelText( "ComboCHE"	, ToolPanel.panel, "CHEMICAL protection : "..(MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
+			ArmorPanelText( "ComboYear"	, ToolPanel.panel, "year : "..(MaterialData.year or "unknown") )
+
+			function ToolPanel.ComboMat:OnSelect(self, index, value )
+
+				RunConsoleCommand( "acfarmorprop_material", value )
+			end
+		end
+	end
+
+	--Main menu building
 	function TOOL.BuildCPanel( panel )
-		
+
+		local MatTitle, MatDesc
 		local Presets = vgui.Create( "ControlPresets" )
 
 		Presets:AddConVar( "acfarmorprop_thickness" )
 		Presets:AddConVar( "acfarmorprop_ductility" )
-
-		if ACF.Year >= 1955 then
-			Presets:AddConVar( "acfarmorprop_material" )
-		end
-
+		Presets:AddConVar( "acfarmorprop_material" )
 		Presets:SetPreset( "acfarmorprop" )
 
 		panel:AddItem( Presets )
@@ -54,13 +123,11 @@ if CLIENT then
 		
 		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
-		
-		if ACF.Year >= 1955 then		
-			panel:NumSlider( ACFTranslation.ArmorPropertiesText[8], "acfarmorprop_material", 0, 6, 0 )
-			panel:ControlHelp( ACFTranslation.ArmorPropertiesText[9] )
-		end
+
+		MaterialTable( panel , self )
+
 	end
-	
+
 	-- clamp thickness if the change in ductility puts mass out of range
 	cvars.AddChangeCallback( "acfarmorprop_ductility", function( cvar, oldvalue, value )
 	
@@ -71,12 +138,10 @@ if CLIENT then
 		
 		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
 		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
-		local material = 0
-		if ACF.Year >= 1955 then
-			material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )), 0, 6 )
-		end
-		local mass = CalcArmor( area, ductility, thickness , material)
-		
+		local material 	= GetConVarString( "acfarmorprop_material" ) or "RHA"
+
+		local mass 		= CalcArmor( area, ductility, thickness , material )
+
 		if mass > 50000 then
 			mass = 50000
 		elseif mass < 0.1 then
@@ -100,11 +165,9 @@ if CLIENT then
 		
 		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
 		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material = 0
-		if ACF.Year >= 1955 then
-			material = math.Clamp( math.floor(GetConVarNumber( "acfarmorprop_material" )), 0, 6 )
-		end
-		local mass = CalcArmor( area, ductility, thickness , material )
+		local material 	= GetConVarString( "acfarmorprop_material" ) or "RHA"
+
+		local mass 		= CalcArmor( area, ductility, thickness , material )
 		
 		if mass > 50000 then
 			mass = 50000
@@ -118,25 +181,36 @@ if CLIENT then
 		RunConsoleCommand( "acfarmorprop_ductility", math.Clamp( ductility * 100, -80, 80 ) )
 		
 	end )
-	
-	cvars.AddChangeCallback( "acfarmorprop_material", function( cvar, oldvalue, value )
 
-		local area = GetConVarNumber( "acfarmorprop_area" )
+	-- Refresh Armor material info on menu
+	cvars.AddChangeCallback( "acfarmorprop_material", function( cvar, oldvalue, value )
 		
-		-- don't bother recalculating if we don't have a valid ent
-		if area == 0 then return end
+		if CLIENT then
+
+			if ToolPanel.panel then
+
+				local MatData = ACE.Armors[value]
+
+				--Use RHA if the choosen material is invalid or doesnt exist
+				if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
+
+				--Too redundant, ik, but looks like the unique way to have it working even when right clicking a prop
+				ToolPanel.ComboMat:SetText(MatData.sname) 
+
+				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
+				ArmorPanelText( "ComboDesc"	, ToolPanel.panel, MatData.desc.."\n" )
+
+				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MatData.curve) )
+				ArmorPanelText( "ComboMass"	, ToolPanel.panel, "Mass scale: "..(MatData.massMod ) .."x RHA")
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MatData.effectiveness ) .."x RHA" )
+				ArmorPanelText( "ComboCHE"	, ToolPanel.panel, "CHEMICAL protection : "..(MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
+				ArmorPanelText( "ComboYear"	, ToolPanel.panel, "year : "..(MatData.year or "unknown") )
+			end
 		
-		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
-		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material = 0
-		if ACF.Year >= 1955 then
-		material = math.Clamp( math.floor(tonumber( value )+0.5 or 0), 0, 6 )
 		end
 
-		RunConsoleCommand( "acfarmorprop_material", math.floor(material+0.5))
-		
 	end )
-	
+
 end
 
 -- Apply settings to prop and store dupe info
@@ -156,15 +230,14 @@ local function ApplySettings( ply, ent, data )
 		duplicator.StoreEntityModifier( ent, "acfsettings", { Ductility = data.Ductility } )
 	end
 	
-	if ACF.Year >= 1955 then	
-		if data.Material then
-			ent.ACF = ent.ACF or {}
-			ent.ACF.Material = data.Material
-			duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
-		end
+	if data.Material then
+		ent.ACF = ent.ACF or {}
+		ent.ACF.Material = data.Material
+		duplicator.StoreEntityModifier( ent, "acfsettings", { Material = data.Material } )
 	end
 	
 end
+
 duplicator.RegisterEntityModifier( "acfsettings", ApplySettings )
 duplicator.RegisterEntityModifier( "mass", ApplySettings )
 
@@ -177,22 +250,15 @@ function TOOL:LeftClick( trace )
 	if CLIENT then return true end
 	if not ACF_Check( ent ) then return false end
 	
-	local ply = self:GetOwner()
+	local ply 		= self:GetOwner()
 
 	local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
 	local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
+	local material 	= GetConVarString( "acfarmorprop_material" ) or "RHA"
+
+	local mass 		= CalcArmor( ent.ACF.Aera, ductility / 100, thickness , material)
 	
-	local MaterialID = 0
-	
-	if ACF.Year >= 1955 then
-	    MaterialID = math.Clamp( math.floor(self:GetClientNumber( "material" )+0.5), 0, 6 )
-	end
-	
-	local massMod = ACE.ArmorTypes[ MaterialID ].massMod
-	
-	local mass = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , MaterialID)
-	
-	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = MaterialID} )
+	ApplySettings( ply, ent, { Mass = mass , Ductility = ductility, Material = material} )
 	
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil
@@ -205,7 +271,7 @@ end
 function TOOL:RightClick( trace )
 	
 	local ent = trace.Entity
-	
+
 	if not IsValid( ent ) or ent:IsPlayer() then return false end
 	if CLIENT then return true end
 	if not ACF_Check( ent ) then return false end
@@ -214,8 +280,8 @@ function TOOL:RightClick( trace )
 	
 	ply:ConCommand( "acfarmorprop_ductility " .. (ent.ACF.Ductility or 0) * 100 )
 	ply:ConCommand( "acfarmorprop_thickness " .. ent.ACF.MaxArmour )
-	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or 0) )
-	
+	ply:ConCommand( "acfarmorprop_material " .. (ent.ACF.Material or "RHA") )
+
 	-- this invalidates the entity and forces a refresh of networked armor values
 	self.AimEntity = nil
 	
@@ -230,30 +296,88 @@ function TOOL:Reload( trace )
 	
 	if not IsValid( ent ) or ent:IsPlayer() then return false end
 	if CLIENT then return true end
-	
-	local data = ACF_CalcMassRatio(ent, true)
-	
-	local total = math.Round( ent.acftotal, 1 )
-	local phystotal = math.Round( ent.acfphystotal, 1 )
-	local parenttotal = math.Round( ent.acftotal - ent.acfphystotal, 1 )
-	local physratio = math.Round(100 * ent.acfphystotal / ent.acftotal, 1)
-	
-	local pwr = "\n"
-	if data.Fuel == 2 then
-		pwr = pwr .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp"
-	else
-		pwr = pwr .. math.Round(data.Power / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power) .. " hp"
-		if data.Fuel == 1 then
-			pwr = pwr .. "\n" .. math.Round(data.Power * 1.25 / (ent.acftotal/1000), 1) .. " hp/ton @ " .. math.Round(data.Power * 1.25) .. " hp "..ACFTranslation.ArmorPropertiesText[10]
+
+	local data 			= ACF_CalcMassRatio(ent, true)
+
+	local total 		= ent.acftotal
+	local phystotal 	= ent.acfphystotal
+	local parenttotal 	= ent.acftotal - ent.acfphystotal
+	local physratio 	= 100 * ent.acfphystotal / ent.acftotal
+
+	local power 		= data.Power
+	local fuel 			= data.Fuel
+
+	local GeneralTb 	= { data.MaterialMass, data.MaterialPercent }
+	local ToJSON 		= util.TableToJSON( GeneralTb )
+	local Compressed 	= util.Compress(ToJSON)
+
+	net.Start("ACE_ArmorSummary")
+		net.WriteFloat(total)
+		net.WriteFloat(phystotal)
+		net.WriteFloat(parenttotal)
+		net.WriteFloat(physratio)
+		net.WriteFloat(power)
+		net.WriteFloat(fuel)
+
+		net.WriteData(Compressed)
+	net.Send(self:GetOwner())
+
+end
+
+if CLIENT then 
+	net.Receive("ACE_ArmorSummary", function()
+
+		local Color1 = Color(175,0,0)
+		local Color2 = Color(255,191,0)
+		local Color3 = Color(255,255,100)
+		local Color4 = Color(255,191,0)
+
+		local total 		= math.Round( net.ReadFloat(), 1 )
+		local phystotal 	= math.Round( net.ReadFloat(), 1 )
+		local parenttotal 	= math.Round( net.ReadFloat(), 1 )
+		local physratio 	= math.Round( net.ReadFloat(), 1 )
+		local power 		= net.ReadFloat() -- Note: intentional
+		local fuel 			= math.Round( net.ReadFloat(), 1 )
+		local bonus 		= (fuel > 0 and 1.25 or 1)
+
+		local hpton 		= math.Round( power * bonus / (total/1000), 1 )
+		local hasfuel 		= fuel == 1 and " with fuel (25% boost)" or fuel == 2 and "" or " (no fuel)"
+		local Compressed 	= net.ReadData(640)
+		local Decompress 	= util.Decompress(Compressed)
+		local FromJSON 		= util.JSONToTable( Decompress )
+
+		local Sep = "\n"
+
+		local Tabletxt 		= {}
+
+		local Title 		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>"..Sep }
+		local TMass 		= { Color4, "- Total Mass: ", Color3, ""..total, Color4, " kgs / @ ", Color3, ""..math.Truncate(total/1000,2), Color4, " tons"..Sep }
+		local TMass2 		= { Color4, "- Mass Ratio: ",Color3, ""..phystotal, Color4, " kgs physical, ", Color3, ""..parenttotal, Color4, " kgs parented / ", Color3, physratio.."%", Color4, " physical )"..Sep } 
+		local Engine 		= { Color4, "- Total Power: ", Color3, ""..math.Round(power * bonus, 1), Color4," hp / ",Color3, ""..hpton, Color4, " hp/ton"..hasfuel..Sep }
+		local ArmorComp1 	= { Color4, "- Composition: "..Sep }
+
+		Tabletxt = table.Add(Tabletxt, Title)
+		Tabletxt = table.Add(Tabletxt,TMass)
+		Tabletxt = table.Add(Tabletxt,TMass2)
+		Tabletxt = table.Add(Tabletxt,Engine)
+		Tabletxt = table.Add(Tabletxt,ArmorComp1)
+
+		for material, mass in pairs( FromJSON[1] ) do
+
+			local Percent 	=  math.Round( FromJSON[2][material] * 100 ,1)
+			local TbStr 	= { Color4, "> "..material.." @ ", Color3, ""..math.Round(mass,1), Color4, " kgs (", Color3, Percent.."%", Color4, ")"..Sep }
+
+			Tabletxt = table.Add(Tabletxt,TbStr)
+
 		end
-	end
-	
-	self:GetOwner():ChatPrint( ACFTranslation.ArmorPropertiesText[11] .. total .. " kg  ("..phystotal.." kg "..ACFTranslation.ArmorPropertiesText[12]..", "..parenttotal.." kg "..ACFTranslation.ArmorPropertiesText[13]..", "..physratio.."% "..ACFTranslation.ArmorPropertiesText[12]..")"..pwr )
-	
+
+		chat.AddText(unpack(Tabletxt))
+
+	end)
 end
 
 function TOOL:Think()
-	
+
 	if not SERVER then return end
 	
 	local ply = self:GetOwner()
@@ -262,17 +386,17 @@ function TOOL:Think()
 	
 	if ACF_Check( ent ) then
 		
+		local MaterialTypes = ACE.Armors
+		local MatData = MaterialTypes and MaterialTypes[ent.ACF.Material or "RHA"]		
+
 		ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Aera )
 		self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
 		self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
 		self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 		self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 		self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-		if ACF.Year >= 1955 then
-		self.Weapon:SetNWFloat( "Material", (ent.ACF.Material or 0))
-		else
-		self.Weapon:SetNWFloat( "Material", 0 )
-		end
+		self.Weapon:SetNWString( "Material", MatData.sname or "RHA")
+
 	else
 	
 		ply:ConCommand( "acfarmorprop_area 0" )
@@ -281,9 +405,9 @@ function TOOL:Think()
 		self.Weapon:SetNWFloat( "Armour", 0 )
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
 		self.Weapon:SetNWFloat( "MaxArmour", 0 )
-		self.Weapon:SetNWFloat( "Material", 0 )
+		self.Weapon:SetNWString( "Material", "RHA" )
 	end
-	
+
 	self.AimEntity = ent
 	
 end
@@ -295,46 +419,45 @@ function TOOL:DrawHUD()
 	local ent = self:GetOwner():GetEyeTrace().Entity
 	if not IsValid( ent ) or ent:IsPlayer() then return end
 	
-	local curmass = self.Weapon:GetNWFloat( "WeightMass" )
-	local curarmor = self.Weapon:GetNWFloat( "MaxArmour" )
+	local curmass 	= self.Weapon:GetNWFloat( "WeightMass" )
+	local curarmor 	= self.Weapon:GetNWFloat( "MaxArmour" )
 	local curhealth = self.Weapon:GetNWFloat( "MaxHP" )
-	local curmat = self.Weapon:GetNWFloat( "Material" )
+	local material 	= self.Weapon:GetNWString( "Material" )
 	
-	local area = GetConVarNumber( "acfarmorprop_area" )
+	local area 		= GetConVarNumber( "acfarmorprop_area" )
 	local ductility = GetConVarNumber( "acfarmorprop_ductility" )
 	local thickness = GetConVarNumber( "acfarmorprop_thickness" )
-	local material = 0
-	if ACF.Year >= 1955 then
-		material = GetConVarNumber( "acfarmorprop_material" )
-	end
-	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , material)
+	local mat 		= GetConVarString( "acfarmorprop_material" ) or "RHA"
+
+	local MaterialTypes = ACE.Armors
+	local MatData = MaterialTypes and MaterialTypes[mat]
+
+	local mass, armor, health = CalcArmor( area, ductility / 100, thickness , mat)
 	mass = math.min( mass, 50000 )
 	
-	local text = ACFTranslation.ArmorPropertiesText[14] .. math.Round( curmass, 2 )
+	local text = ""
+	text = text .. ACFTranslation.ArmorPropertiesText[14] .. math.Round( curmass, 2 )
 	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( curarmor, 2 )
 	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( curhealth, 2 )
-	if ACF.Year >= 1955 then
-		text = text .. ACFTranslation.ArmorPropertiesText[17] .. curmat 
-	end
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. material 
+
 	text = text .. ACFTranslation.ArmorPropertiesText[18] .. math.Round( mass, 2 )
 	text = text .. ACFTranslation.ArmorPropertiesText[15] .. math.Round( armor, 2 )
 	text = text .. ACFTranslation.ArmorPropertiesText[16] .. math.Round( health, 2 )
-	if ACF.Year >= 1955 then
-		text = text .. ACFTranslation.ArmorPropertiesText[17] .. material 
-	end
+	text = text .. ACFTranslation.ArmorPropertiesText[17] .. MatData.sname 
 	
-	local pos = ent:GetPos()
+	local pos = ent:WorldSpaceCenter()
 	AddWorldTip( nil, text, nil, pos, nil )
 	
 end
 
 function TOOL:DrawToolScreen( w, h )
-	
+
 	if not CLIENT then return end
-	
-	local Health = math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
+
+	local Health 	= math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
 	local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
-	local Armour = math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
+	local Armour 	= math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
 	local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
 	
 	local HealthTxt = Health .. "/" .. MaxHealth

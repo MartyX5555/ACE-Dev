@@ -295,7 +295,6 @@ AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 AddCSLuaFile( "acf/client/cl_extension.lua" )
 
 include("acf/shared/acfloader.lua")
-include("acf/shared/armor/ace_material.lua")
 include("autorun/acf_missile/folder.lua")
 
 if SERVER then
@@ -303,6 +302,7 @@ if SERVER then
 	util.AddNetworkString( "ACF_KilledByACF" )
 	util.AddNetworkString( "ACF_RenderDamage" )
 	util.AddNetworkString( "ACF_Notify" )
+	util.AddNetworkString( "ACE_ArmorSummary" )
 
 	include("acf/server/sv_acfbase.lua")
 	include("acf/server/sv_acfdamage.lua")
@@ -408,11 +408,11 @@ if ACF.Year > 1989 then
 end
 
 
-ACF.Weapons = list.Get("ACFEnts")
-ACF.Classes = list.Get("ACFClasses")
-ACF.RoundTypes = list.Get("ACFRoundTypes")
-ACF.IdRounds = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
-
+ACF.Weapons 	= list.Get("ACFEnts")
+ACF.Classes 	= list.Get("ACFClasses")
+ACF.RoundTypes 	= list.Get("ACFRoundTypes")
+ACF.IdRounds 	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
+ACE.Armors 		= list.Get("ACE_MaterialTypes")
 
 --[[--------------------------------------
             Particles loader
@@ -496,15 +496,28 @@ function ACF_Kinetic( Speed , Mass, LimitVel )
 	return Energy
 end
 
+--Convert old numeric IDs to the new string IDs
+local BackCompMat = {
+	"RHA",
+	"CHA",
+	"Cer",
+	"Rub",
+	"ERA",
+	"Alum",
+	"Texto"
+}
 
 -- Global Ratio Setting Function
 function ACF_CalcMassRatio( obj, pwr )
 	if not IsValid(obj) then return end
-	local Mass = 0
-	local PhysMass = 0
-	local power = 0
-	local fuel = 0
-	
+	local Mass 			= 0
+	local PhysMass 		= 0
+	local power 		= 0
+	local fuel 			= 0
+	local Compositions 	= {}
+	local MatSums 		= {}
+	local PercentMat    = {}
+
 	-- find the physical parent highest up the chain
 	local Parent = ACF_GetPhysicalParent(obj)
 	
@@ -522,7 +535,7 @@ function ACF_CalcMassRatio( obj, pwr )
 	for k, v in pairs( AllEnts ) do
 		
 		if IsValid( v ) then
-		
+
 			if v:GetClass() == "acf_engine" then
 				power = power + (v.peakkw * 1.34)
 				fuel = v.RequiresFuel and 2 or fuel
@@ -533,25 +546,64 @@ function ACF_CalcMassRatio( obj, pwr )
 			local phys = v:GetPhysicsObject()
 			if IsValid( phys ) then		
 			
-				Mass = Mass + phys:GetMass()
+				Mass = Mass + phys:GetMass() --print("total mass of contraption: "..Mass)
 				
 				if PhysEnts[ v ] then
 					PhysMass = PhysMass + phys:GetMass()
 				end
 				
 			end
-		
+
+			if pwr then
+				local PhysObj = v:GetPhysicsObject()
+
+				if IsValid(PhysObj) then
+
+					local material 			= v.ACF and v.ACF.Material or "RHA"
+
+					--ACE doesnt update their material stats actively, so we need to update it manually here.
+					if not isstring(material) then
+						local Mat_ID = material + 1
+						material = BackCompMat[Mat_ID]
+					end
+
+					Compositions[material] 	= Compositions[material] or {}
+
+					table.insert(Compositions[material], PhysObj:GetMass() )
+
+				end
+			end
+
 		end
-		
 	end
-	
+
+	--Build the ratios here
 	for k, v in pairs( AllEnts ) do
-		v.acfphystotal = PhysMass
-		v.acftotal = Mass
-		v.acflastupdatemass = ACF.CurTime
+		v.acfphystotal 		= PhysMass
+		v.acftotal 			= Mass        			--print("Final total mass: "..v.acftotal)
+		v.acflastupdatemass = ACF.CurTime	
+	end 
+
+	if pwr then
+		--Get mass Material composition here
+		for material, tablemass in pairs(Compositions) do
+
+			MatSums[material] = 0
+
+			for i,mass in pairs(tablemass) do
+
+				MatSums[material] = MatSums[material] + mass 
+
+			end 
+
+			--Gets the actual material percent of the contraption
+			PercentMat[material] = ( MatSums[material] / obj.acftotal ) or 0
+
+			--print("Final Mass for "..material..": "..MatSums[material])
+			--print("Percent for "..material.." is: "..PercentMat[material])	
+		end
 	end
-	
-	if pwr then return { Power = power, Fuel = fuel } end
+	if pwr then return { Power = power, Fuel = fuel, MaterialPercent = PercentMat, MaterialMass = MatSums } end
 end
 
 function ACF_CVarChangeCallback(CVar, Prev, New)

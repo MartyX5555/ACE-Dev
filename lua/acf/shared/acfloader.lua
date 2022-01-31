@@ -141,13 +141,13 @@ function ACF_DefineFuelTankSize( id, data )
 	table.Inherit( data, fueltank_base )
 	FuelTankTable[ id ] = data
 end
-
+--[[
 -- Material definition
 function ACE_ConfigureMaterial( id, data )
 	ACE.ArmorTypes[id] = data
     --print( 'Loaded Material: '..ACE.ArmorTypes[id].name )
 end
-
+]]
 -- Radar definition
 function ACF_DefineRadar( id, data )
 	data.id = id
@@ -215,6 +215,13 @@ end
 
 function ACF_GetAllFuseNamesExcept(list)
     return GetAllInTableExcept(ACF.Fuse, list)
+end
+
+-- search for and load a bunch of files or whatever
+local materials = file.Find( "acf/shared/armor/*.lua", "LUA" )
+for k, v in pairs( materials ) do
+	AddCSLuaFile( "acf/shared/armor/" .. v )
+	include( "acf/shared/armor/" .. v )
 end
 
 -- search for and load a bunch of files or whatever

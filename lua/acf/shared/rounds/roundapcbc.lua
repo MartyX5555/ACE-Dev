@@ -117,8 +117,8 @@ end
 
 function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 
-	local MaterialID = Target.ACF.Material or 0
-	NormieMult = ACE.ArmorTypes[ MaterialID ].NormMult or 1
+	local Mat = Target.ACF.Material or "RHA"
+	local NormieMult = ACE.Armors[ Mat ].NormMult or 1
 
 	Bullet.Normalize = true
 	Bullet.Pos = HitPos
