@@ -4,7 +4,7 @@ local Material 			= {}
 Material.id 			= "ERA"
 Material.name 			= "Explosive Reactive Armor"
 Material.sname 			= "ERA"
-Material.desc 			= "An explosive layered between 2 plates, when a shell penetrates it, the plate triggers its detonation, damaging or even destroying the incoming shell and saving the target, however, this material is too heavy and note that this is an explosive so keep away from ammo crates or similar stuff. Explosive rounds can make life short for this property."
+Material.desc 			= "An explosive layered between 2 plates, when a shell penetrates it, the plate triggers its detonation, damaging or even destroying the incoming shell and saving the target, however, this material is as 2 times heavier than RHA and unlike other materials, this IS an explosive, so it will damage nearby props to the detonation. Explosive rounds can make life short for this material."
 Material.year 			= 1955
 
 Material.massMod 		= 2

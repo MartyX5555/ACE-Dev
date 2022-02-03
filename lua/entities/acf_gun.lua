@@ -103,6 +103,32 @@ if CLIENT then
 		if Table.rack then
 			if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
 			if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
+
+			if Table.guidance and #Table.guidance > 0 then
+
+				local guitxt = ""
+				for k, guidance in ipairs(Table.guidance) do
+					if guidance ~= "Dumb" then
+						guitxt = guitxt.."- "..guidance.."\n"
+					end
+				end
+
+				if guitxt ~= "" then
+					acfmenupanel:CPanelText("Guidances", "\nAvailable guidances : \n"..guitxt )
+				end
+			end
+
+			if Table.fuses and #Table.fuses > 0 then
+
+				local guitxt = ""
+				for k, fuses in ipairs(Table.fuses) do
+					guitxt = guitxt.."- "..fuses.."\n"
+				end
+
+				acfmenupanel:CPanelText("Fuses", "Available fuses : \n"..guitxt )
+			end
+
+
 		else
 			local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 			local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name

@@ -96,7 +96,7 @@ if CLIENT then
 			ArmorPanelText( "ComboMass"	, ToolPanel.panel, "Mass : "..(MaterialData.massMod) .."x RHA" )
 			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MaterialData.effectiveness ) .."x RHA" )
 			ArmorPanelText( "ComboCHE"	, ToolPanel.panel, "CHEMICAL protection : "..(MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
-			ArmorPanelText( "ComboYear"	, ToolPanel.panel, "year : "..(MaterialData.year or "unknown") )
+			ArmorPanelText( "ComboYear"	, ToolPanel.panel, "Year : "..(MaterialData.year or "unknown") )
 
 			function ToolPanel.ComboMat:OnSelect(self, index, value )
 

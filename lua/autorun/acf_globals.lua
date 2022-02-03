@@ -22,12 +22,14 @@ ACF.IdRounds = {}	--Lookup tables so i can get rounds classes from clientside wi
        ServerSide Convars 
 ]]------------------------------
 
-CreateConVar('sbox_max_acf_gun', 24)           -- Gun limit
-CreateConVar('sbox_max_acf_rapidgun', 4)       -- Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 2)       -- Guns with a caliber above 100mm
-CreateConVar('sbox_max_acf_smokelauncher', 20) -- smoke launcher limit
-CreateConVar('sbox_max_acf_ammo', 50)          -- ammo limit
-CreateConVar('sbox_max_acf_misc', 50)          -- misc ents limit
+CreateConVar('sbox_max_acf_gun', 24)			-- Gun limit
+CreateConVar('sbox_max_acf_rapidgun', 4)		-- Guns like RACs, MGs, and ACs
+CreateConVar('sbox_max_acf_largegun', 2)		-- Guns with a caliber above 100mm
+CreateConVar('sbox_max_acf_smokelauncher', 20)	-- smoke launcher limit
+CreateConVar('sbox_max_acf_ammo', 50)			-- ammo limit
+CreateConVar('sbox_max_acf_misc', 50)			-- misc ents limit
+CreateConVar('sbox_max_acf_rack', 12) 			-- Racks limit
+--CreateConVar('sbox_max_acf_mines', 5)			-- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)       -- 0=any, 1=owned
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )         -- Should flares light players and NPCs on fire?  Does not affect godded players.
@@ -104,7 +106,6 @@ ACF.Spalling = GetConVar('acf_spalling'):GetInt()
 ACF.SpallMult = GetConVar('acf_spalling_multipler'):GetInt()
 ACF.GunfireEnabled = true
 ACF.MeshCalcEnabled = false
-ACF.CrateVolEff = 1                            --magic number that adjusts the efficiency of crate model volume to ammo capacity
 
 ACF.BoomMult = 1.5                             --How much more do ammocrates blow up, useful since crates detonate all at once now.
 
@@ -294,7 +295,7 @@ AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 AddCSLuaFile( "acf/client/cl_extension.lua" )
 
-include("acf/shared/acfloader.lua")
+include("acf/shared/ace_loader.lua")
 include("autorun/acf_missile/folder.lua")
 
 if SERVER then
@@ -350,9 +351,9 @@ elseif CLIENT then
 	
 end
 
---TESTING SOUND LOADER ENGINE
-include("acf/shared/sound_test.lua")
-AddCSLuaFile( "acf/shared/sound_test.lua" )
+
+include("acf/shared/ace_sound_loader.lua")
+AddCSLuaFile( "acf/shared/ace_sound_loader.lua" )
 
 --[[--------------------------------------
     RoundType Loader
@@ -580,7 +581,7 @@ function ACF_CalcMassRatio( obj, pwr )
 	--Build the ratios here
 	for k, v in pairs( AllEnts ) do
 		v.acfphystotal 		= PhysMass
-		v.acftotal 			= Mass        			--print("Final total mass: "..v.acftotal)
+		v.acftotal 			= Mass
 		v.acflastupdatemass = ACF.CurTime	
 	end 
 
@@ -599,8 +600,6 @@ function ACF_CalcMassRatio( obj, pwr )
 			--Gets the actual material percent of the contraption
 			PercentMat[material] = ( MatSums[material] / obj.acftotal ) or 0
 
-			--print("Final Mass for "..material..": "..MatSums[material])
-			--print("Percent for "..material.." is: "..PercentMat[material])	
 		end
 	end
 	if pwr then return { Power = power, Fuel = fuel, MaterialPercent = PercentMat, MaterialMass = MatSums } end

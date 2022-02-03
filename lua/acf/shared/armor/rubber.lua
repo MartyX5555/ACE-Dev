@@ -4,7 +4,7 @@ local Material 			= {}
 Material.id 			= "Rub"
 Material.name 			= "Rubber"
 Material.sname 			= "Rubber"
-Material.desc 			= "Another property, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
+Material.desc 			= "Another Material, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
 Material.year 			= 1955
 
 Material.massMod 		= 0.2

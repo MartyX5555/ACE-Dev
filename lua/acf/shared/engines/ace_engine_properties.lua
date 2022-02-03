@@ -2,7 +2,7 @@
 ACF.FuelDensity = { --kg/liter
 	Diesel = 0.832,  
 	Petrol = 0.745,
-	Electric = 3.1 -- li-ion --WAS 3.89
+	Electric = 1.35 -- li-ion --WAS 3.1
 }
 
 ACF.Efficiency = { --how efficient various engine types are, higher is worse

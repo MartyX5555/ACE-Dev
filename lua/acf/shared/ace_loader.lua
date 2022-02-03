@@ -141,13 +141,7 @@ function ACF_DefineFuelTankSize( id, data )
 	table.Inherit( data, fueltank_base )
 	FuelTankTable[ id ] = data
 end
---[[
--- Material definition
-function ACE_ConfigureMaterial( id, data )
-	ACE.ArmorTypes[id] = data
-    --print( 'Loaded Material: '..ACE.ArmorTypes[id].name )
-end
-]]
+
 -- Radar definition
 function ACF_DefineRadar( id, data )
 	data.id = id

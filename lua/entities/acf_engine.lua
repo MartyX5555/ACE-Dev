@@ -75,7 +75,7 @@ if CLIENT then
 		end
 		
 		if Table.requiresfuel then
-			acfmenupanel:CPanelText("Fuelreq", "\nTHIS ENGINE REQUIRES FUEL\n", "DermaDefaultBold")
+			acfmenupanel:CPanelText("Fuelreq", "\nTHIS ENGINE REQUIRES "..(Table.fuel == "Electric" and "BATTERIES" or "FUEL").."\n", "DermaDefaultBold")
 		else
 			acfmenupanel:CPanelText("FueledPower", "\nWhen supplied with fuel:\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..math.Round(peakkwrpm).." RPM")
 			acfmenupanel:CPanelText("FueledTorque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb @ "..math.Round(peaktqrpm).." RPM\n")
@@ -137,6 +137,13 @@ function ENT:Initialize()
 
 end  
 
+local BackComp = {
+	["Induction motor, Tiny"] 				= "Electric-Tiny-NoBatt",
+	["Induction motor, Small, Standalone"] 	= "Electric-Small-NoBatt",
+	["Induction motor, Medium, Standalone"] = "Electric-Medium-NoBatt",
+	["Induction motor, Large, Standalone"] 	= "Electric-Large-NoBatt"
+}
+
 function MakeACF_Engine(Owner, Pos, Angle, Id)
 
 	if not Owner:CheckLimit("_acf_misc") then return false end
@@ -146,7 +153,13 @@ function MakeACF_Engine(Owner, Pos, Angle, Id)
 	
 	local EID
 	local List = list.Get("ACFEnts")
-	if List.Mobility[Id] then EID = Id else EID = "5.7-V8" end
+
+	if List.Mobility[Id] then 
+		EID = Id 
+	else 
+		EID = BackComp[Id] or "5.7-V8" 
+	end
+
 	local Lookup = List.Mobility[EID]
 	
 	Engine:SetAngles(Angle)

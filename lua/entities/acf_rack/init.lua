@@ -702,7 +702,7 @@ end
 
 function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
-	if not Owner:CheckLimit("_acf_gun") then return false end
+	if not Owner:CheckLimit("_acf_rack") then return false end
 	
 	local Rack = UpdateRack or ents.Create("acf_rack")
 	local List = ACF.Weapons.Rack
@@ -713,9 +713,9 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	Rack:SetAngles(Angle)
 	Rack:SetPos(Pos)
     
-	if not UpdateRack then 
+	if not UpdateRack then --print("no update")
 		Rack:Spawn()
-		Owner:AddCount("_acf_gun", Rack)
+		Owner:AddCount("_acf_rack", Rack)
 		Owner:AddCleanup( "acfmenu", Rack )
 	end
 	

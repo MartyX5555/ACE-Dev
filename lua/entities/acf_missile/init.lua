@@ -88,8 +88,8 @@ function ENT:CalcFlight()
 	local Speed = LastVel:Length()
 	local Flight = self.FlightTime
 
-    	local Time = CurTime()
-    	local DeltaTime = Time - self.LastThink
+    local Time = CurTime()
+    local DeltaTime = Time - self.LastThink
 
 	if DeltaTime <= 0 then return end
 
@@ -112,10 +112,6 @@ function ENT:CalcFlight()
 		local LastLOS = self.LastLOS
 		local NewDir = Dir
 		local DirDiff = 0
-
---		if self.Fuse and (CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay or not self.Fuse:IsArmed()) then
-
-
 
 		if LastLOS then
 			local AGMult = 1

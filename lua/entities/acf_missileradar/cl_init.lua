@@ -28,7 +28,7 @@ end
 
 function ACFRadarGUICreate( Table )
 	
-	acfmenupanel:CPanelText("Name", Table.name)
+	acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 	
 	local RadarMenu = acfmenupanel.CData.DisplayModel
 
@@ -47,10 +47,8 @@ function ACFRadarGUICreate( Table )
 	acfmenupanel:CPanelText("ViewRange", "View range : ".. (Table.range and (math.Round(Table.range / 39.37, 1) .. " m") or "unlimited"))
 	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.." kg")
 	
-	if Table.canparent then
-		acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented.")
-	end
-	
+	acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n", "DermaDefaultBold")
+
 	acfmenupanel.CustomDisplay:PerformLayout()
 	
 end

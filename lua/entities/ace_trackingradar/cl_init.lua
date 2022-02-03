@@ -25,7 +25,7 @@ end
 
 function ACFTrackRadarGUICreate( Table )
 	
-	acfmenupanel:CPanelText("Name", Table.name)
+	acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 	
 	local RadarMenu = acfmenupanel.CData.DisplayModel
 
@@ -42,7 +42,7 @@ function ACFTrackRadarGUICreate( Table )
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
 	acfmenupanel:CPanelText("ViewCone", "View cone : "..((Table.viewcone or 180) * 2).." degs")
 	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.." kg")
-	acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented.")
+	acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n","DermaDefaultBold")
 
 	acfmenupanel.CustomDisplay:PerformLayout()
 	

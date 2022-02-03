@@ -366,7 +366,7 @@ function PANEL:Init( )
 
 		for _, Ent in pairs(radars) do --calls subfolders content	
 
-			local curNode = nods[Ent.class]		print(Ent.class)
+			local curNode = nods[Ent.class]		--print(Ent.class)
 
 			if curNode then
 

@@ -50,7 +50,7 @@ if CLIENT then
 			acfmenupanel.GearboxData[Table.id].ShiftTable = {10,20,30,40,50,60,70}
 		end
 
-		acfmenupanel:CPanelText("Name", Table.name)
+		acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
 		
 		acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
 			acfmenupanel.CData.DisplayModel:SetModel( Table.model )
@@ -105,7 +105,7 @@ if CLIENT then
 		acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
 		
 		if Table.parentable then
-			acfmenupanel:CPanelText("Parentable", "\nThis gearbox can be parented without welding.")
+			acfmenupanel:CPanelText("Parentable", "\nThis gearbox can be parented without welding.\n","DermaDefaultBold")
 		end
 		
 		if Table.auto then

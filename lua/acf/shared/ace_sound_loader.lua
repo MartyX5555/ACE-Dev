@@ -71,108 +71,15 @@ for k, Data in pairs(TableTypes) do
 		end
 	end
 end
-
 --[[
---Blasts. This will store all sounds related to blasts, includes underwater sounds
-ACE.Sounds.Blasts = {
-	tiny = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	small = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	medium = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	large = {
-		close = {},
-		mid = {},
-		far = {}		
-	},
-	underwater = {
-		close = {}
-	}
-}
-
-
-
-
-
-
--- Debris. They will not follow the main concept, but this will be called alongside blasts, so doesnt conflict with the main one
-ACE.Sounds.Debris = {
-	low = {
-		close = {}
-
-	},
-	high = {
-
-	}
-}
-
---Penetrations. Note that it has underwater table as blast one.
-ACE.Sounds.Penetrations = {
-	tiny = {
-		close = {}
-	},
-	small = {
-		close = {}
-	},
-	medium = {
-		close = {}	
-	},
-	large = {
-		close = {}
-	}
-}
-
---Ricochets. Same format than pen table
-ACE.Sounds.Ricochets = {
-	tiny = {
-		close = {}	
-	},
-	small = {
-		close = {}		
-	},
-	medium = {
-		close = {}
-	},
-	large = {
-		close = {}
-	}
-}
-
---Cracks. Same format atm
-ACE.Sounds.Cracks = {
-	tiny = {
-		close = {}		
-	},
-	small = {
-		close = {}		
-	},
-	medium = {
-		close = {}
-	},
-	large = {
-		close = {}
-	}
-}
-
-
 --Debug tool to see if tables are being populated. Change values in tableToTest to see if there are sounds inside.
 timer.Simple(2, function()
 
 	local tableToTest = ACE.Sounds["Penetrations"]["large"]["close"]
 	local MaxCount = #tableToTest --print("Table total entries: "..#tableToTest)
 
-	print("Test if we have something in this sample table")
-	print(tableToTest[math.random(1, MaxCount)] )
+	--print("Test if we have something in this sample table")
+	--print(tableToTest[math.random(1, MaxCount)] )
 
 end)
 

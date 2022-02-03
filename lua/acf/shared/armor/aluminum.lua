@@ -4,7 +4,7 @@ local Material 			= {}
 Material.id 			= "Alum"
 Material.name 			= "Aluminum"
 Material.sname 			= "Aluminum"
-Material.desc 			= "Aluminum is normally used on AFVs or light constructions, due to its low cost and realible armor effectiveness, but its extremely vulnerable to spalling and its really worthless for heavy applications."
+Material.desc 			= "The aluminum is normally used by AFVs or light constructions, due to its low cost and realible armor effectiveness, but its extremely vulnerable to spalling and its really worthless for heavy applications."
 Material.year 			= 1955
 
 Material.massMod 		= 0.221
