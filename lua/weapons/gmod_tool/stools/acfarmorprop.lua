@@ -20,8 +20,7 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 
 	Mat = Mat or "RHA"
 
-	local MaterialTypes = ACE.Armors
-	local MatData 		= MaterialTypes[Mat]
+	local MatData 		= ACE.Armors[Mat] --print("Material actually being used by the CalcArmor Function: "..Mat)
 
 	local MassMod 		= MatData.massMod
 	
@@ -204,7 +203,7 @@ if CLIENT then
 				ArmorPanelText( "ComboMass"	, ToolPanel.panel, "Mass scale: "..(MatData.massMod ) .."x RHA")
 				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MatData.effectiveness ) .."x RHA" )
 				ArmorPanelText( "ComboCHE"	, ToolPanel.panel, "CHEMICAL protection : "..(MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
-				ArmorPanelText( "ComboYear"	, ToolPanel.panel, "year : "..(MatData.year or "unknown") )
+				ArmorPanelText( "ComboYear"	, ToolPanel.panel, "Year : "..(MatData.year or "unknown") )
 			end
 		
 		end

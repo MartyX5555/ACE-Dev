@@ -241,7 +241,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 	-- Projectile caliber. Messy, function signature	
     local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
 
-    ACE_ArmorResolution = MatData["ArmorResolution"]
+    local ACE_ArmorResolution = MatData["ArmorResolution"]
     HitRes = ACE_ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
 
     return HitRes
