@@ -29,6 +29,8 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 
 	if not Owner:CheckLimit("_acf_missileradar") then return false end
 
+	Id = Id or "Large-TRACK"
+
 	local radar = ACF.Weapons.Radar[Id]
 	
 	if not radar then return false end
@@ -41,7 +43,7 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	
 	Radar.Model 				= radar.model
 	Radar.Weight 				= radar.weight
-	Radar.ACFName 				= radar.name 		
+	Radar.ACFName 				= radar.name		
 	Radar.ICone 				= radar.viewcone	--Note: intentional. --Recorded initial cone
 	Radar.Cone 					= Radar.ICone
 	Radar.InaccuracyMul 		= (0.035 * (Radar.Cone/15)^2)*0.2 
@@ -178,21 +180,21 @@ function ENT:Think()
 
 	    WireLib.TriggerOutput( self, "IsJammed", self.IsJammed )
 
-        if self.IsJammed < 0 then
+        if self.IsJammed <= 0 then
 
         	--Get all ents collected by contraptionScan
 	        local ScanArray = ACE.contraptionEnts
 
-	        local thisPos = self:GetPos()
-	        local thisforward = self:GetForward()
-	        local randinac = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
-	        local randinac2 = Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using one inaccuracy was boring
+	        local thisPos 		= self:GetPos()
+	        local thisforward 	= self:GetForward()
+	        local randinac 		= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
+	        local randinac2 	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1)) 	--Using one inaccuracy was boring
 
-	        local ownArray = {}
-	        local posArray = {}
-	        local velArray = {}
+	        local ownArray 		= {}
+	        local posArray 		= {}
+	        local velArray 		= {}
 
-	        self.ClosestToBeam = -1
+	        self.ClosestToBeam 	= -1
 	        local besterr = math.huge --Hugh mungus number
 
 
@@ -210,13 +212,13 @@ function ENT:Think()
 		        	--skip any parented entity
 		        	if scanEnt:GetParent():IsValid() then goto cont end
 
-			        local entvel = scanEnt:GetVelocity()
+			        local entvel 	= scanEnt:GetVelocity()
 			        local velLength = entvel:Length()
-			        local entpos = scanEnt:WorldSpaceCenter()
+			        local entpos 	= scanEnt:WorldSpaceCenter()
 
-			        local difpos = (entpos - thisPos)
-			        local ang = self:WorldToLocalAngles(difpos:Angle())		--Used for testing if inrange
-			        local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)	--Since I like ABS so much
+			        local difpos 	= (entpos - thisPos)
+			        local ang 		= self:WorldToLocalAngles(difpos:Angle())		--Used for testing if inrange
+			        local absang 	= Angle(math.abs(ang.p),math.abs(ang.y),0)	--Since I like ABS so much
 
 				    --Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
 			        local errorFromAng = Vector(0.05*(absang.y/self.Cone)^2,0.02*(absang.y/self.Cone)^2,0.02*(absang.p/self.Cone)^2)    

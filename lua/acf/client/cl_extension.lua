@@ -298,7 +298,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					
 
-					entply:EmitSound( Sound, 75, Pitch * PitchFix, Volume * VolFix )
+					entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch * PitchFix, Volume * VolFix )
 
 					--play dirt sounds
 					if Radius >= SmallEx and HitWorld then
@@ -356,7 +356,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 				Emitted = true
 
-				local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])]
+				local Sound = ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])] or ""
 				local VolFix = 0.5
 
 				--If a wall is in front of the player and is indoor, reduces its vol at 50%
@@ -365,7 +365,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 					VolFix = VolFix*0.5
 				end
 
-				entply:EmitSound( Sound, 75, Pitch, Volume * VolFix)
+				entply:EmitSound( Sound or "common/bugreporter_failed.wav", 75, Pitch, Volume * VolFix)
 
 			end
 
@@ -447,7 +447,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 				end
 
 				if Sound ~= "" then
-					entply:EmitSound( Sound , 75, Pitch, Volume * VolFix )
+					entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, Pitch, Volume * VolFix )
 				end
 			end
 
@@ -589,7 +589,7 @@ function ACE_SGunFire( Pos, Sound ,Class, Caliber, Propellant )
 					VolFix = VolFix*0.5
 				end
 
-				sound.Play(Sound, plyPos, 90, 100, Volume * VolFix) --print('final vol: '..Volume * VolFix) 
+				sound.Play(Sound or "common/bugreporter_failed.wav", plyPos, 90, 100, Volume * VolFix) --print('final vol: '..Volume * VolFix) 
 
 			end
 
@@ -665,7 +665,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 					VolFix = VolFix*0.025
 				end
 
-				entply:EmitSound( Sound , 75, 100, Volume * VolFix )
+				entply:EmitSound( Sound or "common/bugreporter_failed.wav" , 75, 100, Volume * VolFix )
 
 			end
 			timer.Stop( ide )

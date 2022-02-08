@@ -155,7 +155,8 @@ local GunWireDescs = {
 
 	--Outputs
 	["Ready"]	 = "Returns if the gun is ready to fire.",
-	["Heat"]	 = "Returns the gun's temperature."
+	["Heat"]	 = "Returns the gun's temperature.",
+	["OverHeat"] = "Is the gun being overheated?"
 }
 
 
@@ -189,6 +190,7 @@ function ENT:Initialize()
 	self.GunClass 			= "MG"
 	
 	self.Heat 				= ACE.AmbientTemp
+	self.IsOverheated 		= false
 	
 	self.BulletData 				= {}
 		self.BulletData.Type 		= "Empty"
@@ -376,6 +378,10 @@ function ENT:UpdateOverlayText()
 	if #self.CrewLink > 0 then
 		text = text .. "\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
 		text = text .. "\nTotal Loaders: "..self.LoaderCount
+	end
+
+	if self.IsOverheated then
+		text = text .. "\nWarning: Overheated"
 	end
 
 	if not self.Legal then
@@ -677,6 +683,8 @@ function ENT:Heat_Function()
 	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
 	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 
+		self.IsOverheated = true
+
         local phys = self:GetPhysicsObject()
 	    local Mass = phys:GetMass()
 	
@@ -686,6 +694,8 @@ function ENT:Heat_Function()
 			ACF_HEKill( self, VectorRand() , 0)
 		end
 			
+	else
+		self.IsOverheated = false
 	end
 
 end

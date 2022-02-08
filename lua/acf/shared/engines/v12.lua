@@ -134,7 +134,7 @@ ACF_DefineEngine( "16.5-V12", {
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
 	weight = 1050,
-	torque = 870,
+	torque = 1100,
 	flywheelmass = 2,
 	idlerpm = 675,
 	limitrpm = 3500
@@ -164,7 +164,7 @@ ACF_DefineEngine( "27.0-V12", {
 	fuel = "Diesel",
 	enginetype = "GenericDiesel",
 	weight = 3150,
-	torque = 4073,
+	torque = 4420,
 	flywheelmass = 6.6,
 	idlerpm = 500,
 	limitrpm = 2800
