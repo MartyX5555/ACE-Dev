@@ -83,7 +83,13 @@ if CLIENT then
 
         local MaterialTypes = ACE.Armors
         if not MaterialTypes then return end
-        local MaterialData  = MaterialTypes[GetConVarString("acfarmorprop_material")] or MaterialTypes["RHA"]
+
+        local Material = GetConVarString("acfarmorprop_material")
+
+        --Refreshing the data, so we can replace non valid data with the callback.
+        if isnumber(tonumber(Material)) then RunConsoleCommand( "acfarmorprop_material", "RHA" ) end
+
+        local MaterialData  = MaterialTypes[Material] or MaterialTypes["RHA"]
 
         ArmorPanelText( "ComboBox", panel, "Material" )
 
@@ -465,9 +471,9 @@ function TOOL:DrawToolScreen( w, h )
 
     if not CLIENT then return end
 
-    local Health        = math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
+    local Health    = math.Round( self.Weapon:GetNWFloat( "HP", 0 ), 2 )
     local MaxHealth = math.Round( self.Weapon:GetNWFloat( "MaxHP", 0 ), 2 )
-    local Armour        = math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
+    local Armour    = math.Round( self.Weapon:GetNWFloat( "Armour", 0 ), 2 )
     local MaxArmour = math.Round( self.Weapon:GetNWFloat( "MaxArmour", 0 ), 2 )
     
     local HealthTxt = Health .. "/" .. MaxHealth
