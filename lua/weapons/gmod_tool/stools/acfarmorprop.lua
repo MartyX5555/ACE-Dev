@@ -15,30 +15,14 @@ local ToolPanel = ToolPanel or {}
 
 CreateClientConVar( "acfarmorprop_area", 0, false, true ) -- we don't want this one to save
 
---[[[ace] addons/ace/lua/weapons/gmod_tool/stools/acfarmorprop.lua:25: attempt to index local 'MatData' (a nil value)
-  1. CalcArmor - addons/ace/lua/weapons/gmod_tool/stools/acfarmorprop.lua:25
-   2. LeftClick - addons/ace/lua/weapons/gmod_tool/stools/acfarmorprop.lua:258
-    3. unknown - gamemodes/sandbox/entities/weapons/gmod_tool/shared.lua:214]]
-
---TOO much checks below. They were placed to see if are being filled with valid data. I will remove them later
 -- Calculates mass, armor, and health given prop area and desired ductility and thickness.
 local function CalcArmor( Area, Ductility, Thickness, Mat )
 
-    if not ACE then print("We dont have ACE here") return end
-    if not ACE.Armors then print("We dont have ACE.Armors here") return end
-
     Mat = Mat or "RHA"
 
-    if not Mat then print("We dont have a Material here...") return end
-
     local MatData       = ACE.Armors[Mat]
-
-    if not MatData then print("We dont have a valid MatData here") return end
-
     local MassMod       = MatData.massMod
     
-    if not MassMod then print("No massmod found!") return end
-
     local mass          = Area * ( 1 + Ductility ) ^ 0.5 * Thickness * 0.00078 * MassMod
     local armor         = ACF_CalcArmor( Area, Ductility, mass / MassMod )
     local health        = ( Area + Area * Ductility ) / ACF.Threshold
@@ -47,7 +31,6 @@ local function CalcArmor( Area, Ductility, Thickness, Mat )
 
 end
 
-
 if CLIENT then
 
     language.Add( "tool.acfarmorprop.name", ACFTranslation.ArmorPropertiesText[1] )
@@ -55,6 +38,36 @@ if CLIENT then
     language.Add( "tool.acfarmorprop.0", ACFTranslation.ArmorPropertiesText[3] )
 
     surface.CreateFont( "Torchfont", { size = 40, weight = 1000, font = "arial" } )
+
+    --Required in order to update material data inserted in client convars
+    local function ACE_MaterialCheck( Material )
+
+        --Convert old numeric IDs to the new string IDs
+        local BackCompMat = {
+            "RHA",
+            "CHA",
+            "Cer",
+            "Rub",
+            "ERA",
+            "Alum",
+            "Texto"
+        }
+
+        --Refreshing the data, so we can replace non valid data with the callback.
+        if isnumber(tonumber(Material)) then
+
+            local Mat_ID = math.Clamp(Material + 1, 1,7)
+            Material = BackCompMat[Mat_ID]
+
+            --Updates the convar with the proper material
+            RunConsoleCommand( "acfarmorprop_material", Material ) 
+        end
+    end
+
+    --Looks like client convars are not initialized very quickly, so we will wait a bit until they become valid.
+    timer.Simple(0.1, function()
+        ACE_MaterialCheck( GetConVarString("acfarmorprop_material") )
+    end )
 
     --Replicated from PANEL:CPanelText(Name, Desc, Font). No idea why this doesnt work with this function out of this file
     local function ArmorPanelText( name, panel, desc, font )
@@ -85,14 +98,6 @@ if CLIENT then
         if not MaterialTypes then return end
 
         local Material = GetConVarString("acfarmorprop_material")
-
-        --Refreshing the data, so we can replace non valid data with the callback.
-        if isnumber(tonumber(Material)) then 
-            Material = "RHA"
-            RunConsoleCommand( "acfarmorprop_material", Material ) 
-            print("Old material detected in armor tool. Reverting to RHA...")
-        end
-
         local MaterialData  = MaterialTypes[Material] or MaterialTypes["RHA"]
 
         ArmorPanelText( "ComboBox", panel, "Material" )
@@ -164,13 +169,6 @@ if CLIENT then
         local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
         local material  = GetConVarString( "acfarmorprop_material" ) or "RHA"
 
-        --Refreshing the data, so we can replace non valid data with the callback.
-        if isnumber(tonumber(material)) then 
-            material = "RHA"
-            RunConsoleCommand( "acfarmorprop_material", material ) 
-            print("Old material detected in armor tool. Reverting to RHA...")
-        end
-
         local mass          = CalcArmor( area, ductility, thickness , material )
 
         if mass > 50000 then
@@ -198,13 +196,6 @@ if CLIENT then
         local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
         local material  = GetConVarString( "acfarmorprop_material" ) or "RHA"
 
-        --Refreshing the data, so we can replace non valid data with the callback.
-        if isnumber(tonumber(material)) then 
-            material = "RHA"
-            RunConsoleCommand( "acfarmorprop_material", material ) 
-            print("Old material detected in armor tool. Reverting to RHA...")
-        end
-
         local mass          = CalcArmor( area, ductility, thickness , material )
         
         if mass > 50000 then
@@ -228,7 +219,7 @@ if CLIENT then
                 local MatData = ACE.Armors[value]
 
                 --Use RHA if the choosen material is invalid or doesnt exist
-                if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
+                --if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
 
                 --Too redundant, ik, but looks like the unique way to have it working even when right clicking a prop
                 ToolPanel.ComboMat:SetText(MatData.sname) 
@@ -287,14 +278,7 @@ function TOOL:LeftClick( trace )
 
     local ductility = math.Clamp( self:GetClientNumber( "ductility" ), -80, 80 )
     local thickness = math.Clamp( self:GetClientNumber( "thickness" ), 0.1, 50000 )
-    local material  = self:GetClientInfo( "material" ) or "RHA" --print("Material being sent to the funcion via LeftClick: "..material )
-
-    --Refreshing the data, so we can replace non valid data with the callback.
-    if isnumber(tonumber(material)) then 
-        material = "RHA"
-        ply:ConCommand( "acfarmorprop_material", material ) 
-        print("Old material detected in armor tool. Reverting to RHA...")
-    end
+    local material  = self:GetClientInfo( "material" ) or "RHA"
 
     local mass          = CalcArmor( ent.ACF.Aera, ductility / 100, thickness , material)
     
@@ -427,10 +411,9 @@ function TOOL:Think()
     if ACF_Check( ent ) then
 
         local Mat = ent.ACF.Material or "RHA"
-
         local MatData = ACE.Armors[Mat]
 
-        if not MatData then print("TOOL:Think has an invalid MatData!!! Material used: "..Mat) return end
+        if not MatData then return end
 
         ply:ConCommand( "acfarmorprop_area " .. ent.ACF.Aera )
         self.Weapon:SetNWFloat( "WeightMass", ent:GetPhysicsObject():GetMass() )
@@ -471,13 +454,6 @@ function TOOL:DrawHUD()
     local ductility     = GetConVarNumber( "acfarmorprop_ductility" )
     local thickness     = GetConVarNumber( "acfarmorprop_thickness" )
     local mat           = GetConVarString( "acfarmorprop_material" ) or "RHA"
-
-    --Refreshing the data, so we can replace non valid data with the callback.
-    if isnumber(tonumber(mat)) then 
-        mat = "RHA"
-        RunConsoleCommand( "acfarmorprop_material", mat ) 
-        print("Old material detected in armor tool. Reverting to RHA...")
-    end
 
     local MatData       = ACE.Armors[mat]
 

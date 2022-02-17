@@ -155,9 +155,6 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 		
 		if count > Delay then
 
-			--done so we keep calculating for post-explosion effects (doppler, volume, etc)
-			if not countToFinish then countToFinish = count*3 end
-
 			--if its not already emitted
 			if not Emitted then
 
@@ -302,8 +299,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--play dirt sounds
 					if Radius >= SmallEx and HitWorld then
-						sound.Play("acf_other/explosions/debris/grass/debris"..math.Round(math.random(1,4))..".wav", plyPos, 90, (Pitch * PitchFix), Volume * VolFix / 25)
-						sound.Play("acf_other/explosions/debris/concrete/debris"..math.Round(math.random(1,6))..".wav", plyPos, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 25)
+						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos, 90, (Pitch * PitchFix), Volume * VolFix / 20)
+						sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
 					end
 
 					--Underwater Explosions
@@ -313,11 +310,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 				end
 			end
 
-			--its time has ended
-			if count > countToFinish then --print('timer "'..ide..'"" has been repeated '..count..' times. stopping & removing it...')
-				timer.Stop( ide )
-				timer.Remove( ide )
-			end
+			timer.Stop( ide )
+			timer.Remove( ide )
 		end
 	end )
 
