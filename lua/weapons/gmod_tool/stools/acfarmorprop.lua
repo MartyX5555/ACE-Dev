@@ -219,7 +219,7 @@ if CLIENT then
                 local MatData = ACE.Armors[value]
 
                 --Use RHA if the choosen material is invalid or doesnt exist
-                --if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
+                if not MatData then RunConsoleCommand( "acfarmorprop_material", "RHA" ) return end
 
                 --Too redundant, ik, but looks like the unique way to have it working even when right clicking a prop
                 ToolPanel.ComboMat:SetText(MatData.sname) 
