@@ -7,7 +7,7 @@ ACF_defineGunClass("SC", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
 	year = 1915,
-	sound = "weapons/ACF_Gun/cannon_new.wav",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	soundDistance = "Cannon.Fire",
 	soundNormal = " "
 } )

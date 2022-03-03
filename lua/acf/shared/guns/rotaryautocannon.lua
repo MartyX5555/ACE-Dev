@@ -7,7 +7,7 @@ ACF_defineGunClass("RAC", {
 	muzzleflash = "50cal_muzzleflash_noscale",
 	rofmod = 0.07,
 	year = 1962,
-	sound = "weapons/acf_gun/mg_fire3.wav",
+	sound = "weapons/acf_gun/mg_fire2.wav",
 	soundDistance = " ",
 	soundNormal = " ",
 	color = {135, 135, 135}

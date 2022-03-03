@@ -6,7 +6,7 @@ ACF_defineGunClass("SBC", {
 	desc = ACFTranslation.GunClasses[15],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.7,
-	sound = "weapons/ACF_Gun/cannon_new.wav",
+	sound = "acf_extra/ace/weapons/cannon/125mm_1.wav",
 	year = 1960,
 	soundDistance = "Cannon.Fire",
 	soundNormal = " "

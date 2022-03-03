@@ -7,7 +7,7 @@ ACF_defineGunClass("AC", {
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.35,
 	year = 1930,
-	sound = "weapons/ACF_Gun/ac_fire4.wav",
+	sound = "weapons/acf_gun/ac_fire4.wav",
 	soundDistance = " ",
 	soundNormal = " "
 } )
