@@ -7,8 +7,7 @@ ACF_defineGunClass("C", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.5,
 	sound = "weapons/acf_gun/cannon_new.wav",
-	soundDistance = "Cannon.Fire",
-	soundNormal = " "
+
 } )
 
 --add a gun to the class
@@ -16,12 +15,12 @@ ACF_defineGun("37mmC", { --id
     name = "37mm Cannon",
     desc = "A light and fairly weak cannon with good accuracy.",
 	model = "models/tankgun/tankgun_37mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 3.7,
 	weight = 95,
 	year = 1919,
 	rofmod = 1.4,
-	sound = "weapons/ACF_Gun/ac_fire4.wav",
 	round = {
 		maxlength = 48,
 		propweight = 1.125
@@ -32,11 +31,11 @@ ACF_defineGun("50mmC", {
 	name = "50mm Cannon",
 	desc = "The 50mm is surprisingly fast-firing, with good effectiveness against light armor, but a pea-shooter compared to its bigger cousins",
 	model = "models/tankgun/tankgun_50mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 5.0,
 	weight = 380,
 	year = 1935,
-	sound = "weapons/ACF_Gun/ac_fire4.wav",
 	round = {
 		maxlength = 63,
 		propweight = 2.1
@@ -47,6 +46,7 @@ ACF_defineGun("75mmC", {
 	name = "75mm Cannon",
 	desc = "The 75mm is still rather respectable in rate of fire, but has only modest payload.  Often found on the Eastern Front, and on cold war light tanks.",
 	model = "models/tankgun/tankgun_75mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 7.5,
 	weight = 660,
@@ -61,6 +61,7 @@ ACF_defineGun("100mmC", {
 	name = "100mm Cannon",
 	desc = "The 100mm was a benchmark for the early cold war period, and has great muzzle velocity and hitting power, while still boasting a respectable, if small, payload.",
 	model = "models/tankgun/tankgun_100mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 10.0,
 	weight = 1400,
@@ -75,6 +76,7 @@ ACF_defineGun("120mmC", {
 	name = "120mm Cannon",
 	desc = "Often found in MBTs, the 120mm shreds lighter armor with utter impunity, and is formidable against even the big boys.",
 	model = "models/tankgun/tankgun_120mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 12.0,
 	weight = 2100,
@@ -89,6 +91,7 @@ ACF_defineGun("140mmC", {
 	name = "140mm Cannon",
 	desc = "The 140mm fires a massive shell with enormous penetrative capability, but has a glacial reload speed and a very hefty weight.",
 	model = "models/tankgun/tankgun_140mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 14.0,
 	weight = 3900,
@@ -103,6 +106,7 @@ ACF_defineGun("170mmC", {
 	name = "170mm Cannon",
 	desc = "The 170mm fires a gigantic shell with ginormous penetrative capability, but has a glacial reload speed and an extremely hefty weight.",
 	model = "models/tankgun/tankgun_170mm.mdl",
+	sound = "weapons/acf_gun/cannon_new.wav",
 	gunclass = "C",
 	caliber = 17.0,
 	weight = 7800,

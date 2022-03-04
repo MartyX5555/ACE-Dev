@@ -249,14 +249,14 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:Spawn()
 	
 	Gun:SetPlayer(Owner)
-	Gun.Owner = Owner
-	Gun.Id = Id
-	Gun.Caliber	= Lookup.caliber
-	Gun.Model = Lookup.model
-	Gun.Mass = Lookup.weight
-	Gun.Class = Lookup.gunclass
-	Gun.Heat = ACE.AmbientTemp
-	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
+	Gun.Owner 			= Owner
+	Gun.Id 				= Id
+	Gun.Caliber			= Lookup.caliber
+	Gun.Model 			= Lookup.model
+	Gun.Mass 			= Lookup.weight
+	Gun.Class 			= Lookup.gunclass
+	Gun.Heat 			= ACE.AmbientTemp
+	Gun.LinkRangeMul 	= math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
@@ -300,10 +300,10 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:SetNWString( "Class", Gun.Class )
 	Gun:SetNWInt( "Caliber", Gun.Caliber )
 	Gun:SetNWString( "ID", Gun.Id )
-	Gun.Muzzleflash = ClassData.muzzleflash
-	Gun.RoFmod = ClassData.rofmod
-	Gun.RateOfFire = 1 --updated when gun is linked to ammo
-	Gun.Sound = ClassData.sound
+	Gun.Muzzleflash 	= ClassData.muzzleflash
+	Gun.RoFmod 			= ClassData.rofmod
+	Gun.RateOfFire 		= 1 --updated when gun is linked to ammo
+	Gun.Sound 			= Lookup.sound or ClassData.sound
 	Gun:SetNWString( "Sound", Gun.Sound )
 	Gun.Inaccuracy = ClassData.spread
 	Gun:SetModel( Gun.Model )	
