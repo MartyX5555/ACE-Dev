@@ -300,10 +300,13 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:SetNWString( "Class", Gun.Class )
 	Gun:SetNWInt( "Caliber", Gun.Caliber )
 	Gun:SetNWString( "ID", Gun.Id )
+
 	Gun.Muzzleflash 	= ClassData.muzzleflash
 	Gun.RoFmod 			= ClassData.rofmod
 	Gun.RateOfFire 		= 1 --updated when gun is linked to ammo
 	Gun.Sound 			= Lookup.sound or ClassData.sound
+	Gun.AutoSound 		= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+
 	Gun:SetNWString( "Sound", Gun.Sound )
 	Gun.Inaccuracy = ClassData.spread
 	Gun:SetModel( Gun.Model )	
@@ -889,13 +892,13 @@ function ENT:FireShell()
 		
             self.HeatFire = true  --Used by Heat			
 
-			local MuzzlePos = self:LocalToWorld(self.Muzzle)
-			local MuzzleVec = self:GetForward()
+			local MuzzlePos 		= self:LocalToWorld(self.Muzzle)
+			local MuzzleVec 		= self:GetForward()
 			
-			local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
-			local randUnitSquare = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
-			local spread = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
-			local ShootVec = (MuzzleVec + spread):GetNormalized()
+			local coneAng 			= math.tan(math.rad(self:GetInaccuracy())) 
+			local randUnitSquare 	= (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
+			local spread 			= randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+			local ShootVec 			= (MuzzleVec + spread):GetNormalized()
 			
 			self:MuzzleEffect( MuzzlePos, MuzzleVec )
 		
@@ -1089,6 +1092,11 @@ function ENT:MuzzleEffect()
 		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData.Type].netid  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 
+	if self.AutoSound and self.Sound ~= "" then
+		timer.Simple(0.6, function()
+			self:EmitSound(self.AutoSound, 73, math.random(84,86))
+		end )
+	end
 end
 
 function ENT:ReloadEffect()
