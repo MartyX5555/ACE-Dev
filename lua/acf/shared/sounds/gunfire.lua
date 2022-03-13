@@ -66,7 +66,7 @@ ACE_DefineGunFireSound( "ace_weapons/7_62/close/close_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1.5,
+			Volume 	= 1,
 			Pitch 	= 100,
 			Package = {
 				"ace_weapons/7_62/far/far.mp3",
@@ -93,7 +93,7 @@ ACE_DefineGunFireSound( "ace_weapons/7_62/close/close_multi.mp3",
  )
 
 --12.7mm Machinegun gunfire
-ACE_DefineGunFireSound( "ace_weapons/7_62/close/close_multi.mp3", 
+ACE_DefineGunFireSound( "ace_weapons/12_7/close/close_multi.mp3", 
 	{
 		main = {
 			Volume 	= 1,
@@ -559,7 +559,7 @@ ACE_DefineGunFireSound( "ace_weapons/120/close/close_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 100,
+			Volume 	= 1,
 			Pitch 	= 100,
 			Package = {
 				"ace_weapons/120/medium/mid.mp3",
@@ -571,7 +571,7 @@ ACE_DefineGunFireSound( "ace_weapons/120/close/close_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 100,
+			Volume 	= 1,
 			Pitch 	= 100,
 			Package = {
 				"ace_weapons/120/far/far.mp3",

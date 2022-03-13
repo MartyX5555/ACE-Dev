@@ -47,8 +47,8 @@ function Round.convert( Crate, PlayerData )
 	Data.BoomPower = Data.PropMass
 
 	if SERVER then --Only the crates need this part
-		ServerData.Id = PlayerData.Id
-		ServerData.Type = PlayerData.Type
+		ServerData.Id 		= PlayerData.Id
+		ServerData.Type 	= PlayerData.Type
 		return table.Merge(Data,ServerData)
 	end
 	
@@ -62,8 +62,8 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+	local Energy 	= ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+	GUIData.MaxPen 	= (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
 	return GUIData
 end
 
@@ -207,10 +207,11 @@ end
 function Round.guiupdate( Panel, Table )
 	
 	local PlayerData = {}
-		PlayerData.Id = acfmenupanel.AmmoData.Data.id				-- AmmoSelect GUI
-		PlayerData.Type = "AP"										-- Hardcoded, match ACFRoundTypes table index
-		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	-- PropLength slider
-		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	-- ProjLength slider
+		PlayerData.Id 			= acfmenupanel.AmmoData.Data.id				-- AmmoSelect GUI
+		PlayerData.Type 		= "AP"										-- Hardcoded, match ACFRoundTypes table index
+		PlayerData.PropLength 	= acfmenupanel.AmmoData.PropLength	-- PropLength slider
+		PlayerData.ProjLength 	= acfmenupanel.AmmoData.ProjLength	-- ProjLength slider
+
 		local Tracer = 0
 		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
 		PlayerData.Data10 = Tracer				--Tracer

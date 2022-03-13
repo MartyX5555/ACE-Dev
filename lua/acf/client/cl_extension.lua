@@ -306,8 +306,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--Underwater Explosions
 				else
-					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, Pitch * 0.75, Volume * 0.25)
-					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, Pitch * 0.75, Volume * 0.25)
+					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, Pitch * 0.75, Volume * 0.075 )
+					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, Pitch * 0.75, Volume * 0.075 )
 				end
 			end
 
