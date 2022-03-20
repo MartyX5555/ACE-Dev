@@ -661,7 +661,6 @@ function ENT:TriggerInput( iname, value )
 	elseif (iname == "ROFLimit") then
 		if value > 0 then
 			self.ROFLimit = math.min(1/(value/60),600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
-			print('ROF: '..self.ROFLimit)
 		else
 			self.ROFLimit = 0
 		end

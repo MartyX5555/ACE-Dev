@@ -300,14 +300,14 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--play dirt sounds
 					if Radius >= SmallEx and HitWorld then
-						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos, 90, (Pitch * PitchFix), Volume * VolFix / 20)
-						sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
+						sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "common/bugreporter_failed.wav", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
 					end
 
 					--Underwater Explosions
 				else
-					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, Pitch * 0.75, Volume * 0.075 )
-					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, Pitch * 0.75, Volume * 0.075 )
+					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
 				end
 			end
 
@@ -530,7 +530,7 @@ function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
 					VolFix = VolFix*0.5
 				end
 
-				sound.Play(Sound or "common/bugreporter_failed.wav", plyPos, 90, Pitch, Volume * VolFix)
+				sound.Play(Sound or "common/bugreporter_failed.wav", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
 
 			end
 

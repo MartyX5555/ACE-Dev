@@ -244,6 +244,23 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     local ACE_ArmorResolution = MatData["ArmorResolution"]
     HitRes = ACE_ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
 
+--[[
+	--debug to see how hitres is working
+    if Type ~= "Spall" then
+
+    print("=======")
+    print("\nType:"..(Type or "NULL"))
+    print("Damage: "..HitRes.Damage)
+    print("Overkill: "..HitRes.Overkill)
+    print("Loss: "..HitRes.Loss) 
+
+    print("\nImpacted Prop: "..Entity:GetModel().." - "..Entity:GetClass() )
+    print("nominal Armor: "..armor.."mm")
+    print("effective armor: "..armor.."mm\n")
+    print("=======")
+
+	end
+]]
     return HitRes
 end
 
