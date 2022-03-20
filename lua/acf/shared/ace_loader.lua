@@ -14,6 +14,8 @@ local RackClasses   = {}
 local Radars        = {}
 local RadarClasses  = {}
 
+local GSoundData	= {}
+
 -- setup base classes
 local gun_base = {
 	ent = "acf_gun",
@@ -64,7 +66,6 @@ if CLIENT then
 
 	trackradar_base.guicreate = function( Panel, Table ) ACFTrackRadarGUICreate( Table ) end or nil
 	trackradar_base.guiupdate = function() return end
-
 end
 
 if game.IsDedicated() then
@@ -168,6 +169,12 @@ function ACF_DefineTrackRadarClass( id, data )
 	RadarClasses[ id ] = data
 end
 
+--Step 2: gather specialized sounds. Normally sounds that have associated sounds into it. Literally using the string path as id.
+function ACE_DefineGunFireSound( id, data )
+	data.id = id
+	GSoundData[id] = data
+end
+
 -- Getters for guidance names, for use in missile definitions.
 local function GetAllInTableExcept(tbl, list)
 
@@ -212,41 +219,26 @@ function ACF_GetAllFuseNamesExcept(list)
 end
 
 -- search for and load a bunch of files or whatever
-local materials = file.Find( "acf/shared/armor/*.lua", "LUA" )
-for k, v in pairs( materials ) do
-	AddCSLuaFile( "acf/shared/armor/" .. v )
-	include( "acf/shared/armor/" .. v )
-end
 
--- search for and load a bunch of files or whatever
-local guns = file.Find( "acf/shared/guns/*.lua", "LUA" )
-for k, v in pairs( guns ) do
-	AddCSLuaFile( "acf/shared/guns/" .. v )
-	include( "acf/shared/guns/" .. v )
-end
+local Gpath = "acf/shared/"
+local folders = {
+	"armor",
+	"guns",
+	"ammocrates",
+	"engines",
+	"gearboxes",
+	"fueltanks",
+	"sounds"
+}
 
-local ammocrates = file.Find( "acf/shared/ammocrates/*.lua", "LUA" )
-for k, v in pairs( ammocrates ) do
-	AddCSLuaFile( "acf/shared/ammocrates/" .. v )
-	include( "acf/shared/ammocrates/" .. v )
-end
+for k, folder in ipairs(folders) do
+	
+	local folderData = file.Find( Gpath..folder.."/*.lua", "LUA" )
+	for k, v in pairs( folderData ) do
+		AddCSLuaFile( "acf/shared/"..folder.."/" .. v )
+		include( "acf/shared/"..folder.."/" .. v )
+	end
 
-local engines = file.Find( "acf/shared/engines/*.lua", "LUA" )
-for k, v in pairs( engines ) do
-	AddCSLuaFile( "acf/shared/engines/" .. v )
-	include( "acf/shared/engines/" .. v )
-end
-
-local gearboxes = file.Find( "acf/shared/gearboxes/*.lua", "LUA" )
-for k, v in pairs( gearboxes ) do
-	AddCSLuaFile( "acf/shared/gearboxes/" .. v )
-	include( "acf/shared/gearboxes/" .. v )
-end
-
-local fueltanks = file.Find( "acf/shared/fueltanks/*.lua", "LUA" )
-for k, v in pairs( fueltanks ) do
-	AddCSLuaFile( "acf/shared/fueltanks/" .. v )
-	include( "acf/shared/fueltanks/" .. v )
 end
 
 aaa_IncludeShared("acf/shared/missiles")
@@ -267,3 +259,5 @@ list.Set( "ACFEnts", "Rack", Racks )
 
 list.Set( "ACFClasses", "Radar", RadarClasses )
 list.Set( "ACFEnts", "Radar", Radars )
+
+list.Set( "ACESounds", "GunFire", GSoundData )

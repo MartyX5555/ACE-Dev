@@ -267,7 +267,7 @@ ACF_defineGun("FGM-148 ASM", {
 		dragcoef		= 0.02,									-- drag coefficient while falling               --was 0.01
 		dragcoefflight  = 0.025,                 				-- drag coefficient during flight
 		finmul			= 0.2,									-- fin multiplier (mostly used for unpropelled guidance)
-        penmul      	= math.sqrt(1.75)  						-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+        penmul      	= math.sqrt(0.55)  						-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
     ent         = "acf_missile_to_rack", 						-- A workaround ent which spawns an appropriate rack for the missile.

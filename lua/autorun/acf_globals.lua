@@ -414,7 +414,7 @@ ACF.Classes 	= list.Get("ACFClasses")
 ACF.RoundTypes 	= list.Get("ACFRoundTypes")
 ACF.IdRounds 	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 ACE.Armors 		= list.Get("ACE_MaterialTypes")
-
+ACE.GSounds 	= list.Get("ACESounds")
 --[[--------------------------------------
             Particles loader
 ]]----------------------------------------

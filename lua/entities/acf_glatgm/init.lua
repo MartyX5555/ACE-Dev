@@ -71,6 +71,10 @@ function ENT:Initialize()
 		end
 	end
 
+	if CPPI then
+		self:CPPISetOwner(self.BulletData.Owner)
+	end
+
 	--Rocket Trail effect
 	timer.Simple(0.1,function() ParticleEffectAttach("Rocket_Smoke_Trail",4, self,1)  end)
 
@@ -194,7 +198,9 @@ function ENT:Detonate()
 		self:CreateShell( btdat )
 
 		timer.Simple(0.1, function()
-			self:Remove()
+			if IsValid(self) then
+				self:Remove()
+			end
 		end )
 		
 		local Flash = EffectData()

@@ -7,9 +7,9 @@ ACF_defineGunClass("AL", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 0.64,
 	year = 1946,
-	sound = "weapons/ACF_Gun/autoloader.wav",
-	soundDistance = "Cannon.Fire",
-	soundNormal = " "
+	sound = "weapons/acf_gun/autoloader.wav",
+	autosound = "acf_extra/tankfx/reload.wav"
+
 } )
 
 --add a gun to the class
@@ -17,6 +17,8 @@ ACF_defineGun("75mmAL", { --id
 	name = "75mm Autoloading Cannon",
 	desc = "A quick-firing 75mm gun, pops off a number of rounds in relatively short order.",
 	model = "models/tankgun/tankgun_al_75mm.mdl",
+	sound = "ace_weapons/multi_sound/75mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
 	gunclass = "AL",
 	caliber = 7.5,
 	weight = 980,
@@ -34,6 +36,8 @@ ACF_defineGun("100mmAL", {
 	name = "100mm Autoloading Cannon",
 	desc = "The 100mm is good for rapidly hitting medium armor, then running like your ass is on fire to reload.",
 	model = "models/tankgun/tankgun_al_100mm.mdl",
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
 	gunclass = "AL",
 	caliber = 10.0,
 	weight = 1800,
@@ -51,6 +55,8 @@ ACF_defineGun("120mmAL", {
 	name = "120mm Autoloading Cannon",
 	desc = "The 120mm autoloader can do serious damage before reloading, but the reload time is killer.",
 	model = "models/tankgun/tankgun_al_120mm.mdl",
+	sound = "ace_weapons/multi_sound/120mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
 	gunclass = "AL",
 	caliber = 12.0,
 	weight = 2700,
@@ -68,6 +74,8 @@ ACF_defineGun("140mmAL", {
 	name = "140mm Autoloading Cannon",
 	desc = "The 140mm can shred a medium tank's armor with one magazine, and even function as shoot & scoot artillery, with its useful HE payload.",
 	model = "models/tankgun/tankgun_al_140mm.mdl",
+	sound = "ace_weapons/multi_sound/120mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
 	gunclass = "AL",
 	caliber = 14.0,
 	weight = 4800,
@@ -86,6 +94,8 @@ ACF_defineGun("170mmAL", {
 	name = "170mm Autoloading Cannon",
 	desc = "The 170mm can shred an average 40ton tank's armor with one magazine.",
 	model = "models/tankgun/tankgun_al_170mm.mdl",
+	sound = "ace_weapons/multi_sound/120mm_multi.mp3",
+	autosound = "acf_extra/tankfx/reload.wav",
 	gunclass = "AL",
 	caliber = 17.0,
 	weight = 12460,

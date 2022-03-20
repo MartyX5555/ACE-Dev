@@ -39,5 +39,5 @@ ACF.GenericTorqueCurves = { --Default curves for engines that don't have one def
 	Turbine = {0.8, 1, 0.9, 0.8, 0.6, 0.4, 0.2, 0.1},
 	Wankel = {0.35, 0.7, 0.85, 0.95, 1, 0.9, 0.7},
 	Radial = {0.6, 0.75, 0.85, 0.95, 0.98, 0.6},
-	Electric = {1, 1, 0.5, 0.2}
+	Electric = {1, 0.99, 0.95, 0.6, 0.2}
 }

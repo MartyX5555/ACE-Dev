@@ -15,6 +15,7 @@
 
 ACE.Sounds = ACE.Sounds or {}
 
+--Step 1: Build the main sound table here
 --Insert all the tables
 local TableTypes = {
 	{ Type = "Blasts", 			Path = "explosions/ambient", 			Category = { "tiny","small","medium","large","huge"}, 	Distance = { "close", "mid", "far"}	},
@@ -71,6 +72,7 @@ for k, Data in pairs(TableTypes) do
 		end
 	end
 end
+
 --[[
 --Debug tool to see if tables are being populated. Change values in tableToTest to see if there are sounds inside.
 timer.Simple(2, function()

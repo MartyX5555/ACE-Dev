@@ -768,28 +768,28 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 	
 	--couldn't penetrate
 	if loss == 1 or loss == 0 then 
-	    --print('Non Penetration! PenValid: '..loss)
-		--print(start)
-		local Ricochet = 0
-		local Speed = Bullet.Flight:Length() / ACF.VelScale
-		local Angle = ACF_GetHitAngle( HitNormal, Bullet.Flight )
-		local MinAngle = math.min(Bullet.Ricochet - Speed/39.37/30 + 20,89.9)	--Making the chance of a ricochet get higher as the speeds increase
+
+		local Ricochet 	= 0
+		local Speed 	= Bullet.Flight:Length() / ACF.VelScale
+		local Angle 	= ACF_GetHitAngle( HitNormal, Bullet.Flight )
+		local MinAngle 	= math.min(Bullet.Ricochet - Speed/39.37/30 + 20,89.9)	--Making the chance of a ricochet get higher as the speeds increase
+
 		if Angle > math.random(MinAngle,90) and Angle < 89.9 then	--Checking for ricochet
 			Ricochet = Angle/90*0.75
 		end
 		
 		if Ricochet > 0 and Bullet.GroundRicos < 2 then
-			Bullet.GroundRicos = Bullet.GroundRicos + 1
-			Bullet.Pos = HitPos + HitNormal * 1
-			Bullet.Flight = (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.05):GetNormalized() * Speed * Ricochet
-			HitRes.Ricochet = true
+			Bullet.GroundRicos 	= Bullet.GroundRicos + 1
+			Bullet.Pos 			= HitPos + HitNormal * 1
+			Bullet.Flight 		= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.05):GetNormalized() * Speed * Ricochet
+			HitRes.Ricochet 	= true
 		end
+
 	--penetrated
 	else 
-	    --print('Penetrated! PenValid: '..loss)
-		Bullet.Flight = Bullet.Flight * (1 - loss)
-		Bullet.Pos = DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
-		HitRes.Penetrated = true
+		Bullet.Flight 		= Bullet.Flight * (1 - loss)
+		Bullet.Pos 			= DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
+		HitRes.Penetrated 	= true
 	end
 	
 	return HitRes
@@ -802,8 +802,8 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 	if CanDo == false then return end
 
 	--Gets the baseplate of target
-	local parent = ACF_GetPhysicalParent(Target)
-	local phys = parent:GetPhysicsObject()
+	local parent 	= ACF_GetPhysicalParent(Target)
+	local phys 		= parent:GetPhysicsObject()
 	
 	if not IsValid(phys) then return end
 	
@@ -825,9 +825,9 @@ function ACF_KEShove(Target, Pos, Vec, KE )
 			Scaling = 87.5
 		end
 
-		local Local = parent:WorldToLocal(Pos) / Scaling
-		local Res = Local + phys:GetMassCenter()
-		Pos = parent:LocalToWorld(Res)
+		local Local 	= parent:WorldToLocal(Pos) / Scaling
+		local Res 		= Local + phys:GetMassCenter()
+		Pos 			= parent:LocalToWorld(Res)
 
 		phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
 
@@ -1030,9 +1030,9 @@ function ACF_ScaledExplosion( ent )
 		end
 		HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo
 	end
-	local Radius = HEWeight^0.33*8*39.37
-	local ExplodePos = {}
-	local Pos = ent:LocalToWorld(ent:OBBCenter())
+	local Radius 		= HEWeight^0.33*8*39.37
+	local ExplodePos 	= {}
+	local Pos 			= ent:LocalToWorld(ent:OBBCenter())
 	table.insert(ExplodePos, Pos)
 	local LastHE = 0
 	
@@ -1054,22 +1054,22 @@ function ACF_ScaledExplosion( ent )
 					local Hitat = Found:NearestPoint( Pos )
 				
 					local Occlusion = {}
-						Occlusion.start = Pos
-						Occlusion.endpos = Hitat
-						Occlusion.filter = FilterTraceHull
-						Occlusion.mins = Vector( 0, 0, 0 )
-						Occlusion.maxs = Vector( 0, 0, 0 ) 
+						Occlusion.start 	= Pos
+						Occlusion.endpos 	= Hitat
+						Occlusion.filter 	= FilterTraceHull
+						Occlusion.mins 		= Vector( 0, 0, 0 )
+						Occlusion.maxs 		= Vector( 0, 0, 0 ) 
 					local Occ = util.TraceHull( Occlusion )
 				
 					if Occ.Fraction == 0 then
 
 						table.insert(Filter,Occ.Entity)
 						local Occlusion = {}
-							Occlusion.start = Pos
-							Occlusion.endpos = Hitat
-							Occlusion.filter = Filter
-							Occlusion.mins = Vector( 0, 0, 0 )
-							Occlusion.maxs = Vector( 0, 0, 0 ) 
+							Occlusion.start 	= Pos
+							Occlusion.endpos 	= Hitat
+							Occlusion.filter 	= Filter
+							Occlusion.mins 		= Vector( 0, 0, 0 )
+							Occlusion.maxs 		= Vector( 0, 0, 0 ) 
 						Occ = util.TraceHull( Occlusion )
 						--print("Ignoring nested prop")
 
