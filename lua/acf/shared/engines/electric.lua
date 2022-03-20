@@ -28,7 +28,7 @@ ACF_DefineEngine( "Electric-Medium", {
 	enginetype = "Electric",
 	weight = 160,
 	torque = 600,
-	flywheelmass = 1.5,
+	flywheelmass = 0,35,
 	idlerpm = 0,
 	limitrpm = 20000,
 	iselec = true,
@@ -45,11 +45,11 @@ ACF_DefineEngine( "Electric-Large", {
 	enginetype = "Electric",
 	weight = 240,
 	torque = 800,
-	flywheelmass = 11.2,
+	flywheelmass = 0.35,
 	idlerpm = 0,
 	limitrpm = 20000,
 	iselec = true,
-	flywheeloverride = 6000
+	flywheeloverride = 8000
 	
 } )
 
@@ -63,7 +63,7 @@ ACF_DefineEngine( "Electric-Tiny-NoBatt", {
 	enginetype = "Electric",
 	requiresfuel = true,
 	weight = 58, --35
-	torque = 197, --30
+	torque = 126, --30
 	flywheelmass = 0.3,
 	idlerpm = 0, --40
 	limitrpm = 11300,
@@ -83,7 +83,7 @@ ACF_DefineEngine( "Electric-Small-NoBatt", {
 	enginetype = "Electric",
 	requiresfuel = true,
 	weight = 47, --25
-	torque = 376, --400
+	torque = 180, --400
 	flywheelmass = 0.3,
 	idlerpm = 0, --40
 	limitrpm = 18215,
@@ -101,8 +101,8 @@ ACF_DefineEngine( "Electric-Medium-NoBatt", {
 	enginetype = "Electric",
 	requiresfuel = true,
 	weight = 65, --800
-	torque = 600,
-	flywheelmass = 1.5,
+	torque = 340,
+	flywheelmass = 0.35,
 	idlerpm = 0,
 	limitrpm = 20000,
 	iselec = true,
@@ -119,8 +119,8 @@ ACF_DefineEngine( "Electric-Large-NoBatt", {
 	enginetype = "Electric",
 	requiresfuel = true,
 	weight = 140, --1900
-	torque = 800,
-	flywheelmass = 11.2,
+	torque = 580,
+	flywheelmass = 0.35,
 	idlerpm = 0,
 	limitrpm = 20000,
 	iselec = true,

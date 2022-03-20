@@ -40,7 +40,7 @@
 		if Propellant > 0 then
 
 			if not nosound then
-				ACE_SGunFire( Gun:GetPos(), Sound ,Class, Caliber , Propellant )
+				ACE_SGunFire( Gun, Sound ,Class, Caliber , Propellant )
 			end
 			
 			local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }

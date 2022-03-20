@@ -128,13 +128,13 @@ if CLIENT then
 				acfmenupanel:CPanelText("Fuses", "Available fuses : \n"..guitxt )
 			end
 
-
 		else
 			local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 			local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 			acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
 			if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
-			acfmenupanel:CPanelText("Spread", "Spread : "..GunClass.spread.." degrees")
+			acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
+			acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
 
 			acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
 		end
@@ -155,7 +155,8 @@ local GunWireDescs = {
 
 	--Outputs
 	["Ready"]	 = "Returns if the gun is ready to fire.",
-	["Heat"]	 = "Returns the gun's temperature."
+	["Heat"]	 = "Returns the gun's temperature.",
+	["OverHeat"] = "Is the gun being overheated?"
 }
 
 
@@ -189,6 +190,7 @@ function ENT:Initialize()
 	self.GunClass 			= "MG"
 	
 	self.Heat 				= ACE.AmbientTemp
+	self.IsOverheated 		= false
 	
 	self.BulletData 				= {}
 		self.BulletData.Type 		= "Empty"
@@ -247,14 +249,14 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:Spawn()
 	
 	Gun:SetPlayer(Owner)
-	Gun.Owner = Owner
-	Gun.Id = Id
-	Gun.Caliber	= Lookup.caliber
-	Gun.Model = Lookup.model
-	Gun.Mass = Lookup.weight
-	Gun.Class = Lookup.gunclass
-	Gun.Heat = ACE.AmbientTemp
-	Gun.LinkRangeMul = math.max(Gun.Caliber / 10,1)^1.2
+	Gun.Owner 			= Owner
+	Gun.Id 				= Id
+	Gun.Caliber			= Lookup.caliber
+	Gun.Model 			= Lookup.model
+	Gun.Mass 			= Lookup.weight
+	Gun.Class 			= Lookup.gunclass
+	Gun.Heat 			= ACE.AmbientTemp
+	Gun.LinkRangeMul 	= math.max(Gun.Caliber / 10,1)^1.2
 	if ClassData.color then
 		Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
 	end
@@ -298,10 +300,13 @@ function MakeACF_Gun(Owner, Pos, Angle, Id)
 	Gun:SetNWString( "Class", Gun.Class )
 	Gun:SetNWInt( "Caliber", Gun.Caliber )
 	Gun:SetNWString( "ID", Gun.Id )
-	Gun.Muzzleflash = ClassData.muzzleflash
-	Gun.RoFmod = ClassData.rofmod
-	Gun.RateOfFire = 1 --updated when gun is linked to ammo
-	Gun.Sound = ClassData.sound
+
+	Gun.Muzzleflash 	= ClassData.muzzleflash
+	Gun.RoFmod 			= ClassData.rofmod
+	Gun.RateOfFire 		= 1 --updated when gun is linked to ammo
+	Gun.Sound 			= Lookup.sound or ClassData.sound
+	Gun.AutoSound 		= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+
 	Gun:SetNWString( "Sound", Gun.Sound )
 	Gun.Inaccuracy = ClassData.spread
 	Gun:SetModel( Gun.Model )	
@@ -376,6 +381,10 @@ function ENT:UpdateOverlayText()
 	if #self.CrewLink > 0 then
 		text = text .. "\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
 		text = text .. "\nTotal Loaders: "..self.LoaderCount
+	end
+
+	if self.IsOverheated then
+		text = text .. "\nWarning: Overheated"
 	end
 
 	if not self.Legal then
@@ -652,7 +661,6 @@ function ENT:TriggerInput( iname, value )
 	elseif (iname == "ROFLimit") then
 		if value > 0 then
 			self.ROFLimit = math.min(1/(value/60),600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
-			print('ROF: '..self.ROFLimit)
 		else
 			self.ROFLimit = 0
 		end
@@ -677,6 +685,8 @@ function ENT:Heat_Function()
 	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
 	if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 
+		self.IsOverheated = true
+
         local phys = self:GetPhysicsObject()
 	    local Mass = phys:GetMass()
 	
@@ -686,6 +696,8 @@ function ENT:Heat_Function()
 			ACF_HEKill( self, VectorRand() , 0)
 		end
 			
+	else
+		self.IsOverheated = false
 	end
 
 end
@@ -879,13 +891,13 @@ function ENT:FireShell()
 		
             self.HeatFire = true  --Used by Heat			
 
-			local MuzzlePos = self:LocalToWorld(self.Muzzle)
-			local MuzzleVec = self:GetForward()
+			local MuzzlePos 		= self:LocalToWorld(self.Muzzle)
+			local MuzzleVec 		= self:GetForward()
 			
-			local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
-			local randUnitSquare = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
-			local spread = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
-			local ShootVec = (MuzzleVec + spread):GetNormalized()
+			local coneAng 			= math.tan(math.rad(self:GetInaccuracy())) 
+			local randUnitSquare 	= (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
+			local spread 			= randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+			local ShootVec 			= (MuzzleVec + spread):GetNormalized()
 			
 			self:MuzzleEffect( MuzzlePos, MuzzleVec )
 		
@@ -1079,6 +1091,11 @@ function ENT:MuzzleEffect()
 		Effect:SetSurfaceProp( ACF.RoundTypes[self.BulletData.Type].netid  )	--Encoding the ammo type into a table index
 	util.Effect( "ACF_MuzzleFlash", Effect, true, true )
 
+	if self.AutoSound and self.Sound ~= "" then
+		timer.Simple(0.6, function()
+			self:EmitSound(self.AutoSound, 73, math.random(84,86))
+		end )
+	end
 end
 
 function ENT:ReloadEffect()
