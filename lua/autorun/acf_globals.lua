@@ -3,10 +3,10 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 459           --ACE current version
+ACF.Version = 460           --ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
-ACF.Year = 2021      --Current Year
+ACF.Year = 2022      --Current Year
 
 print('[ACE | INFO]- loading ACE. . .')
 
