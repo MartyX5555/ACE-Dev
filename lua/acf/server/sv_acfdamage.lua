@@ -218,6 +218,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
             local PowerFraction = Power * AeraFraction  --How much of the total power goes to that prop
             local AreaAdjusted  = (Tar.ACF.Aera / ACF.Threshold) * Feathering
 
+            --HE tends to pick some props where simply will not apply damage. So lets ignore it.
             if AreaAdjusted <= 0 then goto cont end
 
             local BlastRes
@@ -311,12 +312,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                     end
                 end
 
-                if Blast.Penetration ~= Blast.Penetration then print("!!!!!!!!!!!!!!!!Blast is NAN") end
-                if FragKE.Penetration ~= FragKE.Penetration then print("!!!!!!!!!!!!!!!!Frag is NAN") end
-
                 BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
                 FragRes = ACF_Damage ( Tar , FragKE , FragAera*FragHit , 0 , Inflictor , 0, Gun, "Frag" )
-                
                 
                 if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
 

@@ -190,11 +190,6 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor   
     local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )  -- Bc people had to abuse armor angling, FML  
 
-    --if armor ~= armor then print("armor in ACF_CalcDamage is NAN") end
-    --if losArmor ~= losArmor then print("losArmor in ACF_CalcDamage is NAN") end 
-    --if losArmorHealth ~= losArmorHealth then print("losArmorHealth in ACF_CalcDamage is NAN") end
-    --if FrAera ~= FrAera then print("FrAera in ACF_CalcDamage is NAN") end
-
     local Mat               = Entity.ACF.Material or "RHA"    --very important thing
 
     local HitRes            = {}
@@ -246,18 +241,8 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
         damageMult = ACF.HPDamageMult
     end
 
-    --if Energy.Penetration ~= Energy.Penetration then print("Energy.Penetration on acf_base is NAN") end
-    --if FrAera ~= FrAera then print("FrAera on acf_base is NAN") end
-    --if ACF.KEtoRHA ~= ACF.KEtoRHA then print("ACF.KEtoRHA on acf_base is NAN") end
-
-    --print("Energy: "..Energy.Penetration)
-    --print("FrAera: "..FrAera)
-    --print("ACF: "..ACF.KEtoRHA)
-
     -- RHA Penetration
     local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA  
-
-    if maxPenetration ~= maxPenetration then print("maxPenetration on acf_base is NAN") end
 
     -- Projectile caliber. Messy, function signature    
     local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
@@ -265,38 +250,10 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     local ACE_ArmorResolution = MatData["ArmorResolution"]
     HitRes = ACE_ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
 
-    --debug to see how hitres is working
-    --if Type ~= "Spall" then
-
-        --print("RESULT=======")
-        --print("\nImpacted Prop: "..(IsValid(Entity) and Entity:GetModel() or "Unknown").." - "..Entity:GetClass() )
-        --print("nominal Armor: "..armor.."mm")
-        --print("effective armor: "..losArmor.."mm\n")
-        --print("=======")
-
-        --print("=======")
-        --print("\nType:"..(Type or "NULL"))
-        --print("Damage Inflicted: "..HitRes.Damage)
-        --print("Starting Pen: "..maxPenetration.."mm\n")
-        --print("Remaining pen: "..HitRes.Overkill)
-        --print("Loss: "..HitRes.Loss) 
-        --print("=======")
-
-        --print("=======")
-        --print("\nacf_base Energy: "..Energy.Penetration)
-        --print("acf_base FrAera: "..FrAera )
-        --print("acf_base KEtoRHA: "..ACF.KEtoRHA)
-        
-        --print("=======")
-
-    --end
-
     return HitRes
 end
 
 function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , Type)
-
-    --print("Energy from ACF_PropDamage: "..Energy.Penetration)
 
     local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle  , Type)
     
@@ -305,14 +262,10 @@ function ACF_PropDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone , T
         HitRes.Kill = true 
     else
 
-        --print("Health Before: "..Entity.ACF.Health)
-        --print("HitRes Damage: "..HitRes.Damage)
-
-        --if HitRes.Damage ~= HitRes.Damage then HitRes.Damage = 0 end
+        --In case of HitRes becomes NAN. That means theres no damage, so leave it as 0
+        if HitRes.Damage ~= HitRes.Damage then HitRes.Damage = 0 end
 
         Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage
-
-        --print("Health After: "..Entity.ACF.Health)
         Entity.ACF.Armour = Entity.ACF.MaxArmour * (0.5 + Entity.ACF.Health/Entity.ACF.MaxHealth/2) --Simulating the plate weakening after a hit
         
         if Entity.ACF.PrHealth then
@@ -330,6 +283,10 @@ function ACF_VehicleDamage( Entity , Energy , FrAera , Angle , Inflictor , Bone,
     local HitRes = ACF_CalcDamage( Entity , Energy , FrAera , Angle  , Type)
     local Driver = Entity:GetDriver()
     local validd = Driver:IsValid()
+
+    --In case of HitRes becomes NAN. That means theres no damage, so leave it as 0
+    if HitRes.Damage ~= HitRes.Damage then HitRes.Damage = 0 end
+
     if validd then
 
         local dmg = 40
