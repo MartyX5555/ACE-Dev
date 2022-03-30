@@ -36,7 +36,7 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
     if not radar then return false end
     
     local Radar = ents.Create("ace_trackingradar")
-    if not Radar:IsValid() then return false end
+    if not IsValid(Radar) then return false end
 
     Radar:SetAngles(Angle)
     Radar:SetPos(Pos)
@@ -366,7 +366,7 @@ function ENT:UpdateOverlayText()
     
     local cone      = self.Cone
     local status    = self.Status or "Off"
-    local detected  = (self.ClosestToBeam != -1)
+    local detected  = status ~= "Off" and self.ClosestToBeam != -1 or false
     local Jammed    = self.IsJammed
 
     local txt = "Status: "..status

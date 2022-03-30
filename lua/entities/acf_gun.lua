@@ -200,7 +200,7 @@ function ENT:Initialize()
     self.Inaccuracy         = 1
     self.LastThink          = 0 
     self.Inputs             = Wire_CreateInputs( self, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "Reload", "Fuse Time ("..GunWireDescs["FuseTime"]..")" } )
-    self.Outputs            = WireLib.CreateSpecialOutputs( self, { "Ready ("..GunWireDescs["Ready"]..")", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat ("..GunWireDescs["Heat"]..")"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL"} )
+    self.Outputs            = WireLib.CreateSpecialOutputs( self, { "Ready ("..GunWireDescs["Ready"]..")", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat ("..GunWireDescs["Heat"]..")", "OverHeat"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL", "NORMAL"} )
     Wire_TriggerOutput(self, "Entity", self)
 
 end  
@@ -685,9 +685,10 @@ function ENT:Heat_Function()
 
     -- TODO: instead of breaking the gun by heat, decrease accurancy and jam it
     local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
-    if OverHeat > 1.0 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
+    if OverHeat > 1 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 
         self.IsOverheated = true
+        Wire_TriggerOutput(self,"OverHeat", 1)
 
         local phys = self:GetPhysicsObject()
         local Mass = phys:GetMass()
@@ -700,6 +701,7 @@ function ENT:Heat_Function()
             
     else
         self.IsOverheated = false
+        Wire_TriggerOutput(self,"OverHeat", 0)
     end
 
 end

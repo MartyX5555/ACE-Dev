@@ -31,6 +31,9 @@ function ENT:Initialize()
     self.SpecialDamage = true   --If true needs a special ACF_OnDamage function
     self.SpecialHealth = true   --If true needs a special ACF_Activate function
 
+    self.CanTrack   = false       --Used when the missile has waited the required time to guide
+    self.Timer      = false
+
     self:SetNWFloat("LightSize", 0)
 
 end
@@ -55,6 +58,8 @@ function ENT:SetBulletData(bdata)
     self.RoundWeight = roundWeight
 
     self:ConfigureFlight()
+
+    self.TrackDelay = gun.guidelay or 0
 
 end
 
@@ -102,9 +107,25 @@ function ENT:CalcFlight()
     end
 
     --Guidance calculations
-    local Guidance = self.Guidance:GetGuidance(self)
-    local TargetPos = Guidance.TargetPos
+    local Guidance  = self.Guidance:GetGuidance(self)
+    local TargetPos = self.CanTrack and Guidance.TargetPos or nil
 
+    if Guidance.TargetPos then
+        if self.TrackDelay > 0 then
+            if not self.Timer then
+                self.Timer = true
+
+                timer.Simple(self.TrackDelay, function()
+                    if not IsValid(self) then return end
+                        self.CanTrack = true
+                end )
+            end
+        else
+            self.CanTrack = true
+        end
+    end
+
+    --If the missile is able to turn by guidance
     if TargetPos then
         local Dist = Pos:Distance(TargetPos)
         TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
