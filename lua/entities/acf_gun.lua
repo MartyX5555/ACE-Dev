@@ -104,6 +104,10 @@ if CLIENT then
             if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
             if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
 
+            if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : "..Table.guidelay.." seconds") 
+            else acfmenupanel:CPanelText("GuiDelay", "With a guidance, this ordnance will start to do maneuvers with no delays") end
+
+
             if Table.guidance and #Table.guidance > 0 then
 
                 local guitxt = ""
@@ -156,7 +160,7 @@ local GunWireDescs = {
     --Outputs
     ["Ready"]    = "Returns if the gun is ready to fire.",
     ["Heat"]     = "Returns the gun's temperature.",
-    ["OverHeat"] = "Is the gun being overheated?"
+    ["OverHeat"] = "Is the gun overheating?"
 }
 
 
@@ -200,7 +204,8 @@ function ENT:Initialize()
     self.Inaccuracy         = 1
     self.LastThink          = 0 
     self.Inputs             = Wire_CreateInputs( self, { "Fire", "Unload ("..GunWireDescs["Unload"]..")", "Reload", "Fuse Time ("..GunWireDescs["FuseTime"]..")" } )
-    self.Outputs            = WireLib.CreateSpecialOutputs( self, { "Ready ("..GunWireDescs["Ready"]..")", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat ("..GunWireDescs["Heat"]..")", "OverHeat"}, { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL", "NORMAL"} )
+    self.Outputs            = WireLib.CreateSpecialOutputs( self,   { "Ready ("..GunWireDescs["Ready"]..")", "AmmoCount", "Entity", "Shots Left", "Fire Rate", "Muzzle Weight", "Muzzle Velocity" , "Heat ("..GunWireDescs["Heat"]..")", "OverHeat ("..GunWireDescs["OverHeat"]..")"}, 
+                                                                    { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL", "NORMAL"} )
     Wire_TriggerOutput(self, "Entity", self)
 
 end  

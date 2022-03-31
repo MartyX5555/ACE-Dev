@@ -129,7 +129,8 @@ function ENT:Initialize()
     self.LastDamageTime=CurTime()
     
     self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle ("..EngineWireDescs["Throttle"]..")" } ) --use fuel input?
-    self.Outputs = WireLib.CreateSpecialOutputs( self, { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"}, { "NORMAL","NORMAL","NORMAL", "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
+    self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"},  
+                                                        { "NORMAL","NORMAL","NORMAL", "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
     
     Wire_TriggerOutput( self, "Entity", self )
     Wire_TriggerOutput(self, "EngineHeat", self.Heat)
@@ -580,8 +581,6 @@ function ENT:GetMaxFuel()
         TFuel = TFuel + Tank.Fuel
         ::cont::
     end
-
-    print("total fuel: "..TFuel)
 
     return TFuel
 end

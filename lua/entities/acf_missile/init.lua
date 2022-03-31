@@ -109,13 +109,14 @@ function ENT:CalcFlight()
     --Guidance calculations
     local Guidance  = self.Guidance:GetGuidance(self)
     local TargetPos = self.CanTrack and Guidance.TargetPos or nil
+    local Tdelay    = self.ForceTdelay >= self.TrackDelay and self.ForceTdelay or self.TrackDelay
 
     if Guidance.TargetPos then
         if self.TrackDelay > 0 then
             if not self.Timer then
                 self.Timer = true
 
-                timer.Simple(self.TrackDelay, function()
+                timer.Simple(Tdelay, function()
                     if not IsValid(self) then return end
                         self.CanTrack = true
                 end )
