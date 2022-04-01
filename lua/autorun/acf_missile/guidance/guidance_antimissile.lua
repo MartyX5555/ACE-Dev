@@ -280,10 +280,12 @@ function this:HasLOSVisibility(ent, missile)
 		start = missile:GetPos(),
 		endpos = ent:GetPos(),
 		mask = MASK_SOLID_BRUSHONLY,
-		filter = {missile, ent}
+		filter = {missile, ent},
+        mins = Vector(0,0,0),
+        maxs = Vector(0,0,0)
 	}
 	
-	local res = util.TraceLine(traceArgs)
+	local res = util.TraceHull(traceArgs)
 	
 	--debugoverlay.Line( missile:GetPos(), ent:GetPos(), 15, Color(res.Hit and 255 or 0, res.Hit and 0 or 255, 0), true )
 	

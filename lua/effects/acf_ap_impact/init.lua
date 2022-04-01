@@ -20,7 +20,10 @@
 	local Tr = {}
 	Tr.start = self.Origin - self.DirVec*10
 	Tr.endpos = self.Origin + self.DirVec*10
-	local SurfaceTr = util.TraceLine( Tr )
+	Tr.mins = Vector(0,0,0)
+	Tr.maxs = Vector(0,0,0)
+
+	local SurfaceTr = util.TraceHull( Tr )
 
 	util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec*10 )
 

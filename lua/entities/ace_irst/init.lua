@@ -153,7 +153,9 @@ function ENT:Think()
 							start = thisPos ,
 							endpos = entpos,
 							collisiongroup = COLLISION_GROUP_WORLD,
-							filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end	
+							filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,	
+							mins = Vector(0,0,0),
+							maxs = Vector(0,0,0)
 						}) 
 
 					--Trace did not hit world

@@ -434,6 +434,8 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
     TrFront.endpos      = HitPos + HitVec:GetNormalized()*Caliber*1.5
     TrFront.ignoreworld = true
     TrFront.filter      = {}
+    TrFront.mins        = Vector(0,0,0)
+    TrFront.maxs        = Vector(0,0,0)
 
     --Traceback general data--
     local TrBack        = {}
@@ -441,7 +443,8 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
     TrBack.endpos       = HitPos
     TrBack.ignoreworld  = true
     TrBack.filter       = function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
-
+    TrBack.mins         = Vector(0,0,0)
+    TrBack.maxs         = Vector(0,0,0)
 
     while FindEnd do
 
@@ -452,7 +455,7 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
         if iteration >= 1000 then FindEnd = false end
 
         --================-TRACEFRONT-==================-
-        local tracefront = util.TraceLine( TrFront )
+        local tracefront = util.TraceHull( TrFront )
 
         --insert the hitpos here
         local HitFront = tracefront.HitPos
@@ -520,7 +523,7 @@ function ACF_PropShockwave( HitPos, HitVec, HitMask, Caliber )
         table.insert( TotalArmor, Armour )
 
         --================-TRACEBACK-==================
-        local traceback = util.TraceLine( TrBack )
+        local traceback = util.TraceHull( TrBack )
 
         --insert the hitpos here
         local HitBack = traceback.HitPos

@@ -136,8 +136,10 @@ function this:GetWhitelistedEntsInCone(missile)
 			LOSdata.start 			= missilePos
 			LOSdata.endpos 			= entpos
 			LOSdata.collisiongroup 	= COLLISION_GROUP_WORLD
-			LOSdata.filter 			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.	
-			local LOStr = util.TraceLine( LOSdata ) 		
+			LOSdata.filter 			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.
+			LOSdata.mins 			= Vector(0,0,0)
+			LOSdata.maxs 			= Vector(0,0,0)	
+			local LOStr = util.TraceHull( LOSdata ) 		
 
 			--Trace did not hit world
 			if not LOStr.Hit then 

@@ -140,7 +140,14 @@ function this:GetWhitelistedEntsInCone(missile)
 		-- skip any ent far than maximum distance
         if dist > self.MaximumDistance then goto cont end
 
-		local LOStr = util.TraceLine( {start = missilePos ,endpos = entpos,collisiongroup  = COLLISION_GROUP_WORLD,filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end}) --Hits anything world related.			
+		local LOStr = util.TraceHull( 
+			{	start = missilePos ,
+				endpos = entpos,
+				collisiongroup  = COLLISION_GROUP_WORLD,
+				filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end, --Hits anything world related.
+        		mins = Vector(0,0,0),
+        		maxs = Vector(0,0,0)
+			}) 			
 
 		--Trace did not hit world	
 		if not LOStr.Hit then 

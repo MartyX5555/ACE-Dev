@@ -757,8 +757,8 @@ function ACFSVGUICreate( Table )   --Serverside folder content
    Legal:CheckBox( "Allow visclip", "acf_legal_ignore_visclip" )
    Legal:ControlHelp( "ace ents can have visclip at any case" )
 
-   Legal:CheckBox( "Allow any parent", "acf_legal_ignore_parent" )
-   Legal:ControlHelp( "Allow to bypass gate requirement" )
+   --Legal:CheckBox( "Allow any parent", "acf_legal_ignore_parent" )
+   --Legal:ControlHelp( "Allow to bypass gate requirement" )
 
    acfmenupanel.CustomDisplay:AddItem( Legal )  
 

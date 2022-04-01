@@ -52,9 +52,11 @@ function this:GetDetonate(missile, guidance)
     {
         start = missilePos,
         endpos = missilePos + missile:GetForward() * self.Cluster,
-        filter = missile.Filter or missile
+        filter = missile.Filter or missile,
+        mins = Vector(0,0,0),
+        maxs = Vector(0,0,0)
     }
-	local trace = util.TraceLine(tracedata)
+	local trace = util.TraceHull(tracedata)
 
     if IsValid(trace.Entity) and trace.Entity:GetClass() == 'acf_missile' then return false end
 

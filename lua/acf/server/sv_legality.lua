@@ -80,6 +80,7 @@ local BackCompMat = {
    "Texto"
 }
 
+--TODO: remove unused functions
 function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
 
    local problems = {} --problems table definition
@@ -148,6 +149,7 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
       table.insert(problems,"Has visclip")
    end
 
+--[[
    -- if it has a parent, check if legally parented
    if ACF.Legal.Ignore.Parent <= 0 and Ent:GetParent():IsValid() then
 
@@ -156,7 +158,7 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVis
          table.insert(problems,"Not gate parented")
       end
    end
-      
+]]     
    -- legal if number of problems is 0
    return (#problems == 0), table.concat(problems, ", ")
    

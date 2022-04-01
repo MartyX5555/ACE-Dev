@@ -52,9 +52,11 @@ function this:GetDetonate(missile, guidance)
     {
         start = missilePos,
         endpos = missilePos + missile:GetForward() * self.Distance,
-        filter = missile.Filter or missile
+        filter = missile.Filter or missile,
+        mins = Vector(0,0,0),
+        maxs = Vector(0,0,0)
     }
-	local trace = util.TraceLine(tracedata)
+	local trace = util.TraceHull(tracedata)
 
 	return trace.Hit
     

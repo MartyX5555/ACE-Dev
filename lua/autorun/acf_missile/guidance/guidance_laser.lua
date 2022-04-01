@@ -62,10 +62,12 @@ function this:GetGuidance(missile)
 			start = missile:GetPos(),
 			endpos = posVec,
 			mask = MASK_SOLID_BRUSHONLY,
-			filter = {missile}
+			filter = {missile},
+        	mins = Vector(0,0,0),
+        	maxs = Vector(0,0,0)
 		}
 		
-		local res = util.TraceLine(traceArgs)
+		local res = util.TraceHull(traceArgs)
 		
 		local dist = res.StartPos:Distance(res.HitPos)
 		if res.Hit and dist < 80 then
