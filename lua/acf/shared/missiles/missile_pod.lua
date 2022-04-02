@@ -64,7 +64,7 @@ ACF_defineGun("40mmFFAR", { --id
 ACF_defineGun("70mmFFAR", { --id
 
 	name		= "70mm Pod Rocket",
-	desc		= "A small, optionally rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
+	desc		= "A small, optionally guided rocket.  Useful against light vehicles and infantry.  Folding fins allow the rocket to be stored in pods, which defend them from damage.",
 	model		= "models/missiles/launcher7_70mm.mdl",
 	caliber		= 7,
 	gunclass	= "FFAR",
