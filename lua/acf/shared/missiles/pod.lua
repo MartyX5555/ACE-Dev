@@ -32,6 +32,8 @@ ACF_DefineRack("40mm7xPOD", {
     armour      = 15,
     caliber     = 4,
     
+    reloadmul   = 150,
+
     hidemissile     = false,
 	protectmissile 	= true,
     whitelistonly   = true,
@@ -61,6 +63,8 @@ ACF_DefineRack("70mm7xPOD", {
     magsize     = 7,
     armour      = 24,
     caliber     = 7,
+
+    reloadmul   = 150,
 
     hidemissile     = false,
 	protectmissile 	= true,

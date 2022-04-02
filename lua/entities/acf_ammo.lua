@@ -411,6 +411,8 @@ function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Dat
         self.RoundId = '140mmSBC'
     elseif Data1 == '170mmSB' then
         self.RoundId = '170mmSBC'
+    elseif Data1 == '70mmFFARDAGR'then
+        self.RoundId = '70mmFFAR'
     else
         self.RoundId = ( Data1 or '100mmC'  )
     end
