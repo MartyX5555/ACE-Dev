@@ -449,7 +449,7 @@ function ENT:Think()
         end
     end
     
-    self:NextThink(Time + 0.5)
+    self:NextThink(Time + 0.05)
     
     self.LastThink = Time
     
