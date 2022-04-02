@@ -7,16 +7,18 @@ include('shared.lua')
 
 DEFINE_BASECLASS( "base_wire_entity" )
 
-
 function ENT:GetReloadTime(nextMsl)
 
-    local reloadMul = (self.ReloadMultiplier or 1)
+    local Racks = list.Get("ACFEnts")
+    local Rack = Racks.Rack[self.Id]
+    local reloadMul = Rack.reloadmul or self.ReloadMultiplier or 1
+
     local reloadBonus = (self.ReloadMultiplierBonus or 0)
     local mag = (self.MagSize or 1)
     
     reloadMul = (reloadMul - (reloadMul - 1) * reloadBonus) / (mag^1.1)
-    
-    local ret = self:GetFireDelay(nextMsl) * reloadMul
+
+    local ret = math.max(self:GetFireDelay(nextMsl) * reloadMul, 0.5)
     self:SetNWFloat(    "Reload",       ret)
     
     return ret
@@ -42,7 +44,7 @@ function ENT:GetFireDelay(nextMsl)
     local class = list.Get("ACFClasses").GunClass[gun.gunclass]
 
     
-    local interval =  ( (bdata.RoundVolume / 500) ^ 0.60 ) * (gun.rofmod or 1) * (class.rofmod or 1)
+    local interval =  math.max(( (bdata.RoundVolume / 500) ^ 0.60 ) * (gun.rofmod or 1) * (class.rofmod or 1), 0.1)
     self.LastValidFireDelay = interval
     self:SetNWFloat(    "Interval",     interval)
     
