@@ -224,10 +224,14 @@ local Gpath = "acf/shared/"
 local folders = {
     "armor",
     "guns",
+    "missiles",
+    "radars",
     "ammocrates",
     "engines",
     "gearboxes",
+    "guidances",
     "fueltanks",
+    "fuses",
     "sounds"
 }
 
@@ -240,10 +244,6 @@ for k, folder in ipairs(folders) do
     end
 
 end
-
-aaa_IncludeShared("acf/shared/missiles")
-aaa_IncludeShared("acf/shared/guns")
-aaa_IncludeShared("acf/shared/radars")
 
 ACF.RoundTypes = list.Get("ACFRoundTypes")
 ACF.IdRounds = list.Get("ACFIdRounds")  --Lookup tables so i can get rounds classes from clientside with just an integer

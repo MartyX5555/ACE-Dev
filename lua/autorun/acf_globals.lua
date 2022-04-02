@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 461           -- ACE current version
+ACF.Version = 462           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -19,7 +19,7 @@ ACF.RoundTypes      = {}
 ACF.IdRounds        = {}    --Lookup tables so i can get rounds classes from clientside with just an integer
 
 --[[----------------------------
-       ServerSide Convars 
+       Entity Limits
 ]]------------------------------
 
 CreateConVar('sbox_max_acf_gun', 24)                            -- Gun limit
@@ -29,9 +29,12 @@ CreateConVar('sbox_max_acf_smokelauncher', 20)                  -- smoke launche
 CreateConVar('sbox_max_acf_ammo', 50)                           -- ammo limit
 CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents limit
 CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
+
+
 --CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
+
 ACFM_FlaresIgnite = CreateConVar( "ACFM_FlaresIgnite", 1 )      -- Should flares light players and NPCs on fire?  Does not affect godded players.
 ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )      -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
 
@@ -289,12 +292,13 @@ else
     AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
 end
 
-AddCSLuaFile()
+
 AddCSLuaFile( "acf/client/cl_acfballistics.lua" )
 AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 AddCSLuaFile( "acf/client/cl_extension.lua" )
 
+include("acf/shared/ace_lib_inherit.lua")
 include("acf/shared/ace_loader.lua")
 include("autorun/acf_missile/folder.lua")
 
@@ -658,6 +662,7 @@ else
     net.Receive( "ACF_Notify", ACF_Notify )
 end
 
+--Checks if theres new versions for ACE
 function ACF_UpdateChecking( )
     http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size) 
 
@@ -686,8 +691,49 @@ function ACF_UpdateChecking( )
     end, function() end)
 end
 
+--Creates and updates the ace dupes. ATM only analyzer.
+function ACE_Dupes_Refresh()
+
+    --Directory relative to DATA folder
+    local Directory = "advdupe2/ace tools"
+
+    --Name of the file
+    local FileName  = "armor_analyzer"
+
+    --To check if the file already exists
+    local FileExists = file.Exists( Directory.."/"..FileName..".txt", "DATA")
+
+    --Writes in case of not existing
+    if not FileExists then
+
+        local File_Content = file.Read("scripts/vehicles/armor_analyzer.txt", "GAME")
+
+        file.CreateDir(Directory)
+        file.Write(Directory.."/"..FileName..".txt", File_Content)
+
+
+    --Updates the current one if it differs from the new version.
+    else
+        --Idea: bring the analyzer from the internet instead of locally?
+
+        local Current_File_Size = file.Size("advdupe2/ace tools/armor_analyzer.txt", "DATA")
+        local New_File_Size     = file.Size("scripts/vehicles/armor_analyzer.txt", "GAME")
+
+        if New_File_Size > 0 and Current_File_Size ~= New_File_Size then
+
+            print("[ACE|INFO]- Your armor analyzer is different. Updating...")
+
+            local File_Content = file.Read("scripts/vehicles/armor_analyzer.txt", "GAME")
+
+            file.Write(Directory.."/"..FileName..".txt", File_Content)
+
+        end
+    end
+end
+
 timer.Simple(2, function()
     ACF_UpdateChecking()
+    ACE_Dupes_Refresh()
 end )
 
 local function OnInitialSpawn( ply )
@@ -773,7 +819,5 @@ AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
 AddCSLuaFile("acf/shared/sh_acfm_getters.lua")
 AddCSLuaFile("autorun/sh_acfm_roundinject.lua")
-
---if not file.Exists( "data/ace/*", "GAME")
 
 print('[ACE | INFO]- Done!')
