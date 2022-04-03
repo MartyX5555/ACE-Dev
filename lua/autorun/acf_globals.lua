@@ -298,7 +298,6 @@ AddCSLuaFile( "acf/client/cl_acfmenu_gui.lua" )
 AddCSLuaFile( "acf/client/cl_acfrender.lua" )
 AddCSLuaFile( "acf/client/cl_extension.lua" )
 
-include("acf/shared/ace_lib_inherit.lua")
 include("acf/shared/ace_loader.lua")
 include("autorun/acf_missile/folder.lua")
 
