@@ -175,7 +175,7 @@ function ENT:CalcFlight()
         local AimDiff = Dir - VelNorm
         local DiffLength = AimDiff:Length()
         if DiffLength >= 0.001 then
-            local Torque = DiffLength * self.TorqueMul
+            local Torque = DiffLength * self.TorqueMul * Speed * 0.1
             local AngVelDiff = Torque / self.Inertia * DeltaTime 
             local DiffAxis = AimDiff:Cross(Dir):GetNormalized()
             self.RotAxis = self.RotAxis + DiffAxis * AngVelDiff-- * 3.5
