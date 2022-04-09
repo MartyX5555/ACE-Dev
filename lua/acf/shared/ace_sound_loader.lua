@@ -52,7 +52,7 @@ for k, Data in pairs(TableTypes) do
             --print("Iteration2: "..Iteration2)
 
             -- Look for sounds in the designated path
-            local TxtToFind = "sound/acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/*.wav"   --print( "\n"..TxtToFind.."\n" )
+            local TxtToFind = "sound/acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/*.mp3"   --print( "\n"..TxtToFind.."\n" )
             local ExSounds = file.Find( TxtToFind, "GAME" )
 
             --if table.IsEmpty(ExSounds) then print("No se encontro nada!") end
