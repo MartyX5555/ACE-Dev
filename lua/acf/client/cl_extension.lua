@@ -280,7 +280,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                         if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
                             timer.Simple(0.01, function()
                                 entply:SetDSP( 32, true )
-                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.wav", 75, 100, 1 )        
+                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )        
                             end)
                         end
 
