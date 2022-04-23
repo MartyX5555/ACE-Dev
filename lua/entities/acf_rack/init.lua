@@ -94,7 +94,6 @@ function ENT:Initialize()
     self.BulletData.ProjMass    = 0
 
     self.ForceTdelay            = 0
-    
     self.Inaccuracy             = 1
     
     self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",      "Reload ("..RackWireDescs["Reload"]..")", "Track Delay ("..RackWireDescs["Delay"]..")",   "Target Pos ("..RackWireDescs["TargetPos"]..")" },
@@ -619,26 +618,13 @@ function ENT:AddMissile()
     local NextIdx = #self.Missiles
     timer.Simple(0.02, function() 
         if IsValid(missile) then 
-            local attach, muzzle = self:GetMuzzle( NextIdx , missile )
-                
-            --print(muzzle.Pos)
+            local attach, inverted, muzzle = self:GetMuzzle( NextIdx , missile )
 
-            if IsValid(self:GetParent()) then
+            debugoverlay.Cross(muzzle.Pos, 5, 10, Color(255,255,255,255), true)
 
-                if table.Count(self:GetAttachments()) == 0 then
+            missile:SetPos(self:WorldToLocal(muzzle.Pos))
+            missile:SetAngles(self:GetAngles())
 
-                    muzzle.Pos = Vector(0,0,0)
-                end
-
-                missile:SetPos( muzzle.Pos )
-                missile:SetAngles(self:GetAngles())
-
-            else
-
-                missile:SetPos(self:WorldToLocal(muzzle.Pos))
-                missile:SetAngles(muzzle.Ang)
-
-            end
         end 
     end)
 
@@ -759,7 +745,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack.HideMissile        = ACF_GetRackValue(Id, "hidemissile")
     Rack.ProtectMissile     = gundef.protectmissile or gunclass.protectmissile
     Rack.CustomArmour       = gundef.armour or gunclass.armour
-    
+
     Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
     Rack.WhitelistOnly      = ACF_GetRackValue(Id, "whitelistonly")
     
@@ -767,7 +753,6 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack:SetNWString( "Class",  Rack.Class )
     Rack:SetNWString( "ID",     Rack.Id )
     Rack:SetNWString( "Sound",  Rack.Sound )
-    
     
     if not UpdateRack or Rack.Model ~= Rack:GetModel() then
         Rack:SetModel( Rack.Model ) 
@@ -834,18 +819,15 @@ function ENT:FireMissile()
         
         local ReloadTime = 0.5
         local missile, curShot = self:PopMissile()
-        
-        
+
         if missile then
         
             ReloadTime = self:GetFireDelay(missile)
         
-            local attach, muzzle = self:GetMuzzle(curShot - 1, missile)
+            local attach, inverted, muzzle = self:GetMuzzle(curShot - 1, missile)
         
-            local MuzzlePos = muzzle.Pos--self:LocalToWorld(muzzle.Pos)
-            if table.Count(self:GetAttachments()) == 0 and IsValid(self:GetParent()) then
-                MuzzlePos = Vector(0,0,0)
-            end
+            local MuzzlePos = self:WorldToLocal(muzzle.Pos)
+
             local MuzzleVec = muzzle.Ang:Forward()
             
             local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
@@ -868,15 +850,9 @@ function ENT:FireMissile()
 
             local bdata = missile.BulletData
             
-            if !IsValid(self:GetParent()) then
-                bdata.Pos = MuzzlePos
-                bdata.Flight = ShootVec * (bdata.MuzzleVel or missile.MinimumSpeed or 1)
-            else
-                bdata.Pos = self:LocalToWorld(MuzzlePos)
-                bdata.Flight = (self:GetAngles():Forward()+spread ):GetNormalized() * (bdata.MuzzleVel or missile.MinimumSpeed or 1)
-            end
-            
-            
+            bdata.Pos = muzzle.Pos
+            bdata.Flight = (self:GetAngles():Forward()+spread):GetNormalized() * (bdata.MuzzleVel or missile.MinimumSpeed or 1) * (inverted and -1 or 1)
+
             if missile.RackModelApplied then 
                 local model = ACF_GetGunValue(bdata.Id, "model")
                 missile:SetModelEasy( model ) 

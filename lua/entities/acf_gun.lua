@@ -203,22 +203,20 @@ function ENT:Initialize()
     
     self.Inaccuracy             = 1
     self.LastThink              = 0 
-    self.Inputs                 = Wire_CreateInputs( self, {    "Fire", 
+    self.Inputs                 = WireLib.CreateInputs( self, {    "Fire", 
                                                                 "Unload ("..GunWireDescs["Unload"]..")", 
                                                                 "Reload", 
                                                                 "Fuse Time ("..GunWireDescs["FuseTime"]..")" } )
 
-    self.Outputs                = WireLib.CreateSpecialOutputs( self,   {   "Ready ("..GunWireDescs["Ready"]..")", 
-                                                                            "AmmoCount", 
-                                                                            "Entity",  
-                                                                            "Shots Left", 
-                                                                            "Fire Rate", 
-                                                                            "Muzzle Weight", 
-                                                                            "Muzzle Velocity" , 
-                                                                            "Heat ("..GunWireDescs["Heat"]..")", 
-                                                                            "OverHeat ("..GunWireDescs["OverHeat"]..")"}, 
-
-                                                                            { "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL", "NORMAL" , "NORMAL", "NORMAL"} )
+    self.Outputs                = WireLib.CreateOutputs( self,   {  "Ready ("..GunWireDescs["Ready"]..")", 
+                                                                    "AmmoCount", 
+                                                                    "Entity [ENTITY]",  
+                                                                    "Shots Left", 
+                                                                    "Fire Rate", 
+                                                                    "Muzzle Weight", 
+                                                                    "Muzzle Velocity" , 
+                                                                    "Heat ("..GunWireDescs["Heat"]..")", 
+                                                                    "OverHeat ("..GunWireDescs["OverHeat"]..")"} )
     Wire_TriggerOutput(self, "Entity", self)
 
 end  

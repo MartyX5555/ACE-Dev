@@ -295,8 +295,8 @@ function ENT:Think()
                                 end
                                 --print((entpos - thisPos):Length())
                             
-                                table.insert(ownArray, CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
-                                table.insert(posArray,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
+                                table.insert(ownArray , CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
+                                table.insert(posArray ,entpos + randinac * errorFromAng*2000 + randinac * ((entpos - thisPos):Length() * (self.InaccuracyMul * 0.8 + GCdis*0.1 ))) --3 
 
                                 --IDK if this is more intensive than length
                                 local finalvel = Vector(0,0,0)
@@ -307,17 +307,10 @@ function ENT:Think()
                                 end
                             
                                 table.insert(velArray,finalvel)
-                            else
-                                --print("DopplerFail")
+                                
                             end
-
-                        else
-                            --print(LOStr.SurfaceFlags)
-                            --print(LOStr.Entity )
                         end
-
                     end
-
                 end
 
                 ::cont::
@@ -326,7 +319,7 @@ function ENT:Think()
             --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )
 
             --Some entity passed the test to be valid
-            if self.ClosestToBeam != -1 then 
+            if self.ClosestToBeam ~= -1 then 
 
                 WireLib.TriggerOutput( self, "Detected", 1 )
                 WireLib.TriggerOutput( self, "Owner", ownArray )
@@ -354,12 +347,7 @@ function ENT:Think()
 end
 
 function ENT:UpdateStatus()
-
-    if self.Active then
-        self.Status = "On"
-    else
-        self.Status = "Off"
-    end
+        self.Status = self.Active and "On" or "Off"
 end
 
 function ENT:UpdateOverlayText()

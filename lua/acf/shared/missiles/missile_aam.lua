@@ -61,7 +61,7 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
 
     agility         = 3,                                    -- multiplier for missile turn-rate.      --was 5
     armdelay        = 0.00,                                 -- minimum fuse arming delay        --was 0.4
-    guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    guidelay        = 0.25,                                 -- Required time (in seconds) for missile to start guiding at target once launched
     SeekSensitivity = 3
 } )
 

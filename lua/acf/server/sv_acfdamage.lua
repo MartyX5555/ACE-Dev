@@ -365,7 +365,7 @@ function ACF_Spall( HitPos , HitVec , HitMask , KE , Caliber , Armour , Inflicto
 
         -- Normal spalling core
         local TotalWeight   = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 150
-        local Spall         = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33)*ACF.SpallMult,100)
+        local Spall         = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33)*ACF.SpallMult,24)
         local SpallWeight   = TotalWeight/Spall*SpallMul
         local SpallVel      = (KE*16/SpallWeight)^0.5/Spall*SpallMul
         local SpallAera     = (SpallWeight/7.8)^0.33 
@@ -597,7 +597,7 @@ function ACF_Spall_HESH( HitPos , HitVec , HitMask , HEFiller , Caliber , Armour
 
         -- HESH spalling core
         local TotalWeight   = 3.1416*(Caliber/2)^2 * math.max(UsedArmor,30) * 2500
-        local Spall         = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),48) --24
+        local Spall         = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24) --24
         local SpallWeight   = TotalWeight/Spall*SpallMul
         local SpallVel      = (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul
         local SpallAera     = (SpallWeight/7.8)^0.33 
@@ -659,21 +659,25 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
 
         --extra damage for ents like ammo, engines, etc
         if ACF.VulnerableEnts[ SpallRes.Entity:GetClass() ] then
-            SpallEnergy.Penetration = SpallEnergy.Penetration * 1.25
+            SpallEnergy.Penetration = SpallEnergy.Penetration * 1.5
         end
 
         -- Applies the damage to the impacted entity
-        local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallAera , Angle , Inflictor, 0, nil, "Spall")  --DAMAGE !!
+        local HitRes = ACF_Damage( SpallRes.Entity , SpallEnergy , SpallAera , Angle , Inflictor, 0, nil, "Spall")
 
-        -- If it's able to destroy it, kill it
+        -- If it's able to destroy it, kill it and filter it
         if HitRes.Kill then
-            ACF_APKill( SpallRes.Entity , HitVec:GetNormalized() , SpallEnergy.Kinetic )
+            local Debris = ACF_APKill( SpallRes.Entity , HitVec:GetNormalized() , SpallEnergy.Kinetic )
+            if IsValid(Debris) then 
+                table.insert( ACE.Spall[Index].filter , Debris )
+                ACF_SpallTrace( SpallRes.HitPos , Index , SpallEnergy , SpallAera , Inflictor, Material )
+            end
         end     
 
         -- Applies a decal
-        util.Decal("GunShot1",SpallRes.StartPos, SpallRes.HitPos, ACE.Spall[Index].filter )
-
-        -- The entity was penetrated
+        util.Decal("GunShot1",SpallRes.StartPos, SpallRes.HitPos, ACE.Spall[Index].filter )        
+--[[
+        -- The entity was penetrated --Disabled since penetration values are not real
         if HitRes.Overkill > 0 then
 
             table.insert( ACE.Spall[Index].filter , SpallRes.Entity )
@@ -689,7 +693,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
 
             return
         end
-
+]]
         debugoverlay.Line( SpallRes.StartPos + Vector(1,0,0), SpallRes.HitPos + Vector(1,0,0), 10 , Color(255,0,0), true )
 
     end
@@ -709,8 +713,8 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
     Bullet.Ricochets = Bullet.Ricochets or 0
 
-    local Angle = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
-    local HitRes = ACF_Damage ( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
+    local Angle     = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
+    local HitRes    = ACF_Damage ( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
     HitRes.Ricochet = false
 
     local Ricochet = 0
@@ -950,8 +954,6 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
                 ::cont::
             end
         end
-
-        --sound.Play( "weapons/strider_buster/Strider_Buster_detonate.wav", Entity:GetPos() , 100, 75, math.Clamp(300 - count*25,15,255))
     end 
 end
 

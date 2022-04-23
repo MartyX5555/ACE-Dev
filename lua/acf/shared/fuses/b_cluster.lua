@@ -17,7 +17,7 @@ this.Name = ClassName
 this.Cluster = 2000
 
 
-this.desc = "This fuse fires a beam directly ahead and releases bomblets when the beam hits something close-by.\nDistance in inches."
+this.desc = "This fuse fires a beam directly ahead and releases bomblets when the beam hits something close-by. \n\nRemember that using this is a warcrime, so beware.\nDistance in inches."
 
 
 -- Configuration information for things like acfmenu.

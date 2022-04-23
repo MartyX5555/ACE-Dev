@@ -13,6 +13,8 @@
     --Rack Missile need this another function too. Since they are weapons as guns
 --This concept must be stored in the same way as rest of shared files if used manually. Otherwise, using a file discovery system is better
 
+AddCSLuaFile()
+
 ACE.Sounds = ACE.Sounds or {}
 
 --Step 1: Build the main sound table here

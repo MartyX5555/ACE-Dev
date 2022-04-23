@@ -46,30 +46,33 @@ local trackradar_base = {
     ent =   "ace_trackingradar",
     type =  "Radar"
 }
+local irst_base = {
+    ent = "ace_irst",
+    type = "Radar"
+}
 
 -- add gui stuff to base classes if this is client
 if CLIENT then
-    gun_base.guicreate = function( Panel, Table ) ACFGunGUICreate( Table ) end or nil
-    gun_base.guiupdate = function() return end
+    gun_base.guicreate          = function( Panel, Table ) ACFGunGUICreate( Table ) end or nil
+    gun_base.guiupdate          = function() return end
     
-    engine_base.guicreate = function( panel, tbl ) ACFEngineGUICreate( tbl ) end or nil
-    engine_base.guiupdate = function() return end
+    engine_base.guicreate       = function( panel, tbl ) ACFEngineGUICreate( tbl ) end or nil
+    engine_base.guiupdate       = function() return end
     
-    gearbox_base.guicreate = function( panel, tbl ) ACFGearboxGUICreate( tbl ) end or nil
-    gearbox_base.guiupdate = function() return end
+    gearbox_base.guicreate      = function( panel, tbl ) ACFGearboxGUICreate( tbl ) end or nil
+    gearbox_base.guiupdate      = function() return end
     
-    fueltank_base.guicreate = function( panel, tbl ) ACFFuelTankGUICreate( tbl ) end or nil
-    fueltank_base.guiupdate = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl ) end or nil
+    fueltank_base.guicreate     = function( panel, tbl ) ACFFuelTankGUICreate( tbl ) end or nil
+    fueltank_base.guiupdate     = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl ) end or nil
 
-    radar_base.guicreate = function( Panel, Table ) ACFRadarGUICreate( Table ) end
-    radar_base.guiupdate = function() return end
+    radar_base.guicreate        = function( Panel, Table ) ACFRadarGUICreate( Table ) end
+    radar_base.guiupdate        = function() return end
 
-    trackradar_base.guicreate = function( Panel, Table ) ACFTrackRadarGUICreate( Table ) end or nil
-    trackradar_base.guiupdate = function() return end
-end
+    trackradar_base.guicreate   = function( Panel, Table ) ACFTrackRadarGUICreate( Table ) end or nil
+    trackradar_base.guiupdate   = function() return end
 
-if game.IsDedicated() then
-    ACE.IsDedicated = true
+    irst_base.guicreate         = function( Panel, Table ) ACFIRSTGUICreate( Table ) end or nil
+    irst_base.guiupdate         = function() return end
 end
 
 -- some factory functions for defining ents
@@ -110,12 +113,13 @@ function ACF_DefineEngine( id, data )
     if (data.year or 0) < ACF.Year then
         local engineData = ACF_CalcEnginePerformanceData(data.torquecurve or ACF.GenericTorqueCurves[data.enginetype], data.torque, data.idlerpm, data.limitrpm)
 
-        data.peaktqrpm = engineData.peakTqRPM
-        data.peakpower = engineData.peakPower
-        data.peakpowerrpm = engineData.peakPowerRPM
-        data.peakminrpm = engineData.powerbandMinRPM
-        data.peakmaxrpm = engineData.powerbandMaxRPM
-        data.curvefactor = (data.limitrpm - data.idlerpm) / data.limitrpm
+        data.peaktqrpm      = engineData.peakTqRPM
+        data.peakpower      = engineData.peakPower
+        data.peakpowerrpm   = engineData.peakPowerRPM
+        data.peakminrpm     = engineData.powerbandMinRPM
+        data.peakmaxrpm     = engineData.powerbandMaxRPM
+        data.curvefactor    = (data.limitrpm - data.idlerpm) / data.limitrpm
+
         data.id = id
         table.Inherit( data, engine_base )
         MobilityTable[ id ] = data
@@ -128,6 +132,7 @@ function ACF_DefineGearbox( id, data )
     table.Inherit( data, gearbox_base )
     MobilityTable[ id ] = data
 end
+
 
 -- fueltank definition
 function ACF_DefineFuelTank( id, data )
@@ -143,6 +148,7 @@ function ACF_DefineFuelTankSize( id, data )
     FuelTankTable[ id ] = data
 end
 
+
 -- Radar definition
 function ACF_DefineRadar( id, data )
     data.id = id
@@ -156,6 +162,7 @@ function ACF_DefineRadarClass( id, data )
     RadarClasses[ id ] = data
 end
 
+
 -- Tracking Radar definition
 function ACF_DefineTrackRadar( id, data )
     data.id = id
@@ -165,6 +172,20 @@ end
 
 -- Tracking Radar Class definition
 function ACF_DefineTrackRadarClass( id, data )
+    data.id = id
+    RadarClasses[ id ] = data
+end
+
+
+-- Tracking Radar definition
+function ACF_DefineIRST( id, data )
+    data.id = id
+    table.Inherit( data, irst_base )
+    Radars[ id ] = data
+end
+
+-- Tracking Radar Class definition
+function ACF_DefineIRSTClass( id, data )
     data.id = id
     RadarClasses[ id ] = data
 end
@@ -220,27 +241,31 @@ end
 
 -- search for and load a bunch of files or whatever
 
-local Gpath = "acf/shared/"
-local folders = {
-    "armor",
-    "guns",
-    "missiles",
-    "radars",
-    "ammocrates",
-    "engines",
-    "gearboxes",
-    "guidances",
-    "fueltanks",
-    "fuses",
-    "sounds"
-}
+do
 
-for k, folder in ipairs(folders) do
+    local Gpath = "acf/shared/"
+    local folders = {
+        "armor",
+        "guns",
+        "missiles",
+        "radars",
+        "ammocrates",
+        "engines",
+        "gearboxes",
+        "guidances",
+        "fueltanks",
+        "fuses",
+        "sounds"
+    }
+
+    for k, folder in ipairs(folders) do
     
-    local folderData = file.Find( Gpath..folder.."/*.lua", "LUA" )
-    for k, v in pairs( folderData ) do
-        AddCSLuaFile( "acf/shared/"..folder.."/" .. v )
-        include( "acf/shared/"..folder.."/" .. v )
+        local folderData = file.Find( Gpath..folder.."/*.lua", "LUA" )
+        for k, v in pairs( folderData ) do
+            AddCSLuaFile( "acf/shared/"..folder.."/" .. v )
+            include( "acf/shared/"..folder.."/" .. v )
+        end
+
     end
 
 end
@@ -249,15 +274,15 @@ ACF.RoundTypes = list.Get("ACFRoundTypes")
 ACF.IdRounds = list.Get("ACFIdRounds")  --Lookup tables so i can get rounds classes from clientside with just an integer
 
 -- now that the tables are populated, throw them in the acf ents list
-list.Set( "ACFClasses", "GunClass", GunClasses )
-list.Set( "ACFEnts", "Guns", GunTable )            
-list.Set( "ACFEnts", "Mobility", MobilityTable )
-list.Set( "ACFEnts", "FuelTanks", FuelTankTable )
+list.Set( "ACFClasses"  , "GunClass"    , GunClasses    )
+list.Set( "ACFEnts"     , "Guns"        , GunTable      )            
+list.Set( "ACFEnts"     , "Mobility"    , MobilityTable )
+list.Set( "ACFEnts"     , "FuelTanks"   , FuelTankTable )
 
-list.Set( "ACFClasses", "Rack", RackClasses )
-list.Set( "ACFEnts", "Rack", Racks )
+list.Set( "ACFClasses"  , "Rack"        , RackClasses   )
+list.Set( "ACFEnts"     , "Rack"        , Racks         )
 
-list.Set( "ACFClasses", "Radar", RadarClasses )
-list.Set( "ACFEnts", "Radar", Radars )
+list.Set( "ACFClasses"  , "Radar"       , RadarClasses  )
+list.Set( "ACFEnts"     , "Radar"       , Radars        )
 
-list.Set( "ACESounds", "GunFire", GSoundData )
+list.Set( "ACESounds"   , "GunFire"     , GSoundData    )
