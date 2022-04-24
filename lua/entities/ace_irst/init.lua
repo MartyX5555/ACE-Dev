@@ -203,7 +203,9 @@ function ENT:AcquireLock()
     local found             = self:GetWhitelistedEntsInCone()
 
     local IRSTPos           = self:GetPos()
-    local randinac          = math.Rand(-2,2) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+    local inac = 10
+    local randanginac          = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+    local randposinac          = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
     --Table definition
     local Owners            = {}
@@ -273,11 +275,12 @@ function ENT:AcquireLock()
             end
 
             local errorFromHeat = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
-            local angerr        = 1 + randinac * (errorFromAng + errorFromHeat)
+            local posErrorFromHeat = 1 - math.min(1, (Heat / 200))
+            local angerr        = 1 + randanginac * (errorFromAng + errorFromHeat)
 
             --For Owner table
             table.insert( Owners        , CPPI and scanEnt:CPPIGetOwner():GetName() or scanEnt:GetOwner():GetName() or "")
-            table.insert( Positions     , (entpos + ( Vector(randinac,randinac,randinac)) * difpos:Length()/500 ) )
+            table.insert( Positions     , (entpos + randposinac * posErrorFromHeat * difpos:Length()/500 ) )
             table.insert( Temperatures  , Heat )
             table.insert( posTable      , nonlocang * angerr )
 
