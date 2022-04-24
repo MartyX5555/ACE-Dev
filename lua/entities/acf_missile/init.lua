@@ -112,7 +112,7 @@ function ENT:CalcFlight()
     local Tdelay    = self.ForceTdelay >= self.TrackDelay and self.ForceTdelay or self.TrackDelay
 
     if Guidance.TargetPos then
-        if self.TrackDelay > 0 then
+        if Tdelay > self.TrackDelay then
             if not self.Timer then
                 self.Timer = true
 
