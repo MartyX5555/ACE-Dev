@@ -15,9 +15,10 @@ function ENT:Initialize()
     self.Heat                   = 21
     self.IsJammed               = 0
 
-    self.LegalTick              = 0
-    self.checkLegalIn           = 50 + math.random(0,50) -- Random checks every 5-10 seconds
-    self.IsLegal                = true
+    self.NextLegalCheck         = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+    self.Legal                  = true
+    self.LegalIssues            = ""
+
     self.ClosestToBeam          = -1
 
     self.Inputs = WireLib.CreateInputs( self, { "Active", "Cone" } )
@@ -90,23 +91,9 @@ function ENT:SetModelEasy(mdl)
     
 end
 
---ATGMs tracked
-function ENT:isLegal()
-
-    if self:GetPhysicsObject():GetMass() < 600 then return false end
-    if not self:IsSolid() then return false end
-
-    ACF_GetPhysicalParent(self)
-    
-    self.IsLegal = self.acfphysparent:IsSolid()
-
-    return self.IsLegal
-
-end
-
 function ENT:TriggerInput( inp, value )
     if inp == "Active" then
-        self:SetActive((value ~= 0) and self:isLegal())
+        self:SetActive((value ~= 0) and self.Legal)
     end
     if inp == "Cone" then
         if value > 0 then
@@ -152,21 +139,22 @@ end
 
 function ENT:Think()
 
-
     local curTime = CurTime()   
     self:NextThink(curTime + self.ThinkDelay)
 
-    self.LegalTick = (self.LegalTick or 0) + 1
+    if ACF.CurTime > self.NextLegalCheck then
 
-    if  self.LegalTick >= (self.checkLegalIn or 0) then
-    
-        self.LegalTick = 0
-        self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
-        self:isLegal()
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, nil, true, true)
+        self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
+        if not self.Legal then
+            self.Active = false
+            self:SetActive(false)            
+        end
+        
     end
 
-    if self.Active and self.IsLegal then
+    if self.Active and self.Legal then
 
         local radID = ACE.radarIDs[self]
         self.IsJammed = 0
@@ -371,9 +359,9 @@ function ENT:UpdateOverlayText()
         txt = txt.."\n\nWarning: Jammed"
     end
 
-    --if not self.Legal then
-    --  txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-    --end
+    if not self.Legal then
+      txt = txt .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+    end
 
     self:SetOverlayText(txt)
 

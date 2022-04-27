@@ -398,7 +398,6 @@ function ENT:Think()
     if ACF.CurTime > self.NextLegalCheck then
         self.Legal, self.LegalIssues = ACF_CheckLegal(self, nil, self.Mass, self.ModelInertia, nil, true) -- requiresweld overrides parentable, need to set it false for parent-only gearboxes
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
-        --self:SetOverlayText(txt)
 
         if not self.Legal and self.Firing then
             self.Firing = false
@@ -449,6 +448,8 @@ function ENT:Think()
             self:Reload()
         end
     end
+    
+    self:GetOverlayText()
     
     self:NextThink(Time + 0.5)
     
@@ -1017,9 +1018,9 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
             
         end
     
-    --if not self.Legal then
-        --txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
-    --end
+    if not self.Legal then
+        txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+    end
 
     self:SetOverlayText(txt)
     
