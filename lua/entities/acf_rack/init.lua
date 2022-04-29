@@ -353,13 +353,12 @@ end
 
 function ENT:UpdateRefillBonus()
     
-    local totalBonus    = 0
-    local selfPos       = self:GetPos()
+    local totalBonus            = 0
+    local selfPos               = self:GetPos()
     
     local Efficiency            = 0.11 * ACF.AmmoMod           -- Copied from acf_ammo, beware of changes!
     local minFullEfficiency     = 50000 * Efficiency    -- The minimum crate volume to provide full efficiency bonus all by itself.
     local maxDist               = ACF.RefillDistance
-    
     
     for k, crate in pairs(ACF.AmmoCrates or {}) do
         
@@ -686,9 +685,9 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
     if not Owner:CheckLimit("_acf_rack") then return false end
     
-    local Rack = UpdateRack or ents.Create("acf_rack")
-    local List = ACF.Weapons.Rack
-    local Classes = ACF.Classes.Rack
+    local Rack      = UpdateRack or ents.Create("acf_rack")
+    local List      = ACF.Weapons.Rack
+    local Classes   = ACF.Classes.Rack
     
     if not Rack:IsValid() then return false end
     
@@ -705,8 +704,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     
     Rack:SetPlayer(Owner)
     Rack.Owner = Owner
-    Rack.Id = Id
-    --Rack.BulletData.Id = Id
+    Rack.Id     = Id
     
     local gundef = List[Id] or error("Couldn't find the " .. tostring(Id) .. " gun-definition!")
     
@@ -741,7 +739,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack.Muzzleflash        = gundef.muzzleflash or gunclass.muzzleflash or ""
     Rack.RoFmod             = gunclass["rofmod"]
     Rack.Sound              = gundef.sound or gunclass.sound
-    Rack.Inaccuracy         = gunclass["spread"]
+    Rack.Inaccuracy         = gundef["spread"] or gunclass["spread"]
     
     Rack.HideMissile        = ACF_GetRackValue(Id, "hidemissile")
     Rack.ProtectMissile     = gundef.protectmissile or gunclass.protectmissile
@@ -756,8 +754,8 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     Rack:SetNWString( "Sound",  Rack.Sound )
     
     if not UpdateRack or Rack.Model ~= Rack:GetModel() then
+
         Rack:SetModel( Rack.Model ) 
-    
         Rack:PhysicsInit( SOLID_VPHYSICS )          
         Rack:SetMoveType( MOVETYPE_VPHYSICS )       
         Rack:SetSolid( SOLID_VPHYSICS )
@@ -783,37 +781,18 @@ end
 list.Set( "ACFCvars", "acf_rack" , {"id"} )
 duplicator.RegisterEntityClass("acf_rack", MakeACF_Rack, "Pos", "Angle", "Id")
 
-
-
-
 function ENT:GetInaccuracy()
     return self.Inaccuracy * ACF.GunInaccuracyScale
 end
 
-
-function ENT:CheckLegal()
-    --RW 61 holoparent or riot!!
-    --make sure it's not invisible to traces
-    if not self:IsSolid() then return false end
-    
-    -- make sure weight is not below stock
-    if self:GetPhysicsObject():GetMass() < ((self.LegalWeight or self.Mass)) then return false end --If you really want your 5kg per launcher you can have it, this fixes some rounding fun when setting launcher weight.
-
-    -- update the acfphysparent
-    ACF_GetPhysicalParent(self)
-    
-    return self.acfphysparent:IsSolid()
-    
-end
-
-
-
 function ENT:FireMissile()
     
-    if self.Ready and self:CheckLegal() and (self.PostReloadWait < CurTime()) then
+    if self.Ready and self.Legal and (self.PostReloadWait < CurTime()) then
+        
+        ACF_GetPhysicalParent(self)
         
         local nextMsl = self:PeekMissile()
-    
+
         local CanDo = true
         if nextMsl then CanDo = hook.Run("ACF_FireShell", self, nextMsl.BulletData ) end
         if CanDo == false then return end
@@ -827,14 +806,13 @@ function ENT:FireMissile()
         
             local attach, inverted, muzzle = self:GetMuzzle(curShot - 1, missile)
         
-            local MuzzlePos = self:WorldToLocal(muzzle.Pos)
-
-            local MuzzleVec = muzzle.Ang:Forward()
+            local MuzzlePos         = self:WorldToLocal(muzzle.Pos)
+            local MuzzleVec         = muzzle.Ang:Forward()
             
-            local coneAng = math.tan(math.rad(self:GetInaccuracy())) 
-            local randUnitSquare = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
-            local spread = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
-            local ShootVec = (MuzzleVec + spread):GetNormalized()
+            local coneAng           = math.tan(math.rad(self:GetInaccuracy())) 
+            local randUnitSquare    = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
+            local spread            = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+            local ShootVec          = (MuzzleVec + spread):GetNormalized()
             
             local filter = {}
             for k, v in pairs(self.Missiles) do
@@ -894,9 +872,6 @@ function ENT:FireMissile()
     end
 
 end
-
-
-
 
 function ENT:MuzzleEffect( attach, bdata )
     self:EmitSound( "phx/epicmetal_hard.wav", 500, 100 )
@@ -973,19 +948,16 @@ function ENT:OnRestore()
     Wire_Restored(self.Entity)
 end
 
-function ENT:GetOverlayText()   --New Overlay text that is shown when you are looking at the rack. 
+--New Overlay text that is shown when you are looking at the rack.
+function ENT:GetOverlayText()    
 
-    --local name          = self:GetNWString("WireName")   
-    --local GunType       = self:GetNWString("GunType")    --Rack type. A bit useless atm
-    local Ammo          = table.Count(self.Missiles)--self:GetNWInt("Ammo")          --Ammo count
-    local FireRate      = self.LastValidFireDelay or 1--self:GetNWFloat("Interval")    --How many time take one lauch from another. in secs
-    local Reload        = self:GetNWFloat("Reload")      --reload time. in secs
-    local ReloadBonus   = self.ReloadMultiplierBonus or 0--self:GetNWFloat("ReloadBonus") --the word explains by itself
-    local Status        = self.RackStatus --self:GetNWString("Status")     --this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
-    
-    --if not Status == '' then
-    
-      local txt = '-  '..Status..'  -'
+    local Ammo          = table.Count(self.Missiles)       -- Ammo count
+    local FireRate      = self.LastValidFireDelay or 1     -- How many time take one lauch from another. in secs
+    local Reload        = self:GetNWFloat("Reload")        -- reload time. in secs
+    local ReloadBonus   = self.ReloadMultiplierBonus or 0  -- the word explains by itself
+    local Status        = self.RackStatus                  -- this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
+
+    local txt = '-  '..Status..'  -'
     
         if Ammo > 0  then
             if Ammo == 1 then 
@@ -995,27 +967,19 @@ function ENT:GetOverlayText()   --New Overlay text that is shown when you are lo
             end 
        
             txt = txt..'\n\nFire Rate: '..(math.Round(FireRate,2))..' secs'
-       
             txt = txt..'\nReload Time: '..(math.Round(Reload,2))..' secs'
        
             if ReloadBonus > 0 then
-       
                txt = txt..'\n'..math.floor(ReloadBonus * 100)..'% Reload Time Decreased'
-       
             end
             
         else
         
             if #self.AmmoLink ~= 0 then
-        
                txt = txt..'\n\nProvided with ammo.\n'
-        
             else
-        
                txt = txt..'\n\nAmmo not found!\n'     
-        
             end
-            
         end
     
     if not self.Legal then

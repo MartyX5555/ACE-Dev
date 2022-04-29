@@ -406,6 +406,7 @@ ACF_DefineRack("1x SPG9", {
     magsize = 1,
     armour  = 30,
     caliber = 9.0,
+    spread = 0.1,
 
     protectmissile  = true,
     hidemissile     = true,

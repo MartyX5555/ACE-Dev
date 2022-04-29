@@ -53,6 +53,7 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
     IRST.Cone                  = IRST.ICone
 
     IRST.SeekSensitivity       = radar.SeekSensitivity
+    IRST.inac                  = radar.inaccuracy
 
     IRST.MinimumDistance       = radar.mindist
     IRST.MaximumDistance       = radar.maxdist
@@ -145,7 +146,7 @@ function ENT:GetWhitelistedEntsInCone()
     local difpos        = Vector()
     local dist          = 0
 
-    for k, scanEnt in pairs(ScanArray) do
+    for k, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
         if not IsValid(scanEnt) then goto cont end 
@@ -167,8 +168,8 @@ function ENT:GetWhitelistedEntsInCone()
         LOSdata.endpos          = entpos
         LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
         LOSdata.filter          = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
-        LOSdata.mins            = Vector(0,0,0)
-        LOSdata.maxs            = Vector(0,0,0)
+        LOSdata.mins            = vector_origin
+        LOSdata.maxs            = LOSdata.mins
 
         LOStr = util.TraceHull( LOSdata )
     
@@ -189,9 +190,9 @@ function ENT:AcquireLock()
     local found             = self:GetWhitelistedEntsInCone()
 
     local IRSTPos           = self:GetPos()
-    local inac = 10
-    local randanginac          = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-    local randposinac          = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
+    local inac              = self.inac
+    local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+    local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
     --Table definition
     local Owners            = {}
