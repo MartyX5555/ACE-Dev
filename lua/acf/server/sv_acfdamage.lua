@@ -638,12 +638,18 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
     -- Check if spalling hit something
     if SpallRes.Hit and ACF_Check( SpallRes.Entity ) then
 
-        if ACF_CheckClips( SpallRes.Entity, SpallRes.HitPos ) then
+        do
 
-            table.insert( ACE.Spall[Index].filter , SpallRes.Entity )
+            local phys = SpallRes.Entity:GetPhysicsObject()
 
-            ACF_SpallTrace( SpallRes.StartPos , Index , SpallEnergy , SpallAera , Inflictor, Material )
-            return
+            if IsValid(phys) and ACF_CheckClips( SpallRes.Entity, SpallRes.HitPos ) then
+
+                table.insert( ACE.Spall[Index].filter , SpallRes.Entity )
+
+                ACF_SpallTrace( SpallRes.StartPos , Index , SpallEnergy , SpallAera , Inflictor, Material )
+                return
+            end
+
         end
 
         -- Get the spalling hitAngle
@@ -715,10 +721,11 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
     local Angle     = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
     local HitRes    = ACF_Damage ( Target, Energy, Bullet["PenAera"], Angle, Bullet["Owner"], Bone, Bullet["Gun"], Bullet["Type"] )
+    
     HitRes.Ricochet = false
 
-    local Ricochet = 0
-    local ricoProb = 1
+    local Ricochet  = 0
+    local ricoProb  = 1
 
     --Missiles are special. This should be dealt with guns only
     if (IsValid(Bullet["Gun"]) and Bullet["Gun"]:GetClass() ~= "acf_missile") or not IsValid(Bullet["Gun"]) then

@@ -92,11 +92,11 @@ end
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CheckClips( Ent, HitPos )
 
-   if not IsValid(Ent) or (Ent.ClipData == nil) --only valid visclipped ents
-      or (not (Ent:GetClass() == "prop_physics"))  --only props
-      or (Ent:GetPhysicsObject():GetVolume() == nil) -- makesphere
-      then return false end
-   
+   if not IsValid(Ent) or Ent.ClipData == nil then return false end        -- only valid visclipped ents                                    
+   if Ent:GetClass() ~= "prop_physics" then return false end               -- only props
+   local phys = Ent:GetPhysicsObject()                                         
+   if not IsValid(phys) or phys:GetVolume() == nil then return false end   -- makesphere
+
    local normal
    local origin
 
