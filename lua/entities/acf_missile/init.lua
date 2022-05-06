@@ -128,6 +128,7 @@ function ENT:CalcFlight()
 
     --If the missile is able to turn by guidance
     if TargetPos then
+
         local Dist = Pos:Distance(TargetPos)
         TargetPos = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
         local LOS = (TargetPos - Pos):GetNormalized()
