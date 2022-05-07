@@ -264,7 +264,7 @@ function ENT:CalcFlight()
     self.FlightTime = Flight
 
     --Missile trajectory debugging
-    debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
+    --debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
     --debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
 
     self:DoFlight()
@@ -474,7 +474,7 @@ function ENT:Detonate()
     --print('MuzzleVel')
     --print(self.BulletData.MuzzleVel)
     self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10) 
-    debugoverlay.Line(self.BulletData.Pos, self.BulletData.Pos + self.BulletData.Flight, 10, Color(255, 0, 0))
+    --debugoverlay.Line(self.BulletData.Pos, self.BulletData.Pos + self.BulletData.Flight, 10, Color(255, 0, 0))
 
     self:ForceDetonate()
 
