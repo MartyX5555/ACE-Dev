@@ -970,11 +970,15 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
     -- if it hasn't been processed yet, check for children
     if not Entity.ACF_Killed then ACF_KillChildProps( Entity, BlastPos or Entity:GetPos(), Energy ) end
 
-    --ERA props should not create debris
-    local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
-    local MatData = ACE.Armors[Mat]
-    if MatData.IsExplosive then return end
+    do
+
+        --ERA props should not create debris
+        local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
+        local MatData = ACE.Armors[Mat]
+        if MatData.IsExplosive then return end
     
+    end
+
     constraint.RemoveAll( Entity )
     Entity:Remove()
 
@@ -996,9 +1000,13 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
     local physent = Entity:GetPhysicsObject()
 
     if phys:IsValid() and physent:IsValid() then
+
+        local parent = ACF_GetPhysicalParent( obj )
+
         phys:SetDragCoefficient( -50 )  
         phys:SetMass( physent:GetMass() )
-        phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:GetPos()+VectorRand()*10 )           
+        phys:ApplyForceOffset( HitVector:GetNormalized() * Energy * 2, Debris:GetPos()+VectorRand()*10  ) 
+    
     end
 
     return Debris
@@ -1011,11 +1019,15 @@ function ACF_APKill( Entity , HitVector , Power )
     -- kill the children of this ent, instead of disappearing them from removing parent
     ACF_KillChildProps( Entity, Entity:GetPos(), Power )
 
-    --ERA props should not create debris
-    local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
-    local MatData = ACE.Armors[Mat]
-    if MatData.IsExplosive then return end
-      
+    do
+
+        --ERA props should not create debris
+        local Mat = (Entity.ACF and Entity.ACF.Material) or "RHA"
+        local MatData = ACE.Armors[Mat]
+        if MatData.IsExplosive then return end
+
+    end
+
     constraint.RemoveAll( Entity )
     Entity:Remove()
     
@@ -1037,7 +1049,7 @@ function ACF_APKill( Entity , HitVector , Power )
     if phys:IsValid() and physent:IsValid() then
         phys:SetDragCoefficient( -50 )  
         phys:SetMass( physent:GetMass() )
-        phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100 ,  Debris:GetPos()+VectorRand()*10)      
+        phys:ApplyForceOffset( HitVector:GetNormalized() * Power * 100, Debris:GetPos()+VectorRand()*10 )      
     end
 
     return Debris
@@ -1063,8 +1075,7 @@ function ACF_ScaledExplosion( ent )
         local HE, Propel
 
         if ent.RoundType == "Refill" then
-            HE      = 0.00001
-            Propel  = 0.00001
+            return --Denying refills from even causing damage to nearby crates
         else 
             HE      = ent.BulletData["FillerMass"] or 0
             Propel  = ent.BulletData["PropMass"] or 0
@@ -1083,35 +1094,34 @@ function ACF_ScaledExplosion( ent )
 
     while Search do
     
-
         if #ACE.Explosives > 1 then
-            for _,Found in pairs( ACE.Explosives ) do
+            for _,Found in ipairs( ACE.Explosives ) do
 
                 if not IsValid(Found) then goto cont end
                 if Found:GetPos():DistToSqr(Pos) > Radius^2 then goto cont end
 
                 local EOwner = CPPI and Found:CPPIGetOwner() or NULL
             
-                if not Found.Exploding and Owner == EOwner then --So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
+                if not Found.Exploding then --So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
+
+                    if Owner ~= EOwner then goto cont end
+
                     local Hitat = Found:NearestPoint( Pos )
                 
                     local Occlusion = {}
                         Occlusion.start     = Pos
                         Occlusion.endpos    = Hitat
-                        Occlusion.filter    = FilterTraceHull
-                        Occlusion.mins      = Vector( 0, 0, 0 )
-                        Occlusion.maxs      = Vector( 0, 0, 0 ) 
+                        Occlusion.filter    = Filter
+                        Occlusion.mins      = vector_origin
+                        Occlusion.maxs      = Occlusion.mins
                     local Occ = util.TraceHull( Occlusion )
                 
                     if Occ.Fraction == 0 then
 
                         table.insert(Filter,Occ.Entity)
-                        local Occlusion = {}
-                            Occlusion.start     = Pos
-                            Occlusion.endpos    = Hitat
-                            Occlusion.filter    = Filter
-                            Occlusion.mins      = Vector( 0, 0, 0 )
-                            Occlusion.maxs      = Vector( 0, 0, 0 ) 
+
+                        Occlusion.filter    = Filter
+
                         Occ = util.TraceHull( Occlusion )
                         --print("Ignoring nested prop")
 

@@ -279,10 +279,17 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                     if ACE.EnableTinnitus then
                         local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
                         if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
-                            timer.Simple(0.01, function()
-                                entply:SetDSP( 32, true )
-                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )        
-                            end)
+                            if not entply.OnTinnitus then
+                                entply.OnTinnitus = true
+                                timer.Simple(0.01, function()
+                                    entply:SetDSP( 32, true )
+                                    entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )   
+
+                                    timer.Simple(2, function()
+                                        entply.OnTinnitus = nil     
+                                    end)
+                                end)
+                            end
                         end
 
                         --debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)

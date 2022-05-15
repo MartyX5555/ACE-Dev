@@ -108,7 +108,9 @@ function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
    end
 
    -- check mass
-   if ACF.Legal.Ignore.Mass <= 0 and MinMass != nil and (physobj:GetMass() < MinMass) then
+   if ACF.Legal.Ignore.Mass <= 0 and MinMass != nil and (math.floor(physobj:GetMass()) < MinMass) then
+      print("[ACE|WARN]- Flagged as minmass due to current entity should be "..MinMass.." kgs as minimum, but it was "..physobj:GetMass().." kgs instead. (Diff: "..(MinMass-physobj:GetMass()).." kgs)")
+
       table.insert(problems,"Under min mass")
    end
 

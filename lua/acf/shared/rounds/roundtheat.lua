@@ -208,14 +208,9 @@ end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
-    Bullet.Detonated    = Bullet.Detonated + 1
-    DetCount            = Bullet.Detonated or 0
+    Bullet.Detonated    = (Bullet.Detonated or 0) + 1
 
-    --debugoverlay.Text(Bullet.Pos, "THEAT pos: "..DetCount, 10 )
-    --debugoverlay.Cross(Bullet.Pos, 5, 10, Color( 255, 255, 255 ), true )
-
-    --debugoverlay.Text(HitPos, "THEAT pos using HitPos: "..DetCount, 10 )
-    --debugoverlay.Cross(HitPos, 5, 10, Color( 255, 255, 255 ), true )
+    local DetCount      = Bullet.Detonated
 
     --First Detonation
     if DetCount == 1 then 
@@ -268,7 +263,10 @@ end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
-    DetCount = Bullet.Detonated or 0
+    local DetCount = Bullet.Detonated or 0
+
+    --2nd charge should always appear in the same place as 1st charge
+    if Bullet.FirstPos then HitPos = Bullet.FirstPos end
 
     if ACF_Check( Target ) then
             
@@ -280,8 +278,6 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
             
             if HitRes.Overkill > 0 then
-
-                --print("Filtering prop due to HEAT #"..DetCount)
 
                 table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
                 ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
@@ -324,7 +320,8 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
-    DetCount = Bullet.Detonated or 0
+    local DetCount = Bullet.Detonated or 0
+
     if DetCount < 2 then    
         Round.detonate( Index, Bullet, HitPos, HitNormal )
         return "Penetrated"
@@ -359,7 +356,7 @@ function Round.endeffect( Effect, Bullet )
 end
 
 function Round.pierceeffect( Effect, Bullet )
-    DetCount = Bullet.Detonated or 0
+    local DetCount = Bullet.Detonated or 0
     if DetCount > 0 then
     
         local Spall = EffectData()

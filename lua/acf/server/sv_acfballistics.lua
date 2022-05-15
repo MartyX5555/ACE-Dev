@@ -214,6 +214,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
    end
 
    FlightTr.mask     = Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
+   --FlightTr.mask     = Bullet.Caliber <= 0.3 and (1174421507+16432) or (33570827+16432) --Experimental mask, including water hits
    FlightTr.filter   = Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
    TROffset          = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
@@ -240,7 +241,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
       --if our shell hits visclips, convert the tracehull on traceline.
       if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then   
 
-         FlightTr.maxs     = Vector( 0, 0, 0 )
+         FlightTr.maxs     = vector_origin
          FlightTr.mins     = -FlightTr.maxs  
 
          -- trace result is stored in supplied output FlightRes (at top of file)
@@ -272,7 +273,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
    
    --bullet hit something that isn't world and is allowed to hit
    elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
-   
+
       --If we hit stuff then send the resolution to the bullets damage function
       ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
       

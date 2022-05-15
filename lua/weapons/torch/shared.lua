@@ -88,25 +88,34 @@ end
 function SWEP:PrimaryAttack()
 
 	self.Weapon:SetNextPrimaryFire( CurTime() + 0.05 )
+
 	local userid = self.Owner
 	local userid = self.Owner
+
 	local trace = {}
-	trace.start = userid:GetShootPos()
-	trace.endpos = userid:GetShootPos() + ( userid:GetAimVector() * 128	)
-	trace.filter = userid --Not hitting the owner's feet when aiming down
-	trace.mins = Vector(0,0,0)
-	trace.maxs = Vector(0,0,0)
+	trace.start 	= userid:GetShootPos()
+	trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
+	trace.filter 	= userid --Not hitting the owner's feet when aiming down
+	trace.mins 		= vector_origin
+	trace.maxs 		= trace.mins
 	local tr = util.TraceHull( trace )
-		if ( tr.HitWorld ) then return end	
-		if CLIENT then return end
+
+	if ( tr.HitWorld ) then return end	
+	if CLIENT then return end
+
 	local ent = tr.Entity
+
 	if ent:IsValid() and ent:GetClass() ~= 'ace_debris' then
+
 		if ent:IsPlayer() || ent:IsNPC() then
-			local PlayerHealth = ent:Health() --get the health
-			local PlayerMaxHealth = ent:GetMaxHealth()--and max health too
-			local PlayerArmour = ent:Armor()
-			local PlayerMaxArmour = 100
+
+			local PlayerHealth 		= ent:Health() --get the health
+			local PlayerMaxHealth 	= ent:GetMaxHealth()--and max health too
+			local PlayerArmour 		= ent:Armor()
+			local PlayerMaxArmour 	= 100
+
 			if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
+
 			PlayerHealth = PlayerHealth + 3 --otherwise add 1 HP
 			ent:SetHealth( PlayerHealth ) --and boost the player's HP to that.
 			
@@ -115,29 +124,37 @@ function SWEP:PrimaryAttack()
 			self.Weapon:SetNWFloat( "MaxHP", PlayerMaxHealth )
 			self.Weapon:SetNWFloat( "MaxArmour", PlayerMaxArmour )
 			
-			local effect = EffectData()--then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 			local AngPos = userid:GetAttachment( 4 )
+			local effect = EffectData()--then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 			effect:SetOrigin( AngPos.Pos + userid:GetAimVector() * 10 )
 			effect:SetNormal( userid:GetAimVector() )
 			effect:SetEntity( self.Weapon )
 			util.Effect( "thruster_ring", effect, true, true ) --("The 2 booleans control clientside override, by default it doesn't display it since it'll lag a bit behind inputs in MP, same for sounds" Kaf)
+			
 			ent:EmitSound( "items/medshot4.wav", true, true )--and play a sound.
 		else
+
 			if CPPI and not ent:CPPICanTool( self.Owner, "torch" ) then return false end
+
 			local Valid = ACF_Check ( ent )
+
 			if ( Valid and ent.ACF.Health < ent.ACF.MaxHealth ) then
+
 				ent.ACF.Health = math.min(ent.ACF.Health + (600/ent.ACF.MaxArmour),ent.ACF.MaxHealth)
 				ent.ACF.Armour = math.min(ent.ACF.MaxArmour * (ent.ACF.Health/ent.ACF.MaxHealth),ent.ACF.MaxArmour)
---				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 50 , true, true )--Welding noise here, gotte figure out how to do a looped sound.
 				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_WEAPON )
 				TeslaSpark(tr.HitPos , 1 )
+
+				ACF_UpdateVisualHealth(ent)
 			end
+
 			self.Weapon:SetNWFloat( "HP", ent.ACF.Health )
 			self.Weapon:SetNWFloat( "Armour", ent.ACF.Armour )
 			self.Weapon:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 			self.Weapon:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
 		end
 	else 
+
 		self.Weapon:SetNWFloat( "HP", 0 )
 		self.Weapon:SetNWFloat( "Armour", 0 )
 		self.Weapon:SetNWFloat( "MaxHP", 0 )
@@ -222,7 +239,7 @@ function SWEP:SecondaryAttack()
 				Phys:Wake()
 			else
 				local effectdata = EffectData()
-				effectdata:SetMagnitude( 1.0 )
+				effectdata:SetMagnitude( 2.0 )
 				effectdata:SetRadius( 1.0 )
 				effectdata:SetScale( 1.0 )
 				effectdata:SetStart( userid:GetShootPos() )

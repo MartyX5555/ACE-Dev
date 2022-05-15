@@ -14,7 +14,8 @@ Material.effectiveness      = 5
 Material.HEATeffectiveness  = 20
 Material.HEeffectiveness    = 3
 Material.resiliance         = 0.1
-Material.HEresiliance       = 0.05
+Material.HEATresiliance     = 0.025
+Material.HEresiliance       = 0.025
 
 Material.spallarmor     = 1
 Material.spallresist    = 1
@@ -38,6 +39,7 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
     --ERA is more effective vs HEAT than vs kinetic 
     if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then      
         blastArmor = Material.HEATeffectiveness * armor
+        resiliance = Material.HEATresiliance
     elseif Type == 'HE' or Type == 'HESH' or Type == 'Frag' then
         blastArmor = Material.HEeffectiveness * armor
         resiliance = Material.HEresiliance

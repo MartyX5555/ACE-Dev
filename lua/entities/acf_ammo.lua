@@ -63,10 +63,13 @@ if CLIENT then
         local effect
     
         for i=1, #effectsTbl do
+            
             effect = effectsTbl[i]
             
-            if not (IsValid(effect.EntFrom) and IsValid(effect.EntTo)) then 
-                effectsTbl[i] = nil
+            if effect then
+                if not IsValid(effect.EntFrom) and IsValid(effect.EntTo) then 
+                    effectsTbl[i] = nil
+                end
             end
         end
         
@@ -160,23 +163,7 @@ function ENT:Initialize()
     self.Caliber            = 1
     self.RoFMul             = 1
     self.LastMass           = 1
---[[
-    self.RoundId            = ""        -- Weapon this round loads into, ie 140mmC, 105mmH ...
-    self.RoundType          = 0         -- Type of round, IE AP, HE, HEAT ...
-    self.RoundPropellant    = 0         -- Lenght of propellant
-    self.RoundProjectile    = 0         -- Lenght of the projectile
-    self.RoundData5         = 0
-    self.RoundData6         = 0
-    self.RoundData7         = 0
-    self.RoundData8         = 0
-    self.RoundData9         = 0
-    self.RoundData10        = 0
-    self.RoundData11        = 0
-    self.RoundData12        = 0
-    self.RoundData13        = 0
-    self.RoundData14        = 0
-    self.RoundData15        = 0
-]]
+
     self.Inputs             = Wire_CreateInputs( self, { "Active" } ) --, "Fuse Length"
     self.Outputs            = Wire_CreateOutputs( self, { "Munitions" } )
 
