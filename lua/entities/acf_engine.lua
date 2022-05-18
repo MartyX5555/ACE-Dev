@@ -454,7 +454,7 @@ end
 function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Weight, self.ModelInertia, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), self.ModelInertia, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:CheckRopes()
         self:CheckFuel()

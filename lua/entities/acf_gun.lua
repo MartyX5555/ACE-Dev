@@ -730,7 +730,7 @@ function ENT:Think()
     if ACF.CurTime > self.NextLegalCheck then
 
         -- check gun is legal
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, self.Mass, self.ModelInertia, nil, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Mass,2), self.ModelInertia, nil, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 
         -- check the seat is legal

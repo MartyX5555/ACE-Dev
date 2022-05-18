@@ -449,7 +449,7 @@ function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
         --local minmass = math.floor(self.Mass-6)  -- fuel is light, may as well save complexity and just check it's above empty mass
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.floor(self.EmptyMass), nil, true, true) -- mass-6, as mass update is granular to 5 kg
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.EmptyMass,2), nil, true, true) -- mass-6, as mass update is granular to 5 kg
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:UpdateOverlayText()
     end
