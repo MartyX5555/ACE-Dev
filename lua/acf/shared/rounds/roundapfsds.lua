@@ -122,60 +122,33 @@ function Round.cratetxt( BulletData )
     
 end
 
-function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
-
-    local Mat           = Target.ACF.Material or "RHA"
-    local NormieMult    = ACE.Armors[ Mat ].NormMult or 1
-    
-    Bullet.Normalize    = true
-    Bullet.Pos          = HitPos
-    
-    local FlightNormal  = (Bullet.Flight:GetNormalized() - HitNormal * ACF.NormalizationFactor * NormieMult * 2):GetNormalized() --Guess it doesnt need localization
-    local Speed         = Bullet.Flight:Length()
-
-    Bullet.Flight = FlightNormal * Speed
-    
-    local DeltaTime     = SysTime() - Bullet.LastThink
-    Bullet.StartTrace   = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-    Bullet.NextPos      = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)        --Calculates the next shell position
-    
-    debugoverlay.Line(Bullet.Pos, Bullet.NextPos + Bullet.Flight*100, 5, Color(255,0,0), true )
-
-end
-
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
     if ACF_Check( Target ) then
     
-        if Bullet.Normalize then
---      print("PropHit")
-            local Speed     = Bullet.Flight:Length() / ACF.VelScale
-            local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
-            local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+        local Speed     = Bullet.Flight:Length() / ACF.VelScale
+        local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
+        local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
         
-            if HitRes.Overkill > 0 then
-                table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
+        if HitRes.Overkill > 0 then
+            table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
 
-                ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+            ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
                 
-                Bullet.Flight       = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
-                Bullet.Normalize    = false
-
-                return "Penetrated"
-            elseif HitRes.Ricochet then
-                Bullet.Normalize = false
-                return "Ricochet"
-            else
-                return false
-            end
-        else
-            Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
+            Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
 
             return "Penetrated"
+        elseif HitRes.Ricochet then
+
+            return "Ricochet"
+        else
+            return false
         end
+
     else 
         table.insert( Bullet.Filter , Target )
-    return "Penetrated" end
+        return "Penetrated" 
+    end
         
 end
 
