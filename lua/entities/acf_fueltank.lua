@@ -211,7 +211,11 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Mass = self.Mass
     self.ACF.Density = (PhysObj:GetMass()*1000) / self.ACF.Volume
     self.ACF.Type = "Prop"
-    
+
+    --Forces an update of mass
+    self.LastMass = 1 
+    self:UpdateFuelMass()
+
 end
 
 function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes

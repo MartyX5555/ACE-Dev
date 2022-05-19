@@ -67,10 +67,12 @@ function ACF_Activate( Entity , Recalc )
         Entity:ACF_Activate( Recalc )
         return
     end
+    
     Entity.ACF = Entity.ACF or {} 
 
     local Count
     local PhysObj = Entity:GetPhysicsObject()
+
     if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
     if PhysObj:IsValid() and Count and Count>100 then
 
@@ -96,7 +98,7 @@ function ACF_Activate( Entity , Recalc )
 
     end
 
-    local Area = Entity.ACF.Aera
+    local Area      = Entity.ACF.Aera
     local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
     
     local Mat       = Entity.ACF.Material or "RHA"
