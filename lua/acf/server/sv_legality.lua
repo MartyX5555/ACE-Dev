@@ -104,7 +104,7 @@ do
          --Lets assume that input minmass is also rounded like here.
          local CMass = math.Round(physobj:GetMass(),2)
 
-         if MinMass != nil and CMass < MinMass then print("[ACE|WARN]- The entity ("..Ent:GetClass()..") was Flagged as minmass due to current entity should be "..MinMass.." kgs as minimum, but it was "..CMass.." kgs instead. (Diff: "..(MinMass-CMass).." kgs)")
+         if MinMass != nil and CMass < MinMass then --print("[ACE|WARN]- The entity ("..Ent:GetClass()..") was Flagged as minmass due to current entity should be "..MinMass.." kgs as minimum, but it was "..CMass.." kgs instead. (Diff: "..(MinMass-CMass).." kgs)")
             
             table.insert(problems,"Under min mass")
          end
