@@ -208,6 +208,8 @@ end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
+    print("Called function detonate during DetCount: "..Bullet.Detonated )
+
     Bullet.Detonated    = (Bullet.Detonated or 0) + 1
 
     local DetCount      = Bullet.Detonated
@@ -261,15 +263,24 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 --  print(Bullet.Detonated)
 end
 
+--TODO: Make shell fire both tandem charges at once. 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
+    -- DetCount = 0 // the bullet has impacted something, it still doesnt detonate. Here checks if it should ricochet or detonate.
+    -- DetCount = 1 // the bullet has detonated and has penetrated the next layers. If fails to, a 2nd charge is called.
+    -- DetCount = 2 // the bullet has detonated its 2nd charge. The last one of this round.
+
+
     local DetCount = Bullet.Detonated or 0
+
+    print("THEAT DID HIT\n DetCount: "..DetCount)
+    print("Hit Target: "..(Target:GetClass()) )
 
     --2nd charge should always appear in the same place as 1st charge
     if Bullet.FirstPos then HitPos = Bullet.FirstPos end
 
     if ACF_Check( Target ) then
-            
+    
         if DetCount > 0 then --Bullet Has Detonated
             Bullet.NotFirstPen = true
             
@@ -289,6 +300,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
             elseif DetCount == 1 then 
 
                 Round.detonate( Index, Bullet, HitPos, HitNormal )
+
                 return "Penetrated"         
 
             else
