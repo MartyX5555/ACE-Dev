@@ -48,15 +48,15 @@ function ACF_UpdateVisualHealth(Entity)
 
 end
 
---Convert old numeric IDs to the new string IDs
-local BackCompMat = {
-    "RHA",
-    "CHA",
-    "Cer",
-    "Rub",
-    "ERA",
-    "Alum",
-    "Texto"
+--Used to reconvert old material ids
+ACE.BackCompMat = {
+    [0] = "RHA",
+    [1] = "CHA",
+    [2] = "Cer",
+    [3] = "Rub",
+    [4] = "ERA",
+    [5] = "Alum",
+    [6] = "Texto"
 }
 
 --Creates or updates the ACF entity data in a passive way. Meaning this entity wont be updated unless it really requires it (like a shot, damage, looking it using armor tool, etc)
@@ -88,15 +88,7 @@ function ACF_Activate( Entity , Recalc )
     
     -- Setting Armor properties for the first time (or reuse old data if present)
     Entity.ACF.Ductility    = Entity.ACF.Ductility or 0
-    Entity.ACF.Material     = Entity.ACF.Material or "RHA"
-
-    -- Change numeric ids from old material to the new string material ids. Note that this is not active and residual data could remain
-    if not isstring(Entity.ACF.Material) then
-
-        local Mat_ID = Entity.ACF.Material + 1
-        Entity.ACF.Material = BackCompMat[Mat_ID]
-
-    end
+    Entity.ACF.Material     = not isstring(Entity.ACF.Material) and ACE.BackCompMat[Entity.ACF.Material] or Entity.ACF.Material or "RHA"
 
     local Area      = Entity.ACF.Aera
     local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )

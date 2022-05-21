@@ -655,7 +655,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallAera, Inflictor )
         -- Get the spalling hitAngle
         local Angle         = ACF_GetHitAngle( SpallRes.HitNormal , HitVec )
 
-        local Mat           = SpallRes.Entity.ACF and SpallRes.Entity.ACF.Material or "RHA"
+        local Mat           = SpallRes.Entity.ACF.Material or "RHA"
         local MatData       = ACE.Armors[Mat]
 
         local spallarmor    = MatData.spallarmor

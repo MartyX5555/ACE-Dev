@@ -212,6 +212,8 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Density = (PhysObj:GetMass()*1000) / self.ACF.Volume
     self.ACF.Type = "Prop"
 
+    self.ACF.Material     = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+
     --Forces an update of mass
     self.LastMass = 1 
     self:UpdateFuelMass()
