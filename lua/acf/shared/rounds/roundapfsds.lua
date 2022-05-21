@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.APFSDS = { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" 
 local Round = {}
 
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name  = "[APFSDS-LRP] - "..ACFTranslation.ShellAPFSDS[1] --Human readable name
+Round.name  = "[APFSDS] - "..ACFTranslation.ShellAPFSDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
 Round.desc  = ACFTranslation.ShellAPFSDS[2]
 Round.netid = 16 --Unique ammotype ID for network transmission
@@ -23,39 +23,24 @@ function Round.convert( Crate, PlayerData )
     local ServerData    = {}
     local GUIData       = {}
     
-    PlayerData.PropLength  = PlayerData.PropLength or 0
-    PlayerData.ProjLength  = PlayerData.ProjLength or 0
-    PlayerData.SCalMult    = PlayerData.SCalMult   or 0.5
-    PlayerData["Data5"]    = PlayerData["Data5"]   or 0.23  --caliber in mm count
-    PlayerData.Data10      = PlayerData.Data10     or 0
+    PlayerData.PropLength   = PlayerData.PropLength or 0
+    PlayerData.ProjLength   = PlayerData.ProjLength or 0
+    PlayerData.SCalMult     = PlayerData.SCalMult   or 0.5
+    PlayerData.Data5        = PlayerData.Data5      or 0.2  --caliber in mm count
+    PlayerData.Data10       = PlayerData.Data10     or 0
 
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
-    local GunClass = ACF.Weapons["Guns"][(Data["Id"] or PlayerData["Id"])]["gunclass"]
-    
-    --Config for SBC
-    if ACF.Year > 2000 then
-    
-        Data.MinCalMult     = 0.23
-        Data.MaxCalMult     = 1.0
-        Data.PenModifier    = 0.8
-        Data.VelModifier    = 1.1
-        Data.Ricochet       = 70
+    Data.MinCalMult         = 0.2
+    Data.MaxCalMult         = 1.0
+    Data.PenModifier        = 0.8
+    Data.VelModifier        = 1.1
+    Data.Ricochet           = 80
 
-    else
-
-        Data.MinCalMult     = 0.23
-        Data.MaxCalMult     = 1.0
-        Data.PenModifier    = 0.85
-        Data.VelModifier    = 1.1
-        Data.Ricochet       = 68
-
-    end
-    
     --Used for adapting acf2 apds/apfsds to the new format
-    PlayerData["Data5"] = math.Clamp(PlayerData["Data5"],Data.MinCalMult,Data.MaxCalMult)
+    PlayerData.Data5 = math.Clamp(PlayerData.Data5,Data.MinCalMult,Data.MaxCalMult)
     
-    Data.SCalMult       = PlayerData["Data5"]
+    Data.SCalMult       = PlayerData.Data5
     Data.SubFrAera      = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
     Data.ProjMass       = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 * 0.95 --Volume of the projectile as a cylinder * density of steel
     Data.ShovePower     = 0.2
@@ -63,7 +48,7 @@ function Round.convert( Crate, PlayerData )
     
     Data.DragCoef       = ((Data.SubFrAera/10000)/Data.ProjMass)
     Data.CaliberMod     = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
-    Data.LimitVel       = 1000                                      --Most efficient penetration speed in m/s
+    Data.LimitVel       = 1150                                      --Most efficient penetration speed in m/s
     Data.KETransfert    = 0.2                                   --Kinetic energy transfert to the target for movement purposes                                      
     Data.MuzzleVel      = ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
     Data.BoomPower      = Data.PropMass

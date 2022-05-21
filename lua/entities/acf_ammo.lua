@@ -419,6 +419,12 @@ do
         ["70mmFFARDAGR"]    = "70mmFFAR"
     }
 
+    --List of munitions no longer stay on ACE
+    local AmmoComp = {
+        ["APDSS"]          = "APDS",
+        ["APFSDSS"]        = "APFSDS"  
+    }
+
     function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 
         --Replaces id if its old
@@ -432,7 +438,7 @@ do
 
         --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 
-        self.RoundType          = Data2 or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        self.RoundType          = AmmoComp[Data2] or Data2 or "AP"   -- Type of round, IE AP, HE, HEAT ...
         self.RoundPropellant    = Data3 or 0      -- Lenght of propellant
         self.RoundProjectile    = Data4 or 0      -- Lenght of the projectile
         self.RoundData5         = Data5 or 0

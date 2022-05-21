@@ -119,7 +119,6 @@ ACF.APBCDamageMult      = 1.5                       -- APBC Damage Multipler    
 ACF.APCBCDamageMult     = 1.0                       -- APCBC Damage Multipler           -1.05
 ACF.APHEDamageMult      = 1.5                       -- APHE Damage Multipler          
 ACF.APDSDamageMult      = 1.5                       -- APDS Damage Multipler          
-ACF.APDSSDamageMult     = 1.55                      -- APDSS Damage Multipler
 ACF.HVAPDamageMult      = 1.65                      -- HVAP/APCR Damage Multipler
 ACF.FLDamageMult        = 1.4                       -- FL Damage Multipler
 ACF.HEATDamageMult      = 2                         -- HEAT Damage Multipler
@@ -291,7 +290,6 @@ if ACF.Year > 1939 then
     include("acf/shared/rounds/roundheat.lua")
     include("acf/shared/rounds/roundaphe.lua")
     include("acf/shared/rounds/roundaphecbc.lua")
-    include("acf/shared/rounds/roundapdss.lua")
     include("acf/shared/rounds/roundhvap.lua")
     
 end
@@ -300,7 +298,6 @@ if ACF.Year > 1960 then
 
     include("acf/shared/rounds/roundapds.lua")
     include("acf/shared/rounds/roundapfsds.lua")
-    include("acf/shared/rounds/roundapfsdss.lua")
     include("acf/shared/rounds/roundheatfs.lua")
     include("acf/shared/rounds/roundhefs.lua")
     include("acf/shared/rounds/roundflare.lua")
