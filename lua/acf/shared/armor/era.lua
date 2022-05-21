@@ -89,9 +89,9 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
 
         ----- Deal it as RHA in its 25% effectiveness
 
-        curve         = 1
-        effectiveness = 0.25
-        resiliance    = 0.25
+        curve         = Material.NCurve
+        effectiveness = Material.Neffectiveness
+        resiliance    = Material.Nresiliance
 
         armor       = armor^curve
         losArmor    = losArmor^curve
