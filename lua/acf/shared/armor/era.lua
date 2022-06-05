@@ -13,17 +13,18 @@ Material.curve          = 0.95
 Material.effectiveness      = 5
 Material.HEATeffectiveness  = 20
 Material.HEeffectiveness    = 3
+
 Material.resiliance         = 0.25
-Material.HEATresiliance     = 0.01
-Material.HEresiliance       = 0.01
+Material.HEATresiliance     = 0.1
+Material.HEresiliance       = 0.1
 
 -- Used when ERA fails to detonate. This will act like a RHA at its 25% from ERA thickness
 Material.NCurve             = 1     
 Material.Neffectiveness     = 0.25
-Material.Nresiliance        = 0.25
+Material.Nresiliance        = 1
 
-Material.APSensorFactor     = 4     -- quotient used to determinate minimal pen for detonation for AP based shells
-Material.HESensorFactor     = 16    -- quotient used to determinate minimal pen for detonation for HEAT and HE based shells
+Material.APSensorFactor     = 4     -- quotient used to determinate minimal pen for detonation for Kinetic shells
+Material.HESensorFactor     = 16    -- quotient used to determinate minimal pen for detonation for chemical shells
 
 Material.spallarmor     = 1
 Material.spallresist    = 1
@@ -34,8 +35,25 @@ Material.NormMult       = 1
 
 Material.IsExplosive    = true -- Tell to core that this material is explosive and their own explosions should be reduced vs other explosive mats in order to avoid chain reactions.
 
+-- Ammo Types to be considered HEAT
+Material.HEATList = {
+
+    HEAT    = true,
+    THEAT   = true,
+    HEATFS  = true,
+    THEATFS = true
+}
+
+-- Ammo Types to be considered HE
+Material.HEList = {
+
+    HE      = true,
+    HESH    = true,
+    Frag    = true
+}
+
 function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
-    
+
     local HitRes = {}
 
     local curve         = Material.curve
@@ -47,13 +65,13 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
     local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 
     --ERA is more effective vs HEAT than vs kinetic 
-    if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then    
+    if Material.HEATList[Type] then    
 
         blastArmor  = Material.HEATeffectiveness * armor
         resiliance  = Material.HEATresiliance
         sensor      = Material.HESensorFactor
 
-    elseif Type == 'HE' or Type == 'HESH' or Type == 'Frag' then
+    elseif Material.HEList[Type] then
 
         blastArmor  = Material.HEeffectiveness * armor
         resiliance  = Material.HEresiliance
@@ -62,7 +80,7 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
     end
 
     --ERA detonates and shell is completely stopped
-    if maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.45 then --ERA was penetrated       
+    if maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.2 then --ERA was penetrated       
 
         --Importart to remove the ent before the explosions begin
         Entity:Remove()
@@ -71,12 +89,11 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
         HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)                       -- Remaining penetration
         HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)        
 
-        local HEWeight = armor*0.01         
-        local Radius    =( HEWeight*0.0001 )^0.33*8*39.37
-            
-        local Owner = (CPPI and Entity:CPPIGetOwner()) or NULL
+        local HEWeight  = armor*0.075  
+        local Radius    = ( HEWeight )^0.33*8*39.37
+        local Owner     = (CPPI and Entity:CPPIGetOwner()) or NULL
 
-        ACF_HE( Entity:GetPos() , Vector(0,0,1) , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
+        ACF_HE( Entity:GetPos() , vector_up , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
             
         local Flash = EffectData()
             Flash:SetOrigin( Entity:GetPos() )
@@ -86,12 +103,15 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
             
         return HitRes
     else    
+        
+        -- Excluding HE damage
+        if not Material.HEList[Type] then print("Excluding")
+            curve         = Material.NCurve
+            effectiveness = Material.Neffectiveness
+            resiliance    = Material.Nresiliance
+        end
 
         ----- Deal it as RHA in its 25% effectiveness
-
-        curve         = Material.NCurve
-        effectiveness = Material.Neffectiveness
-        resiliance    = Material.Nresiliance
 
         armor       = armor^curve
         losArmor    = losArmor^curve
@@ -138,3 +158,4 @@ function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxP
 end 
 
 list.Set( "ACE_MaterialTypes", Material.id, Material ) 
+ACE.Armors      = list.Get("ACE_MaterialTypes")

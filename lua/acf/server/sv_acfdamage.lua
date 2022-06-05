@@ -301,15 +301,16 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
             else
 
-                --reduced damage to era if detonation is from another era by 85%. So we avoid a chain reaction
+                --reduced damage to era if detonation is from another era by 90%. So we avoid a chain reaction
                 if IsValid(Gun) then
                     if not ACE.RealGuns[Gun:GetClass()] then
 
-                        local mat           = Gun.ACF and Gun.ACF.Material or "RHA"
+                        local mat           = Tar.ACF and Tar.ACF.Material or "RHA"
                         local MatData       = ACE.Armors[mat]
 
                         if MatData.IsExplosive then
-                            Blast.Penetration = Blast.Penetration*0.15
+                            Blast.Penetration = Blast.Penetration*0.1
+                            FragKE.Penetration = FragKE.Penetration*0.1
                         end
                     end
                 end
@@ -717,6 +718,15 @@ end
 -- Handles the impact of a round on a target
 function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone  )
 
+--[[
+    print("======DATA=======")
+    print(HitNormal)
+    print(Bullet["Flight"])
+    print("======DATA=======")
+
+    debugoverlay.Line(HitPos, HitPos+(Bullet["Flight"]), 5, Color(255,100,0), true )
+    debugoverlay.Line(HitPos, HitPos+(HitNormal*100), 5, Color(255,255,0), true )
+]]
     Bullet.Ricochets = Bullet.Ricochets or 0
 
     local Angle     = ACF_GetHitAngle( HitNormal , Bullet["Flight"] )
@@ -1190,10 +1200,10 @@ function ACF_ScaledExplosion( ent )
 end
 
 function ACF_GetHitAngle( HitNormal , HitVector )
-    
+
     HitVector = HitVector*-1
     local Angle = math.min(math.deg(math.acos(HitNormal:Dot( HitVector:GetNormalized() ) ) ),89.999 )
-    --Msg("Angle : " ..Angle.. "\n")
+    --print("Angle : " ..Angle.. "\n")
     return Angle
     
 end

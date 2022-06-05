@@ -67,7 +67,7 @@ if CLIENT then
             effect = effectsTbl[i]
             
             if effect then
-                if not IsValid(effect.EntFrom) and IsValid(effect.EntTo) then 
+                if not IsValid(effect.EntFrom) or not IsValid(effect.EntTo) then 
                     effectsTbl[i] = nil
                 end
             end
@@ -112,7 +112,7 @@ if CLIENT then
     usermessage.Hook("ACF_StopRefillEffect", function( msg )
 
         local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
-        if not IsValid( EntFrom ) or not IsValid( EntTo )or not EntFrom.RefillAmmoEffect then return end
+        if not IsValid( EntFrom ) or not IsValid( EntTo ) or not EntFrom.RefillAmmoEffect then return end
 
         for k,v in pairs( EntFrom.RefillAmmoEffect ) do
             if v.EntTo == EntTo then

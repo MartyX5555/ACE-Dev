@@ -364,7 +364,7 @@ function ENT:DoReplicatedPropHit(Bullet)
 	local FlightRes = { Entity = self, HitNormal = self.HitNorm, HitPos = Bullet.Pos, HitGroup = HITGROUP_GENERIC }
 	local Index = Bullet.Index
 	
-	ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
+	local ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]		
 	local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity ,  FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )				--If we hit stuff then send the resolution to the damage function	
 
 	--This is crucial, to avoid 2nd tandem munitions spawn on 1st Bullet hitpos
