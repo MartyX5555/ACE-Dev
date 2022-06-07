@@ -111,7 +111,7 @@ function SWEP:PrimaryAttack()
 
 			local PlayerHealth 		= ent:Health() --get the health
 			local PlayerMaxHealth 	= ent:GetMaxHealth()--and max health too
-			local PlayerArmour 		= ent:Armor()
+			local PlayerArmour 		= ent:IsPlayer() and ent:Armor() or 0
 			local PlayerMaxArmour 	= 100
 
 			if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
@@ -196,7 +196,7 @@ function SWEP:SecondaryAttack()
 		local HitRes = {}
 		local Energy = {}
 
-		if ent:IsPlayer() then
+		if ent:IsPlayer() or ent:IsNPC() or ent:IsNextBot() then
 
 			Energy = { Kinetic = 0.2,Momentum = 0,Penetration = 0.2 }
 			HitRes = ACF_Damage ( ent, Energy, 2, 0, self.Owner, _, self, "Torch" )
@@ -207,22 +207,12 @@ function SWEP:SecondaryAttack()
 			Energy = { Kinetic = 500, Momentum = 0, Penetration = 500 }
 			HitRes = ACF_Damage ( ent, Energy, 2, 0, self.Owner, _, self, "Torch" )
 
-			--this part will destroy the prop once its health is almost 0.		
-			if ent.ACF.Health < 2 then		
-				ACF_APKill( ent, VectorRand() , 0)
-				ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO ) 
-			end
 		end
 
-		if HitRes.Kill then
+		if HitRes.Kill and not ent:IsPlayer() then
 
-			constraint.RemoveAll( ent )
-			ent:SetParent(nil)
-			ent:SetCollisionGroup( COLLISION_GROUP_NONE ) 
-
-			local Phys = ent:GetPhysicsObject()
-			Phys:EnableMotion( true )
-			Phys:Wake()
+			ACF_APKill( ent, VectorRand() , 0)
+			ent:EmitSound( "ambient/energy/NewSpark0" ..tostring( math.random( 3, 5 ) ).. ".wav", 75, 100, 1, CHAN_AUTO ) 
 		else
 			local effectdata = EffectData()
 			effectdata:SetMagnitude( 2.0 )
