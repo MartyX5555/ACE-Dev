@@ -110,7 +110,7 @@ if SERVER then
                 local Flash = EffectData()
                     Flash:SetOrigin( EntPos )
                     Flash:SetNormal( -vector_up )
-                    Flash:SetRadius( math.max( Radius*0.25, 1 ) ) --0.25
+                    Flash:SetRadius( math.max( Radius*0.25, 1 ) ) print(Radius*0.25)
                 util.Effect( "ACF_Scaled_Explosion", Flash ) 
             end)
 

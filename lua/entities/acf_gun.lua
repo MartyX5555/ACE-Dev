@@ -865,28 +865,40 @@ function ENT:ReloadMag()
     end
 end
 
-function ENT:GetInaccuracy()
-    local SpreadScale = ACF.SpreadScale
-    local IaccMult = 1
-    
-    if (self.ACF.Health and self.ACF.MaxHealth) then
-        IaccMult = math.Clamp(((1 - SpreadScale) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, 1, SpreadScale)
+do
+
+    local FSTable = {
+        APFSDS  = true,
+        HEATFS  = true,
+        HEFS    = true,
+        THEATFS = true
+    }
+
+    function ENT:GetInaccuracy()
+
+        local SpreadScale = ACF.SpreadScale
+        local IaccMult = 1
+        
+        if self.ACF.Health and self.ACF.MaxHealth then
+            IaccMult = math.Clamp(((1 - SpreadScale) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, 1, SpreadScale)
+        end
+
+        -- Increased FS accuracy. Hardcoded.
+        if FSTable[self.BulletData.Type] then
+            IaccMult = IaccMult*0.25
+        end
+        
+        -- No gunner = more inaccuracy
+        if self.HasGunner == 0 then 
+            IaccMult = IaccMult*1.5
+        end
+        
+        local coneAng = self.Inaccuracy * ACF.GunInaccuracyScale * IaccMult
+        
+        return coneAng
     end
-    if (self.BulletData.Type == "APFSDS" or self.BulletData.Type == "APFSDSS" or self.BulletData.Type == "HEATFS" or self.BulletData.Type == "HEFS"or self.BulletData.Type == "THEATFS") then
-    IaccMult = IaccMult*0.25
-    end
-    
-    if self.HasGunner == 0 then 
-        IaccMult = 1.5
---  print("Cannon less accurate bc of lack of gunner")
-    end
-    
-    local coneAng = self.Inaccuracy * ACF.GunInaccuracyScale * IaccMult
-    
-    return coneAng
+
 end
-
-
 
 function ENT:FireShell()
     

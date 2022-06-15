@@ -83,7 +83,7 @@ end
 function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
     local Power         = FillerMass * ACF.HEPower              -- Power in KiloJoules of the filler mass of  TNT
-    local Radius        = (FillerMass)^0.33*8*39.37             -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
+    local Radius        = ACE_CalculateHERadius( FillerMass )   -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
     local MaxSphere     = (4 * 3.1415 * (Radius*2.54 )^2)       -- Surface Aera of the sphere at maximum radius
     local Amp           = math.min(Power/2000,50)
 
@@ -1066,66 +1066,77 @@ function ACF_APKill( Entity , HitVector , Power )
     
 end
 
---converts what would be multiple simultaneous cache detonations into one large explosion
-function ACF_ScaledExplosion( ent )
-  
-    local Inflictor = nil
-    local Owner = CPPI and ent:CPPIGetOwner() or NULL
+do
+    -- Config
+    local AmmoExplosionScale = 0.1
+    local FuelExplosionScale = 0.005
+    local MaxGroup           = 4        -- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
+    local MaxHE              = 100      -- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
-    if ent.Inflictor then
-        Inflictor = ent.Inflictor
-    end
-    
-    local HEWeight
+    --converts what would be multiple simultaneous cache detonations into one large explosion
+    function ACF_ScaledExplosion( ent )
+      
+        if ent.RoundType and ent.RoundType == "Refill" then return end
 
-    if ent:GetClass() == "acf_fueltank" then
-        HEWeight = (math.max(ent.Fuel, ent.Capacity * 0.0025) / ACF.FuelDensity[ent.FuelType]) * 0.25
-    else
+        local Inflictor = ent.Inflictor or nil
+        local Owner     = CPPI and ent:CPPIGetOwner() or NULL
+        
+        local HEWeight
+        local ExplodePos = {}
 
-        local HE, Propel
+        if ent:GetClass() == "acf_fueltank" then
 
-        if ent.RoundType == "Refill" then
-            return --Denying refills from even causing damage to nearby crates
-        else 
-            HE      = ent.BulletData["FillerMass"] or 0
-            Propel  = ent.BulletData["PropMass"] or 0
+            local Fuel      = ent.Fuel      or 0    
+            local Capacity  = ent.Capacity  or 0
+            local Type      = ent.FuelType  or "Petrol"
+
+            HEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
+        else
+
+            local HE        = ent.BulletData.FillerMass   or 0
+            local Propel    = ent.BulletData.PropMass     or 0
+            local Ammo      = ent.Ammo                    or 0
+
+            HEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower ) ) * Ammo ) * AmmoExplosionScale
         end
-        HEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*ent.Ammo
-    end
-    local Radius        = HEWeight^0.33*8*39.37
-    local ExplodePos    = {}
-    local Pos           = ent:LocalToWorld(ent:OBBCenter())
-    
-    table.insert(ExplodePos, Pos)
-    local LastHE = 0
-    
-    local Search = true
-    local Filter = {ent}
 
-    while Search do
-    
-        if #ACE.Explosives > 1 then
+        local Radius        = ACE_CalculateHERadius( HEWeight )
+        local Pos           = ent:LocalToWorld(ent:OBBCenter())
+        
+        table.insert(ExplodePos, Pos)
+
+        local LastHE = 0
+        local Search = true
+        local Filter = { ent }
+
+        while Search do
+        
+            if #ACE.Explosives == 1 then break end
+
             for _,Found in ipairs( ACE.Explosives ) do
 
+                if #Filter > MaxGroup or HEWeight > MaxHE then break end
                 if not IsValid(Found) then goto cont end
                 if Found:GetPos():DistToSqr(Pos) > Radius^2 then goto cont end
 
                 local EOwner = CPPI and Found:CPPIGetOwner() or NULL
-            
-                if not Found.Exploding then --So people cant bypass damage perms  --> possibly breaking when CPPI is not installed!
 
+                if not Found.Exploding then 
+
+                    --Don't detonate explosives which we are not allowed to.
                     if Owner ~= EOwner then goto cont end
 
                     local Hitat = Found:NearestPoint( Pos )
-                
+
                     local Occlusion = {}
                         Occlusion.start     = Pos
-                        Occlusion.endpos    = Hitat
+                        Occlusion.endpos    = Hitat + (Hitat-Pos):GetNormalized()*100
                         Occlusion.filter    = Filter
                         Occlusion.mins      = vector_origin
                         Occlusion.maxs      = Occlusion.mins
                     local Occ = util.TraceHull( Occlusion )
                 
+                    --Filters any ent which blocks the trace.
                     if Occ.Fraction == 0 then
 
                         table.insert(Filter,Occ.Entity)
@@ -1133,70 +1144,85 @@ function ACF_ScaledExplosion( ent )
                         Occlusion.filter    = Filter
 
                         Occ = util.TraceHull( Occlusion )
-                        --print("Ignoring nested prop")
 
                     end
-                    
-                    if ( Occ.Hit and Occ.Entity:EntIndex() != Found.Entity:EntIndex() ) then 
-                        --Msg("Target Occluded\n")
-                    else
+
+                    if Occ.Hit and Occ.Entity:EntIndex() == Found.Entity:EntIndex() then 
+
                         local FoundHEWeight
+
                         if Found:GetClass() == "acf_fueltank" then
-                        FoundHEWeight = (math.max(Found.Fuel, Found.Capacity * 0.0025) / ACF.FuelDensity[Found.FuelType]) * 0.25
+
+                            local Fuel      = Found.Fuel     or 0
+                            local Capacity  = Found.Capacity or 0
+                            local Type      = Found.FuelType or "Petrol"
+
+                            FoundHEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
                         else
-                            local HE, Propel
-                            if Found.RoundType == "Refill" then
-                                HE      = 0.00001
-                                Propel  = 0.00001
-                            else 
-                                HE      = Found.BulletData["FillerMass"]    or 0
-                                Propel  = Found.BulletData["PropMass"]      or 0
-                            end
-                            FoundHEWeight = (HE+Propel*(ACF.PBase/ACF.HEPower))*Found.Ammo
+
+                            if Found.RoundType == "Refill" then Found:Remove() goto cont end
+                            
+
+
+                            local HE      = Found.BulletData.FillerMass    or 0
+                            local Propel  = Found.BulletData.PropMass      or 0
+                            local Ammo    = Found.Ammo                     or 0
+
+                            FoundHEWeight = ( ( HE + Propel * ( ACF.PBase/ACF.HEPower)) * Ammo ) * AmmoExplosionScale
                         end
                     
-                        table.insert(ExplodePos, Found:LocalToWorld(Found:OBBCenter()))
+                        table.insert( ExplodePos, Found:LocalToWorld(Found:OBBCenter()) )
+
                         HEWeight = HEWeight + FoundHEWeight
+
                         Found.IsExplosive   = false
                         Found.DamageAction  = false
                         Found.KillAction    = false
                         Found.Exploding     = true
+
                         table.insert(Filter,Found)
+
                         Found:Remove()
                     end         
                 end
 
                 ::cont::
             end 
-        end
-        
-        if HEWeight > LastHE then
-            Search = true
-            LastHE = HEWeight
-            Radius = (HEWeight)^0.33*8*39.37
-        else
-            Search = false
-        end
-        
-    end 
-
-    local totalpos = Vector()
-    for _, cratepos in pairs(ExplodePos) do totalpos = totalpos + cratepos end
-    local AvgPos = totalpos / #ExplodePos
-
-    ent:Remove()
-    
-    HEWeight    = HEWeight*ACF.BoomMult
-    Radius      = (HEWeight)^0.33*8*39.37
             
-    ACF_HE( AvgPos , Vector(0,0,1) , HEWeight*0.1 , HEWeight*0.25 , Inflictor , ent, ent )
+            if HEWeight > LastHE then
+                Search = true
+                LastHE = HEWeight
+                Radius = ACE_CalculateHERadius( HEWeight )
+            else
+                Search = false
+            end
+            
+        end 
 
-    local Flash = EffectData()
-        Flash:SetEntity( ent )
-        Flash:SetOrigin( AvgPos )
-        Flash:SetNormal( Vector(0,0,-1) )
-        Flash:SetRadius( math.max( Radius, 1 ) )
-    util.Effect( "ACF_Scaled_Explosion", Flash )
+        local totalpos = Vector()
+        for _, cratepos in pairs(ExplodePos) do 
+            totalpos = totalpos + cratepos 
+        end
+        local AvgPos = totalpos / #ExplodePos
+
+        ent:Remove()
+        
+        HEWeight    = HEWeight*ACF.BoomMult
+        Radius      = ACE_CalculateHERadius( HEWeight ) print(Radius)
+                
+        ACF_HE( AvgPos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent )
+
+        timer.Simple(0.001, function()
+            local Flash = EffectData()
+                Flash:SetAttachment( 1 )
+                Flash:SetOrigin( AvgPos )
+                Flash:SetNormal( -vector_up )
+                Flash:SetRadius( math.max( (Radius/10) , 1 ) )
+            util.Effect( "ACF_Scaled_Explosion", Flash )
+        end )
+
+    end
+
 end
 
 function ACF_GetHitAngle( HitNormal , HitVector )
@@ -1207,3 +1233,8 @@ function ACF_GetHitAngle( HitNormal , HitVector )
     return Angle
     
 end
+
+function ACE_CalculateHERadius( HEWeight )
+    local Radius = HEWeight^0.33*8*39.37
+    return Radius
+end 

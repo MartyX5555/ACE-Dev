@@ -229,23 +229,37 @@ function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type 
     if self.Exploding or NoExplode or not self.IsExplosive then return HitRes end
     
     if HitRes.Kill then
+
         if hook.Run( "ACF_FuelExplode", self ) == false then return HitRes end
+
         self.Exploding = true
-        if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
+
+        if( IsValid(Inflictor) and Inflictor:IsPlayer() ) then
             self.Inflictor = Inflictor
         end
+
         ACF_ScaledExplosion( self )
+
         return HitRes
     end
     
     local Ratio = (HitRes.Damage/self.ACF.Health)^0.75 --chance to explode from sheer damage, small shots = small chance
     local ExplodeChance = (1-(self.Fuel/self.Capacity))^0.75 --chance to explode from fumes in tank, less fuel = more explodey
      
-    if math.Rand(0,1) < (ExplodeChance + Ratio) then  --it's gonna blow
+     --it's gonna blow
+    if math.Rand(0,1) < (ExplodeChance + Ratio) then  
+
         if hook.Run( "ACF_FuelExplode", self ) == false then return HitRes end
+
         self.Inflictor = Inflictor
         self.Exploding = true
-        ACF_ScaledExplosion( self )
+
+        timer.Simple(math.random(0.1,1), function()
+            if IsValid(self) then
+                ACF_ScaledExplosion( self )
+            end
+        end )
+        
     else                                                --spray some fuel around
         self:NextThink( CurTime() + 0.1 )
         self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage/self.ACF.Health)^1.5) * 0.25
