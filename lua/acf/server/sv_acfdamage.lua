@@ -1068,9 +1068,9 @@ end
 
 do
     -- Config
-    local AmmoExplosionScale = 0.1
+    local AmmoExplosionScale = 0.25
     local FuelExplosionScale = 0.005
-    local MaxGroup           = 4        -- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
+    local MaxGroup           = 5        -- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
     local MaxHE              = 100      -- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
     --converts what would be multiple simultaneous cache detonations into one large explosion
@@ -1162,8 +1162,6 @@ do
 
                             if Found.RoundType == "Refill" then Found:Remove() goto cont end
                             
-
-
                             local HE      = Found.BulletData.FillerMass    or 0
                             local Propel  = Found.BulletData.PropMass      or 0
                             local Ammo    = Found.Ammo                     or 0
@@ -1182,7 +1180,16 @@ do
 
                         table.insert(Filter,Found)
 
-                        Found:Remove()
+                        Found:Remove(Occ.Entity)
+                    else
+                        if IsValid(Occ.Entity) then
+                            if vFireInstalled then
+                                Occ.Entity:Ignite( _, HEWeight )
+                            else
+                                Occ.Entity:Ignite( 120, HEWeight/10 )
+                            end
+                            
+                        end
                     end         
                 end
 
@@ -1208,7 +1215,7 @@ do
         ent:Remove()
         
         HEWeight    = HEWeight*ACF.BoomMult
-        Radius      = ACE_CalculateHERadius( HEWeight ) print(Radius)
+        Radius      = ACE_CalculateHERadius( HEWeight ) 
                 
         ACF_HE( AvgPos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent )
 
@@ -1217,7 +1224,7 @@ do
                 Flash:SetAttachment( 1 )
                 Flash:SetOrigin( AvgPos )
                 Flash:SetNormal( -vector_up )
-                Flash:SetRadius( math.max( (Radius/10) , 1 ) )
+                Flash:SetRadius( math.max( Radius , 1 ) )
             util.Effect( "ACF_Scaled_Explosion", Flash )
         end )
 

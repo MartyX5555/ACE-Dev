@@ -167,7 +167,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
    if Bullet.FuseLength and Bullet.FuseLength > 0 then
 
       -- TODO: This way will not work, we need another way for fuse
-      local Time = Bullet.FlightTime --ACF.SysTime - Bullet.InitTime
+      local Time = ACF.SysTime - Bullet.InitTime
 
       if Time > Bullet.FuseLength then
 
@@ -275,7 +275,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
    elseif FlightRes.HitNonWorld and not ACF.TraceFilter[FlightRes.Entity:GetClass()] then --don't process ACF.TraceFilter ents
 
       --If we hit stuff then send the resolution to the bullets damage function
-      local ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
+      ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
       
       --Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
       local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
@@ -300,7 +300,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
       --If we should do the same trace again, then do so
       if Retry == "Penetrated" then    
-          
+
          if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 
             Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -318,7 +318,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             end
 
       elseif Retry == "Ricochet"  then
-      
+
          if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 
             Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -358,7 +358,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
          local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
          
          if Retry == "Penetrated" then                         --if it is, we soldier on  
-             --print('World-Pen')
+
             if Bullet.OnPenetrated then 
                Bullet.OnPenetrated(Index, Bullet, FlightRes) 
             end
@@ -367,7 +367,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             ACF_CalcBulletFlight( Index, Bullet, true )           --The world ain't going to move, so we say True for the backtrace override
             
          elseif Retry == "Ricochet"  then
-             --print('World-Rico')
+
             if Bullet.OnRicocheted then 
                Bullet.OnRicocheted(Index, Bullet, FlightRes) 
             end
@@ -376,7 +376,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             ACF_CalcBulletFlight( Index, Bullet, true )
             
          else                                         --If not, end of the line, boyo
-             --print('World-NoPen')
+
             if Bullet.OnEndFlight then 
                Bullet.OnEndFlight(Index, Bullet, FlightRes) 
             end

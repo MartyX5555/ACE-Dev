@@ -6,12 +6,11 @@
  ---------------------------------------------------------]]
 function EFFECT:Init( data ) 
 
-	self.IsScaled = data:GetAttachment()
-	self.Origin = data:GetOrigin()
-	self.DirVec = data:GetNormal()
-	self.Radius = math.max( (self.IsScaled == 1 and (data:GetRadius()*10) or data:GetRadius() )  / 50 ,1) print("Scaled Final Radius: "..data:GetRadius())
-	self.Emitter = ParticleEmitter( self.Origin )
-	self.ParticleMul = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+	self.Origin 		= data:GetOrigin()
+	self.DirVec 		= data:GetNormal()
+	self.Radius 		= math.max( data:GetRadius()  / 50 ,1)
+	self.Emitter 		= ParticleEmitter( self.Origin )
+	self.ParticleMul 	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
 	
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius

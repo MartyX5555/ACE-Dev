@@ -6,7 +6,7 @@ local GunTable = ACFEnts.Guns
     which was passed from the server. 
  ---------------------------------------------------------*/ 
  function EFFECT:Init( data ) 
-	
+
 	self.Ent 			= data:GetEntity()
 	self.Caliber 		= self.Ent:GetNWFloat( "Caliber", 10 )
 	self.Origin 		= data:GetOrigin()

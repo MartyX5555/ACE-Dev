@@ -154,7 +154,7 @@ function Round.endeffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Impact", Spall )
+    util.Effect( "acf_ap_impact", Spall )
 
 end
 
@@ -167,7 +167,7 @@ function Round.pierceeffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Penetration", Spall )
+    util.Effect( "acf_ap_penetration", Spall )
 
 end
 
@@ -180,7 +180,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
+    util.Effect( "acf_ap_ricochet", Spall )
     
 end
 
