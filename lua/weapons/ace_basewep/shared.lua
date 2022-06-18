@@ -191,7 +191,6 @@ function SWEP:SetZoom(zoom)
         self.Zoomed = zoom
     end
     
-    
     if SERVER then self:SetNWBool("Zoomed", self.Zoomed) end
     
     if self.Zoomed then
@@ -306,38 +305,91 @@ function SWEP:DrawScope(Zoomed)
     return true
 end
 
+local zoomSens = GetConVar("zoom_sensitivity_ratio"):GetFloat()
+cvars.RemoveChangeCallback("zoom_sensitivity_ratio", "zoomsens")
+cvars.AddChangeCallback("zoom_sensitivity_ratio", function(_, _, newValue)
+    zoomSens = tonumber(newValue)
+end, "zoomsens")
 
+local lastZoom = false
+
+if CLIENT then
+    timer.Create("DeathSensFix", 1, 0, function()
+        if not LocalPlayer():Alive() then
+            hook.Add("AdjustMouseSensitivity", "ACE_ZoomSensFix", function()
+                return 1
+            end)
+        end
+    end)
+end
 
 function SWEP:DoDrawCrosshair( x, y )
 
     Zoom = self:GetNWBool("Zoomed") 
 
+    if lastZoom ~= Zoom then
+        hook.Add("AdjustMouseSensitivity", "ACE_ZoomSensFix", function()
+            return Zoom and zoomSens or 1
+        end)
+
+        if self.HasScope then
+            surface.PlaySound("weapons/awp/zoom.wav")
+        else
+            surface.PlaySound("items/pickup_quiet_03.wav")
+        end
+        
+        lastZoom = Zoom
+    end
 
     self:DrawScope(Zoom)
 
-    ReticleSize = 1 + (self.Owner:KeyDown(IN_SPEED) and 0.5 or 0) + (self.Owner:Crouching() and -0.5 or 0) + (Zoom and -0.5 or 0) 
---  ReticleSize = 1
---  ReticleSize = self.InaccuracyAccumulation
---  print(self.InaccuracyAccumulation)
+    if self.HasScope then
+        if Zoom then
+            surface.SetDrawColor(Color(0, 0, 0, 255))
+            surface.DrawLine(x - 1000, y, x + 1000, y)
+            surface.DrawLine(x, y - 1000, x, y + 1000)
 
-    surface.SetDrawColor( 255, 0, 0, 255 )
-    surface.DrawLine((x + 30), y, (x + 15*ReticleSize), y)
-    surface.DrawLine((x - 30), y, (x - 15*ReticleSize), y)
-    surface.DrawLine(x, y + 30, x, y + 15*ReticleSize)
-    surface.DrawLine(x, y - 30, x, y - 15*ReticleSize)
---  surface.DrawOutlinedRect( x - 32, y - 32, 64, 64 )
-
-    local scale = Vector( 15*ReticleSize, 15*ReticleSize, 0 )
-    local segmentdist = 360 / ( 2 * math.pi * math.max( scale.x, scale.y ) / 2 )
-
-    if ReticleSize > 0 then
-
-        surface.DrawRect( x - 1, y - 1, 2, 2 )
-        for a = 0, 360 - segmentdist, segmentdist do
-            surface.DrawLine( x + math.cos( math.rad( a ) ) * scale.x, y - math.sin( math.rad( a ) ) * scale.y, x + math.cos( math.rad( a + segmentdist ) ) * scale.x, y - math.sin( math.rad( a + segmentdist ) ) * scale.y )
+            return true
         end
 
+        if self:GetClass() ~= "aug" and self:GetClass() ~= "sg552" then
+            return true
+        end
     end
+
+    ReticleSize = 1 + (self.Owner:KeyDown(IN_SPEED) and 0.5 or 0) + (self.Owner:Crouching() and -0.5 or 0) + (Zoom and -0.5 or 0) 
+--  ReticleSize = 1
+  --ReticleSize = self.InaccuracyAccumulation
+--  print(self.InaccuracyAccumulation)
+
+    --surface.SetDrawColor( 255, 0, 0, 255 )
+    --surface.DrawLine((x + 30), y, (x + 15*ReticleSize), y)
+    --surface.DrawLine((x - 30), y, (x - 15*ReticleSize), y)
+    --surface.DrawLine(x, y + 30, x, y + 15*ReticleSize)
+    --surface.DrawLine(x, y - 30, x, y - 15*ReticleSize)
+--  surface.DrawOutlinedRect( x - 32, y - 32, 64, 64 )
+
+    --local scale = Vector( 15*ReticleSize, 15*ReticleSize, 0 )
+    --local segmentdist = 360 / ( 2 * math.pi * math.max( scale.x, scale.y ) / 2 )
+
+    --if ReticleSize > 0 then
+
+        --surface.DrawRect( x - 1, y - 1, 2, 2 )
+        --for a = 0, 360 - segmentdist, segmentdist do
+            --surface.DrawLine( x + math.cos( math.rad( a ) ) * scale.x, y - math.sin( math.rad( a ) ) * scale.y, x + math.cos( math.rad( a + segmentdist ) ) * scale.x, y - math.sin( math.rad( a + segmentdist ) ) * scale.y )
+        --end
+
+    --end
+
+    --Draw basic crosshair that increases in size with Inaccuracy Accumulation
+    surface.SetDrawColor( 255, 0, 0, 255 )
+    surface.DrawLine( (x + 15), y, (x + 8*ReticleSize), y )
+    surface.DrawLine( (x - 15), y, (x - 8*ReticleSize), y )
+    surface.DrawLine( x, (y + 15), x, (y + 8*ReticleSize) )
+    surface.DrawLine( x, (y - 15), x, (y - 8*ReticleSize) )
+
+    
+    
 
     return true
 
