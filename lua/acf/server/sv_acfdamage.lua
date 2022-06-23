@@ -120,8 +120,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                     TraceInit.endpos    = Tar:WorldSpaceCenter()
                     TraceInit.filter    = OccFilter
                     TraceInit.mask      = MASK_SOLID
-                    TraceInit.mins      = Vector( 0, 0, 0 )
-                    TraceInit.maxs      = Vector( 0, 0, 0 ) 
+                    TraceInit.mins      = vector_origin
+                    TraceInit.maxs      = TraceInit.mins 
                     util.TraceHull( TraceInit )
                     
                     --if above failed getting the target. Try again by nearest point instead.
@@ -166,12 +166,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
                         --if hitpos is inside of hitbox of the victim prop, nearest point will not work as intended
                         if Hitat == Hitpos then Hitat = Tar:GetPos() end
 
-                        TraceInit.start     = Hitpos
                         TraceInit.endpos    = Hitat + (Hitat-Hitpos):GetNormalized()*100
-                        TraceInit.filter    = OccFilter
-                        TraceInit.mask      = MASK_SOLID
-                        TraceInit.mins      = Vector( 0, 0, 0 )
-                        TraceInit.maxs      = Vector( 0, 0, 0 ) 
                         util.TraceHull( TraceInit )
                     end
 
@@ -301,7 +296,7 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
             else
 
-                --reduced damage to era if detonation is from another era by 90%. So we avoid a chain reaction
+                --reduced damage to era if detonation is from another brick by 90%. So we avoid a chain reaction
                 if IsValid(Gun) then
                     if not ACE.RealGuns[Gun:GetClass()] then
 
@@ -322,7 +317,8 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
                     --Add the debris created to the ignore so we don't hit it in other rounds
                     local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
-                    table.insert( OccFilter , Debris )                      
+                    table.insert( OccFilter , Debris )
+            
                     LoopKill = true --look for fresh targets since we blew a hole somewhere
 
                 else
@@ -1070,20 +1066,21 @@ do
     -- Config
     local AmmoExplosionScale = 0.25
     local FuelExplosionScale = 0.005
-    local MaxGroup           = 5        -- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
-    local MaxHE              = 100      -- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
     --converts what would be multiple simultaneous cache detonations into one large explosion
     function ACF_ScaledExplosion( ent )
-      
+    
         if ent.RoundType and ent.RoundType == "Refill" then return end
 
-        local Inflictor = ent.Inflictor or nil
-        local Owner     = CPPI and ent:CPPIGetOwner() or NULL
-        
         local HEWeight
         local ExplodePos = {}
 
+        local MaxGroup   = ACF.ScaledEntsMax    -- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
+        local MaxHE      = ACF.ScaledHEMax      -- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
+
+        local Inflictor  = ent.Inflictor or nil
+        local Owner      = CPPI and ent:CPPIGetOwner() or NULL
+        
         if ent:GetClass() == "acf_fueltank" then
 
             local Fuel      = ent.Fuel      or 0    
@@ -1109,19 +1106,23 @@ do
         local Search = true
         local Filter = { ent }
 
-        while Search do
-        
-            if #ACE.Explosives == 1 then break end
+        ent:Remove()
 
-            for _,Found in ipairs( ACE.Explosives ) do
+        local CExplosives = ACE.Explosives
+
+        while Search do
+
+            if #CExplosives == 1 then break end
+
+            for i,Found in ipairs( CExplosives ) do
 
                 if #Filter > MaxGroup or HEWeight > MaxHE then break end
                 if not IsValid(Found) then goto cont end
                 if Found:GetPos():DistToSqr(Pos) > Radius^2 then goto cont end
 
-                local EOwner = CPPI and Found:CPPIGetOwner() or NULL
-
                 if not Found.Exploding then 
+
+                    local EOwner = CPPI and Found:CPPIGetOwner() or NULL
 
                     --Don't detonate explosives which we are not allowed to.
                     if Owner ~= EOwner then goto cont end
@@ -1168,7 +1169,7 @@ do
 
                             FoundHEWeight = ( ( HE + Propel * ( ACF.PBase/ACF.HEPower)) * Ammo ) * AmmoExplosionScale
                         end
-                    
+
                         table.insert( ExplodePos, Found:LocalToWorld(Found:OBBCenter()) )
 
                         HEWeight = HEWeight + FoundHEWeight
@@ -1178,11 +1179,12 @@ do
                         Found.KillAction    = false
                         Found.Exploding     = true
 
-                        table.insert(Filter,Found)
-
-                        Found:Remove(Occ.Entity)
+                        table.insert( Filter,Found )
+                        table.remove( CExplosives,i )   
+                        Found:Remove()
                     else
-                        if IsValid(Occ.Entity) then
+                        
+                        if IsValid(Occ.Entity) and Occ.Entity:GetClass() ~= "acf_ammo" and Occ.Entity:GetClass() == "acf_fueltank" then
                             if vFireInstalled then
                                 Occ.Entity:Ignite( _, HEWeight )
                             else
@@ -1190,6 +1192,7 @@ do
                             end
                             
                         end
+                        
                     end         
                 end
 
@@ -1211,14 +1214,13 @@ do
             totalpos = totalpos + cratepos 
         end
         local AvgPos = totalpos / #ExplodePos
-
-        ent:Remove()
         
         HEWeight    = HEWeight*ACF.BoomMult
         Radius      = ACE_CalculateHERadius( HEWeight ) 
                 
         ACF_HE( AvgPos , vector_origin , HEWeight , HEWeight , Inflictor , ent, ent )
 
+        --util.Effect not working during MP workaround. Waiting a while fixes the issue.
         timer.Simple(0.001, function()
             local Flash = EffectData()
                 Flash:SetAttachment( 1 )

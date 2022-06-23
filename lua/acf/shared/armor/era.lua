@@ -33,9 +33,11 @@ Material.NormMult       = 1
 
 if SERVER then
 
+    ACE.ERABoomPerTick = 0 --Used to count how many bricks are being detonated per tick
+
     Material.IsExplosive    = true -- Tell to core that this material is explosive and their own explosions should be reduced vs other explosive mats in order to avoid chain reactions.
 
-    -- Ammo Types to be considered HEAT
+    -- Ammo Types to be considered HEAT. Hardcoded
     Material.HEATList = {
 
         HEAT    = true,
@@ -44,7 +46,7 @@ if SERVER then
         THEATFS = true
     }
 
-    -- Ammo Types to be considered HE
+    -- Ammo Types to be considered HE. Hardcoded
     Material.HEList = {
 
         HE      = true,
@@ -97,6 +99,20 @@ if SERVER then
             HitRes.Damage   = 9999999999999 
             HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)                       -- Remaining penetration
             HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)        
+
+            ACE.ERABoomPerTick = ACE.ERABoomPerTick + 1
+
+            if not timer.Exists("ACE_ERA_Reset") then
+                timer.Create("ACE_ERA_Reset", 0.01, 1, function()
+                    print("Max ERA boom each 1/10 of a sec: "..ACE.ERABoomPerTick)
+                    ACE.ERABoomPerTick = 0
+                end )
+            end
+
+            --I will only allow 3 bricks to really detonate around of 1 tick. The rest can kill themselves
+            if ACE.ERABoomPerTick > 3 then return HitRes end
+
+            print("----------------------------------------Boom")
 
             local HEWeight  = armor*0.25  
             local Radius    = ( HEWeight )^0.33*8*39.37
