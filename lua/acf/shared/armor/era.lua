@@ -83,13 +83,13 @@ if SERVER then
             sensor      = 1
 
         end
-
+--[[
         if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) then
             print("Detonated by penetration")
         elseif (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then
             print("Detonated by low health")
         end
-
+]]
         --ERA detonates and shell is completely stopped
         if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated       
 
@@ -97,25 +97,24 @@ if SERVER then
             Entity:Remove()
 
             HitRes.Damage   = 9999999999999 
-            HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)                       -- Remaining penetration
-            HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)        
+            HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)                       -- Remaining penetration.
+            HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)                    -- leaves 2% max penetration to pass
 
             ACE.ERABoomPerTick = ACE.ERABoomPerTick + 1
 
             if not timer.Exists("ACE_ERA_Reset") then
                 timer.Create("ACE_ERA_Reset", 0.01, 1, function()
-                    print("Max ERA boom each 1/10 of a sec: "..ACE.ERABoomPerTick)
-                    ACE.ERABoomPerTick = 0
+                    ACE.ERABoomPerTick = 0                          -- print("Max ERA boom per tick: "..ACE.ERABoomPerTick)
                 end )
             end
 
             --I will only allow 3 bricks to really detonate around of 1 tick. The rest can kill themselves
             if ACE.ERABoomPerTick > 3 then return HitRes end
 
-            print("----------------------------------------Boom")
+            --print("----------------------------------------Boom")
 
             local HEWeight  = armor*0.25  
-            local Radius    = ( HEWeight )^0.33*8*39.37
+            local Radius    = ACE_CalculateHERadius( HEWeight )
             local Owner     = (CPPI and Entity:CPPIGetOwner()) or NULL
             local EntPos    = Entity:GetPos()
 
