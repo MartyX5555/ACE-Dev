@@ -7,13 +7,13 @@ Material.sname          = "Rubber"
 Material.desc           = "Another Material, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
 Material.year           = 1955
 
-Material.massMod        = 0.22
+Material.massMod        = 0.2
 Material.curve          = 0.95
 
 Material.specialeffect  = 30
 
 Material.effectiveness  = 0.02
-Material.HEATeffectiveness = 1.65
+Material.HEATeffectiveness = 3
 Material.resiliance     = 0.25
 Material.HEATresiliance = 0.3
 Material.HEresiliance   = 0.3

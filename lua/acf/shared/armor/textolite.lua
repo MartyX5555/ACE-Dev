@@ -7,7 +7,7 @@ Material.sname          = "Textolite"
 Material.desc           = "As known as fiberglass, this chemical material provides a fairly protection agaisnt both kinetic and chemical rounds, including agaisnt explosive rounds, although its mediocre at all."
 Material.year           = 1955
 
-Material.massMod        = 0.45
+Material.massMod        = 0.35
 Material.curve          = 0.94
 
 Material.effectiveness      = 0.5
