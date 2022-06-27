@@ -733,6 +733,17 @@ function ACFSVGUICreate( Table )   --Serverside folder content
 
    acfmenupanel.CustomDisplay:AddItem( Spall )
 
+   local Scaled = vgui.Create( "DForm" )
+   Scaled:SetName("Cooking off")
+
+   Scaled:NumSlider( "Max HE per explosion", "acf_explosions_scaled_he_max", 50, 1000, 0 )
+   Scaled:ControlHelp( "The maximum amount of HE weight to detonate at once." )
+
+   Scaled:NumSlider( "Max entities per explosion", "acf_explosions_scaled_ents_max", 1, 20, 0 )
+   Scaled:ControlHelp( "The maximum amount of entities to detonate at once." )
+
+   acfmenupanel.CustomDisplay:AddItem( Scaled )
+
    local Legal = vgui.Create( "DForm" )
    Legal:SetName("Legality")
 

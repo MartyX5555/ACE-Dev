@@ -67,7 +67,7 @@ if CLIENT then
             effect = effectsTbl[i]
             
             if effect then
-                if not IsValid(effect.EntFrom) and IsValid(effect.EntTo) then 
+                if not IsValid(effect.EntFrom) or not IsValid(effect.EntTo) then 
                     effectsTbl[i] = nil
                 end
             end
@@ -112,7 +112,7 @@ if CLIENT then
     usermessage.Hook("ACF_StopRefillEffect", function( msg )
 
         local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
-        if not IsValid( EntFrom ) or not IsValid( EntTo )or not EntFrom.RefillAmmoEffect then return end
+        if not IsValid( EntFrom ) or not IsValid( EntTo ) or not EntFrom.RefillAmmoEffect then return end
 
         for k,v in pairs( EntFrom.RefillAmmoEffect ) do
             if v.EntTo == EntTo then
@@ -609,7 +609,7 @@ function ENT:FirstLoad()
 end
 
 function ENT:Think()
-    
+
     if ACF.CurTime > self.NextLegalCheck then
 
         self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.EmptyMass,2), nil, true, true)
@@ -667,13 +667,15 @@ function ENT:Think()
             if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
                 
                 self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  ) 
-                local Speed = ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
+                self.BulletCookSpeed    = self.BulletCookSpeed or ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
                 self.BulletData.Pos     = self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
-                self.BulletData.Flight  = (VectorRand()):GetNormalized() * Speed * 39.37 + self:GetVelocity()
-                self.BulletData.Owner   = self.Inflictor or self.Owner
-                self.BulletData.Gun     = self
-                self.BulletData.Crate   = self:EntIndex()
+                self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
+
+                self.BulletData.Owner   = self.BulletData.Owner or self.Inflictor or self.Owner
+                self.BulletData.Gun     = self.BulletData.Gun   or self
+                self.BulletData.Crate   = self.BulletData.Crate or self:EntIndex()
+                
                 self.CreateShell        = ACF.RoundTypes[CrateType].create
                 self:CreateShell( self.BulletData )
                     

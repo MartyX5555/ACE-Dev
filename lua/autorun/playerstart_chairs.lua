@@ -9,8 +9,8 @@ local lClass = "prop_vehicle_prisoner_pod"
 local lKeyvalues = { vehiclescript = "scripts/vehicles/prisoner_pod.txt", limitview = "0" }
 local lCategoryExp = "Playerstart Chairs (Experimental)"
 
-local function HandleRollercoasterAnimation( vehicle, player )
-	return player:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
+local function HandleRollercoasterAnimation( vehicle, ply )
+	return ply:SelectWeightedSequence( ACT_GMOD_SIT_ROLLERCOASTER ) 
 end
 
 local function HandlePHXVehicleAnimation( vehicle, ply )
@@ -19,6 +19,10 @@ end
 
 local function HandlePHXAirboatAnimation( vehicle, ply )
 	return ply:SelectWeightedSequence( ACT_DRIVE_AIRBOAT ) 
+end
+
+local function HandleStandPoseAnimation( vehicle, ply )
+	return ply:SelectWeightedSequence( ACT_HL2MP_IDLE )
 end
 
 local function HandlePodAnim( vehicle, ply )
@@ -102,7 +106,7 @@ AddVehicle( {
 
 	KeyValues = lKeyvalues,
 	Members = {
-		HandleAnimation = HandlePodAnim, ----
+		HandleAnimation = HandleStandPoseAnimation, ----
 	}
 }, "playerstart_chairs_standing" )
 

@@ -208,7 +208,7 @@ end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
-    print("Called function detonate during DetCount: "..Bullet.Detonated )
+    --print("Called function detonate during DetCount: "..Bullet.Detonated )
 
     Bullet.Detonated    = (Bullet.Detonated or 0) + 1
 
@@ -216,6 +216,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
     --First Detonation
     if DetCount == 1 then 
+        --print("1ST CHARGE")
 
         Bullet.NotFirstPen = false
 
@@ -239,6 +240,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 
     --Second Detonation
     elseif DetCount == 2 then 
+        --print("2ND CHARGE")
 
         Bullet.NotFirstPen = false
 
@@ -263,18 +265,19 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 --  print(Bullet.Detonated)
 end
 
---TODO: Make shell fire both tandem charges at once. 
+--TODO: Make shell fire both tandem charges at once.
+--BUG: 2nd charge trace doesnt return a valid HitNormal res, which makes impacted prop returns an infinite effective armor. Not always happens but its possible.
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
     -- DetCount = 0 // the bullet has impacted something, it still doesnt detonate. Here checks if it should ricochet or detonate.
     -- DetCount = 1 // the bullet has detonated and has penetrated the next layers. If fails to, a 2nd charge is called.
     -- DetCount = 2 // the bullet has detonated its 2nd charge. The last one of this round.
 
-
     local DetCount = Bullet.Detonated or 0
 
-    print("THEAT DID HIT\n DetCount: "..DetCount)
-    print("Hit Target: "..(Target:GetClass()) )
+    --print("THEAT DID HIT\n DetCount: "..DetCount)
+    --print("Hit Target: "..(Target:GetClass()) )
+    --print("ENTIndex: "..Target:EntIndex())
 
     --2nd charge should always appear in the same place as 1st charge
     if Bullet.FirstPos then HitPos = Bullet.FirstPos end
@@ -350,7 +353,16 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
-    
+    local DetCount = Bullet.Detonated or 0
+
+    --print("endflight during DetCount: "..DetCount)
+
+    if DetCount == 1 then
+        --print("endflight during 1st charge, detonating 2nd charge")
+        Round.detonate( Index, Bullet, HitPos, HitNormal )
+        return
+    end
+
     ACF_RemoveBullet( Index )
     
 end
@@ -363,21 +375,21 @@ function Round.endeffect( Effect, Bullet )
         Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Impact:SetScale( Bullet.SimFlight:Length() )
         Impact:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Impact", Impact )
+    util.Effect( "acf_ap_impact", Impact )
     
 end
 
 function Round.pierceeffect( Effect, Bullet )
     local DetCount = Bullet.Detonated or 0
     if DetCount > 0 then
-    
+
         local Spall = EffectData()
             Spall:SetEntity( Bullet.Crate )
             Spall:SetOrigin( Bullet.SimPos )
             Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
             Spall:SetScale( Bullet.SimFlight:Length() )
             Spall:SetMagnitude( Bullet.RoundMass )
-        util.Effect( "ACF_AP_Penetration", Spall )
+        util.Effect( "acf_ap_penetration", Spall )
     
     else
         
@@ -386,11 +398,12 @@ function Round.pierceeffect( Effect, Bullet )
             Flash:SetOrigin( Bullet.SimPos )
             Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
             Flash:SetRadius( math.max( Radius, 1 ) )
-        util.Effect( "ACF_HEAT_Explosion", Flash )
+        util.Effect( "acf_heat_explosion", Flash )
         
         Bullet.Detonated = 1
         Effect:SetModel("models/Gibs/wood_gib01e.mdl")
     
+        Round.pierceeffect( Effect, Bullet )
     end
     
 end
@@ -403,7 +416,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
+    util.Effect( "acf_ap_ricochet", Spall )
     
 end
 
@@ -490,3 +503,6 @@ end
 list.Set("HERoundTypes", 'THEAT', Round ) 
 list.Set( "ACFRoundTypes", "THEAT", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "THEAT" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

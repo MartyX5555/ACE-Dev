@@ -261,9 +261,9 @@ function ENT:AcquireLock()
                 besterr = err
             end
 
-            local errorFromHeat = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
-            local posErrorFromHeat = 1 - math.min(1, (Heat / 200))
-            local angerr        = 1 + randanginac * (errorFromAng + errorFromHeat)
+            local errorFromHeat     = math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
+            local posErrorFromHeat  = 1 - math.min(1, (Heat / 200))
+            local angerr            = 1 + randanginac * (errorFromAng + errorFromHeat)
 
             --For Owner table
             table.insert( Owners        , CPPI and ( IsValid( scanEnt:CPPIGetOwner() ) and scanEnt:CPPIGetOwner():GetName()) or scanEnt:GetOwner():GetName() or "")

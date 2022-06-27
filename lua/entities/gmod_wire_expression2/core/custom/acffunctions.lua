@@ -69,6 +69,13 @@ local function isLinkableACFEnt(ent)
 
 end
 
+local function isACFEntity(Entity)
+	if not validPhysics(Entity) then return false end
+
+	local Match = string.match(Entity:GetClass(), "^acf_")
+
+	return Match and true or false
+end
 
 -- [General Functions ] --
 
@@ -795,6 +802,17 @@ e2function number entity:acfFLSpikeRadius()
 	if restrictInfo(self, this) then return 0 end
 	if not this.BulletData["Type"] == "FL" then return 0 end
 	return math.Round((this.BulletData["FlechetteRadius"] or 0) * 10, 3)
+end
+
+-- Returns the drag coefficient of ammo contained in an ACF entity
+e2function number entity:acfDragCoef()
+	if not isACFEntity(this) then return 0 end
+	if restrictInfo(self, this) then return 0 end
+
+	local BulletData = this.BulletData
+	local DragCoef   = BulletData and BulletData.DragCoef
+
+	return DragCoef and DragCoef / ACF.DragDiv or 0
 end
 
 __e2setcost( 5 )

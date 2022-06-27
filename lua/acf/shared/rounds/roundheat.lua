@@ -182,7 +182,7 @@ function Round.cratetxt( BulletData, builtFullData )
 end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
-    
+
     ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
 
     Bullet.Detonated        = true
@@ -205,47 +205,48 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
-    
+
     if ACF_Check( Target ) then
-            
-        if Bullet.Detonated then
-            Bullet.NotFirstPen = true
-            
-            local Speed = Bullet.Flight:Length() / ACF.VelScale
-            local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, 999999 )
-            local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-            
-            if HitRes.Overkill > 0 then
-                table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
-                ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-                Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
-                
-                return "Penetrated"
-            else
-                return false
-            end
-    
-        else
-            
-            local Speed = Bullet.Flight:Length() / ACF.VelScale
+
+        if not Bullet.Detonated then --Bullet hits the plate
+
+            local Speed  = Bullet.Flight:Length() / ACF.VelScale
             local Energy = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
             local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
             
-            if HitRes.Ricochet then
-                return "Ricochet"
-            else
-                Round.detonate( Index, Bullet, HitPos, HitNormal )
-                return "Penetrated"
+            if HitRes.Ricochet then 
+                return "Ricochet" 
             end
+
+            Round.detonate( Index, Bullet, HitPos, HitNormal )
+            return "Penetrated"
+
+        end --Bullet sends Jet
+
+        Bullet.NotFirstPen = true
+        
+        local Speed  = Bullet.Flight:Length() / ACF.VelScale
+        local Energy = ACF_Kinetic( Speed , Bullet.ProjMass, 999999 )
+        local HitRes = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
+        
+        if HitRes.Overkill > 0 then
+
+            table.insert( Bullet.Filter , Target )
+
+            ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+            Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
             
+            return "Penetrated"
+        else
+
+            return false
         end
+          
     else
         table.insert( Bullet.Filter , Target )
         return "Penetrated"
     end
-    
-    return false
-    
+ 
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
@@ -280,34 +281,34 @@ function Round.endeffect( Effect, Bullet )
         Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Impact:SetScale( Bullet.SimFlight:Length() )
         Impact:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Impact", Impact )
+    util.Effect( "acf_ap_impact", Impact )
     
 end
 
 function Round.pierceeffect( Effect, Bullet )
-    
+
     if Bullet.Detonated then
-    
+
         local Spall = EffectData()
             Spall:SetEntity( Bullet.Crate )
             Spall:SetOrigin( Bullet.SimPos )
             Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
             Spall:SetScale( Bullet.SimFlight:Length() )
             Spall:SetMagnitude( Bullet.RoundMass )
-        util.Effect( "ACF_AP_Penetration", Spall )
+        util.Effect( "acf_ap_penetration", Spall )
     
     else
-        
+
         local Radius = (Bullet.FillerMass/3)^0.33*8*39.37 --fillermass/3 has to be manually set, as this func uses networked data
         local Flash = EffectData()
             Flash:SetOrigin( Bullet.SimPos )
             Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
             Flash:SetRadius( math.max( Radius, 1 ) )
-        util.Effect( "ACF_HEAT_Explosion", Flash )
+        util.Effect( "acf_heat_explosion", Flash )
         
         Bullet.Detonated = true
         Effect:SetModel("models/Gibs/wood_gib01e.mdl")
-    
+
     end
     
 end
@@ -320,7 +321,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
+    util.Effect( "acf_ap_ricochet", Spall )
     
 end
 
@@ -416,3 +417,6 @@ end
 list.Set("HERoundTypes", 'HEAT', Round ) 
 list.Set( "ACFRoundTypes", "HEAT", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEAT" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

@@ -454,7 +454,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
     end )
 end
 
-function ACE_SGunFire( Gun, Sound ,Class, Caliber, Propellant )
+function ACE_SGunFire( Gun, Sound, Propellant )
 
     Propellant = math.max(Propellant,50)
 

@@ -123,7 +123,7 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 
    if BackTraceOverride then Bullet.FlightTime = 0 end
    local DeltaTime = ACF.SysTime - Bullet.LastThink
-   
+
    --actual motion of the bullet
    local Drag        = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
    Bullet.NextPos    = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)                                                                                                -- Calculates the next shell position
@@ -139,12 +139,12 @@ function ACF_CalcBulletFlight( Index, Bullet, BackTraceOverride )
 
 
    --print(math.Round((Bullet.Pos-Bullet.StartTrace):Length(),1))
-   --debugoverlay.Cross(Bullet.Pos,3,15,Color(255,255,255,32), true) --true start
+   debugoverlay.Cross(Bullet.Pos,3,1,Color(255,255,255,32), true) --true start
    --debugoverlay.Box(Bullet.StartTrace,Vector(-2,-2,-2),Vector(2,2,2),15,Color(0,255,0,32), true) --backtrace start
    --debugoverlay.EntityTextAtPosition(Bullet.StartTrace, 0, "Tr", 15)
    --debugoverlay.EntityTextAtPosition(Bullet.Pos, 0, "Pos", 15)
-   --debugoverlay.Line( Bullet.Pos+Vector(0,0,1), Bullet.StartTrace+Vector(0,0,1), 15, Color(0, 255, 255), true )
-   --debugoverlay.Line( Bullet.NextPos+VectorRand(), Bullet.StartTrace+VectorRand(), 15, ColorRand(), true )
+   --debugoverlay.Line( Bullet.Pos+Vector(0,0,1), Bullet.StartTrace+Vector(0,0,1), 5, Color(0, 255, 255), true )
+   --debugoverlay.Line( Bullet.NextPos+VectorRand(), Bullet.StartTrace+VectorRand(), 5, ColorRand(), true )
    
    --updating timestep timers
    Bullet.LastThink = ACF.SysTime
@@ -168,9 +168,9 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
       -- TODO: This way will not work, we need another way for fuse
       local Time = ACF.SysTime - Bullet.InitTime
+
       if Time > Bullet.FuseLength then
 
-         --print("Explode")
          if not util.IsInWorld(Bullet.Pos) then
             ACF_RemoveBullet( Index )
          else
@@ -285,11 +285,22 @@ function ACF_DoBulletsFlight( Index, Bullet )
 
       Bullet.Flight = Bullet.Flight - Drag * DTImpact
 
+--[[
+      print("======BALLISTIC======")
+      print(FlightRes.Hit)
+      print(FlightRes.HitPos)
+      print(FlightRes.HitNormal)
+      print(FlightRes.Entity)
+      print("======BALLISTIC======")
+
+      debugoverlay.Line( FlightRes.StartPos, FlightRes.HitPos, 10, Color(0,255,0,255), true )
+      debugoverlay.Line( FlightRes.HitPos, FlightRes.HitPos+FlightRes.HitNormal*1000, 10, Color(0,100,0,255), true  )
+]]
       local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
 
       --If we should do the same trace again, then do so
       if Retry == "Penetrated" then    
-          
+
          if Bullet.OnPenetrated then Bullet.OnPenetrated(Index, Bullet, FlightRes) end
 
             Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -307,7 +318,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             end
 
       elseif Retry == "Ricochet"  then
-      
+
          if Bullet.OnRicocheted then Bullet.OnRicocheted(Index, Bullet, FlightRes) end
 
             Bullet.ImpactCount = (Bullet.ImpactCount or 0) + 1
@@ -347,7 +358,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
          local Retry = ACF_BulletWorldImpact( Index, Bullet, FlightRes.HitPos, FlightRes.HitNormal )
          
          if Retry == "Penetrated" then                         --if it is, we soldier on  
-             --print('World-Pen')
+
             if Bullet.OnPenetrated then 
                Bullet.OnPenetrated(Index, Bullet, FlightRes) 
             end
@@ -356,7 +367,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             ACF_CalcBulletFlight( Index, Bullet, true )           --The world ain't going to move, so we say True for the backtrace override
             
          elseif Retry == "Ricochet"  then
-             --print('World-Rico')
+
             if Bullet.OnRicocheted then 
                Bullet.OnRicocheted(Index, Bullet, FlightRes) 
             end
@@ -365,7 +376,7 @@ function ACF_DoBulletsFlight( Index, Bullet )
             ACF_CalcBulletFlight( Index, Bullet, true )
             
          else                                         --If not, end of the line, boyo
-             --print('World-NoPen')
+
             if Bullet.OnEndFlight then 
                Bullet.OnEndFlight(Index, Bullet, FlightRes) 
             end

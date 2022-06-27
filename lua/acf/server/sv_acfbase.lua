@@ -150,7 +150,7 @@ function ACF_Check( Entity )
     
 end
 
-function ACF_Damage ( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
+function ACF_Damage( Entity , Energy , FrAera , Angle , Inflictor , Bone, Gun, Type ) 
 
     local Activated = ACF_Check( Entity )
     local CanDo = hook.Run("ACF_BulletDamage", Activated, Entity, Energy, FrAera, Angle, Inflictor, Bone, Gun )
@@ -180,9 +180,9 @@ end
 
 function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
 
-    local armor             = Entity.ACF.Armour                             -- Armor
-    local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )  -- LOS Armor   
-    local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )  -- Bc people had to abuse armor angling, FML  
+    local armor             = Entity.ACF.Armour                                                                                         -- Armor
+    local losArmor          = armor / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor )                                     -- LOS Armor   
+    local losArmorHealth    = armor^1.1 * (3 + math.min(1 / math.abs( math.cos(math.rad(Angle)) ^ ACF.SlopeEffectFactor ),2.8)*0.5 )    -- Bc people had to abuse armor angling, FML  
 
     local Mat               = Entity.ACF.Material or "RHA"    --very important thing
 
@@ -236,7 +236,7 @@ function ACF_CalcDamage( Entity , Energy , FrAera , Angle , Type) --y=-5/16x+b
     end
 
     -- RHA Penetration
-    local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA  
+    local maxPenetration = (Energy.Penetration / FrAera) * ACF.KEtoRHA
 
     -- Projectile caliber. Messy, function signature    
     local caliber = 20 * ( FrAera^(1 / ACF.PenAreaMod) / 3.1416 )^(0.5)
