@@ -11,7 +11,7 @@ Material.massMod        = 2
 Material.curve          = 0.95
 
 Material.effectiveness      = 5
-Material.HEATeffectiveness  = 20
+Material.HEATeffectiveness  = 16.5
 
 Material.resiliance         = 1
 Material.HEATresiliance     = 1

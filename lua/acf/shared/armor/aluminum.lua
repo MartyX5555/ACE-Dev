@@ -7,10 +7,10 @@ Material.sname          = "Aluminum"
 Material.desc           = "The aluminum is normally used by AFVs or light constructions, due to its low cost and realible armor effectiveness, but its extremely vulnerable to spalling and its really worthless for heavy applications."
 Material.year           = 1955
 
-Material.massMod        = 0.221
-Material.curve          = 0.93
+Material.massMod        = 0.5
+Material.curve          = 1
 
-Material.effectiveness  = 0.34
+Material.effectiveness  = 0.525
 Material.resiliance     = 0.95
 Material.HEATMul        = 80
 
