@@ -299,21 +299,17 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 
     Tank:UpdateFuelTank(Id, SId, Data2)
     
-    local name
-    
-    if Data2 == 'Electric' then
-        name = 'Li-Ion Battery'
-    else
-        name = Data2.." Fuel Tank"
-    end
-    
+    local electric = (Data2 == 'Electric') and Tanks[Tank.SizeId].name..' Li-Ion Battery'
+    local gas      = Data2.." "..Tanks[Tank.SizeId].name..( not Tanks[Tank.SizeId].notitle and " Fuel Tank" or "")
+
+    local name = "ACE "..(electric or gas)
+
     Tank:SetNWString( "WireName", name )
     
     if IsValid(Owner) then
         Owner:AddCount( "_acf_misc", Tank )
         Owner:AddCleanup( "acfmenu", Tank )
     end
-    
     
     table.insert(ACF.FuelTanks, Tank)
     
@@ -353,11 +349,12 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
     
     self:UpdateFuelMass()
 
-    if Data2 == 'Electric' then
-        name = 'Li-Ion Battery'
-    else
-        name = Data2.." Fuel Tank"
-    end
+    local Tanks = list.Get("ACFEnts").FuelTanks
+
+    local electric = (Data2 == 'Electric') and Tanks[self.SizeId].name..' Li-Ion Battery'
+    local gas      = Data2.." "..Tanks[self.SizeId].name..( not Tanks[self.SizeId].notitle and " Fuel Tank" or "")
+
+    local name = "ACE "..(electric or gas)
     
     self:SetNWString( "WireName", name )
     
