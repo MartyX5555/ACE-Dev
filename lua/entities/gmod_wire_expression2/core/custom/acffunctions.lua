@@ -69,14 +69,6 @@ local function isLinkableACFEnt(ent)
 
 end
 
-local function isACFEntity(Entity)
-	if not validPhysics(Entity) then return false end
-
-	local Match = string.match(Entity:GetClass(), "^acf_")
-
-	return Match and true or false
-end
-
 -- [General Functions ] --
 
 
@@ -806,7 +798,7 @@ end
 
 -- Returns the drag coefficient of ammo contained in an ACF entity
 e2function number entity:acfDragCoef()
-	if not isACFEntity(this) then return 0 end
+	if not (isAmmo(this) or isGun(this)) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 
 	local BulletData = this.BulletData
