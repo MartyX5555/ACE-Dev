@@ -268,21 +268,38 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
-    
+
+    if not Bullet.Detonated then
+        ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
+    end
+
     ACF_RemoveBullet( Index )
     
 end
 
 function Round.endeffect( Effect, Bullet )
     
-    local Impact = EffectData()
-        Impact:SetEntity( Bullet.Crate )
-        Impact:SetOrigin( Bullet.SimPos )
-        Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
-        Impact:SetScale( Bullet.SimFlight:Length() )
-        Impact:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "acf_ap_impact", Impact )
-    
+    if not Bullet.Detonated then
+
+        local Radius = (Bullet.FillerMass)^0.33*8*39.37
+        local Flash = EffectData()
+            Flash:SetOrigin( Bullet.SimPos )
+            Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
+            Flash:SetRadius( math.max( Radius, 1 ) )
+        util.Effect( "ACF_Scaled_Explosion", Flash )
+
+    else
+        
+        local Impact = EffectData()
+            Impact:SetEntity( Bullet.Crate )
+            Impact:SetOrigin( Bullet.SimPos )
+            Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
+            Impact:SetScale( Bullet.SimFlight:Length() )
+            Impact:SetMagnitude( Bullet.RoundMass )
+        util.Effect( "acf_ap_impact", Impact )
+
+    end
+
 end
 
 function Round.pierceeffect( Effect, Bullet )

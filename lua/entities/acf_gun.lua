@@ -900,105 +900,117 @@ do
 
 end
 
-function ENT:FireShell()
-    
-    local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
-    if CanDo == false then return end
+do
 
-    if(self.IsUnderWeight == nil) then
-        self.IsUnderWeight = true
-    end
-    
-    local bool = true
+    local FusedRounds = {
+        HE      = true,
+        HEFS    = true,
+        HESH    = true,
+        HEAT    = true,
+        HEATFS  = true,
+        SM      = true
+    }   
 
-    if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
-
-    --print('FireShell2')   
+    function ENT:FireShell()
         
-        local Blacklist = {}
-        if not ACF.AmmoBlacklist[self.BulletData.Type] then
-            Blacklist = {}
-        else
-            Blacklist = ACF.AmmoBlacklist[self.BulletData.Type] 
+        local CanDo = hook.Run("ACF_FireShell", self, self.BulletData )
+        if CanDo == false then return end
+
+        if self.IsUnderWeight == nil then
+            self.IsUnderWeight = true
         end
-        if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then       --Check if the roundtype loaded actually exists
         
-            self.HeatFire = true  --Used by Heat            
+        local bool = true
 
-            local MuzzlePos         = self:LocalToWorld(self.Muzzle)
-            local MuzzleVec         = self:GetForward()
+        if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
+
+        --print('FireShell2')   
             
-            local coneAng           = math.tan(math.rad(self:GetInaccuracy())) 
-            local randUnitSquare    = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
-            local spread            = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
-            local ShootVec          = (MuzzleVec + spread):GetNormalized()
-            
-            self:MuzzleEffect( MuzzlePos, MuzzleVec )
-        
-            local GPos = self:GetPos()
-            local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity()+GPos)
-
-            --Traceback component
-            TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
-
-            self.BulletData.Pos = MuzzlePos + TestVel * self.DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
-            self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
-            self.BulletData.Owner = self.User
-            self.BulletData.Gun = self
-
-            local Cal = self.Caliber
-
-            if Cal < 12 then
-                local FuseNoise = 1
-
-                if (self.BulletData.Type == "HE" or self.BulletData.Type == "SM") then
-                    if self.FuseTime < (0.28^math.max(Cal-3,1)) then
-                        FuseNoise = 1
-                    else
-                        FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
-                    end
-                    
-                    if self.OverrideFuse then --using fusetime via wire will override the ammo fusetime!
-                        --print(wired)
-                        self.BulletData.FuseLength = self.FuseTime * FuseNoise          
-                    end 
-                end
-            end
-
-            self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
-            self:CreateShell( self.BulletData )
-            
-            local PhysObj = self:GetPhysicsObject()
-            local HasPhys = not self:GetParent():IsValid()  --No parented
-
-            --nil is due to using applyforcecenter in KEShove function, so masscenter no longer required.
-
-            --local LocalPos = HasPhys and nil or self:GetPos()
-            local LocalPos = not HasPhys and self:GetPos() or nil
-            local Dir = -self:GetForward()
-            local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
-
-            ACF_KEShove(self, LocalPos , Dir , KE )
-            
-            self.Ready = false
-            self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
-            if((self.CurrentShot >= self.MagSize) and (self.MagSize > 1)) then
-                self:LoadAmmo(self.MagReload, false)    
-                self:EmitSound("weapons/357/357_reload4.wav",500,100)
-                timer.Simple(self.LastLoadDuration, function() if IsValid(self) then self.CurrentShot = 0 end end)
+            local Blacklist = {}
+            if not ACF.AmmoBlacklist[self.BulletData.Type] then
+                Blacklist = {}
             else
-                self:LoadAmmo(false, false) 
+                Blacklist = ACF.AmmoBlacklist[self.BulletData.Type] 
             end
-            Wire_TriggerOutput(self, "Ready", 0)
-        else
+            if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then       --Check if the roundtype loaded actually exists
             
-            self.CurrentShot = 0
-            self.Ready = false
-            Wire_TriggerOutput(self, "Ready", 0)
-            self:LoadAmmo(false, true)  
+                self.HeatFire = true  --Used by Heat            
+
+                local MuzzlePos         = self:LocalToWorld(self.Muzzle)
+                local MuzzleVec         = self:GetForward()
+                
+                local coneAng           = math.tan(math.rad(self:GetInaccuracy())) 
+                local randUnitSquare    = (self:GetUp() * (2 * math.random() - 1) + self:GetRight() * (2 * math.random() - 1))
+                local spread            = randUnitSquare:GetNormalized() * coneAng * (math.random() ^ (1 / math.Clamp(ACF.GunInaccuracyBias, 0.5, 4)))
+                local ShootVec          = (MuzzleVec + spread):GetNormalized()
+                
+                self:MuzzleEffect( MuzzlePos, MuzzleVec )
+            
+                local GPos = self:GetPos()
+                local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity()+GPos)
+
+                --Traceback component
+                TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
+
+                self.BulletData.Pos = MuzzlePos + TestVel * self.DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
+                self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
+                self.BulletData.Owner = self.User
+                self.BulletData.Gun = self
+
+                local Cal = self.Caliber
+
+                if Cal < 12 then
+                    local FuseNoise = 1
+
+                    if FusedRounds[self.BulletData.Type]  then
+                        if self.FuseTime < (0.28^math.max(Cal-3,1)) then
+                            FuseNoise = 1
+                        else
+                            FuseNoise = 1 + math.Rand(-1,1)* math.max(((Cal-3)/23),0.2)
+                        end
+                        
+                        if self.OverrideFuse then --using fusetime via wire will override the ammo fusetime!
+                            --print(wired)
+                            self.BulletData.FuseLength = self.FuseTime * FuseNoise          
+                        end 
+                    end
+                end
+
+                self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
+                self:CreateShell( self.BulletData )
+                
+                local PhysObj = self:GetPhysicsObject()
+                local HasPhys = not self:GetParent():IsValid()  --No parented
+
+                --nil is due to using applyforcecenter in KEShove function, so masscenter no longer required.
+
+                --local LocalPos = HasPhys and nil or self:GetPos()
+                local LocalPos = not HasPhys and self:GetPos() or nil
+                local Dir = -self:GetForward()
+                local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
+
+                ACF_KEShove(self, LocalPos , Dir , KE )
+                
+                self.Ready = false
+                self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
+                if((self.CurrentShot >= self.MagSize) and (self.MagSize > 1)) then
+                    self:LoadAmmo(self.MagReload, false)    
+                    self:EmitSound("weapons/357/357_reload4.wav",500,100)
+                    timer.Simple(self.LastLoadDuration, function() if IsValid(self) then self.CurrentShot = 0 end end)
+                else
+                    self:LoadAmmo(false, false) 
+                end
+                Wire_TriggerOutput(self, "Ready", 0)
+            else
+                
+                self.CurrentShot = 0
+                self.Ready = false
+                Wire_TriggerOutput(self, "Ready", 0)
+                self:LoadAmmo(false, true)  
+            end
         end
+        
     end
-    
 end
 
 function ENT:FindNextCrate()
