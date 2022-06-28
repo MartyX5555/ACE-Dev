@@ -296,20 +296,6 @@ function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gu
 
             else
 
-                --reduced damage to era if detonation is from another brick by 90%. So we avoid a chain reaction
-                if IsValid(Gun) then
-                    if not ACE.RealGuns[Gun:GetClass()] then
-
-                        local mat           = Tar.ACF and Tar.ACF.Material or "RHA"
-                        local MatData       = ACE.Armors[mat]
-
-                        if MatData.IsExplosive then
-                            Blast.Penetration = Blast.Penetration*0.1
-                            FragKE.Penetration = FragKE.Penetration*0.1
-                        end
-                    end
-                end
-
                 BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
                 FragRes = ACF_Damage ( Tar , FragKE , FragAera*FragHit , 0 , Inflictor , 0, Gun, "Frag" )
                 

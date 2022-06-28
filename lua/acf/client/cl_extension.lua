@@ -307,8 +307,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
                     --play dirt sounds
                     if Radius >= SmallEx and HitWorld then
-                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix), Volume * VolFix / 20)
-                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 90, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix), Volume * VolFix / 20)
+                        sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
                     end
 
                     --Underwater Explosions
@@ -455,6 +455,8 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 end
 
 function ACE_SGunFire( Gun, Sound, Propellant )
+
+    if not Sound or Sound == "" then return end
 
     Propellant = math.max(Propellant,50)
 
