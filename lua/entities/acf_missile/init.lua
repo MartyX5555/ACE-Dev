@@ -44,7 +44,7 @@ function ENT:SetBulletData(bdata)
 
     local gun = list.Get("ACFEnts").Guns[bdata.Id]
 
-    self:SetModelEasy( gun.round.model or gun.model or "models/missiles/aim9.mdl" )
+    self:SetModelEasy( gun and (gun.round.model or gun.model) or "models/missiles/aim9.mdl" )
 
     self:ParseBulletData(bdata)
 
@@ -455,6 +455,8 @@ function ENT:DoFlight(ToPos, ToDir)
     self:SetPos(setPos)
     self:SetAngles(setDir:Angle())
 
+    --debugoverlay.Line(setPos, setPos+setDir*100, 5, Color(255,255,0), true )
+
     self.BulletData.Pos = setPos
 
 end
@@ -464,6 +466,14 @@ function ENT:Detonate()
     self.Entity:StopParticles()
     self.Motor = 0
     self:SetNWFloat("LightSize", 0)
+
+    if CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay then
+        print("fucked by mintime")
+    end
+
+    if not self.Fuse:IsArmed() then
+        print("fucked by fuse not armed")
+    end
 
     --Missile is below min arming time, so it becomes physical and useless
     if self.Fuse and (CurTime() - self.Fuse.TimeStarted < self.MinArmingDelay or not self.Fuse:IsArmed()) then
@@ -537,7 +547,7 @@ function ENT:Think()
         if self.FirstThink == true then
             self.FirstThink = false
             self.LastThink = Time - self.ThinkDelay
-            self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
+            self.LastVel = self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay print(self.LastVel)
         end
         self:CalcFlight()
 
