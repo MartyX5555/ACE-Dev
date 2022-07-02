@@ -178,6 +178,12 @@ function ENT:Link( Target )
         return false, "Racks can only be linked to ammo crates!"
     end
     
+    -- Don't link if it's a blacklisted round type for this gun
+    local Blacklist = ACF.AmmoBlacklist[ Target.RoundType ] or {}
+    
+    if table.HasValue( Blacklist, self.Class ) then
+        return false, "That round type cannot be used with this gun!"
+    end
     
     local ret, msg = self:CanLinkCrate(Target)
     if not ret then
