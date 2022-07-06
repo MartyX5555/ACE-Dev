@@ -896,15 +896,19 @@ function PANEL:AmmoSelect( Blacklist )
    acfmenupanel.CData.ClassSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay)
    acfmenupanel.CData.ClassSelect:SetSize(100, 30)
 
+   local DComboList = {}
+
    for Key, GunTable in pairs( acfmenupanel.Classes.GunClass ) do
 
       if not table.HasValue( Blacklist, GunTable.id ) then
          acfmenupanel.CData.ClassSelect:AddChoice( GunTable.name , GunTable.id )
+         DComboList[GunTable.id] = true
 
       end
    end  
 
-   acfmenupanel.CData.ClassSelect:SetText( acfmenupanel.AmmoData["Classname"] .. " - update caliber! ")
+   acfmenupanel.CData.ClassSelect:SetText( acfmenupanel.AmmoData["Classname"] .. (not DComboList[acfmenupanel.AmmoData["ClassData"]] and " - update caliber!" or "" ))
+   acfmenupanel.CData.ClassSelect:SetColor( (not DComboList[acfmenupanel.AmmoData["ClassData"]] and Color(255,0,0) or Color(0,0,0) ) )
 
    acfmenupanel.CData.ClassSelect.OnSelect = function( value , index , data )
 
@@ -912,6 +916,8 @@ function PANEL:AmmoSelect( Blacklist )
 
       acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass[data]["name"]
       acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass[data]["id"]
+
+      acfmenupanel.CData.ClassSelect:SetColor( Color(0,0,0) )
 
       acfmenupanel.CData.CaliberSelect:Clear()
 
