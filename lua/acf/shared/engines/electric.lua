@@ -2,54 +2,55 @@
 -- Electric motors
 
 ACF_DefineEngine( "Electric-Small", {
-	name = "Electric motor, Small",
-	desc = "A small electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
-	model = "models/engines/emotorsmall.mdl",
-	sound = "acf_engines/electric_small.wav",
-	category = "Electric",
-	fuel = "Electric",
-	enginetype = "Electric",
-	weight = 147,
-	torque = 376, --400
-	flywheelmass = 0.3,
-	idlerpm = 0, --40
-	limitrpm = 18215,
-	iselec = true,
-	flywheeloverride = 4750
+	name 				= "Electric motor, Small",
+	desc 				= "A small electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
+	model 				= "models/engines/emotorsmall.mdl",
+	sound 				= "acf_engines/electric_small.wav",
+	category 			= "Electric",
+	fuel 				= "Electric",
+	enginetype 			= "Electric",
+	weight 				= 147,
+	torque 				= 376, --400
+	flywheelmass 		= 0.3,
+	idlerpm 			= 0, --40
+	limitrpm 			= 18215,
+	iselec 				= true,
+	flywheeloverride 	= 4750
 } )
 
 ACF_DefineEngine( "Electric-Medium", {
-	name = "Electric motor, Medium",
-	desc = "A medium electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
-	model = "models/engines/emotormed.mdl",
-	sound = "acf_engines/electric_medium.wav",
-	category = "Electric",
-	fuel = "Electric",
-	enginetype = "Electric",
-	weight = 160,
-	torque = 600,
-	flywheelmass = 0,35,
-	idlerpm = 0,
-	limitrpm = 20000,
-	iselec = true,
-	flywheeloverride = 8000
+	name 				= "Electric motor, Medium",
+	desc 				= "A medium electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
+	model 				= "models/engines/emotormed.mdl",
+	sound 				= "acf_engines/electric_medium.wav",
+	category 			= "Electric",
+	fuel 				= "Electric",
+	enginetype 			= "Electric",
+	weight 				= 160,
+	torque 				= 600,
+	flywheelmass 		= 0.35,
+	idlerpm 			= 0,
+	limitrpm 			= 20000,
+	iselec 				= true,
+	flywheeloverride 	= 8000
+	
 } )
 
 ACF_DefineEngine( "Electric-Large", {
-	name = "Electric motor, Large",
-	desc = "A huge electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
-	model = "models/engines/emotorlarge.mdl",
-	sound = "acf_engines/electric_large.wav",
-	category = "Electric",
-	fuel = "Electric",
-	enginetype = "Electric",
-	weight = 240,
-	torque = 800,
-	flywheelmass = 0.35,
-	idlerpm = 0,
-	limitrpm = 20000,
-	iselec = true,
-	flywheeloverride = 8000
+	name 				= "Electric motor, Large",
+	desc 				= "A huge electric motor, loads of torque, but low power\n\nElectric motors provide huge amounts of torque, but are very heavy",
+	model 				= "models/engines/emotorlarge.mdl",
+	sound 				= "acf_engines/electric_large.wav",
+	category 			= "Electric",
+	fuel 				= "Electric",
+	enginetype 			= "Electric",
+	weight 				= 240,
+	torque 				= 800,
+	flywheelmass 		= 0.35,
+	idlerpm 			= 0,
+	limitrpm 			= 20000,
+	iselec 				= true,
+	flywheeloverride 	= 8000
 	
 } )
 
@@ -70,8 +71,6 @@ ACF_DefineEngine( "Electric-Tiny-NoBatt", {
 	iselec = true,
 	flywheeloverride = 4750
 } )
-
-
 
 ACF_DefineEngine( "Electric-Small-NoBatt", {
 	name = "Electric motor, Small, Standalone",
