@@ -419,7 +419,7 @@ do
         ["140mmSB"]         = "140mmSBC",
         ["170mmSB"]         = "170mmSBC",
         ["70mmFFARDAGR"]    = "70mmFFAR",
-        ["9M113"]           = "9M133"
+        ["9M113 ASM"]           = "9M133 ASM"
     }
 
     --List of munitions no longer stay on ACE
@@ -429,6 +429,8 @@ do
     }
 
     function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
+
+        print(Data1)
 
         --Replaces id if its old
         self.RoundId = BackComp[Data1] or Data1 or "100mmC"
