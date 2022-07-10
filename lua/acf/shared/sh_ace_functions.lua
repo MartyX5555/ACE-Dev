@@ -324,7 +324,7 @@ do
 
             if not fileExists then
 
-                print( "[ACE|INFO]- Creating dupe '"..file_name.."'' in "..file_directory )
+                --print( "[ACE|INFO]- Creating dupe '"..file_name.."'' in "..file_directory )
 
                 file.CreateDir(file_directory)
                 file.Write(file_directory.."/"..file_name..".txt", file_content)
@@ -338,7 +338,7 @@ do
 
                 if NFile_Size > 0 and CFile_Size ~= NFile_Size then
 
-                    print("[ACE|INFO]- your dupe "..file_name.." is different/outdated! Updating....")
+                    --print("[ACE|INFO]- your dupe "..file_name.." is different/outdated! Updating....")
 
                     file.Write(file_directory.."/"..file_name..".txt", file_content)
 

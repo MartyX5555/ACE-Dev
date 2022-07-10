@@ -430,8 +430,6 @@ do
 
     function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 
-        print(Data1)
-
         --Replaces id if its old
         self.RoundId = BackComp[Data1] or Data1 or "100mmC"
 

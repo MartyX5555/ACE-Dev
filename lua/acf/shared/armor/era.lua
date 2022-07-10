@@ -83,13 +83,7 @@ if SERVER then
             sensor      = 1
 
         end
---[[
-        if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) then
-            print("Detonated by penetration")
-        elseif (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then
-            print("Detonated by low health")
-        end
-]]
+        
         --ERA detonates and shell is completely stopped
         if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated       
 
@@ -125,7 +119,7 @@ if SERVER then
                 local Flash = EffectData()
                     Flash:SetOrigin( EntPos )
                     Flash:SetNormal( -vector_up )
-                    Flash:SetRadius( math.max( Radius*0.25, 1 ) ) print(Radius*0.25)
+                    Flash:SetRadius( math.max( Radius*0.25, 1 ) )
                 util.Effect( "ACF_Scaled_Explosion", Flash ) 
             end)
 
