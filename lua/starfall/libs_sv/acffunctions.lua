@@ -69,7 +69,7 @@ local checktype = SF.CheckType
 local checkluatype = SF.CheckLuaType
 local checkpermission = SF.Permissions.check
 
-local ents_metatable, ents_methods, vec_meta, ang_meta, wrap, unwrap, vwrap, vunwrap, awrap, aunwrap
+local ents_metatable, ents_methods, vec_meta, ang_meta, wrap, unwrap, vunwrap, aunwrap
 
 SF.Permissions.registerPrivilege("acf.createMobility", "Create acf engine", "Allows the user to create ACF engines and gearboxes")
 SF.Permissions.registerPrivilege("acf.createFuelTank", "Create acf fuel tank", "Allows the user to create ACF fuel tanks")
@@ -112,7 +112,7 @@ end
 function acf_library.effectiveArmor(armor, angle)
 	checkluatype(armor, TYPE_NUMBER)
 	checkluatype(angle, TYPE_NUMBER)
-	
+
 	return math.Round(armor / math.abs(math.cos(math.rad(math.min(angle, 89.999)))), 1)
 end
 
@@ -120,13 +120,13 @@ end
 local id_name_cache = {}
 local function idFromName(list, name)
 	id_name_cache[list] = id_name_cache[list] or {}
-	
+
 	if id_name_cache[list][name] then return id_name_cache[list][name] end
-	
+
 	for id, data in pairs(list) do
 		if data.name == name then
 			id_name_cache[list][name] = id
-			
+
 			return id
 		end
 	end
@@ -142,73 +142,73 @@ end
 -- @return The created engine or gearbox
 function acf_library.createMobility(pos, ang, id, frozen, gear_ratio)
 	checkpermission(SF.instance, nil, "acf.createMobility")
-	
+
 	local instance = SF.instance
 	local ply = instance.player
-	
+
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
-	
+
 	checktype(pos, vec_meta)
 	checktype(ang, ang_meta)
 	checkluatype(id, TYPE_STRING)
 	frozen = frozen and true or false
 	gear_ratio = type(gear_ratio) == "table" and gear_ratio or {}
-	
-	local pos = vunwrap(pos)
-	local ang = aunwrap(ang)
-	
+
+	pos = vunwrap(pos)
+	ang = aunwrap(ang)
+
 	local list_entries = ACF.Weapons.Mobility
-	
+
 	-- Not a valid id, try name
 	if not list_entries[id] then
 		id = idFromName(list_entries, id)
-		
+
 		-- Name is also invalid, error
 		if not id or not list_entries[id] then
 			SF.Throw("Invalid id or name", 2)
 		end
 	end
-	
+
 	local type_id = list_entries[id]
-	local dupe_class = duplicator.FindEntityClass(type_id.ent) 
-	
+	local dupe_class = duplicator.FindEntityClass(type_id.ent)
+
 	if not dupe_class then SF.Throw("Didn't find entity duplicator records", 2) end
-	
+
 	plyBurst:use(ply, 1)
 	plyCount:checkuse(ply, 1)
-	
+
 	local args_table = {
 		SF.clampPos(pos),
 		ang,
 		id
 	}
-	
+
 	if type_id.ent == "acf_gearbox" then
 		for i = 1, 9 do
 			args_table[3 + i] = type(gear_ratio[i]) == "number" and gear_ratio[i] or (i < type_id.gears and i / 10 or -0.1)
 		end
-		
+
 		args_table[13] = type(gear_ratio[-1]) == "number" and gear_ratio[-1] or 0.5
 	end
-	
+
 	local ent = dupe_class.Func(ply, unpack(args_table))
 	ent:Activate()
-	
+
 	local phys = ent:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(not frozen)
 	end
-	
+
 	if instance.data.props.undo then
 		undo.Create("ACF Mobility")
 			undo.SetPlayer(ply)
 			undo.AddEntity(ent)
 		undo.Finish("ACF Mobility (" .. tostring(id) .. ")")
 	end
-	
+
 	ply:AddCleanup("props", ent)
 	register(ent, instance)
-	
+
 	return SF.WrapObject(ent)
 end
 
@@ -218,22 +218,22 @@ end
 -- @return The specs table
 function acf_library.getMobilitySpecs(id)
 	checkluatype(id, TYPE_STRING)
-	
+
 	local list_entries = ACF.Weapons.Mobility
-	
+
 	-- Not a valid id, try name
 	if not list_entries[id] then
 		id = idFromName(list_entries, id)
-		
+
 		-- Name is also invalid, error
 		if not id or not list_entries[id] then
 			SF.Throw("Invalid id or name", 2)
 		end
 	end
-	
+
 	local specs = table.Copy(list_entries[id])
 	specs.BaseClass = nil
-	
+
 	return specs
 end
 
@@ -242,11 +242,11 @@ end
 -- @return The mobility component list
 function acf_library.getAllMobility()
 	local list = {}
-	
+
 	for id, _ in pairs(ACF.Weapons.Mobility) do
 		table.insert(list, id)
 	end
-	
+
 	return list
 end
 
@@ -255,13 +255,13 @@ end
 -- @return The engine list
 function acf_library.getAllEngines()
 	local list = {}
-	
+
 	for id, d in pairs(ACF.Weapons.Mobility) do
 		if d.ent == "acf_engine" then
 			table.insert(list, id)
 		end
 	end
-	
+
 	return list
 end
 
@@ -270,13 +270,13 @@ end
 -- @return The gearbox list
 function acf_library.getAllGearboxes()
 	local list = {}
-	
+
 	for id, d in pairs(ACF.Weapons.Mobility) do
 		if d.ent == "acf_gearbox" then
 			table.insert(list, id)
 		end
 	end
-	
+
 	return list
 end
 
@@ -290,53 +290,53 @@ end
 -- @return The created fuel tank
 function acf_library.createFuelTank(pos, ang, id, fueltype, frozen)
 	checkpermission(SF.instance, nil, "acf.createFuelTank")
-	
+
 	local instance = SF.instance
 	local ply = instance.player
-	
+
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
-	
+
 	checktype(pos, vec_meta)
 	checktype(ang, ang_meta)
 	checkluatype(id, TYPE_STRING)
 	frozen = frozen and true or false
 	fueltype = fueltype or "Diesel"
 	checkluatype(fueltype, TYPE_STRING)
-	
-	local pos = vunwrap(pos)
-	local ang = aunwrap(ang)
-	
+
+	pos = vunwrap(pos)
+	ang = aunwrap(ang)
+
 	if fueltype ~= "Diesel" and fueltype ~= "Electric" and fueltype ~= "Petrol" then SF.Throw("Invalid fuel type") end
-	
+
 	local list_entries = ACF.Weapons.FuelTanks
 	if not list_entries[id] then SF.Throw("Invalid id", 2) end
-	
+
 	local type_id = list_entries[id]
-	local dupe_class = duplicator.FindEntityClass(type_id.ent) 
-	
+	local dupe_class = duplicator.FindEntityClass(type_id.ent)
+
 	if not dupe_class then SF.Throw("Didn't find entity duplicator records", 2) end
-	
+
 	plyBurst:use(ply, 1)
 	plyCount:checkuse(ply, 1)
-	
+
 	local ent = dupe_class.Func(ply, SF.clampPos(pos), ang, "Basic_FuelTank", id, fueltype)
 	ent:Activate()
-	
+
 	local phys = ent:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(not frozen)
 	end
-	
+
 	if instance.data.props.undo then
 		undo.Create("ACF Fuel Tank")
 			undo.SetPlayer(ply)
 			undo.AddEntity(ent)
 		undo.Finish("ACF Fuel Tank (" .. tostring(id) .. ")")
 	end
-	
+
 	ply:AddCleanup("props", ent)
 	register(ent, instance)
-	
+
 	return SF.WrapObject(ent)
 end
 
@@ -346,13 +346,13 @@ end
 -- @return The specs table
 function acf_library.getFuelTankSpecs(id)
 	checkluatype(id, TYPE_STRING)
-	
+
 	local list_entries = ACF.Weapons.FuelTanks
 	if not list_entries[id] then SF.Throw("Invalid id", 2) end
-	
+
 	local specs = table.Copy(list_entries[id])
 	specs.BaseClass = nil
-	
+
 	return specs
 end
 
@@ -361,11 +361,11 @@ end
 -- @return The fuel tank list
 function acf_library.getAllFuelTanks()
 	local list = {}
-	
+
 	for id, _ in pairs(ACF.Weapons.FuelTanks) do
 		table.insert(list, id)
 	end
-	
+
 	return list
 end
 
@@ -378,58 +378,58 @@ end
 -- @return The created gun
 function acf_library.createGun(pos, ang, id, frozen)
 	checkpermission(SF.instance, nil, "acf.createGun")
-	
+
 	local instance = SF.instance
 	local ply = instance.player
-	
+
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
-	
+
 	checktype(pos, vec_meta)
 	checktype(ang, ang_meta)
 	checkluatype(id, TYPE_STRING)
 	frozen = frozen and true or false
-	
-	local pos = vunwrap(pos)
-	local ang = aunwrap(ang)
-	
+
+	pos = vunwrap(pos)
+	ang = aunwrap(ang)
+
 	local list_entries = ACF.Weapons.Guns
-	
+
 	-- Not a valid id, try name
 	if not list_entries[id] then
 		id = idFromName(list_entries, id)
-		
+
 		-- Name is also invalid, error
 		if not id or not list_entries[id] then
 			SF.Throw("Invalid id or name", 2)
 		end
 	end
-	
+
 	local type_id = list_entries[id]
-	local dupe_class = duplicator.FindEntityClass(type_id.ent) 
-	
+	local dupe_class = duplicator.FindEntityClass(type_id.ent)
+
 	if not dupe_class then SF.Throw("Didn't find entity duplicator records", 2) end
-	
+
 	plyBurst:use(ply, 1)
 	plyCount:checkuse(ply, 1)
-	
+
 	local ent = dupe_class.Func(ply, SF.clampPos(pos), ang, id)
 	ent:Activate()
-	
+
 	local phys = ent:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(not frozen)
 	end
-	
+
 	if instance.data.props.undo then
 		undo.Create("ACF Gun")
 			undo.SetPlayer(ply)
 			undo.AddEntity(ent)
 		undo.Finish("ACF Gun (" .. tostring(id) .. ")")
 	end
-	
+
 	ply:AddCleanup("props", ent)
 	register(ent, instance)
-	
+
 	return SF.WrapObject(ent)
 end
 
@@ -439,22 +439,22 @@ end
 -- @return The specs table
 function acf_library.getGunSpecs(id)
 	checkluatype(id, TYPE_STRING)
-	
+
 	local list_entries = ACF.Weapons.Guns
-	
+
 	-- Not a valid id, try name
 	if not list_entries[id] then
 		id = idFromName(list_entries, id)
-		
+
 		-- Name is also invalid, error
 		if not id or not list_entries[id] then
 			SF.Throw("Invalid id or name", 2)
 		end
 	end
-	
+
 	local specs = table.Copy(list_entries[id])
 	specs.BaseClass = nil
-	
+
 	return specs
 end
 
@@ -463,11 +463,11 @@ end
 -- @return The guns list
 function acf_library.getAllGuns()
 	local list = {}
-	
+
 	for id, _ in pairs(ACF.Weapons.Guns) do
 		table.insert(list, id)
 	end
-	
+
 	return list
 end
 
@@ -492,21 +492,21 @@ local ammo_property_data = {
 		data = 3,
 		convert = function(value) return value end
 	},
-	
+
 	projectileLength = {
 		type = "number",
 		default = 15,
 		data = 4,
 		convert = function(value) return value end
 	},
-	
+
 	heFillerVolume = {
 		type = "number",
 		default = 0,
 		data = 5,
 		convert = function(value) return value end
 	},
-	
+
 	tracer = {
 		type = "boolean",
 		default = false,
@@ -613,45 +613,45 @@ ammo_properties.Refill.create_data = {}
 -- @usage
 -- If ammo_data isn't provided default values will be used (same as in the ACF menu)
 -- Possible values for ammo_data corresponding to ammo_id:
--- 
+--
 -- AP:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- tracer (bool)
--- 
+--
 -- APHE:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- heFillerVolume (number)
 -- \- tracer (bool)
--- 
+--
 -- FL:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- flechettes (number)
 -- \- flechettesSpread (number)
 -- \- tracer (bool)
--- 
+--
 -- HE:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- heFillerVolume (number)
 -- \- tracer (bool)
--- 
+--
 -- HEAT:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- heFillerVolume (number)
 -- \- crushConeAngle (number)
 -- \- tracer (bool)
--- 
+--
 -- HP:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
 -- \- heFillerVolume (number)
 -- \- hollowPointCavityVolume (number)
 -- \- tracer (bool)
--- 
+--
 -- SM:
 -- \- propellantLength (number)
 -- \- projectileLength (number)
@@ -659,17 +659,17 @@ ammo_properties.Refill.create_data = {}
 -- \- wpFillerVolume (number)
 -- \- fuseTime (number)
 -- \- tracer (bool)
--- 
+--
 -- Refil:
--- 
+--
 function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data)
 	checkpermission(SF.instance, nil, "acf.createAmmo")
-	
+
 	local instance = SF.instance
 	local ply = instance.player
-	
+
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
-	
+
 	checktype(pos, vec_meta)
 	checktype(ang, ang_meta)
 	checkluatype(id, TYPE_STRING)
@@ -677,32 +677,32 @@ function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data
 	checkluatype(gun_id, TYPE_STRING)
 	frozen = frozen and true or false
 	ammo_data = type(ammo_data) == "table" and ammo_data or {}
-	
-	local pos = vunwrap(pos)
-	local ang = aunwrap(ang)
-	
+
+	pos = vunwrap(pos)
+	ang = aunwrap(ang)
+
 	local list_entries = ACF.Weapons.Ammo
 	local type_id = list_entries[id]
 	if not type_id then SF.Throw("Invalid id", 2) end
-	
+
 	local ammo = ammo_properties[ammo_id]
 	if not ammo then SF.Throw("Invalid ammo id", 2) end
-	
+
 	local gun_list_entries = ACF.Weapons.Guns
 	if not gun_list_entries[gun_id] then
 		gun_id = idFromName(gun_list_entries, gun_id)
-		
+
 		if not gun_id or not gun_list_entries[gun_id] then
 			SF.Throw("Invalid gun id or name", 2)
 		end
 	end
-	
-	local dupe_class = duplicator.FindEntityClass(type_id.ent) 
+
+	local dupe_class = duplicator.FindEntityClass(type_id.ent)
 	if not dupe_class then SF.Throw("Didn't find entity duplicator records", 2) end
-	
+
 	plyBurst:use(ply, 1)
 	plyCount:checkuse(ply, 1)
-	
+
 	local args_table = {
 		SF.clampPos(pos),
 		ang,
@@ -718,10 +718,10 @@ function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data
 		0,
 		0
 	}
-	
+
 	for k, v in pairs(ammo.create_data) do
 		local value = ammo_data[k]
-		
+
 		if value then
 			if type(value) == v.type then
 				args_table[3 + v.data] = v.convert(value)
@@ -732,25 +732,25 @@ function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data
 			args_table[3 + v.data] = v.convert(v.default)
 		end
 	end
-	
+
 	local ent = dupe_class.Func(ply, unpack(args_table))
 	ent:Activate()
-	
+
 	local phys = ent:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(not frozen)
 	end
-	
+
 	if instance.data.props.undo then
 		undo.Create("ACF Ammo")
 			undo.SetPlayer(ply)
 			undo.AddEntity(ent)
 		undo.Finish("ACF Ammo (" .. tostring(id) .. ")")
 	end
-	
+
 	ply:AddCleanup("props", ent)
 	register(ent, instance)
-	
+
 	return SF.WrapObject(ent)
 end
 
@@ -760,10 +760,10 @@ end
 -- @return The specs table
 function acf_library.getAmmoSpecs(id)
 	checkluatype(id, TYPE_STRING)
-	
+
 	local data = ammo_properties[id]
 	if not data then SF.Throw("Invalid id", 2) end
-	
+
 	local properties = {}
 	for name, d in pairs(data.create_data) do
 		properties[name] = {
@@ -772,12 +772,12 @@ function acf_library.getAmmoSpecs(id)
 			convert = d.convert
 		}
 	end
-	
+
 	return {
 		name = data.name,
 		desc = data.desc,
 		model = data.model,
-		properties = table.Copy(data.create_data)--properties
+		properties = table.Copy(data.create_data) --properties
 	}
 end
 
@@ -785,26 +785,26 @@ end
 -- @server
 -- @return The ammo list
 function acf_library.getAllAmmo()
-	local list = {}
-	
+	local types = {}
+
 	for id, _ in pairs(ammo_properties) do
-		table.insert(list, id)
+		table.insert(types, id)
 	end
-	
-	return list
+
+	return types
 end
 
 --- Returns a list of all ammo boxes
 -- @server
 -- @return The ammo box list
 function acf_library.getAllAmmoBoxes()
-	local list = {}
-	
+	local ammoBoxes = {}
+
 	for id, _ in pairs(ACF.Weapons.Ammo) do
-		table.insert(list, id)
+		table.insert(ammoBoxes, id)
 	end
-	
-	return list
+
+	return ammoBoxes
 end
 
 ----------------------------------------
@@ -813,10 +813,10 @@ end
 SF.AddHook("postload", function()
 	ents_metatable = SF.Entities.Metatable
 	ents_methods = SF.Entities.Methods
-	
+
 	vec_meta = SF.Vectors.Metatable
 	ang_meta = SF.Angles.Metatable
-	
+
 	wrap = SF.Entities.Wrap
 	unwrap = SF.Entities.Unwrap
 	vwrap = SF.Vectors.Wrap
@@ -856,7 +856,7 @@ SF.AddHook("postload", function()
 		if isGun( this ) then return this.Id or "" end
 		if isAmmo( this ) then return this.RoundId or "" end
 		if isFuel( this ) then return this.FuelType .. " " .. this.SizeId end
-		
+
 		return ""
 	end
 
@@ -901,7 +901,7 @@ SF.AddHook("postload", function()
 		checkpermission( SF.instance, this, "entities.acf" )
 
 		if not ( isEngine( this ) or isAmmo( this ) or isFuel( this ) ) then return end
-		this:TriggerInput( "Active", on and 1 or 0 )    
+		this:TriggerInput( "Active", on and 1 or 0 )
 	end
 
 	--- Returns true if hitpos is on a clipped part of prop
@@ -910,7 +910,7 @@ SF.AddHook("postload", function()
 		checktype( self, ents_metatable )
 		checktype( hitpos, vec_meta )
 		local this = unwrap( self )
-		local hitpos = vunwrap( hitpos )
+		hitpos = vunwrap( hitpos )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 		checkpermission( SF.instance, this, "entities.acf" ) -- E2 has owner check so i guess having a check if the player has permission is sufficient enough?
@@ -927,7 +927,7 @@ SF.AddHook("postload", function()
 		acf_ammo        = { Master = false }
 	}
 
-	local function getLinks ( ent, enttype )    
+	local function getLinks ( ent, enttype )
 		local ret = {}
 		-- find the link resources available for this ent type
 		for entry, mode in pairs( linkTables[ enttype ] ) do
@@ -975,7 +975,7 @@ SF.AddHook("postload", function()
 			return searchForGearboxLinks( this )
 		end
 
-		return getLinks( this, enttype )    
+		return getLinks( this, enttype )
 	end
 
 	--- Returns the full name of an ACF entity
@@ -986,7 +986,7 @@ SF.AddHook("postload", function()
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-		if isAmmo( this ) then return ( this.RoundId .. " " .. this.RoundType) end
+		if isAmmo( this ) then return this.RoundId .. " " .. this.RoundType end
 		if isFuel( this ) then return this.FuelType .. " " .. this.SizeId end
 
 		local acftype = ""
@@ -1138,13 +1138,13 @@ SF.AddHook("postload", function()
 
 	local function getMaxPower( ent )
 		local peakpower
-		
+
 		if ent.iselec then
 			peakpower = math.floor( ent.PeakTorque * ent.LimitRPM / ( 4 * 9548.8 ) )
 		else
 			peakpower = math.floor( ent.PeakTorque * ent.PeakMaxRPM / 9548.8 )
 		end
-		
+
 		return peakpower or 0
 	end
 
@@ -1279,7 +1279,7 @@ SF.AddHook("postload", function()
 
 		if not isEngine( this ) then return nil end
 		if restrictInfo( this ) then return 0 end
-		return this.Inertia / ( 3.1416 )^2 or 0
+		return this.Inertia / 3.1416 ^2 or 0
 	end
 
 	--- Returns the current power of an ACF engine
@@ -1426,7 +1426,7 @@ SF.AddHook("postload", function()
 
 		if not isGearbox( this ) then return false end
 		if restrictInfo( this ) then return false end
-		
+
 		return this.Dual
 	end
 
@@ -1452,7 +1452,7 @@ SF.AddHook("postload", function()
 
 		if not isGearbox( this ) then return false end
 		if restrictInfo( this ) then return false end
-		
+
 		return this.InGear
 	end
 
@@ -1795,7 +1795,7 @@ SF.AddHook("postload", function()
 		checkpermission( SF.instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
-		
+
 		this:TriggerInput( "Fire", fire )
 	end
 
@@ -1809,7 +1809,7 @@ SF.AddHook("postload", function()
 		checkpermission( SF.instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
-		
+
 		this:UnloadAmmo()
 	end
 
@@ -1823,7 +1823,7 @@ SF.AddHook("postload", function()
 		checkpermission( SF.instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
-		
+
 		this.Reloading = true
 	end
 
@@ -2003,7 +2003,7 @@ SF.AddHook("postload", function()
 
 		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
 		if restrictInfo( this ) then return 0 end
-		if not this.BulletData[ "Type" ] == "FL" then return 0 end
+		if this.BulletData[ "Type" ] ~= "FL" then return 0 end
 		return this.BulletData[ "Flechettes" ] or 0
 	end
 
@@ -2017,7 +2017,7 @@ SF.AddHook("postload", function()
 
 		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
 		if restrictInfo( this ) then return 0 end
-		if not this.BulletData[ "Type" ] == "FL" then return 0 end
+		if this.BulletData[ "Type" ] ~= "FL" then return 0 end
 		return math.Round( this.BulletData[ "FlechetteMass" ] or 0, 3)
 	end
 
@@ -2031,7 +2031,7 @@ SF.AddHook("postload", function()
 
 		if not ( isAmmo( this ) or isGun( this ) ) then return 0 end
 		if restrictInfo( this ) then return 0 end
-		if not this.BulletData[ "Type" ] == "FL" then return 0 end
+		if this.BulletData[ "Type" ] ~= "FL" then return 0 end
 		return math.Round( ( this.BulletData[ "FlechetteRadius" ] or 0 ) * 10, 3)
 	end
 
@@ -2047,7 +2047,7 @@ SF.AddHook("postload", function()
 		if restrictInfo( this ) then return 0 end
 		local Type = this.BulletData[ "Type" ] or ""
 		local Energy
-		
+
 		--[[if Type == "AP" or Type == "APHE" then
 			Energy = ACF_Kinetic( this.BulletData[ "MuzzleVel" ] * 39.37, this.BulletData[ "ProjMass" ] - ( this.BulletData[ "FillerMass" ] or 0 ), this.BulletData[ "LimitVel" ] )
 			return math.Round( ( Energy.Penetration / this.BulletData[ "PenAera" ] ) * ACF.KEtoRHA, 3 )
@@ -2058,20 +2058,23 @@ SF.AddHook("postload", function()
 			Energy = ACF_Kinetic( this.BulletData[ "MuzzleVel" ] * 39.37 , this.BulletData[ "FlechetteMass" ], this.BulletData[ "LimitVel" ] )
 			return math.Round( ( Energy.Penetration / this.BulletData[ "FlechettePenArea" ] ) * ACF.KEtoRHA, 3 )
 		end]]
-		
+
 		if Type == "AP" or Type == "APHE" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
-			return math.Round((Energy.Penetration/this.BulletData["PenAera"])*ACF.KEtoRHA,3)
+			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"])
+
+			return math.Round((Energy.Penetration / this.BulletData["PenAera"]) * ACF.KEtoRHA, 3)
 		elseif Type == "HEAT" then
-			local Crushed, HEATFillerMass, BoomFillerMass = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
+			local Crushed, HEATFillerMass, _ = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
 			if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
-			Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass )*39.37, this.BulletData["SlugMass"], 9999999 )
-			return math.Round((Energy.Penetration/this.BulletData["SlugPenAera"])*ACF.KEtoRHA,3)
+			Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV(this.BulletData, HEATFillerMass) * 39.37, this.BulletData["SlugMass"], 9999999)
+
+			return math.Round((Energy.Penetration / this.BulletData["SlugPenAera"]) * ACF.KEtoRHA, 3)
 		elseif Type == "FL" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"]*39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
-			return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"])*ACF.KEtoRHA, 3)
+			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["FlechetteMass"], this.BulletData["LimitVel"])
+
+			return math.Round((Energy.Penetration / this.BulletData["FlechettePenArea"]) * ACF.KEtoRHA, 3)
 		end
-		
+
 		return 0
 	end
 
@@ -2089,7 +2092,7 @@ SF.AddHook("postload", function()
 		if Type == "HE" or Type == "APHE" then
 			return math.Round( this.BulletData[ "FillerMass" ]^0.33 * 8, 3 )
 		elseif Type == "HEAT" then
-			return math.Round( ( this.BulletData[ "FillerMass" ] / 3)^0.33 * 8, 3 )
+			return math.Round( ( this.BulletData[ "FillerMass" ] / 3) ^ 0.33 * 8, 3 )
 		end
 		return 0
 	end
@@ -2215,7 +2218,7 @@ SF.AddHook("postload", function()
 		checkpermission( SF.instance, this, "entities.acf" )
 
 		if not isFuel( this ) then return end
-		
+
 		this:TriggerInput( "Refuel Duty", on and true or false )
 	end
 
@@ -2231,7 +2234,7 @@ SF.AddHook("postload", function()
 		if isFuel( this ) then
 			return math.Round( this.Fuel, 3 )
 		elseif isEngine( this ) then
-			if not #(this.FuelLink) then return 0 end --if no tanks, return 0
+			if not #this.FuelLink then return 0 end --if no tanks, return 0
 
 			local liters = 0
 			for _, tank in pairs( this.FuelLink ) do
@@ -2258,17 +2261,17 @@ SF.AddHook("postload", function()
 			return math.Round( this.Fuel / this.Capacity, 3 )
 		elseif isEngine( this ) then
 			if restrictInfo( this ) then return 0 end
-			if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
+			if not #this.FuelLink then return 0 end --if no tanks, return 0
 
 			local liters = 0
 			local capacity = 0
 			for _, tank in pairs( this.FuelLink ) do
-				if validPhysics( tank ) and tank.Active then 
+				if validPhysics( tank ) and tank.Active then
 					capacity = capacity + tank.Capacity
 					liters = liters + tank.Fuel
 				end
 			end
-			if not capacity > 0 then return 0 end
+			if capacity <= 0 then return 0 end
 
 			return math.Round( liters / capacity, 3 )
 		end
@@ -2285,7 +2288,7 @@ SF.AddHook("postload", function()
 
 		if not isEngine( this ) then return 0 end
 		if restrictInfo( this ) then return 0 end
-		if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
+		if not #this.FuelLink then return 0 end --if no tanks, return 0
 
 		local tank
 		for _, fueltank in pairs( this.FuelLink ) do
@@ -2316,7 +2319,7 @@ SF.AddHook("postload", function()
 
 		if not isEngine( this ) then return 0 end
 		if restrictInfo( this ) then return 0 end
-		if not #( this.FuelLink ) then return 0 end --if no tanks, return 0
+		if not #this.FuelLink then return 0 end --if no tanks, return 0
 
 		local fuel = "Petrol"
 		local tank
@@ -2329,7 +2332,7 @@ SF.AddHook("postload", function()
 		if this.FuelType == "Electric" then
 			Consumption = 60 * ( this.PeakTorque * this.LimitRPM / ( 4 * 9548.8 ) ) * this.FuelUse
 		else
-			local Load = 0.3 + this.Throttle * 0.7
+			--local Load = 0.3 + this.Throttle * 0.7
 			Consumption = 60 * this.FuelUse / ACF.FuelDensity[ fuel ]
 		end
 		return math.Round( Consumption, 3 )
