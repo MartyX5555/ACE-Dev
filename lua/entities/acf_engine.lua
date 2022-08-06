@@ -376,7 +376,7 @@ function ENT:TriggerInput( iname, value )
                 if self.SoundPath ~= "" then
 
                     --stupid workaround for the engine sound. THANK YOU garry
-                    filter = RecipientFilter()
+                    filter = RecipientFilter(true)
                     filter:AddAllPlayers()
 
                     self.Sound = CreateSound(self, self.SoundPath , filter)
