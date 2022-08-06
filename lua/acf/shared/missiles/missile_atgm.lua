@@ -282,5 +282,5 @@ ACF_defineGun("FGM-148 ASM", {
     agility     = 0.5,     										-- multiplier for missile turn-rate.
     armdelay    = 1,     										-- minimum fuse arming delay
     
-    prepush     = true, 										-- Additional push and delaying motor ignition
+    prepush     = false, 										-- Additional push and delaying motor ignition
 } )
