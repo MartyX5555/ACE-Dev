@@ -14,14 +14,10 @@ function ENT:Initialize()
 	self.Heat 		= self.Heat or 1
 	self.Life 		= self.Life or 0.1
 
-	self.Owner 		= self:GetOwner() print(self.Owner)
-
-	if CPPI then
-		--self:CPPISetOwner(self:GetOwner())
-	end
+	self.Owner 		= self:GetOwner()
 
 	local phys = self:GetPhysicsObject()
-	phys:SetMass(5) --4.1 kg mine, round down.
+	phys:SetMass(2)
 	phys:EnableDrag( true )
 	phys:SetDragCoefficient( 50 )
 	self:SetGravity( 0.01 )
@@ -49,8 +45,8 @@ function ENT:PhysicsCollide( Table , PhysObj )
 	local HitEnt = Table.HitEntity
 
 	if not IsValid(HitEnt) then return end
-	if not HitEnt:IsPlayer() or HitEnt:IsNPC() then return end
 
-	HitEnt:Ignite( self.Heat, 1 )
-
+	if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
+		HitEnt:Ignite( self.Heat, 1 )
+	end
 end

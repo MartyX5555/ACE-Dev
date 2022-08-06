@@ -1,10 +1,10 @@
 AddCSLuaFile("shared.lua")
 SWEP.Base = "ace_basewep"
 
-if (CLIENT) then
-SWEP.PrintName      = "HEAT SUS WEAPON"
-SWEP.Slot           = 4
-SWEP.SlotPos        = 3         
+if CLIENT then
+    SWEP.PrintName      = "HEAT SUS WEAPON"
+    SWEP.Slot           = 4
+    SWEP.SlotPos        = 3         
 end
 
 SWEP.Spawnable      = true  
@@ -26,7 +26,7 @@ SWEP.Purpose        = "BECOME THE IMPOSTOR!"
 SWEP.Instructions   = "Left mouse to SUMMON the SUS"        
 
 -- Primary fire settings
-SWEP.Primary.Sound          = "acf_extra/tankfx/gnomefather/2pdr2.wav"
+SWEP.Primary.Sound          = "ace_weapons/multi_sound/40mm_multi.mp3"
 SWEP.Primary.NumShots       = 1 
 SWEP.Primary.Recoil         = 1 
 SWEP.Primary.RecoilAngle    = 15        
@@ -162,17 +162,23 @@ end
         
 function SWEP:PrimaryAttack()       
 
+    if ( game.SinglePlayer() ) then self:CallOnClient( "PrimaryAttack" ) end
+
     if not self:CanPrimaryAttack() then return end      
     if self:Ammo1() == 0 and self:Clip1() == 0 then return end
 
-    self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )   
-    self.Weapon:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )     
+    local curtime = CurTime()
 
-    if CLIENT then return end   
+    self:SetNextPrimaryFire( curtime + self.Primary.Delay )   
+
+    if CLIENT then 
+        ACE_SGunFire( self, self.Primary.Sound, self.BulletData.PropMass ) -- cool
+        return 
+    end 
 
     self.BulletData.Owner       = self.Owner
     self.BulletData.Gun         = self  
-    self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(CurTime()-self.lastFire),1,self.MaxInaccuracyMult)
+    self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate*(curtime-self.lastFire),1,self.MaxInaccuracyMult)
     
     if self.Owner:IsPlayer() then
         self.Owner:LagCompensation( true )
@@ -184,9 +190,7 @@ function SWEP:PrimaryAttack()
         self.Owner:LagCompensation( false )
     end
 
-
-        
-    self.lastFire=CurTime()
+    self.lastFire = curtime
 
     self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )                          
     self.Owner:SetAnimation( PLAYER_ATTACK1 )           

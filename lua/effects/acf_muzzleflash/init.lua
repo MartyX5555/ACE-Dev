@@ -45,6 +45,11 @@ function EFFECT:Init( data )
 
 		ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
 
+		if GetConVar("ACFM_MissileLights"):GetFloat() == 1 then
+			ACF_RenderLight(Gun:EntIndex(), Caliber*100, Color(255, 128, 48), Muzzle.Pos + Muzzle.Ang:Forward()*(Caliber/10))
+		end
+
+		
 		if Gun.Animate then 
 			Gun:Animate( Class, ReloadTime, false )
 		end

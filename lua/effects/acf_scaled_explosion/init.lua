@@ -118,6 +118,10 @@ function EFFECT:Init( data )
 	--Main explosion
 	self:Core( self.HitWater )
 
+	if GetConVar("ACFM_MissileLights"):GetFloat() == 1 then
+		ACF_RenderLight( game.GetWorld():EntIndex(), self.Radius*1750, Color(255, 128, 48), self.Origin)
+	end
+
 	ACEE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
