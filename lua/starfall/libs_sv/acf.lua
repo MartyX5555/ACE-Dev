@@ -55,7 +55,7 @@ local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
 local function restrictInfo ( ent )
 	if not propProtectionInstalled then return false end
 	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
-		if ent:CPPIGetOwner() ~= SF.instance.player then return true else return false end
+		if ent:CPPIGetOwner() ~= instance.player then return true else return false end
 	end
 	return false
 end
@@ -63,11 +63,14 @@ end
 ----------------------------------------
 -- ACF Library
 
-local acf_library = SF.RegisterLibrary("acf")
+SF.RegisterLibrary("acf")
+
+return function(instance)
 
 local checktype = SF.CheckType
 local checkluatype = SF.CheckLuaType
 local checkpermission = SF.Permissions.check
+local acf_library = instance.Libraries.acf
 
 local ents_metatable, ents_methods, vec_meta, ang_meta, wrap, unwrap, vunwrap, aunwrap
 
@@ -141,9 +144,8 @@ end
 -- @server
 -- @return The created engine or gearbox
 function acf_library.createMobility(pos, ang, id, frozen, gear_ratio)
-	checkpermission(SF.instance, nil, "acf.createMobility")
+	checkpermission(instance, nil, "acf.createMobility")
 
-	local instance = SF.instance
 	local ply = instance.player
 
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
@@ -289,9 +291,8 @@ end
 -- @server
 -- @return The created fuel tank
 function acf_library.createFuelTank(pos, ang, id, fueltype, frozen)
-	checkpermission(SF.instance, nil, "acf.createFuelTank")
+	checkpermission(instance, nil, "acf.createFuelTank")
 
-	local instance = SF.instance
 	local ply = instance.player
 
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
@@ -377,9 +378,8 @@ end
 -- @server
 -- @return The created gun
 function acf_library.createGun(pos, ang, id, frozen)
-	checkpermission(SF.instance, nil, "acf.createGun")
+	checkpermission(instance, nil, "acf.createGun")
 
-	local instance = SF.instance
 	local ply = instance.player
 
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
@@ -663,9 +663,8 @@ ammo_properties.Refill.create_data = {}
 -- Refil:
 --
 function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data)
-	checkpermission(SF.instance, nil, "acf.createAmmo")
+	checkpermission(instance, nil, "acf.createAmmo")
 
-	local instance = SF.instance
 	local ply = instance.player
 
 	if not hook.Run("CanTool", ply, {Hit = true, Entity = game.GetWorld()}, "acfmenu") then SF.Throw("No permission to spawn ACF components", 2) end
@@ -898,7 +897,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not ( isEngine( this ) or isAmmo( this ) or isFuel( this ) ) then return end
 		this:TriggerInput( "Active", on and 1 or 0 )
@@ -913,7 +912,7 @@ SF.AddHook("postload", function()
 		hitpos = vunwrap( hitpos )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" ) -- E2 has owner check so i guess having a check if the player has permission is sufficient enough?
+		checkpermission( instance, this, "entities.acf" ) -- E2 has owner check so i guess having a check if the player has permission is sufficient enough?
 
 		if ACF_CheckClips( nil, nil, this, hitpos ) then return true else return false end
 	end
@@ -1031,8 +1030,8 @@ SF.AddHook("postload", function()
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 		if not ( tar and tar:IsValid() ) then SF.Throw( "Invalid Link Entity", 2 ) end
 
-		checkpermission( SF.instance, this, "entities.acf" )
-		checkpermission( SF.instance, tar, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
+		checkpermission( instance, tar, "entities.acf" )
 
 		if not ( isGun( this ) or isEngine( this ) or isGearbox( this ) ) then
 			SF.Throw( "Target must be a gun, engine, or gearbox", 2 )
@@ -1057,8 +1056,8 @@ SF.AddHook("postload", function()
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 		if not ( tar and tar:IsValid() ) then SF.Throw( "Invalid Link Entity", 2 ) end
 
-		checkpermission( SF.instance, this, "entities.acf" )
-		checkpermission( SF.instance, tar, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
+		checkpermission( instance, tar, "entities.acf" )
 
 		if not ( isGun( this ) or isEngine( this ) or isGearbox( this ) ) then
 			SF.Throw( "Target must be a gun, engine, or gearbox", 2 )
@@ -1332,7 +1331,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isEngine( this ) then return end
 		this:TriggerInput( "Throttle", throttle )
@@ -1491,7 +1490,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1507,7 +1506,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1521,7 +1520,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1535,7 +1534,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1550,7 +1549,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1565,7 +1564,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1581,7 +1580,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1597,7 +1596,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1612,7 +1611,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1628,7 +1627,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1644,7 +1643,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1660,7 +1659,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1676,7 +1675,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGearbox( this ) then return end
 		if restrictInfo( this ) then return end
@@ -1792,7 +1791,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
 
@@ -1806,7 +1805,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
 
@@ -1820,7 +1819,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isGun( this ) then return end
 
@@ -1897,7 +1896,7 @@ SF.AddHook("postload", function()
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-		if restrictInfo( SF.instance.player , this ) or not isGun( this ) or not this.MagReload then return 0 end
+		if restrictInfo( instance.player , this ) or not isGun( this ) or not this.MagReload then return 0 end
 		return this.MagReload
 	end
 
@@ -2215,7 +2214,7 @@ SF.AddHook("postload", function()
 		local this = unwrap( self )
 
 		if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
-		checkpermission( SF.instance, this, "entities.acf" )
+		checkpermission( instance, this, "entities.acf" )
 
 		if not isFuel( this ) then return end
 
@@ -2338,3 +2337,5 @@ SF.AddHook("postload", function()
 		return math.Round( Consumption, 3 )
 	end
 end)
+
+end
