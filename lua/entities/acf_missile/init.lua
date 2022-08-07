@@ -304,7 +304,7 @@ function ENT:Launch()
     self.ThinkDelay = 1 / 66
     self.Filter     = self.Filter or {self}
 
-    self.GhostPeriod = CurTime() --+ ACFM_GhostPeriod:GetFloat()
+    self.GhostPeriod = CurTime() + ACFM_GhostPeriod:GetFloat()
 
     self:SetParent(nil)
 
