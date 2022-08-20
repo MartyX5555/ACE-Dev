@@ -87,70 +87,88 @@ function ENT:ACF_Activate( Recalc )
 
 end
 
-function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+do
 
-    local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulAmmo) or 1) --Heat penetrators deal bonus damage to ammo
-    local HitRes = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor ) --Calling the standard damage prop function
-    
-    if self.Exploding or not self.IsExplosive then return HitRes end
-    
-    if HitRes.Kill then
-        if hook.Run("ACF_AmmoExplode", self, self.BulletData ) == false then return HitRes end
-        self.Exploding = true
-        if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
-            self.Inflictor = Inflictor
-        end
+    local HEATtbl = {
+        HEAT    = true,
+        THEAT   = true,
+        HEATFS  = true,
+        THEATFS = true
+    }
 
-        if self.Ammo > 1 and (not (self.BulletData.Type == "Refill")) then
-            ACF_ScaledExplosion( self )
-        else
-            self:Remove()
+    local HEtbl = {
+        HE      = true,
+        HESH    = true,
+        HEFS    = true
+    }
+
+    function ENT:ACF_OnDamage( Entity, Energy, FrAera, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+
+        local Mul       = (( HEATtbl[Type] and ACF.HEATMulAmmo ) or 1) --Heat penetrators deal bonus damage to ammo
+        local HitRes    = ACF_PropDamage( Entity, Energy, FrAera * Mul, Angle, Inflictor ) --Calling the standard damage prop function
+        
+        if self.Exploding or not self.IsExplosive then return HitRes end
+        
+        if HitRes.Kill then
+
+            if hook.Run("ACF_AmmoExplode", self, self.BulletData ) == false then return HitRes end
+
+            self.Exploding = true
+
+            if Inflictor and IsValid(Inflictor) and Inflictor:IsPlayer() then
+                self.Inflictor = Inflictor
+            end
+
+            if self.Ammo > 1 and not (self.BulletData.Type == "Refill") then
+                ACF_ScaledExplosion( self )
+            else
+                self:Remove()
+            end
         end
-    end
-    
-    -- cookoff chance calculation
-    if self.Damaged then return HitRes end
+        
+        -- cookoff chance calculation
+        if self.Damaged then return HitRes end
 
         if table.IsEmpty( self.BulletData or {} ) then  
             self:Remove()   
         else
 
-        local Ratio = (HitRes.Damage/self.BulletData.RoundVolume)^0.2
+            local Ratio     = ( HitRes.Damage/self.BulletData.RoundVolume )^0.2
+            local CMul      = 1  --30% Chance to detonate, 5% chance to cookoff                                     
+            local DetRand   = 0 
 
-        local CMul = 1 --30% Chance to detonate, 5% chance to cookoff
+            --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
+            if HEATtbl[Type] then 
+                CMul = 6
+            elseif HEtbl[Type] then
+                CMul = 10    
+            end 
 
-        if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
-            Mul = ACF.HEATMulAmmo --Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
-            CMul = 6
-        elseif Type == "HE" then
-            CMul = 3    
-        end 
+            if self.BulletData.Type == "Refill" then
+                DetRand = 0.75
+            else
+                DetRand = math.Rand(0,1) * CMul
+            end
+        
+            --Cook Off
+            if DetRand >= 0.95 then 
 
-        local DetRand = 0   
+                self.Inflictor  = Inflictor
+                self.Damaged    = ACF.CurTime + (5 - Ratio*3)
 
-        if (self.BulletData.Type == "Refill") then
-            DetRand = 0.75
-        else
-            DetRand = math.Rand(0,1) * CMul
-        end
+            --Boom
+            elseif DetRand >= 0.7 then  
+
+                self.Inflictor  = Inflictor
+                self.Damaged    = 1 --Instant explosion guarenteed     
+
+            end
     
-        --Cook Off
-        if DetRand >= 0.95 then 
-
-            self.Inflictor  = Inflictor
-            self.Damaged    = ACF.CurTime + (5 - Ratio*3)
-
-        --Boom
-        elseif DetRand >= 0.7 then  
-
-            self.Inflictor  = Inflictor
-            self.Damaged    = 1 --Instant explosion guarenteed     
-
         end
-    
+
+        return HitRes --This function needs to return HitRes
     end
 
-    return HitRes --This function needs to return HitRes
 end
 
 function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
@@ -172,7 +190,11 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
     Ammo:PhysicsInit( SOLID_VPHYSICS )          
     Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
     Ammo:SetSolid( SOLID_VPHYSICS )
-    
+
+    if not ACE_CheckRound( Data2 ) then
+        Data2 = "AP"
+    end
+
     Ammo.Id = Id
     Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
@@ -194,6 +216,7 @@ end
 
 list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
 duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" , "RoundData11", "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
+
 
 function ENT:Update( ArgsTable )
     
@@ -308,15 +331,17 @@ do
         --Replaces id if its old
         self.RoundId = BackComp[Data1] or Data1 or "100mmC"
 
-        local GunData = list.Get("ACFEnts").Guns[self.RoundId]
+        local GunData = ACF.Weapons.Guns[self.RoundId]
         if not GunData then  
             self.RoundId = "100mmC"
-            GunData = list.Get("ACFEnts").Guns[self.RoundId]
+            GunData = ACF.Weapons.Guns[self.RoundId]
         end
 
         --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 
-        self.RoundType          = AmmoComp[Data2] or Data2  or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        self.RoundType          = AmmoComp[
+        ACE_CheckRound( id )
+        ] or Data2  or "AP"   -- Type of round, IE AP, HE, HEAT ...
         self.RoundPropellant    = Data3                     or 0      -- Lenght of propellant
         self.RoundProjectile    = Data4                     or 0      -- Lenght of the projectile
         self.RoundData5         = Data5                     or 0
@@ -348,12 +373,20 @@ do
         PlayerData.Data13       = self.RoundData13  
         PlayerData.Data14       = self.RoundData14  
         PlayerData.Data15       = self.RoundData15 
-        
-        self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
 
+        self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
         self.BulletData         = self:ConvertData( PlayerData )
     
-        if not self.BulletData then print("[ACE|ERROR]- ROUND CODE BRUTALLY RAPED!") end
+        print("AAAAA")
+        print(self.ConvertData)        
+        print("AAAAA")
+        -- If you used some invalid roundtype, this will return default
+        if not self.ConvertData then 
+            print("AMONGOS")
+            Data2 = "AP"
+            self:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+            return
+        end
 
         local Efficiency        = 0.1576 * ACF.AmmoMod
         local vol               = math.floor(self:GetPhysicsObject():GetVolume())

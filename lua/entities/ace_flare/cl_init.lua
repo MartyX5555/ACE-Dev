@@ -13,11 +13,13 @@ function ENT:Draw()
 
 	self:DrawModel() 
 
-	if GetConVar("ACFM_MissileLights"):GetFloat() == 1 then
-		if CurTime() > self.LightUpdate then
-			self.LightUpdate = CurTime() + 0.05	
-			ACF_RenderLight(self:EntIndex(), 1000, Color(255, 128, 48), self:GetPos())
-		end
+	if self:WaterLevel() == 3 then
+		self.StopLight = true
+	end
+
+	if CurTime() > self.LightUpdate and not self.StopLight then
+		self.LightUpdate = CurTime() + 0.05	
+		ACF_RenderLight(self:EntIndex(), 1000, Color(255, 128, 48), self:GetPos())
 	end
 end
 

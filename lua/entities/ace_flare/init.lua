@@ -20,6 +20,8 @@ function ENT:Initialize()
 	phys:SetMass(2)
 	phys:EnableDrag( true )
 	phys:SetDragCoefficient( 50 )
+	phys:SetBuoyancyRatio( 2 )
+
 	self:SetGravity( 0.01 )
 
 	timer.Simple(0.1,function() 
@@ -38,6 +40,19 @@ function ENT:Initialize()
 
 	if ( IsValid( phys ) ) then phys:Wake() end
 
+end
+
+function ENT:Think() 
+
+	if self:WaterLevel() == 3 then
+		self.Heat = 0
+		self:StopParticles()
+
+		return false
+	end
+
+	self:NextThink( CurTime() + 0.1 )
+	return true
 end
 
 function ENT:PhysicsCollide( Table , PhysObj )

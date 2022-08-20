@@ -92,8 +92,9 @@ function ENT:CalcFlight()
 
     local LastPos   = self.LastPos
     local LastVel   = self.LastVel
-    local Speed     = LastVel:Length()
     local Flight    = self.FlightTime
+
+    local Speed     = LastVel:Length()
 
     local Time      = CurTime()
     local DeltaTime = Time - self.LastThink
@@ -199,8 +200,8 @@ function ENT:CalcFlight()
 
     --Rocket motor is out or drowned
     local DragCoef = 0
-    if Time > self.CutoutTime or self:WaterLevel() > 0 then
-        DragCoef = self:WaterLevel() > 0 and self.DragCoef*5 or self.DragCoef --5 times extra drag underwater
+    if Time > self.CutoutTime or (self:WaterLevel() == 3 and self.NotDrownable ) then
+        DragCoef = (self:WaterLevel() == 3 and self.NotDrownable ) and self.DragCoef*5 or self.DragCoef --5 times extra drag underwater
 
         if self.Motor ~= 0 then
             self.Motor = 0
@@ -264,8 +265,8 @@ function ENT:CalcFlight()
     self.FlightTime = Flight
 
     --Missile trajectory debugging
-    --debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
-    --debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
+    debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
+    debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
 
     self:DoFlight()
 end
@@ -341,7 +342,7 @@ do
             timer.Simple( 0.5, function()
                 if not IsValid(self) then return end
                 if self.MissileDetonated then return end
-                if self:WaterLevel() > 0 then return end 
+                if self:WaterLevel() > 0 and self.NotDrownable then return end 
 
                 local Time = CurTime()
 
@@ -381,6 +382,13 @@ do
             self:LaunchEffect()
 
         end
+
+        local DRTime = 1250 / self.Motor
+
+        timer.Simple( DRTime , function()
+            self.NotDrownable = true --Given time to allow missiles to escape from the water before their motors are drowned
+        end)
+
     end
 end
 
@@ -460,10 +468,14 @@ function ENT:Think()
 
         if self.CacheParticleEffect and (self.CacheParticleEffect <= Time) and (Time < self.CutoutTime) then
 
-            local effect = ACF_GetGunValue(self.BulletData, "effect")
+            if not (self:WaterLevel() == 3 and self.NotDrownable) then
 
-            if effect then
-                ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
+                local effect = ACF_GetGunValue(self.BulletData, "effect")
+
+                if effect then
+                    ParticleEffectAttach( effect, PATTACH_POINT_FOLLOW, self, self:LookupAttachment("exhaust") or 0 )
+                end
+
             end
 
             self.CacheParticleEffect = nil

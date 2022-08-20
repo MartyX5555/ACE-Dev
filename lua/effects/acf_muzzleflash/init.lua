@@ -17,7 +17,7 @@ function EFFECT:Init( data )
 	local Caliber 		= Gun:GetNWInt( "Caliber", 1 ) * 10 
 
 	--This tends to fail
-	local ClassData 	= list.Get("ACFClasses").GunClass[Class]
+	local ClassData 	= ACF.Classes.GunClass[Class]
 	local Attachment 	= "muzzle"
 
 	if ClassData then
@@ -33,7 +33,7 @@ function EFFECT:Init( data )
 	end
 
 	if not IsValidSound( Sound ) then
-		Sound = ClassData["sound"]
+		Sound = ClassData.sound
 	end
 		
 	if Propellant > 0 then
@@ -41,14 +41,14 @@ function EFFECT:Init( data )
 		ACE_SGunFire( Gun, Sound, Propellant )
 
 		local Muzzle = Gun:GetAttachment( Gun:LookupAttachment(Attachment)) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
-		local Flash = ClassData and ClassData["muzzleflash"] or '50cal_muzzleflash_noscale'
+		local Flash  = ClassData and ClassData.muzzleflash or '50cal_muzzleflash_noscale'
 
 		ParticleEffect( Flash , Muzzle.Pos, Muzzle.Ang, Gun )
 
-		if GetConVar("ACFM_MissileLights"):GetFloat() == 1 then
-			ACF_RenderLight(Gun:EntIndex(), Caliber*100, Color(255, 128, 48), Muzzle.Pos + Muzzle.Ang:Forward()*(Caliber/10))
-		end
+		if Gun:WaterLevel() ~= 3 and not ClassData.nolights then
 
+			ACF_RenderLight(Gun:EntIndex(), Caliber*75, Color(255, 128, 48), Muzzle.Pos + Muzzle.Ang:Forward()*(Caliber/5))
+		end
 		
 		if Gun.Animate then 
 			Gun:Animate( Class, ReloadTime, false )
@@ -59,7 +59,7 @@ function EFFECT:Init( data )
 		end
 	end
 	
- end 
+end 
    
    
 /*---------------------------------------------------------

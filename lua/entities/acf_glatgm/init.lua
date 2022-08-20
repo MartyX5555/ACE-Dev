@@ -19,6 +19,7 @@ function ENT:Initialize()
     self:PhysicsInit(SOLID_VPHYSICS);
     self:SetUseType(SIMPLE_USE);
     self:SetSolid(SOLID_VPHYSICS);
+    self:SetCollisionGroup(COLLISION_GROUP_WORLD)
 
     self.PhysObj = self:GetPhysicsObject()
     self.PhysObj:EnableGravity( false )
@@ -120,7 +121,8 @@ function ENT:Think()
             
         self.Time = TimeNew
 
-        if tr.Hit then
+        --Break glatgms in contact with water. Assuming they are fast.
+        if tr.Hit or self:WaterLevel() == 3 then
             self:Detonate()
         end
 
