@@ -191,10 +191,6 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
     Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
     Ammo:SetSolid( SOLID_VPHYSICS )
 
-    if not ACE_CheckRound( Data2 ) then
-        Data2 = "AP"
-    end
-
     Ammo.Id = Id
     Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
@@ -339,9 +335,7 @@ do
 
         --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
 
-        self.RoundType          = AmmoComp[
-        ACE_CheckRound( id )
-        ] or Data2  or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        self.RoundType          = AmmoComp[ Data2 ] or ( ACE_CheckRound( Data2 ) and Data2 ) or "AP"   -- Type of round, IE AP, HE, HEAT ...
         self.RoundPropellant    = Data3                     or 0      -- Lenght of propellant
         self.RoundProjectile    = Data4                     or 0      -- Lenght of the projectile
         self.RoundData5         = Data5                     or 0
@@ -376,17 +370,6 @@ do
 
         self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
         self.BulletData         = self:ConvertData( PlayerData )
-    
-        print("AAAAA")
-        print(self.ConvertData)        
-        print("AAAAA")
-        -- If you used some invalid roundtype, this will return default
-        if not self.ConvertData then 
-            print("AMONGOS")
-            Data2 = "AP"
-            self:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
-            return
-        end
 
         local Efficiency        = 0.1576 * ACF.AmmoMod
         local vol               = math.floor(self:GetPhysicsObject():GetVolume())

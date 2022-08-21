@@ -2,6 +2,7 @@
 function EFFECT:Init( data )
 
 	self.Index = data:GetMaterialIndex()
+
 	--print(self.Index)
 	if not self.Index then
 		self.Alive = false
@@ -23,6 +24,8 @@ function EFFECT:Init( data )
 		--Bullet has reached end of flight, remove old effect
 		if (Hit == 1) then		
 
+			Bullet.Impacted = true
+
 			self.HitEnd = ACF.RoundTypes[Bullet.AmmoType]["endeffect"]
 			self:HitEnd( Bullet )
 			ACF.BulletEffect[self.Index] = nil			--This is crucial, to effectively remove the bullet flight model from the client
@@ -41,7 +44,7 @@ function EFFECT:Init( data )
 			self.HitRicochet = ACF.RoundTypes[Bullet.AmmoType]["ricocheteffect"]
 			self:HitRicochet( Bullet )
 
-		end
+		end		
 
 		ACF_SimBulletFlight( Bullet, self.Index )
 		self.Alive = false
@@ -59,34 +62,32 @@ function EFFECT:Init( data )
 			return
 		end
 
-	
+		BulletData.IsMissile 	= BulletData.IsMissile or (data:GetAttachment() == 1)
 
-		BulletData.SimFlight = data:GetStart()*10
-		BulletData.SimPos = data:GetOrigin()
-		BulletData.SimPosLast = BulletData.SimPos
-		BulletData.Caliber = BulletData.Crate:GetNWFloat( "Caliber", 10 )
-		BulletData.RoundMass = BulletData.Crate:GetNWFloat( "ProjMass", 10 )
-		BulletData.FillerMass = BulletData.Crate:GetNWFloat( "FillerMass" )
-		BulletData.WPMass = BulletData.Crate:GetNWFloat( "WPMass" )
-		BulletData.DragCoef = BulletData.Crate:GetNWFloat( "DragCoef", 1 )
-		BulletData.AmmoType = BulletData.Crate:GetNWString( "AmmoType", "AP" )
+		BulletData.SimFlight 	= data:GetStart()*10
+		BulletData.SimPos 		= data:GetOrigin()
+		BulletData.SimPosLast 	= BulletData.SimPos
+		BulletData.Caliber 		= BulletData.Crate:GetNWFloat( "Caliber", 10 )
+		BulletData.RoundMass 	= BulletData.Crate:GetNWFloat( "ProjMass", 10 )
+		BulletData.FillerMass 	= BulletData.Crate:GetNWFloat( "FillerMass" )
+		BulletData.WPMass 		= BulletData.Crate:GetNWFloat( "WPMass" )
+		BulletData.DragCoef 	= BulletData.Crate:GetNWFloat( "DragCoef", 1 )
+		BulletData.AmmoType 	= BulletData.Crate:GetNWString( "AmmoType", "AP" )
 
-		BulletData.BulletModel = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" ) 
+		BulletData.Accel 		= BulletData.Crate:GetNWVector( "Accel", Vector(0,0,-600))
+
+		BulletData.LastThink 	= CurTime() --ACF.CurTime
+		BulletData.Effect 		= self.Entity
+		BulletData.CrackCreated = false
+		BulletData.InitialPos 	= BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
+
+		BulletData.BulletModel 	= BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" ) 		
 
 		if BulletData.Crate:GetNWFloat( "Tracer" ) > 0 then
-			BulletData.Counter = 0	
-			BulletData.Tracer = ParticleEmitter( BulletData.SimPos )
+			BulletData.Counter 		= 0	
+			BulletData.Tracer 		= ParticleEmitter( BulletData.SimPos )
 			BulletData.TracerColour = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
 		end
-
-
-		BulletData.Accel = BulletData.Crate:GetNWVector( "Accel", Vector(0,0,-600))
-
-		BulletData.LastThink = CurTime() --ACF.CurTime
-		BulletData.Effect = self.Entity
-		BulletData.CrackCreated = false
-		BulletData.InitialPos = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
-
 
 		--Add all that data to the bullet table, overwriting if needed
 		ACF.BulletEffect[self.Index] = BulletData		
@@ -150,12 +151,15 @@ function EFFECT:ApplyMovement( Bullet )
 		local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length()) 
 
 		--sonic crack sound
-		if not Bullet.CrackCreated then
+		if not Bullet.CrackCreated and not Bullet.IsMissile then
 			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
 				if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
-					--print(Bullet.Caliber*10*ACE.CrackDistanceMultipler)
-					--print('Bullet Speed: '..Speed)
-					ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+
+					if not Bullet.Impacted then
+
+						ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+
+					end
 				end
 			end
 		end

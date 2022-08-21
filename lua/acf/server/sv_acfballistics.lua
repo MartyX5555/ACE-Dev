@@ -440,15 +440,20 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
    elseif Type == "Init" then
 
+      local IsMissile
+
+      if not IsValid(Bullet.Gun) or Bullet.Gun:GetClass() == "acf_missile" then
+         IsMissile = 1
+      end
+
       local Effect = EffectData()
-         local Filler = 0
-         if Bullet["FillerMass"] then Filler = Bullet["FillerMass"]*15 end 
          Effect:SetMaterialIndex( Index )       --Bullet Index
          Effect:SetStart( Bullet.Flight/10 )    --Bullet Direction
          Effect:SetOrigin( Bullet.Pos )
          Effect:SetEntity( Entity(Bullet["Crate"]) )
          Effect:SetScale( 0 )
-         util.Effect( "ACF_BulletEffect", Effect, true, true )
+         Effect:SetAttachment( IsMissile or 0 )
+      util.Effect( "ACF_BulletEffect", Effect, true, true )
 
    end
 
