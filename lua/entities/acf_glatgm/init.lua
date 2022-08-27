@@ -143,6 +143,8 @@ function ENT:Detonate()
         ACF_ActiveMissiles[self] = nil
         self.Detonated = true
 
+        self:Remove()
+
         btdat = {}
         btdat["Type"]           = "HEAT" 
         btdat["Accel"]          = self.BulletData.Accel
@@ -194,16 +196,8 @@ function ENT:Detonate()
     
         btdat.Pos = self:GetPos() + self:GetForward() * 2
 
-        --debugoverlay.Cross(btdat.Pos, 10, 5, Color(255,255,0),true)
-
         self.CreateShell = ACF.RoundTypes[btdat.Type].create
         self:CreateShell( btdat )
-
-        timer.Simple(0.1, function()
-            if IsValid(self) then
-                self:Remove()
-            end
-        end )
         
         local Flash = EffectData()
             Flash:SetOrigin( self:GetPos() )

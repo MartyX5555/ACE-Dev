@@ -148,6 +148,8 @@ do
         Gun.Heat            = ACE.AmbientTemp
         Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1)^1.2
 
+        Gun.noloaders       = ClassData.noloader or nil
+
         if ClassData.color then
             Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
         end
@@ -285,7 +287,7 @@ function ENT:UpdateOverlayText()
 
     if #self.CrewLink > 0 then
         text = text .. "\n\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
-        text = text .. "\nTotal Loaders: "..self.LoaderCount
+        text = text .. ( self.noloaders and "" or "\nTotal Loaders: "..self.LoaderCount  )
     end
 
     if self.IsOverheated then
@@ -301,8 +303,6 @@ function ENT:UpdateOverlayText()
 end
 
 function ENT:Link( Target )
-    
---  print(Target:GetClass())
     
     if not IsValid( Target ) then
         return false, "Target not a valid entity!"      
@@ -359,7 +359,7 @@ function ENT:Link( Target )
             return false, "The gun already has 3 loaders!"  
         end
 
-        if self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA" or self.Class == "AL" then
+        if self.noloaders then
             return false, "This gun cannot have a loader!"  
         end 
     
@@ -1033,8 +1033,8 @@ function ENT:PreEntityCopy()
     end
     for Key, Value in pairs(self.CrewLink) do                   --First clean the table of any invalid entities
         if not Value:IsValid() then
-            table.remove(self.CrewLink, Value)
-        end
+            table.remove(self.CrewLink, Value) 
+        end 
     end
     for Key, Value in pairs(self.CrewLink) do                   --Then save it
         table.insert(entids, Value:EntIndex())
@@ -1061,14 +1061,16 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
                 local Ammo = CreatedEntities[ AmmoID ]
 
-                if Ammo and Ammo:IsValid() then
+                if IsValid(Ammo) then
                 
                     if Ammo:GetClass() == "acf_ammo" then
                         self:Link( Ammo )
                     elseif Ammo:GetClass() == "ace_crewseat_gunner" then
                         self:Link( Ammo )
                     elseif Ammo:GetClass() == "ace_crewseat_loader" then
-                        self:Link( Ammo )
+                        if not self.noloaders then 
+                            self:Link( Ammo )
+                        end
                     end
                 end
             end
