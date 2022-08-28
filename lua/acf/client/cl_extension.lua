@@ -456,6 +456,7 @@ end
 
 function ACE_SGunFire( Gun, Sound, Propellant )
 
+    if not IsValid(Gun) then return end
     if not Sound or Sound == "" then return end
 
     Propellant = math.max(Propellant,50)
