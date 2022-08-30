@@ -1,10 +1,8 @@
-SWEP.PrintName = "AK-47"
 SWEP.Base = "weapon_ace_base"
-SWEP.Spawnable = true
-SWEP.Purpose = "Slavic bullet thrower"
+SWEP.PrintName = "AK-47"
 SWEP.Category = "ACE - Rifles"
+SWEP.Purpose = "Slavic bullet thrower"
+SWEP.Spawnable = true
 
 SWEP.Slot = 2
 SWEP.SlotPos = 1
-
-SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"

@@ -1,52 +1,57 @@
 SWEP.PrintName = "ACE Base Weapon"
+SWEP.Category = "ACE - Special"
 SWEP.Purpose = "The base code upon which other ACE weapons are built."
 SWEP.Author = "Cheezus"
 SWEP.Spawnable = false
-SWEP.ViewModel = "models/weapons/v_rif_ak47.mdl"
-SWEP.WorldModel = "models/weapons/w_rif_ak47.mdl"
-SWEP.HoldType = "ar2"
 
-SWEP.FireRate = 10 --Rounds per second
-SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
-SWEP.HeatPerShot = 5 --Heat generated per shot
-SWEP.HeatMax = 30 --Maximum heat - determines max rate at which recoil is applied to eye angles
-                --Also determines point at which random spread is at its highest intensity
-                --HeatMax divided by HeatPerShot gives you how many shots until you reach full inaccuracy
-
-SWEP.BaseSpread = 0 --First-shot random spread, in degrees
-SWEP.MaxSpread = 0.5 --Maximum added random spread ("aimcone") from heat value, in degrees
-SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportional to vertical recoil
-                        --Positive numbers bias to the right, negative to the left
-SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
-SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.ViewPunchAmount = 0.5 --Amount to punch the view upwards each shot
-SWEP.UnscopedInaccuracy = 1 --Inaccuracy (aimcone), in degrees, when unscoped with a scoped weapon
-
-SWEP.ReloadSound = "Weapon_Pistol.Reload" --Third person reload sound
-
-if CLIENT then
-    CreateClientConVar("acf_zoomsensitivity_irons", 0.5, true, false, "Reduce mouse sensitivity by this amount when zoomed in with iron sights on ACE SWEPs.", 0.01, 1)
-    CreateClientConVar("acf_zoomsensitivity_scopes", 0.2, true, false, "Reduce mouse sensitivity by this amount when zoomed in with scopes on ACE SWEPs.", 0.01, 1)
-end
-
-SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
-
-SWEP.ZoomFOV = 60 --FOV when zoomed in
-SWEP.HasScope = false
-
+--Main settings--
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 120
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "SMG1"
-SWEP.Primary.Sound = "ace_weapons/multi_sound/7_62mm_multi.mp3"
+SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 
-SWEP.Heat = 0
-SWEP.LastFired = 0
+SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
+                                        --Most models have a built-in first-person reload sound
+
+SWEP.Slot = 2 --Which inventory column the weapon appears in
+SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
+
+
+--Recoil (crosshair movement) settings--
+--"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
+SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
+SWEP.HeatPerShot = 5 --Heat generated per shot
+SWEP.HeatMax = 30 --Maximum heat - determines max rate at which recoil is applied to eye angles
+                --Also determines point at which random spread is at its highest intensity
+                --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
+
+SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportional to vertical recoil
+                        --Positive numbers bias to the right, negative to the left
+
+SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
+SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
+SWEP.ViewPunchAmount = 0.5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+
+
+--Spread (aimcone) settings--
+SWEP.BaseSpread = 0 --First-shot random spread, in degrees
+SWEP.MaxSpread = 0.5 --Maximum added random spread from heat value, in degrees
+                    --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
+
+
+--Model settings--
+SWEP.ViewModel = "models/weapons/v_rif_ak47.mdl"
+SWEP.WorldModel = "models/weapons/w_rif_ak47.mdl"
+SWEP.HoldType = "ar2"
+SWEP.DeployDelay = 0 --Time before you can fire after deploying the weapon
+
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "ZoomState")
@@ -142,6 +147,7 @@ end
 local rand1 = SWEP.PrintName .. "_recoil1"
 local rand2 = SWEP.PrintName .. "_recoil2"
 
+--Returns an X and Y position randomly placed within a circle, values range from -1 to 1
 function SWEP:GetSharedRandomSpread()
     self.RandomSeed = self.RandomSeed and (self.RandomSeed + 1) or 0
 
@@ -153,13 +159,43 @@ function SWEP:GetSharedRandomSpread()
     return x, y
 end
 
-function SWEP:ShootPrimary(shootDir)
+SWEP.Heat = 0
+
+function SWEP:GetShootDir()
+    local owner = self:GetOwner()
+    local spreadX, spreadY = self:GetSharedRandomSpread()
+    local degrees = math.Clamp((self.Heat / self.HeatMax) ^ 2 * self.MaxSpread + self.BaseSpread, self.BaseSpread, self.BaseSpread + self.MaxSpread)
+
+    --Inaccuracy based on player speed
+    degrees = degrees + math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1) * self.MovementSpread
+
+    if not self:GetZoomState() and self.HasScope then
+        degrees = degrees + self.UnscopedSpread * (owner:Crouching() and self.CrouchRecoilBonus or 1)
+    end
+
+    spreadX = spreadX * degrees
+    spreadY = spreadY * degrees
+
+    local shootDir = owner:GetAimVector()
+
+    --There's gotta be a nicer way to do this with more proper math, but for now this works
+    local upAxis = owner:GetAimVector():Angle():Right()
+    local sideAxis = owner:GetAimVector():Angle():Up()
+    shootDir = shootDir:RotateAroundAxis(upAxis, spreadY)
+    shootDir = shootDir:RotateAroundAxis(sideAxis, spreadX)
+
+    return shootDir
+end
+
+function SWEP:ShootPrimary()
     local owner = self:GetOwner()
 
     if SERVER then
-        self:ACEFireBullet(owner:GetShootPos() + owner:GetVelocity() * engine.TickInterval(), shootDir)
+        self:ACEFireBullet(owner:GetShootPos() + owner:GetVelocity() * engine.TickInterval(), self:GetShootDir())
     end
 end
+
+SWEP.LastFired = 0
 
 function SWEP:PrimaryAttack()
     if self:Clip1() == 0 and self:Ammo1() > 0 then
@@ -178,26 +214,6 @@ function SWEP:PrimaryAttack()
 
     if IsFirstTimePredicted() then
         local owner = self:GetOwner()
-        local spreadX, spreadY = self:GetSharedRandomSpread()
-        local degrees = math.Clamp((self.Heat / self.HeatMax) ^ 2 * self.MaxSpread + self.BaseSpread, self.BaseSpread, self.BaseSpread + self.MaxSpread)
-
-        --Inaccuracy based on player speed
-        degrees = degrees + math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1) * self.MovementSpread
-
-        if not self:GetZoomState() and self.HasScope then
-            degrees = degrees + self.UnscopedInaccuracy * (owner:Crouching() and self.CrouchRecoilBonus or 1)
-        end
-
-        spreadX = spreadX * degrees
-        spreadY = spreadY * degrees
-
-        local shootDir = owner:GetAimVector()
-
-        --There's gotta be a nicer way to do this with more proper math, but for now this works
-        local upAxis = owner:GetAimVector():Angle():Right()
-        local sideAxis = owner:GetAimVector():Angle():Up()
-        shootDir = shootDir:RotateAroundAxis(upAxis, spreadY)
-        shootDir = shootDir:RotateAroundAxis(sideAxis, spreadX)
 
         self:ShootPrimary(shootDir)
 
@@ -243,15 +259,10 @@ end
 if CLIENT then
     function SWEP:AdjustMouseSensitivity()
         if self:GetZoomState() then
-            local cvar = self.HasScope and GetConVar("acf_zoomsensitivity_scopes") or GetConVar("acf_zoomsensitivity_irons")
+            local cvar = self.HasScope and GetConVar("acf_sens_scopes") or GetConVar("acf_sens_irons")
 
             return cvar:GetFloat()
         end
-    end
-
-    function SWEP:CalcView(ply, pos, ang, fov)
-
-        return pos, ang, fov
     end
 end
 
@@ -260,6 +271,7 @@ local lastRecoilTime = SysTime()
 
 function SWEP:HandleRecoil()
     local delay = self.HeatReductionDelay or (1 / self.FireRate + tickInterval)
+
     if IsFirstTimePredicted() and CurTime() - self.LastFired > delay then
         self.Heat = math.max(self.Heat - tickInterval * self.HeatReductionRate, 0)
     end
