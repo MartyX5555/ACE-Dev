@@ -1,35 +1,66 @@
 SWEP.PrintName = "AT-4 Proto"
 SWEP.Base = "weapon_ace_base"
-SWEP.Spawnable = true
+SWEP.Category = "ACE - Special"
 SWEP.Purpose = "Clear Backblast!"
-SWEP.Category = "ACE - Rockets"
+SWEP.Spawnable = true
+SWEP.Slot = 4 --Which inventory column the weapon appears in
+SWEP.SlotPos = 3 --Priority in which the weapon appears, 1 tries to put it at the top
 
-SWEP.Slot = 4
-SWEP.SlotPos = 3
 
+--Main settings--
+SWEP.FireRate = 0.15 --Rounds per second
+
+SWEP.Primary.ClipSize = 1
+SWEP.Primary.DefaultClip = 8
+SWEP.Primary.Automatic = false
+SWEP.Primary.Ammo = "RPG_Round"
+SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/at4p_multi.mp3"
+SWEP.Primary.LightScale = 200 --Muzzleflash light radius
+SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
+
+SWEP.Secondary.ClipSize = -1
+SWEP.Secondary.DefaultClip = -1
+
+SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
+                                        --Most models have a built-in first-person reload sound
+
+SWEP.ZoomFOV = 60
+SWEP.HasScope = false --True if the weapon has a sniper-style scope
+
+
+--Recoil (crosshair movement) settings--
+--"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
+SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
+SWEP.HeatReductionDelay = 0.3 --Delay after firing before beginning to reduce heat
+SWEP.HeatPerShot = 20 --Heat generated per shot
+SWEP.HeatMax = 25 --Maximum heat - determines max rate at which recoil is applied to eye angles
+                --Also determines point at which random spread is at its highest intensity
+                --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
+
+SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportional to vertical recoil
+                        --Positive numbers bias to the right, negative to the left
+
+SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
+SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
+SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+
+
+--Spread (aimcone) settings--
+SWEP.BaseSpread = 0.6 --First-shot random spread, in degrees
+SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
+                    --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
+
+
+--Model settings--
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_RPG.mdl"
 SWEP.WorldModel = "models/weapons/w_rocket_launcher.mdl"
 SWEP.HoldType = "rpg"
-SWEP.CSMuzzleFlashes = true
+SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.CSMuzzleFlashes = false
 
-SWEP.FireRate = 0.15
-
-SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 8
-SWEP.Primary.Ammo = "RPG_Round"
-SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/at4p_multi.mp3"
-
-SWEP.ReloadSound = "Weapon_Pistol.Reload"
-
-SWEP.HasScope = false
-SWEP.ZoomFOV = 60
-
-SWEP.ViewPunchAmount = 10
-SWEP.HeatPerShot = 20
-SWEP.HeatReductionDelay = 0.3
-
-SWEP.BaseSpread = 0.6
 
 function SWEP:InitBulletData()
     self.BulletData = {}
@@ -83,7 +114,7 @@ function SWEP:InitBulletData()
     self.BulletData.Fragments = math.max(math.floor((self.BulletData.BoomFillerMass / self.BulletData.CasingMass) * ACF.HEFrag), 2)
     self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
     --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-    self.BulletData.DragCoef = ((self.BulletData.FrAera / 10000) / self.BulletData.ProjMass)
+    self.BulletData.DragCoef = (self.BulletData.FrAera / 10000) / self.BulletData.ProjMass
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2

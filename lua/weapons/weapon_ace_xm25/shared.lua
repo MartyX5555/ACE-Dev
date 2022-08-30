@@ -1,39 +1,39 @@
-SWEP.PrintName = "AT-4"
+SWEP.PrintName = "XM25"
 SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE - Special"
-SWEP.Purpose = "Clear Backblast!"
+SWEP.Purpose = "Lob HE behind cover"
 SWEP.Spawnable = true
-SWEP.Slot = 4 --Which inventory column the weapon appears in
-SWEP.SlotPos = 3 --Priority in which the weapon appears, 1 tries to put it at the top
+SWEP.Slot = 3 --Which inventory column the weapon appears in
+SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
 
 
 --Main settings--
-SWEP.FireRate = 0.25 --Rounds per second
+SWEP.FireRate = 3 --Rounds per second
 
-SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 8
+SWEP.Primary.ClipSize = 5
+SWEP.Primary.DefaultClip = 15
 SWEP.Primary.Automatic = false
-SWEP.Primary.Ammo = "RPG_Round"
-SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/at4_multi.mp3"
+SWEP.Primary.Ammo = "SMG1"
+SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/xm25_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 
-SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
+SWEP.ReloadSound = "weapons/amr/sniper_reload.wav" --Sound other players hear when you reload - this is NOT your first-person sound
                                         --Most models have a built-in first-person reload sound
 
-SWEP.ZoomFOV = 60
+SWEP.ZoomFOV = 90
 SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 
 --Recoil (crosshair movement) settings--
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
-SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
-SWEP.HeatReductionDelay = 0.25 --Delay after firing before beginning to reduce heat
-SWEP.HeatPerShot = 10 --Heat generated per shot
-SWEP.HeatMax = 25 --Maximum heat - determines max rate at which recoil is applied to eye angles
+SWEP.HeatReductionRate = 11 --Heat loss per second when not firing
+SWEP.HeatReductionDelay = 0.1
+SWEP.HeatPerShot = 5 --Heat generated per shot
+SWEP.HeatMax = 5 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
                 --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
@@ -42,12 +42,12 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.25 --First-shot random spread, in degrees
-SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.5 --First-shot random spread, in degrees
+SWEP.MaxSpread = 5 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
 SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
@@ -55,28 +55,55 @@ SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
 --Model settings--
 SWEP.ViewModelFlip = false
-SWEP.ViewModel = "models/weapons/v_RPG.mdl"
-SWEP.WorldModel = "models/weapons/w_rocket_launcher.mdl"
-SWEP.HoldType = "rpg"
-SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
-SWEP.CSMuzzleFlashes = false
+SWEP.ViewModel = "models/weapons/v_xm25.mdl"
+SWEP.WorldModel = "models/weapons/w_xm25.mdl"
+SWEP.HoldType = "ar2"
+SWEP.DeployDelay = 4 --Time before you can fire after deploying the weapon
+SWEP.CSMuzzleFlashes = true
 
+SWEP.FuseDelay = 0
+
+function SWEP:OnPrimaryAttack()
+    self.BulletData.Owner = self:GetOwner()
+    self.BulletData.Gun = self
+    self.BulletData.FuseLength = self.FuseDelay
+
+end
+
+function SWEP:SecondaryAttack()
+    if CLIENT then return end
+
+    local owner = self:GetOwner()
+
+    local RangeTrace = util.QuickTrace(owner:GetShootPos(), owner:GetAimVector() * 50000, {owner})
+
+    if RangeTrace.Hit then
+        local time = ((owner:GetShootPos() - RangeTrace.HitPos):Length() / 39.37 + 2.5) / 91
+
+        self.FuseDelay = time > 0.07 and time or 0
+    end
+
+    owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 91) .. " m") or "None")))
+
+    return
+end
 
 function SWEP:InitBulletData()
     self.BulletData = {}
-    self.BulletData.Id = "75mmHW"
+    ---------------------------------------
+    self.BulletData.Id = "25mmGL"
     self.BulletData.Type = "HEAT"
     self.BulletData.Id = 2
-    self.BulletData.Caliber = 8.4
-    self.BulletData.PropLength = 7.75 --Volume of the case as a cylinder * Powder density converted from g to kg		
-    self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-    self.BulletData.Data5 = 5300 --He Filler or Flechette count
-    self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
+    self.BulletData.Caliber = 2.5
+    self.BulletData.PropLength = 11 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.ProjLength = 560 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+    self.BulletData.Data5 = 150 --He Filler or Flechette count
+    self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
     self.BulletData.Data7 = 0
     self.BulletData.Data8 = 0
     self.BulletData.Data9 = 0
     self.BulletData.Data10 = 1 -- Tracer
-    self.BulletData.Colour = Color(255, 50, 0)
+    self.BulletData.Colour = Color(255, 100, 100)
     --
     self.BulletData.Data13 = 0 --THEAT ConeAng2
     self.BulletData.Data14 = 0 --THEAT HE Allocation
@@ -87,7 +114,7 @@ function SWEP:InitBulletData()
     self.BulletData.PropMass = self.BulletData.FrAera * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
     self.BulletData.FillerVol = self.BulletData.Data5
     self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-    self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 130
+    self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 3.5
     local ConeAera = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
     local ConeThick = self.BulletData.Caliber / 50
     local ConeVol = ConeAera * ConeThick
@@ -104,8 +131,8 @@ function SWEP:InitBulletData()
     self.BulletData.Fragments = math.max(math.floor((self.BulletData.BoomFillerMass / self.BulletData.CasingMass) * ACF.HEFrag), 2)
     self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
     --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-    self.BulletData.DragCoef = ((self.BulletData.FrAera / 10000) / self.BulletData.ProjMass)
-    print(self.BulletData.SlugDragCoef)
+    self.BulletData.DragCoef = 0
+    --		print(self.BulletData.SlugDragCoef)
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2
@@ -130,5 +157,5 @@ function SWEP:InitBulletData()
     self.FillerMass = self.BulletData.FillerMass
     self.DragCoef = self.BulletData.DragCoef
     self.Colour = self.BulletData.Colour
-    self.DetonatorAngle = 80
+    self.DetonatorAngle = 85
 end

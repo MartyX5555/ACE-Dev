@@ -3,14 +3,20 @@ SWEP.Category = "ACE - Special"
 SWEP.Purpose = "The base code upon which other ACE weapons are built."
 SWEP.Author = "Cheezus"
 SWEP.Spawnable = false
+SWEP.Slot = 2 --Which inventory column the weapon appears in
+SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
+
 
 --Main settings--
+SWEP.FireRate = 10 --Rounds per second
+
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 120
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "SMG1"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
+SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -18,8 +24,8 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
                                         --Most models have a built-in first-person reload sound
 
-SWEP.Slot = 2 --Which inventory column the weapon appears in
-SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
+SWEP.ZoomFOV = 60
+SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 
 --Recoil (crosshair movement) settings--
@@ -35,7 +41,7 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0.5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 0.2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
@@ -47,14 +53,17 @@ SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
+SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_rif_ak47.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_ak47.mdl"
 SWEP.HoldType = "ar2"
-SWEP.DeployDelay = 0 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.CSMuzzleFlashes = true
 
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "ZoomState")
+    self:NetworkVar("Int", 0, "RandomSeed")
 
     if SERVER then
         self:NetworkVarNotify("ZoomState", function(_, _, lastZoom, zoom)
@@ -149,10 +158,11 @@ local rand2 = SWEP.PrintName .. "_recoil2"
 
 --Returns an X and Y position randomly placed within a circle, values range from -1 to 1
 function SWEP:GetSharedRandomSpread()
-    self.RandomSeed = self.RandomSeed and (self.RandomSeed + 1) or 0
+    local seed = self:GetRandomSeed()
+    self:SetRandomSeed(seed + 1)
 
-    local r = math.sqrt(util.SharedRandom(rand1, 0, 1, self.RandomSeed))
-    local theta = util.SharedRandom(rand2, 0, 1, self.RandomSeed + self.Primary.ClipSize) * 2 * math.pi
+    local r = math.sqrt(util.SharedRandom(rand1, 0, 1, seed))
+    local theta = util.SharedRandom(rand2, 0, 1, seed + self.Primary.ClipSize) * 2 * math.pi
     local x = r * math.cos(theta)
     local y = r * math.sin(theta)
 
@@ -187,7 +197,7 @@ function SWEP:GetShootDir()
     return shootDir
 end
 
-function SWEP:ShootPrimary()
+function SWEP:Shoot()
     local owner = self:GetOwner()
 
     if SERVER then
@@ -196,6 +206,11 @@ function SWEP:ShootPrimary()
 end
 
 SWEP.LastFired = 0
+SWEP.Reloading = false
+SWEP.NextReload = 0
+
+function SWEP:OnPrimaryAttack()
+end
 
 function SWEP:PrimaryAttack()
     if self:Clip1() == 0 and self:Ammo1() > 0 then
@@ -206,6 +221,12 @@ function SWEP:PrimaryAttack()
 
     if not self:CanPrimaryAttack() then return end
 
+    self:OnPrimaryAttack()
+
+    if self.ShotgunReload then
+        self.Reloading = false
+    end
+
     local sounds = list.Get("ACESounds").GunFire[self.Primary.Sound]
 
     if game.SinglePlayer() then
@@ -215,7 +236,9 @@ function SWEP:PrimaryAttack()
     if IsFirstTimePredicted() then
         local owner = self:GetOwner()
 
-        self:ShootPrimary(shootDir)
+        for i = 1, self.Primary.BulletCount do
+            self:Shoot()
+        end
 
         if sounds and CLIENT then
             ACE_NetworkedSound(owner, self.Primary.Sound, self.BulletData.PropMass)
@@ -242,8 +265,13 @@ function SWEP:PrimaryAttack()
     self.LastFired = CurTime()
 end
 
+function SWEP:OnSecondaryAttack()
+end
+
 function SWEP:SecondaryAttack()
-    if SERVER then
+    self:OnSecondaryAttack()
+
+    if SERVER and not self.Reloading then
         self:SetZoomState(not self:GetZoomState())
     end
 end
@@ -251,6 +279,10 @@ end
 function SWEP:Holster()
     if SERVER then
         self:SetZoomState(false)
+    end
+
+    if self.ShotgunReload then
+        self.Reloading = false
     end
 
     return true
@@ -294,12 +326,34 @@ function SWEP:HandleRecoil()
     end
 end
 
+function SWEP:OnThink()
+end
+
 function SWEP:Think()
     if not self.m_bInitialized then
         self:Initialize()
     end
 
+    if self.ShotgunReload and CurTime() > self.NextReload and self.Reloading then
+        if self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 then
+            self:EmitSound(Sound(self.ReloadSound))
+            self:SendWeaponAnim(ACT_VM_RELOAD)
+            self:SetClip1(self:Clip1() + 1)
+            self:GetOwner():RemoveAmmo(1, self:GetPrimaryAmmoType())
+
+            self.NextReload = CurTime() + 0.5
+        elseif (self:Clip1() == self.Primary.ClipSize or self:Ammo1() == 0) and self.Reloading then
+            self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+
+            self.Reloading = false
+        end
+    end
+
     self:HandleRecoil()
+    self:OnThink()
+end
+
+function SWEP:OnReload()
 end
 
 function SWEP:Reload()
@@ -307,7 +361,17 @@ function SWEP:Reload()
     if self:Ammo1() == 0 then return end
     if CurTime() < self:GetNextPrimaryFire() then return end
 
-    self:DefaultReload(ACT_VM_RELOAD)
+    self:OnReload()
+
+    if self.ShotgunReload then
+        if CurTime() > self.NextReload and not self.Reloading and self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 then
+            self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
+            self.Reloading = true
+            self.NextReload = CurTime() + 0.5
+        end
+    else
+        self:DefaultReload(ACT_VM_RELOAD)
+    end
 
     self.Heat = 0
 
