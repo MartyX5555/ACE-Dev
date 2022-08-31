@@ -1,6 +1,7 @@
 SWEP.PrintName = "XM25"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Special"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Special"
 SWEP.Purpose = "Lob HE behind cover"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in

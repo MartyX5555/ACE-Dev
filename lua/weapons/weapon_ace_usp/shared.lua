@@ -1,8 +1,8 @@
 SWEP.PrintName = "USP"
 SWEP.Base = "weapon_ace_base"
 SWEP.Spawnable = true
-SWEP.Purpose = "AP Pistol"
-SWEP.Category = "ACE - Pistols"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Pistols"
 
 SWEP.Slot = 1
 SWEP.SlotPos = 1

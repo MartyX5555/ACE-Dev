@@ -1,6 +1,7 @@
 SWEP.PrintName = "MAC-10"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - SMGs"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Submachine Guns"
 SWEP.Purpose = "Go cut bois with huge recoil"
 SWEP.Spawnable = true
 SWEP.Slot = 2 --Which inventory column the weapon appears in

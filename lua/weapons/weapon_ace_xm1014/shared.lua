@@ -1,6 +1,7 @@
 SWEP.PrintName = "XM1014"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Shotguns"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Shotguns"
 SWEP.Purpose = "SO MUCH RECOIL"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in

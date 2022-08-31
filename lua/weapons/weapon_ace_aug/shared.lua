@@ -1,6 +1,7 @@
 SWEP.PrintName = "AUG"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Rifles"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Assault Rifles"
 SWEP.Purpose = "Slow but sure NATO shooter!"
 SWEP.Spawnable = true
 SWEP.Slot = 2 --Which inventory column the weapon appears in

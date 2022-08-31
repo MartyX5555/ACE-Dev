@@ -1,6 +1,7 @@
 SWEP.PrintName = "Benelli M3"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Shotguns"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Shotguns"
 SWEP.Purpose = "Buckshot Shotgun"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in

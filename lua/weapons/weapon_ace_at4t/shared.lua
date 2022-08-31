@@ -1,6 +1,7 @@
 SWEP.PrintName = "AT-4 Proto"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Special"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Special"
 SWEP.Purpose = "Clear Backblast!"
 SWEP.Spawnable = true
 SWEP.Slot = 4 --Which inventory column the weapon appears in

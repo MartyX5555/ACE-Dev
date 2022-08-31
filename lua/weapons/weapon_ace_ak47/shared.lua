@@ -1,6 +1,7 @@
 SWEP.Base = "weapon_ace_base"
 SWEP.PrintName = "AK-47"
-SWEP.Category = "ACE - Rifles"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Assault Rifles"
 SWEP.Purpose = "Slavic bullet thrower"
 SWEP.Spawnable = true
 

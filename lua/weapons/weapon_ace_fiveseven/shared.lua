@@ -1,6 +1,7 @@
 SWEP.PrintName = "Five Seven"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Pistols"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Pistols"
 SWEP.Purpose = "AP Pistol"
 SWEP.Spawnable = true
 SWEP.Slot = 1 --Which inventory column the weapon appears in

@@ -1,6 +1,7 @@
 SWEP.PrintName = "UMP 45"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - SMGs"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Submachine Guns"
 SWEP.Purpose = "Rush A+B"
 SWEP.Spawnable = true
 SWEP.Slot = 2 --Which inventory column the weapon appears in

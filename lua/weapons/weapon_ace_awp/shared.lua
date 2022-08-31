@@ -1,6 +1,7 @@
 SWEP.PrintName = "AWP"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Rifles"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Sniper Rifles"
 SWEP.Purpose = "Powerful sniper rifle"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in

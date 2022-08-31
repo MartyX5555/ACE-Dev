@@ -1,6 +1,7 @@
 SWEP.PrintName = "Anti Materiel Rifle"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Special"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "Special"
 SWEP.Purpose = "Oversized Tank Sniper"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in

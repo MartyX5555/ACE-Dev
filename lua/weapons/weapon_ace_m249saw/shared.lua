@@ -1,6 +1,7 @@
 SWEP.PrintName = "M249 SAW"
 SWEP.Base = "weapon_ace_base"
-SWEP.Category = "ACE - Rifles"
+SWEP.Category = "ACE Weapons"
+SWEP.SubCategory = "LMGs"
 SWEP.Purpose = "Rambo by day, spray n' pray by night"
 SWEP.Spawnable = true
 SWEP.Slot = 2 --Which inventory column the weapon appears in

@@ -61,6 +61,9 @@ SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 
 
+AddCSLuaFile("cl_ace_spawnmenu.lua")
+include("cl_ace_spawnmenu.lua")
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 0, "ZoomState")
     self:NetworkVar("Int", 0, "RandomSeed")
