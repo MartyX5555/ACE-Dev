@@ -60,6 +60,8 @@ local heatt = {
 }
 
 function SWEP:DoAmmoStatDisplay()
+    if not self.BulletData then return end
+
     local bdata = self.BulletData
     local roundType = bdata.Type
 
