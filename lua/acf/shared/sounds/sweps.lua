@@ -1,30 +1,24 @@
 if SERVER then
     util.AddNetworkString("ACE_SWEPSounds")
 
-    net.Receive("ACE_SWEPSounds", function(_, ply)
+    function ACE_NetworkedSound(sourcePly, ent, snd, propmass)
+		if game.SinglePlayer() then return end
+
         local targets = {}
 
         for _, v in ipairs(player.GetAll()) do
-            if v ~= ply then
+            if v ~= sourcePly then
                 table.insert(targets, v)
             end
         end
 
         net.Start("ACE_SWEPSounds", true)
-        net.WriteEntity(net.ReadEntity())
-        net.WriteString(net.ReadString())
-        net.WriteFloat(net.ReadFloat())
-        net.Send(targets)
-    end)
-else
-    function ACE_NetworkedSound(ent, snd, propmass)
-        net.Start("ACE_SWEPSounds", true)
         net.WriteEntity(ent)
         net.WriteString(snd)
         net.WriteFloat(propmass)
-        net.SendToServer()
+        net.Send(targets)
     end
-
+else
     net.Receive("ACE_SWEPSounds", function()
         ACE_SGunFire(net.ReadEntity(), net.ReadString(), net.ReadFloat())
     end)
