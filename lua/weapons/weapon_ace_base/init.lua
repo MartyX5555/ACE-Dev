@@ -27,7 +27,7 @@ function SWEP:ACEFireBullet(Position, Direction)
         self:BeforeFire()
     end
 
-    ACE_SWEP_CreateBullet(self.BulletData)
+    ACF_CreateBullet(self.BulletData)
 end
 
 local nosplode = {
@@ -105,6 +105,8 @@ end
 
 function SWEP:Equip()
     self:DoAmmoStatDisplay()
+
+    self.BulletData.Filter = {self:GetOwner()}
 end
 
 function SWEP:OnRemove()
