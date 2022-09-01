@@ -29,12 +29,12 @@ SWEP.Purpose		= "Achtung Minen!"
 SWEP.Instructions	= "Left mouse to drop mine"
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/ar2/ar2_empty.wav"
+SWEP.Primary.Sound			= "weapons/slam/mine_mode.wav"
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 10
 SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
-SWEP.Primary.Delay			= 1.5
+SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
 SWEP.Primary.DefaultClip	= 1
 SWEP.Primary.Automatic		= 0
