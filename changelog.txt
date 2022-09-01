@@ -528,8 +528,10 @@ r100
 - Any invalid ammocrate will be returned into AP.
 - kornet missile should look as it is now.
 - Fixed ghost cracks being heard by AT missiles and non existant bullets. Its possible to hear this last one in some cases yet.
+- Fixed bullet fuse calculation. Now more precise. Thanks twisted
+- Fixed choppy engine sound. Thanks Cheezus
 - Flares can ignite players and npcs.
-- Limited ERA HE accumulation. No nukes pls
+- Limited ERA HE accumulation.
 - 9M311 sam missile will use laser guidance only.
 - Removed loader count on overlay for weapons that cannot have them.
 - Removed 3rd cam global override. Broke some addons, use the new tool instead.
