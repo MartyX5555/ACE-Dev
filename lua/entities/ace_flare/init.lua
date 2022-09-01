@@ -13,13 +13,14 @@ function ENT:Initialize()
 
 	self.Heat 		= self.Heat or 1
 	self.Life 		= self.Life or 0.1
-
 	self.Owner 		= self:GetOwner()
 
-	local phys = self:GetPhysicsObject()
+	self.HeatLoss = math.Round( (self.Heat - ACE.AmbientTemp) / self.Life,1)
+
+	local phys = IsValid(self.PhysObj) and self.PhysObj or self:GetPhysicsObject()
 	phys:SetMass(2)
 	phys:EnableDrag( true )
-	phys:SetDragCoefficient( 50 )
+	phys:SetDragCoefficient( 45 )
 	phys:SetBuoyancyRatio( 2 )
 
 	self:SetGravity( 0.01 )
@@ -38,21 +39,91 @@ function ENT:Initialize()
 		end
 	end)
 
-	if ( IsValid( phys ) ) then phys:Wake() end
+	local Iden = "Flare_"..self:EntIndex()
+	timer.Create(Iden, 0.25, 0, function()
+		if not IsValid(self) then timer.Stop( Iden ) timer.Remove(Iden) return end
+
+		self.Marked = false
+
+	end)
+
+	if IsValid( phys ) then 
+		phys:Wake() 
+	end
 
 end
 
-function ENT:Think() 
+do
 
-	if self:WaterLevel() == 3 then
-		self.Heat = 0
-		self:StopParticles()
+	-- Look for flares around of one of them. The first one which catch them, will mark the rest not to do it. This resets when passes 0.5 seconds
+	local function FindClutter( self )
 
-		return false
+		self.fflares  	= {}
+		self.HeatPos    = self:GetPos()
+		self.TotalHeat  = self.Heat
+
+		if self.Marked then return end
+
+		local origin = self.HeatPos
+		local Radius = self.Heat * 7.5
+
+		debugoverlay.Sphere(origin, Radius, 0.1, Color(255,100,0,25), false)
+
+		local nflares = ents.FindInSphere(origin, Radius)
+
+		for k, flare in ipairs(nflares) do
+			if not IsValid(flare) then goto cont end
+			if flare:GetClass() ~= "ace_flare" then goto cont end
+			if flare:EntIndex() == self:EntIndex() then goto cont end
+
+			flare.Marked = true
+
+			self.TotalHeat = self.TotalHeat + flare.Heat
+
+			table.insert( self.fflares, flare)
+
+			debugoverlay.Sphere(flare:GetPos(), 100, 0.1, Color(255,0,0,25), false)
+
+			print(self.TotalHeat)
+
+			::cont::
+		end
+
+		local sumpos = vector_origin
+
+		for k, cflare in ipairs(self.fflares) do
+
+			local pos = cflare:GetPos()
+
+			sumpos = sumpos + pos
+
+		end
+
+		self.HeatPos = sumpos / #self.fflares
+
+		debugoverlay.Cross(self.HeatPos, 100, 0.1, Color(0,255,0), true )
+
 	end
 
-	self:NextThink( CurTime() + 0.1 )
-	return true
+	function ENT:Think() 
+
+		if self:WaterLevel() == 3 then
+			self.Heat = 0
+			self:StopParticles()
+
+			return false
+		end
+
+		self.Heat = self.Heat - (self.HeatLoss/10)
+
+		--print(self.Heat)
+
+		FindClutter( self , self.Heat )
+
+		self:NextThink( CurTime() + 0.1 )
+		return true
+	end
+
 end
 
 function ENT:PhysicsCollide( Table , PhysObj )

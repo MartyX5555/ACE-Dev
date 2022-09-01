@@ -6,9 +6,6 @@
 
 ------Ambient Temperature. Engine Heat will not be lower than this. In Celcius. 
     ACE.AmbientTemp = 20  
-
-------How much the distance affects Heat detection for IR seeker? Higher => Less Heat detected at distant targets - Def: 1
-    ACE.HeatDistanceLoss = 0.5
     
 --///////////////////////////////////////////////////////////////////////////////////////
 --///////////////////////////////////////////////////////////////////////////////////////
@@ -26,14 +23,11 @@
     
 ]]---------------------------------------------------------------------------------------
 function ACE_InfraredHeatFromProp( guidance, Target , dist ) 
-
-    if not guidance.SeekSensitivity then print('[ACE | WARN]- Unable to track Heat. SeekSensitivity not found!') return 0 end
     
     local Speed = Target:GetVelocity():Length()
-    --local Heat = (  guidance.SeekSensitivity * ( Speed / dist * 0.001 / ACE.HeatDistanceLoss )  )  + ACE.AmbientTemp
-    
-    local Heat =  (( guidance.SeekSensitivity * Speed ) / dist*1000 / ACE.HeatDistanceLoss ) + ACE.AmbientTemp
-    --print(') Heat: '..Heat)
+    local Heat  =  ( Speed  / dist*1000 ) + ACE.AmbientTemp
+
+    --print("Heat from prop: "..Heat)
 
     return Heat
     

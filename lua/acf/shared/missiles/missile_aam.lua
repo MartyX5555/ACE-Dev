@@ -62,7 +62,7 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     agility         = 3,                                    -- multiplier for missile turn-rate.      --was 5
     armdelay        = 0.00,                                 -- minimum fuse arming delay        --was 0.4
     guidelay        = 0.25,                                 -- Required time (in seconds) for missile to start guiding at target once launched
-    SeekSensitivity = 3
+    IRsensitivity   = 0.25                                   -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
 } )
 
 --AIM-120 Sparrow. A medium-Range AAM missile, perfect for those who really need a decent boom in a single pass. Just remember that this is not an AIM-9 and is better to aim before.
@@ -108,9 +108,8 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
 
     agility         = 3,                                    -- multiplier for missile turn-rate. -- was 2
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
-    guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
-    SeekSensitivity = 2.5
-} )
+    guidelay        = 0.25                                  -- Required time (in seconds) for missile to start guiding at target once launched
+ } )
 
 --AIM-54 phoenix. Being faster and bigger than AIM-120, can deliver a single big blast against the target, however, this 300kgs piece of aerial destruction has a serious trouble 
 --with its seek cone and is suggested to AIM before launching.
@@ -153,6 +152,5 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
 
     agility         = 3,                                    -- multiplier for missile turn-rate.  --was 0.7
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
-    guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
-    SeekSensitivity = 3
+    guidelay        = 0.25                                  -- Required time (in seconds) for missile to start guiding at target once launched
 } )

@@ -193,7 +193,9 @@ ACF_defineGun("Ataka ASM", { --id
 	viewcone    = 40,   										-- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.05,										-- multiplier for missile turn-rate.
-    armdelay    = 0.00     										-- minimum fuse arming delay
+    armdelay    = 0.00,    										-- minimum fuse arming delay
+    IRsensitivity   = 0.6                                   -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
+
 } )
 
 ACF_defineGun("AT-2 ASM", { --id
@@ -283,4 +285,6 @@ ACF_defineGun("FGM-148 ASM", {
     armdelay    = 1,     										-- minimum fuse arming delay
     
     prepush     = false, 										-- Additional push and delaying motor ignition
+    IRsensitivity   = 0.8                                   	-- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
+
 } )

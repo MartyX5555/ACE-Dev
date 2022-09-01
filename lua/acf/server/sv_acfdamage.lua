@@ -16,7 +16,7 @@ ACF.HEFilter = {
     ace_debris                  = true,
     gmod_ent_ttc                = true,
     gmod_ent_ttc_auto           = true,
-    ace_flares                  = true
+    ace_flare                   = true
 }
 
 --Used for tracebug HE workaround

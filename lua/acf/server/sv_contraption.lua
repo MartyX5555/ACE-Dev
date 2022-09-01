@@ -13,6 +13,7 @@ ACE.Explosives      = {}    --Explosive entities like ammocrates & fueltanks go 
 
 ACE.Debris          = {}    --Debris count
 
+
 --list of classname ents which should be added to the contraption ents. 
 local AllowedEnts = {
     

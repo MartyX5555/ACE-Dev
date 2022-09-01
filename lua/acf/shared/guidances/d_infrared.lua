@@ -26,7 +26,7 @@ this.ViewCone = 25
 this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 
 --Sensitivity of the IR Seeker, higher sensitivity is for aircraft
-this.SeekSensitivity = 1
+this.IRsensitivity = 1
 
 --Defines how many degrees are required above the ambient one to consider a target
 this.HeatAboveAmbient = 5
@@ -52,7 +52,7 @@ function this:Configure(missile)
     self.ViewCone           = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
     self.ViewConeCos        = (math.cos(math.rad(self.ViewCone)))*1.2
     self.SeekCone           = (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
-    self.SeekSensitivity    = ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
+    self.IRsensitivity      = 1 - (ACF_GetGunValue(missile.BulletData, "IRsensitivity") or this.IRsensitivity)
     
 end
 
@@ -73,7 +73,7 @@ function this:GetGuidance(missile)
     local missilePos = missile:GetPos()
     local missileForward = missile:GetForward()
     local targetPhysObj = self.Target:GetPhysicsObject()
-    local targetPos = self.Target:GetPos() + Vector(0,0,25)
+    local targetPos = (self.HeatPos or self.Target:GetPos()) + Vector(0,0,25)
 
     local mfo       = missile:GetForward()
     local mdir      = (targetPos - missilePos):GetNormalized()
@@ -203,11 +203,20 @@ function this:AcquireLock(missile)
         dist    = difpos:Length()
         entvel  = classifyent:GetVelocity()
 
+        print(self.IRsensitivity)
+
         --if the target is a Heat Emitter, track its heat       
         if classifyent.Heat then 
-                
-            Heat = self.SeekSensitivity * classifyent.Heat 
             
+            if classifyent:GetClass() == "ace_flare" then
+
+                Heat = (classifyent.TotalHeat or classifyent.Heat) * self.IRsensitivity 
+                print("Heat detected by missile: "..Heat)
+
+            else
+                Heat = classifyent.Heat 
+            end
+
         --if is not a Heat Emitter, track the friction's heat           
         else
             
@@ -239,7 +248,12 @@ function this:AcquireLock(missile)
                                     
                 bestAng = testang
                 bestent = classifyent
-                                        
+                                    
+
+                if bestent:GetClass() == "ace_flare" then
+                    print("jammed by flare")
+                end
+
             end
 
         end

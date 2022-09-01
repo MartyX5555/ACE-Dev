@@ -62,7 +62,9 @@ ACF_defineGun("AGM-114 ASM", { 							--id
     seekcone    = 10,
     viewcone    = 40,   								-- getting outside this cone will break the lock.  Divided by 2.
     agility     = 0.07,									-- multiplier for missile turn-rate.
-    armdelay    = 0.00     								-- minimum fuse arming delay
+    armdelay    = 0.00,     								-- minimum fuse arming delay
+    IRsensitivity   = 0.5                                   -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
+
 } )
 
 -- The AGM-45 shrike, a vietnam war-era antiradiation missile built off the AIM-7 airframe.
@@ -205,5 +207,5 @@ ACF_defineGun("AGM-65 ASM", { 							-- id
 
     agility     = 0.15,    								-- multiplier for missile turn-rate.
 	armdelay    = 0.00,     							-- minimum fuse arming delay --was 0.3
-
+    IRsensitivity   = 0.75                              -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
 } )
