@@ -328,8 +328,10 @@ function SWEP:HandleRecoil()
         owner:SetEyeAngles(eyeAngles)
     end
 
-    delta = SysTime() - lastRecoilTime
+    delta = self.JustReloaded and 0 or (SysTime() - lastRecoilTime)
     lastRecoilTime = SysTime()
+
+    self.JustReloaded = false
 end
 
 function SWEP:OnThink()
@@ -362,6 +364,8 @@ end
 function SWEP:OnReload()
 end
 
+SWEP.JustReloaded = false
+
 function SWEP:Reload()
     if self:Clip1() == self.Primary.ClipSize then return end
     if self:Ammo1() == 0 then return end
@@ -388,6 +392,8 @@ function SWEP:Reload()
             self:EmitSound(self.ReloadSound)
         end
     end
+
+    self.JustReloaded = true
 end
 
 function SWEP:Deploy()

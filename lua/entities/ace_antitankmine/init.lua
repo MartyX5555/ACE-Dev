@@ -60,8 +60,6 @@ function ENT:Think()
 
 			if triggerRanger.Hit and not triggerRanger.Entity:IsPlayer() then
 
-				self:EmitSound("npc/env_headcrabcanister/explosion.wav", 1500, 80, 1, CHAN_WEAPON )			
-
 				local HEWeight=250	
 				local Radius = (HEWeight)^0.33*8*39.37
 								

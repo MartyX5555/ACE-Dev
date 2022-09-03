@@ -16,7 +16,9 @@ function SWEP:UpdateFakeCrate(realcrate)
 end
 
 function SWEP:ACEFireBullet(Position, Direction)
-    self.BulletData.Pos = Position + Direction * 30
+    if not GetConVar("acf_gunfire"):GetBool() then return end
+
+    self.BulletData.Pos = Position
     self.BulletData.Flight = Direction * self.BulletData.MuzzleVel * 39.37
 
     self.BulletData.Owner = self:GetParent()
@@ -104,6 +106,8 @@ function SWEP:DoAmmoStatDisplay()
 end
 
 function SWEP:Equip()
+    if not self.BulletData then return end
+
     self:DoAmmoStatDisplay()
 
     self.BulletData.Filter = {self:GetOwner()}

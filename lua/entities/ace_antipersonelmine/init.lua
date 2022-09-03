@@ -70,8 +70,6 @@ function ENT:Think()
 				local HEWeight=2	
 				local Radius = (HEWeight)^0.33*8*39.37
 
-				self:EmitSound("weapons/mortar/mortar_fire1.wav", 300, 70, 1, CHAN_WEAPON )			
-
 				ACF_HE( self:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 				local Flash = EffectData()
