@@ -83,8 +83,6 @@ function ENT:Think()
 
 		if self.FuseTime < 0 then
 
-			self:EmitSound("weapons/mortar/mortar_fire1.wav", 500, 50, 1, CHAN_WEAPON )			
-
 			--print(self:GetOwner())
 			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 

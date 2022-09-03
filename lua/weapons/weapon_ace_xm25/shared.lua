@@ -59,7 +59,7 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_xm25.mdl"
 SWEP.WorldModel = "models/weapons/w_xm25.mdl"
 SWEP.HoldType = "ar2"
-SWEP.DeployDelay = 4 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 
 SWEP.FuseDelay = 0
