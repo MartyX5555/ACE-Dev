@@ -32,42 +32,35 @@ this.SeekDelay = 0.5 -- Re-seek drastically reduced cost so we can re-seek
 this.WireSeekDelay = 0.1
 
 -- Minimum distance for a target to be considered
-this.MinimumDistance = 196.85	--a scant 5m
+this.MinimumDistance = 196.85   --a scant 5m
 
 -- Entity class whitelist
 -- thanks to Sestze for the listing.
 this.DefaultFilter = 
 {
-	acf_missile					= true,
-	acf_glatgm					= true
+    acf_missile                 = true,
+    acf_glatgm                  = true
 }
 
 
 this.desc = "This guidance package detects a missile in front of itself, and guides the munition towards it."
 
-
-
 function this:Init()
-	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
+    self.LastSeek = CurTime() - self.SeekDelay - 0.000001
     --self.Filter = self.DefaultFilter
-	self.Filter = table.Copy(self.DefaultFilter)
-	self.LastTargetPos = Vector()
+    self.Filter = table.Copy(self.DefaultFilter)
+    self.LastTargetPos = Vector()
 end
-
-
-
 
 function this:Configure(missile)
     
     self:super().Configure(self, missile)
     
     self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
-	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
+    self.ViewConeCos = math.cos(math.rad(self.ViewCone))
     self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
     
 end
-
-
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
 function this:GetSeekFilter(class)
@@ -77,9 +70,6 @@ function this:GetSeekFilter(class)
     
     return self.Filter
 end
-
-
-
 
 function this:GetNamedWireInputs(missile)
 
@@ -96,9 +86,6 @@ function this:GetNamedWireInputs(missile)
 
 end
 
-
-
-
 function this:GetFallbackWireInputs()
 
     -- Can't scan for entity outputs: a lot of ents have self-outputs.
@@ -106,98 +93,78 @@ function this:GetFallbackWireInputs()
 
 end
 
-
-
-
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
 
-	self:PreGuidance(missile)
-	
-	local override = self:ApplyOverride(missile)
-	if override then return override end
+    self:PreGuidance(missile)
+    
+    local override = self:ApplyOverride(missile)
+    if override then return override end
 
-	self:CheckTarget(missile)
-	
-	if not IsValid(self.Target) or self.Target:GetParent():IsValid() then 
-		return {} 
-	end
+    self:CheckTarget(missile)
+    
+    if not IsValid(self.Target) or self.Target:GetParent():IsValid() then 
+        return {} 
+    end
 
-	local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local targetPhysObj = self.Target:GetPhysicsObject()
-	local targetPos = self.Target:GetPos()
-	
-	-- this was causing radar to break in certain conditions, usually on parented props.
-	--if IsValid(targetPhysObj) then
-		--targetPos = util.LocalToWorld( self.Target, targetPhysObj:GetMassCenter(), nil )
-	--end
+    local missilePos        = missile:GetPos()
+    local missileForward    = missile:GetForward()
+    local targetPhysObj     = self.Target:GetPhysicsObject()
+    local targetPos         = self.Target:GetPos()
 
-	local mfo       = missile:GetForward()
-	local mdir      = (targetPos - missilePos):GetNormalized()
-	local dot       = mfo:Dot(mdir)
-	
-	if dot < self.ViewConeCos then
-		self.Target = nil
-		return {}
-	else
+    local mfo               = missile:GetForward()
+    local mdir              = (targetPos - missilePos):GetNormalized()
+    local dot               = mfo:Dot(mdir)
+    
+    if dot < self.ViewConeCos then
+        self.Target = nil
+        return {}
+    else
         self.TargetPos = targetPos
-		return {TargetPos = targetPos, ViewCone = self.ViewCone}
-	end
-	
+        return {TargetPos = targetPos, ViewCone = self.ViewCone}
+    end
+    
 end
-
-
-
 
 function this:ApplyOverride(missile)
-	
-	if self.Override then
-	
-		local ret = self.Override:GetGuidanceOverride(missile, self)
-		
-		if ret then		
-			ret.ViewCone = self.ViewCone
-			ret.ViewConeRad = math.rad(self.ViewCone)
-			return ret
-		end
-		
-	end
-
+    
+    if self.Override then
+    
+        local ret = self.Override:GetGuidanceOverride(missile, self)
+        
+        if ret then     
+            ret.ViewCone = self.ViewCone
+            ret.ViewConeRad = math.rad(self.ViewCone)
+            return ret
+        end
+    end
 end
-
-
-
 
 function this:CheckTarget(missile)
 
-	if not (self.Target or self.Override) then	
-		local target = self:AcquireLock(missile)
+    if not (self.Target or self.Override) then  
+        local target = self:AcquireLock(missile)
 
-		if IsValid(target) then 
-			self.Target = target
-		end
-	end
-	
+        if IsValid(target) then 
+            self.Target = target
+        end
+    end
 end
 
-
-
-
 function this:GetWireTarget(missile)
-	
+    
     local launcher = missile.Launcher
     local outputs = launcher.Outputs
     
     if not IsValid(self.InputSource) then 
-		return nil
-	end
+        return nil
+    end
     
     local outputs = self.InputSource.Outputs
     
     if not outputs then
         return nil
-	end
+    end
     
     
     for k, name in pairs(self.InputNames) do
@@ -216,55 +183,61 @@ function this:GetWireTarget(missile)
     
 end
 
-function JankCone (init, forward, range, cone)
-	local Missiles = ACF_ActiveMissiles
-	local tblout = {}
+function JankCone(init, forward, range, cone)
+    local Missiles = ACF_ActiveMissiles
+    local tblout = {}
 
-	if table.Count(Missiles) > 0 then
-		for v, _ in pairs (Missiles) do
-			if not IsValid(v) then continue end
-			local dist = (v:GetPos() - init):Length()
-			local ang = math.deg(math.acos(math.Clamp(((v:GetPos() - init):GetNormalized()):Dot(forward), -1, 1)))
-			if (dist > range) then continue end
-			if (ang > cone) then continue end
-		
-			table.insert(tblout, v)
-		end
-	end
-	return tblout
+    if table.Count(Missiles) > 0 then
+        for v, _ in pairs (Missiles) do
+
+            if not IsValid(v) then goto cont end
+            if v.Guidance.Name == this.Name then goto cont end
+
+            local dist  = (v:GetPos() - init):Length()
+            local ang   = math.deg(math.acos(math.Clamp(((v:GetPos() - init):GetNormalized()):Dot(forward), -1, 1)))
+
+            if dist > range then goto cont end
+            if ang > cone then goto cont end
+        
+            table.insert(tblout, v)
+
+            ::cont::
+        end
+    end
+    return tblout
 end
 
 function this:GetWhitelistedEntsInCone(missile)
 
     local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local minDot = math.cos(math.rad(self.SeekCone))
-	
-	--local found = ents.FindInCone(missilePos, missileForward, 50000, self.SeekCone)
-	local found = JankCone(missilePos, missileForward, 50000, self.SeekCone)
-	
-	local foundAnim = {}
-	local foundEnt
-	local minDistSqr = ( self.MinimumDistance * self.MinimumDistance )
-	
+    local missileForward = missile:GetForward()
+    local minDot = math.cos(math.rad(self.SeekCone))
+    
+    --local found = ents.FindInCone(missilePos, missileForward, 50000, self.SeekCone)
+    local found = JankCone(missilePos, missileForward, 50000, self.SeekCone)
+    
+    local foundAnim = {}
+    local foundEnt
+    local minDistSqr = ( self.MinimumDistance * self.MinimumDistance )
+    
     local filter = self.Filter
-	for i, foundEnt in pairs(found) do
-	
-		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then goto cont end
-		local foundLocalPos = foundEnt:GetPos() - missilePos	
-		local foundDistSqr = foundLocalPos:LengthSqr()
-		
-		if foundDistSqr < minDistSqr then goto cont end		
-		local foundDot = foundLocalPos:GetNormalized():Dot(missileForward)
-	
-		if foundDot < minDot then goto cont end
-		table.insert(foundAnim, foundEnt)
-	    
-		model = foundEnt:GetModel()
-		--print(model)
-		
-		::cont::
-	end
+    for i, foundEnt in pairs(found) do
+    
+        if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then goto cont end
+        local foundLocalPos = foundEnt:GetPos() - missilePos    
+        local foundDistSqr = foundLocalPos:LengthSqr()
+        
+        if foundDistSqr < minDistSqr then goto cont end     
+        local foundDot = foundLocalPos:GetNormalized():Dot(missileForward)
+    
+        if foundDot < minDot then goto cont end
+        table.insert(foundAnim, foundEnt)
+        
+        model = foundEnt:GetModel()
+        --print(model)
+        
+        ::cont::
+    end
     
     return foundAnim
     
@@ -275,21 +248,21 @@ end
 
 function this:HasLOSVisibility(ent, missile)
 
-	local traceArgs = 
-	{
-		start = missile:GetPos(),
-		endpos = ent:GetPos(),
-		mask = MASK_SOLID_BRUSHONLY,
-		filter = {missile, ent},
+    local traceArgs = 
+    {
+        start = missile:GetPos(),
+        endpos = ent:GetPos(),
+        mask = MASK_SOLID_BRUSHONLY,
+        filter = {missile, ent},
         mins = Vector(0,0,0),
         maxs = Vector(0,0,0)
-	}
-	
-	local res = util.TraceHull(traceArgs)
-	
-	--debugoverlay.Line( missile:GetPos(), ent:GetPos(), 15, Color(res.Hit and 255 or 0, res.Hit and 0 or 255, 0), true )
-	
-	return not res.Hit
+    }
+    
+    local res = util.TraceHull(traceArgs)
+    
+    --debugoverlay.Line( missile:GetPos(), ent:GetPos(), 15, Color(res.Hit and 255 or 0, res.Hit and 0 or 255, 0), true )
+    
+    return not res.Hit
 
 end
 
@@ -299,7 +272,7 @@ end
 -- Return the first entity found within the seek-tolerance, or the entity within the seek-cone closest to the seek-tolerance.
 function this:AcquireLock(missile)
 
-	local curTime = CurTime()
+    local curTime = CurTime()
     
     if self.LastSeek + self.WireSeekDelay <= curTime then 
     
@@ -312,70 +285,70 @@ function this:AcquireLock(missile)
         
     end
     
-	if self.LastSeek + self.SeekDelay > curTime then 
+    if self.LastSeek + self.SeekDelay > curTime then 
         --print("tried seeking within timeout period")
         return nil 
     end
-	self.LastSeek = curTime
+    self.LastSeek = curTime
 
-	-- Part 1: get all whitelisted entities in seek-cone.
-	local found = self:GetWhitelistedEntsInCone(missile)
-    	
-	-- Part 2: get a good seek target
-	local foundCt = table.Count(found)
-	if foundCt < 2 then 
+    -- Part 1: get all whitelisted entities in seek-cone.
+    local found = self:GetWhitelistedEntsInCone(missile)
+        
+    -- Part 2: get a good seek target
+    local foundCt = table.Count(found)
+    if foundCt < 2 then 
         --print("shortcircuited and found", found[1]) 
-		   return found[1]
-		 
+           return found[1]
+         
     end
-	
-    local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
     
-	local mostCentralEnt 
-	local lastKey
-	
-	while not mostCentralEnt do
-	
-		local ent
-		lastKey, ent = next(found, lastKey)
-		
-		if not ent then break end
-		
-		if self:HasLOSVisibility(ent, missile) then
-		   
-			mostCentralEnt = ent
-			
-		end
-		
-	end
-	
-	if not mostCentralEnt then return nil end
-	
-	local mostCentralPos = mostCentralEnt:GetPos()
-	local highestDot = (mostCentralEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
-	local currentEnt
-	local currentDot
-	
-	for k, ent in next, found, lastKey do
-		
-		currentEnt = ent
-		currentDot = (currentEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
-		
-		if currentDot > highestDot and self:HasLOSVisibility(currentEnt, missile) then
-			mostCentralEnt = currentEnt
-			highestDot = currentDot
-			
-			if currentDot >= self.SeekTolerance then 
+    local missilePos = missile:GetPos()
+    local missileForward = missile:GetForward()
+    
+    local mostCentralEnt 
+    local lastKey
+    
+    while not mostCentralEnt do
+    
+        local ent
+        lastKey, ent = next(found, lastKey)
+        
+        if not ent then break end
+        
+        if self:HasLOSVisibility(ent, missile) then
+           
+            mostCentralEnt = ent
+            
+        end
+        
+    end
+    
+    if not mostCentralEnt then return nil end
+    
+    local mostCentralPos = mostCentralEnt:GetPos()
+    local highestDot = (mostCentralEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
+    local currentEnt
+    local currentDot
+    
+    for k, ent in next, found, lastKey do
+        
+        currentEnt = ent
+        currentDot = (currentEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
+        
+        if currentDot > highestDot and self:HasLOSVisibility(currentEnt, missile) then
+            mostCentralEnt = currentEnt
+            highestDot = currentDot
+            
+            if currentDot >= self.SeekTolerance then 
                 --print("found", mostCentralEnt, "in tolerance")
                 return currentEnt 
             end
-		end
-	end
+        end
+    end
     
     --print("iterated and found", mostCentralEnt)
     
-	return mostCentralEnt
+    return mostCentralEnt
 end
 
 
@@ -383,13 +356,13 @@ end
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
 function this:GetDisplayConfig(Type)
 
-	local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
-	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
+    local seekCone = ACF.Weapons.Guns[Type].seekcone * 2 or 0
+    local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
 
-	return 
-	{
-		["Seeking"] = math.Round(seekCone, 1) .. " deg",
-		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
-	}
+    return 
+    {
+        ["Seeking"] = math.Round(seekCone, 1) .. " deg",
+        ["Tracking"] = math.Round(ViewCone, 1) .. " deg"
+    }
 end
 
