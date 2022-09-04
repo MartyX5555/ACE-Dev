@@ -540,3 +540,6 @@ r100
 *r142
 - Reworked ACE SWEPs. Added spray patterns, proper recoil and added lighting rendering and sound extension support. Huge thanks to cheezus & RDC by the changes
 - Removed T/HEAT ammo from flare launcher.
+
+*r143
+- Fixed typo on bulletdata.filter not working properly
