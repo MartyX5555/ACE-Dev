@@ -89,74 +89,39 @@ function SWEP:SecondaryAttack()
     return
 end
 
+
 function SWEP:InitBulletData()
-    self.BulletData = {}
-    ---------------------------------------
-    self.BulletData.Id = "25mmGL"
-    self.BulletData.Type = "HEAT"
-    self.BulletData.Id = 2
-    self.BulletData.Caliber = 2.5
-    self.BulletData.PropLength = 11 --Volume of the case as a cylinder * Powder density converted from g to kg		
-    self.BulletData.ProjLength = 560 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-    self.BulletData.Data5 = 150 --He Filler or Flechette count
-    self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
-    self.BulletData.Data7 = 0
-    self.BulletData.Data8 = 0
-    self.BulletData.Data9 = 0
-    self.BulletData.Data10 = 1 -- Tracer
-    self.BulletData.Colour = Color(255, 100, 100)
-    --
-    self.BulletData.Data13 = 0 --THEAT ConeAng2
-    self.BulletData.Data14 = 0 --THEAT HE Allocation
-    self.BulletData.Data15 = 0
-    self.BulletData.AmmoType = self.BulletData.Type
-    self.BulletData.FrAera = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
-    self.BulletData.ProjMass = self.BulletData.FrAera * (self.BulletData.ProjLength * 7.9 / 1000)
-    self.BulletData.PropMass = self.BulletData.FrAera * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-    self.BulletData.FillerVol = self.BulletData.Data5
-    self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-    self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 3.5
-    local ConeAera = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
-    local ConeThick = self.BulletData.Caliber / 50
-    local ConeVol = ConeAera * ConeThick
-    self.BulletData.SlugMass = ConeVol * 7.9 / 1000
-    local Rad = math.rad(self.BulletData.Data6 / 2)
-    self.BulletData.SlugCaliber = self.BulletData.Caliber - self.BulletData.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
-    self.BulletData.SlugMV = (self.BulletData.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + self.BulletData.Data6) / 2) / self.BulletData.SlugMass) ^ ACF.HEATMVScale
-    --		print("SlugMV: "..self.BulletData.SlugMV)
-    local SlugFrAera = 3.1416 * (self.BulletData.SlugCaliber / 2) ^ 2
-    self.BulletData.SlugPenAera = SlugFrAera ^ ACF.PenAreaMod
-    self.BulletData.SlugDragCoef = ((SlugFrAera / 10000) / self.BulletData.SlugMass) * 1000
-    self.BulletData.SlugRicochet = 500 --Base ricochet angle (The HEAT slug shouldn't ricochet at all)
-    self.BulletData.CasingMass = self.BulletData.ProjMass - self.BulletData.FillerMass - ConeVol * 7.9 / 1000
-    self.BulletData.Fragments = math.max(math.floor((self.BulletData.BoomFillerMass / self.BulletData.CasingMass) * ACF.HEFrag), 2)
-    self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
-    --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-    self.BulletData.DragCoef = 0
-    --		print(self.BulletData.SlugDragCoef)
-    --Don't touch below here
-    self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
-    self.BulletData.ShovePower = 0.2
-    self.BulletData.KETransfert = 0.3
-    self.BulletData.PenAera = self.BulletData.FrAera ^ ACF.PenAreaMod
-    self.BulletData.Pos = Vector(0, 0, 0)
-    self.BulletData.LimitVel = 800
-    self.BulletData.Ricochet = 999
-    self.BulletData.Flight = Vector(0, 0, 0)
-    self.BulletData.BoomPower = self.BulletData.PropMass + self.BulletData.FillerMass
-    --		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
-    local SlugEnergy = ACF_Kinetic(self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37, self.BulletData.SlugMass, 999999)
-    self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenAera) * ACF.KEtoRHA
-    --		print("SlugPen: "..self.BulletData.MaxPen)
-    --For Fake Crate
-    self.BoomFillerMass = self.BulletData.BoomFillerMass
-    self.Type = self.BulletData.Type
-    self.BulletData.Tracer = self.BulletData.Data10
-    self.Tracer = self.BulletData.Data10
-    self.Caliber = self.BulletData.Caliber
-    self.ProjMass = self.BulletData.ProjMass
-    self.FillerMass = self.BulletData.FillerMass
-    self.DragCoef = self.BulletData.DragCoef
-    self.Colour = self.BulletData.Colour
-    self.DetonatorAngle = 85
+
+    local PlayerData = {}   --what a mess
+
+    -- Player ammo config. Like if you were editing it from ammo config.
+    PlayerData.Type         = "HEAT"
+    PlayerData.PropLength   = 11        --Volume of the case as a cylinder * Powder density converted from g to kg   
+    PlayerData.ProjLength   = 560       --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+    PlayerData.Data5        = 150         --HE Filler or Flechette count
+    PlayerData.Data6        = 30         --HEAT ConeAng or Flechette Spread
+    PlayerData.Data7        = 0
+    PlayerData.Data8        = 0
+    PlayerData.Data9        = 0
+    PlayerData.Data10       = 1
+    PlayerData.Data11       = 0 
+    PlayerData.Data12       = 0
+    PlayerData.Data13       = 0 
+    PlayerData.Data14       = 0
+    PlayerData.Data15       = 0
+
+    -- Create this section if you will use a custom gun with custom caliber. The following values will be required.
+    --If you add this, remove PlayerData.Id, since that becomes unnecessary.
+    PlayerData.Custom = {} 
+    PlayerData.Custom.caliber    = 2.5
+    PlayerData.Custom.maxlength  = PlayerData.PropLength + PlayerData.ProjLength
+    PlayerData.Custom.propweight = PlayerData.ProjLength
+
+    self.ConvertData        = ACF.RoundTypes[PlayerData.Type].convert
+    self.BulletData         = self:ConvertData( PlayerData )
+
+    self.BulletData.Colour  = Color(255, 100, 100)
+
+    self:NetworkSWEPData( PlayerData )
+
 end

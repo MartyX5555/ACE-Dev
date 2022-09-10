@@ -6,15 +6,6 @@ include("shared.lua")
 SWEP.AutoSwitchFrom = false
 SWEP.AutoSwitchTo = false
 
-function SWEP:UpdateFakeCrate(realcrate)
-    if not IsValid(self.FakeCrate) then
-        self.FakeCrate = ents.Create("acf_fakecrate2")
-    end
-
-    self.FakeCrate:RegisterTo(self)
-    self.BulletData["Crate"] = self.FakeCrate:EntIndex()
-end
-
 function SWEP:ACEFireBullet(Position, Direction)
     if not GetConVar("acf_gunfire"):GetBool() then return end
 
@@ -23,7 +14,6 @@ function SWEP:ACEFireBullet(Position, Direction)
 
     self.BulletData.Owner = self:GetParent()
     self.BulletData.Gun = self
-    self.BulletData.Crate = self.FakeCrate:EntIndex()
 
     if self.BeforeFire then
         self:BeforeFire()
@@ -113,20 +103,9 @@ function SWEP:Equip()
     self.BulletData.Filter = {self:GetOwner()}
 end
 
-function SWEP:OnRemove()
-    if not IsValid(self.FakeCrate) then return end
-    local crate = self.FakeCrate
-
-    timer.Simple(15, function()
-        if IsValid(crate) then
-            crate:Remove()
-        end
-    end)
-end
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
 
     self:InitBulletData()
-    self:UpdateFakeCrate()
 end

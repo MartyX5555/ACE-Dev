@@ -145,3 +145,39 @@ function SWEP:InitBulletData()
     self.Colour = self.BulletData.Colour
     self.DetonatorAngle = 80
 end
+
+function SWEP:InitBulletData()
+
+    local PlayerData = {}   --what a mess
+
+    -- Player ammo config. Like if you were editing it from ammo config.
+    PlayerData.Type         = "THEAT"
+    PlayerData.PropLength   = 2        --Volume of the case as a cylinder * Powder density converted from g to kg   
+    PlayerData.ProjLength   = 60      --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+    PlayerData.Data5        = 12000         --HE Filler or Flechette count
+    PlayerData.Data6        = 60         --HEAT ConeAng or Flechette Spread
+    PlayerData.Data7        = 0
+    PlayerData.Data8        = 0
+    PlayerData.Data9        = 0
+    PlayerData.Data10       = 1
+    PlayerData.Data11       = 0 
+    PlayerData.Data12       = 0
+    PlayerData.Data13       = 57 
+    PlayerData.Data14       = 0.85
+    PlayerData.Data15       = 0
+
+    -- Create this section if you will use a custom gun with custom caliber. The following values will be required.
+    --If you add this, remove PlayerData.Id, since that becomes unnecessary.
+    PlayerData.Custom = {} 
+    PlayerData.Custom.caliber    = 12
+    PlayerData.Custom.maxlength  = PlayerData.PropLength + PlayerData.ProjLength
+    PlayerData.Custom.propweight = PlayerData.ProjLength
+
+    self.ConvertData        = ACF.RoundTypes[PlayerData.Type].convert
+    self.BulletData         = self:ConvertData( PlayerData )
+
+    self.BulletData.Colour  = Color(255, 110, 0)
+
+    self:NetworkSWEPData( PlayerData )
+
+end

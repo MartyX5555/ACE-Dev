@@ -4,73 +4,86 @@ AddCSLuaFile( "acf/shared/rounds/ace_roundfunctions.lua" )
 function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 
-	local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
-		
-	GUIData["MaxTotalLength"] 	= BulletMax["maxlength"] * (Data["LengthAdj"] or 1)
-		
-	Data["Caliber"] 			= ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
-	Data["FrAera"] 				= 3.1416 * (Data["Caliber"]/2)^2
-	
-	Data["Tracer"] 				= 0
-	if PlayerData["Data10"]*1 > 0 then	--Check for tracer
-		Data["Tracer"] 			= math.min(Data["Caliber"]/5,3) --Tracer space calcs
+	local Guns 			= ACF.Weapons.Guns
+	local GunData 		= Guns[PlayerData.Id]
+
+	local RoundData, MaxLenght, PropWeight, Caliber
+
+	if GunData then
+
+		Caliber 	= GunData.caliber
+		RoundData 	= GunData.round
+
+		MaxLenght 	= RoundData.maxlength
+		PropWeight 	= RoundData.propweight
+	else
+
+		if PlayerData.Custom then
+
+			Caliber 	= PlayerData.Custom.caliber
+			MaxLenght 	= PlayerData.Custom.maxlength
+			PropWeight 	= PlayerData.Custom.propweight
+		else
+			error("trying to use the functio with an invalid gun!!!")
+		end
 	end
 
-	--print('Prop Before: '..PlayerData["PropLength"])
-	--print('Proj Before: '..PlayerData["ProjLength"])
+	GUIData.MaxTotalLength 		= MaxLenght * ( Data.LengthAdj or 1)
+		
+	Data.Caliber 				= Caliber
+	Data.FrAera 				= 3.1416 * ( Data.Caliber/2 ) ^ 2
+	Data.Tracer 				= PlayerData.Data10 > 0 and math.min( Data.Caliber/5, 3 ) or 0
 
 	local Type = PlayerData.Type or ''
 
 	--created to adapt old ammos to the new heatfs speed
 	if Type == 'HEATFS' or Type == 'THEATFS' then
-		PlayerData["PropLength"] = math.max(0.01 + Data["Caliber"]*3.9, PlayerData["PropLength"] )
+
+		PlayerData.PropLength = math.max(0.01 + Data.Caliber*3.9, PlayerData.PropLength )
 
 		--check if current lenght exceeds the max lenght available
-		if PlayerData["PropLength"] + PlayerData["ProjLength"] > GUIData["MaxTotalLength"] then
+		if PlayerData.PropLength + PlayerData.ProjLength > GUIData.MaxTotalLength then
 
-			PlayerData["ProjLength"] = GUIData["MaxTotalLength"] - PlayerData["PropLength"]
+			PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
 
 		end
 
 	--same as above, but for hefs
 	elseif Type == 'HEFS' then
-		PlayerData["PropLength"] = math.max(0.01 + Data["Caliber"]*4.5, PlayerData["PropLength"] )
+		PlayerData.PropLength = math.max(0.01 + Data.Caliber*4.5, PlayerData.PropLength )
 
 		--check if current lenght exceeds the max lenght available
-		if PlayerData["PropLength"] + PlayerData["ProjLength"] + 1 > GUIData["MaxTotalLength"] then
+		if PlayerData.PropLength + PlayerData.ProjLength + 1 > GUIData.MaxTotalLength then
 
-			PlayerData["ProjLength"] = GUIData["MaxTotalLength"] - PlayerData["PropLength"]
+			PlayerData.ProjLength = GUIData.MaxTotalLength - PlayerData.PropLength
 
 		end
 	end
 
-	--print('MaxLenght: '..GUIData["MaxTotalLength"])
-	--print('Remain for Proj: '..GUIData["MaxTotalLength"] - PlayerData["PropLength"])
-	--print('Prop After: '..PlayerData["PropLength"])
-	--print('Proj After: '..PlayerData["ProjLength"])
-
-	local PropMax = (BulletMax["propweight"]*1000/ACF.PDensity) / Data["FrAera"]	--Current casing absolute max propellant capacity
+	local PropMax 	= ( PropWeight * 1000/ACF.PDensity) / Data["FrAera"]	--Current casing absolute max propellant capacity
 	local CurLength = (PlayerData["ProjLength"] + math.min(PlayerData["PropLength"],PropMax) + Data["Tracer"])
 
 
-	GUIData["MinPropLength"] = 0.01
-	GUIData["MaxPropLength"] = math.max(math.min(GUIData["MaxTotalLength"]-CurLength+PlayerData["PropLength"], PropMax),GUIData["MinPropLength"]) --Check if the desired prop lenght fits in the case and doesn't exceed the gun max
+	GUIData.MinPropLength 	= 0.01
+	GUIData.MaxPropLength 	= math.max(math.min(GUIData["MaxTotalLength"]-CurLength+PlayerData["PropLength"], PropMax),GUIData["MinPropLength"]) --Check if the desired prop lenght fits in the case and doesn't exceed the gun max
 	
-	GUIData["MinProjLength"] = Data["Caliber"]*1.5
-	GUIData["MaxProjLength"] = math.max(GUIData["MaxTotalLength"]-CurLength+PlayerData["ProjLength"],GUIData["MinProjLength"]) --Check if the desired proj lenght fits in the case
+	GUIData.MinProjLength 	= Data.Caliber*1.5
+	GUIData.MaxProjLength 	= math.max(GUIData["MaxTotalLength"]-CurLength+PlayerData["ProjLength"],GUIData["MinProjLength"]) --Check if the desired proj lenght fits in the case
 	
 	--This is to check the current ratio between elements if i need to clamp it
 	local Ratio 			= math.min( (GUIData["MaxTotalLength"] - Data["Tracer"])/(PlayerData["ProjLength"] + math.min(PlayerData["PropLength"],PropMax)) , 1 ) 
 	
-	Data["ProjLength"] 		= math.Clamp(PlayerData["ProjLength"]*Ratio,GUIData["MinProjLength"],GUIData["MaxProjLength"])
-	Data["PropLength"] 		= math.Clamp(PlayerData["PropLength"]*Ratio,GUIData["MinPropLength"],GUIData["MaxPropLength"])
+	Data.ProjLength 		= math.Clamp(PlayerData["ProjLength"]*Ratio,GUIData["MinProjLength"],GUIData["MaxProjLength"])
+	Data.PropLength 		= math.Clamp(PlayerData["PropLength"]*Ratio,GUIData["MinPropLength"],GUIData["MaxPropLength"])
 	
-	Data["PropMass"] 		= Data["FrAera"] * (Data["PropLength"]*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-	GUIData["ProjVolume"] 	= Data["FrAera"] * Data["ProjLength"]
-	Data["RoundVolume"] 	= Data["FrAera"] * (Data["ProjLength"] + Data["PropLength"])
+	Data.PropMass 			= Data["FrAera"] * (Data["PropLength"]*ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
+	GUIData.ProjVolume 		= Data["FrAera"] * Data["ProjLength"]
+	Data.RoundVolume 		= Data["FrAera"] * (Data["ProjLength"] + Data["PropLength"])
 	
+
 	return PlayerData, Data, ServerData, GUIData
 end
+
 
 function ACF_RoundShellCapacity( Momentum, FrAera, Caliber, ProjLength )
 	local MinWall = 0.2+((Momentum/FrAera)^0.7)/50 --The minimal shell wall thickness required to survive firing at the current energy level	
