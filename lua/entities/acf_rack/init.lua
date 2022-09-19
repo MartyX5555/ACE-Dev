@@ -607,6 +607,10 @@ function ENT:AddMissile()
     missile.Launcher        = self
     missile.ForceTdelay     = self.ForceTdelay
     
+    if CPPI then
+        missile:CPPISetOwner(ply)
+    end
+
     local BulletData = ACFM_CompactBulletData(Crate)
     BulletData.IsShortForm  = true    
     BulletData.Owner        = ply
