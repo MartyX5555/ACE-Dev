@@ -38,7 +38,7 @@ SWEP.Primary.Delay			= 3
 SWEP.Primary.ClipSize		= 1
 SWEP.Primary.DefaultClip	= 3
 SWEP.Primary.Automatic		= 0
-SWEP.Primary.Ammo		= "RPG_Round"
+SWEP.Primary.Ammo		= "Grenade"
 
 SWEP.Secondary.Ammo		= "none"
 SWEP.Secondary.ClipSize		= -1
