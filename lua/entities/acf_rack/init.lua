@@ -659,6 +659,8 @@ end
 
 function ENT:LoadAmmo( Reload )
     
+    self:TrimDistantCrates()
+
     if not self:CanReload() then return false end
     
     local missile = self:AddMissile()
