@@ -71,11 +71,9 @@ do
       Alum = true
    }
 
-   local BadCollisionGroups = {
-      [COLLISION_GROUP_DEBRIS] = true,
-      [COLLISION_GROUP_IN_VEHICLE] = true,
-      [COLLISION_GROUP_VEHICLE_CLIP] = true,
-      [COLLISION_GROUP_DOOR_BLOCKER] = true
+   local ValidCollisionGroups = {
+      [COLLISION_GROUP_NONE] = true,
+      [COLLISION_GROUP_WORLD] = true
    }
 
    --TODO: remove unused functions
@@ -147,7 +145,7 @@ do
       end
    
       -- check for bad collision groups
-      if ACF.Legal.Ignore.Solid <= 0 and BadCollisionGroups[Ent:GetCollisionGroup()] then
+      if ACF.Legal.Ignore.Solid <= 0 and not ValidCollisionGroups[Ent:GetCollisionGroup()] then
          table.insert(problems, "Bad collision group")
       end
 
