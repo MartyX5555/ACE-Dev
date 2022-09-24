@@ -912,6 +912,8 @@ e2function string entity:acfPropMaterial()
 	return (this.ACF.Material or "RHA")
 end
 
+__e2setcost( 10 )
+
 e2function table entity:acfPropArmorData()
 	local ret = E2Lib.newE2Table()
 
