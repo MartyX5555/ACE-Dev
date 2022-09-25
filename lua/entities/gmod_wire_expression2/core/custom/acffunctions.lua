@@ -935,8 +935,8 @@ e2function table entity:acfPropArmorData()
 	ret.s.Effectiveness = matData.effectiveness
 	ret.stypes.Effectiveness = "n"
 
-	ret.s.HEATEffectiveness = matData.HEATEffectiveness or matData.effectiveness
-	ret.stypes.HEATEffectiveness = "n"
+	ret.s.HEATeffectiveness = matData.HEATeffectiveness or matData.effectiveness
+	ret.stypes.HEATeffectiveness = "n"
 
 	ret.s.Material = mat
 	ret.stypes.Material = "s"
