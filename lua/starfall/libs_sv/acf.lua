@@ -2294,7 +2294,7 @@ function ents_methods:acfPropArmorData()
 	return {
 		Curve = matData.curve,
 		Effectiveness = matData.effectiveness,
-		HEATEffectiveness = matData.HEATEffectiveness or matData.effectiveness,
+		HEATEffectiveness = matData.HEATeffectiveness or matData.effectiveness,
 		Material = mat
 	}
 end
