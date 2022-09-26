@@ -65,3 +65,7 @@ function ENT:PhysicsCollide( Table , PhysObj )
 		HitEnt:Ignite( self.Heat, 1 )
 	end
 end
+
+function ENT:CanTool()
+	return false
+end
