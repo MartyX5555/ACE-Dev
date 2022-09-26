@@ -10,6 +10,7 @@ SWEP.SlotPos = 1
 SWEP.ViewModel = "models/weapons/v_pistol.mdl"
 SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 SWEP.HoldType = "pistol"
+SWEP.ViewModelFlip = false
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8
@@ -38,27 +39,33 @@ function SWEP:PrimaryAttack()
 	if SERVER then
 		local ent = ents.Create( "ace_flare" )
 		local owner = self:GetOwner()
+		local function increaseDrag(e, drag)
+			if not e or not e:IsValid() then return end
+
+			if drag < 300 then
+				print(drag)
+				e:GetPhysicsObject():SetDragCoefficient(drag)
+				timer.Simple(0.1, function()
+					increaseDrag(e, drag * 1.25)
+				end)
+			end
+		end
 
 		if ( IsValid( ent ) ) then
 
 			ent:SetPos( owner:GetShootPos() )
 			ent:SetAngles( owner:GetAimVector():Angle() )
-			ent.Life = 1.25 / (0.4 * ACFM.FlareBurnMultiplier)
+			ent.Life = 1.5 / (0.4 * ACFM.FlareBurnMultiplier)
 			ent:Spawn()
 			ent:SetOwner( Gun )
-			ent:GetPhysicsObject():SetDragCoefficient(10)
-			timer.Simple(2, function()
-				if not ent or not ent:IsValid() then return end
-
-				ent:GetPhysicsObject():SetDragCoefficient(250)
-			end)
+			increaseDrag(ent, 10)
 
 			if CPPI then
 				ent:CPPISetOwner(owner)
 			end
 
 			local phys = ent:GetPhysicsObject()
-			phys:SetVelocity( owner:GetAimVector() * 3000 )
+			phys:SetVelocity( owner:GetAimVector() * 6000 )
 			ent.Heat = 150
 
 		end
