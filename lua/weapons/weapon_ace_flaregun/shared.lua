@@ -43,7 +43,6 @@ function SWEP:PrimaryAttack()
 			if not e or not e:IsValid() then return end
 
 			if drag < 300 then
-				print(drag)
 				e:GetPhysicsObject():SetDragCoefficient(drag)
 				timer.Simple(0.1, function()
 					increaseDrag(e, drag * 1.25)
