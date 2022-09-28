@@ -59,7 +59,7 @@ if SERVER then
     -- NOTE: When an explosive shell hits the bricks, can cause lag spikes since each brick is detonating by its own way and not as ammo crates / fuel tanks do.
     -- Possible Fix: Iterates through each affected brick to check if they should detonate or not (jugding by its hp), if so, then a scaled explosion function is called only for those bricks.
     -- Possible Complications: When an explosion occurs in an ERA corner and average explosion pos is inside of contraption.
-    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrAera, caliber, damageMult, Type)
+    function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
         local HitRes = {}
 
@@ -146,7 +146,7 @@ if SERVER then
             -- Breach chance roll
             if breachProb > math.random() and maxPenetration > armor then
 
-                HitRes.Damage   = FrAera / resiliance * damageMult          -- Inflicted Damage
+                HitRes.Damage   = FrArea / resiliance * damageMult          -- Inflicted Damage
                 HitRes.Overkill = maxPenetration - armor                    -- Remaining penetration
                 HitRes.Loss     = armor / maxPenetration                    -- Energy loss in percents
 
@@ -157,7 +157,7 @@ if SERVER then
         
                 local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
-                HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )
+                HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
                 HitRes.Overkill = ( maxPenetration - Penetration )
                 HitRes.Loss     = Penetration / maxPenetration
             
@@ -168,7 +168,7 @@ if SERVER then
             -- Projectile did not breach nor penetrate armor
             local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrAera / resiliance * damageMult )/ resiliance
+            HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
             HitRes.Overkill = 0
             HitRes.Loss     = 1
         

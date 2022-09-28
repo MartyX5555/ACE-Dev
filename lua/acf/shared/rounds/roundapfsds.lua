@@ -41,12 +41,12 @@ function Round.convert( Crate, PlayerData )
     PlayerData.Data5 = math.Clamp(PlayerData.Data5,Data.MinCalMult,Data.MaxCalMult)
     
     Data.SCalMult       = PlayerData.Data5
-    Data.SubFrAera      = Data.FrAera * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-    Data.ProjMass       = Data.SubFrAera * (Data.ProjLength*7.9/1000) * 2.5 * 0.95 --Volume of the projectile as a cylinder * density of steel
+    Data.SubFrArea      = Data.FrArea * math.min(PlayerData.Data5,Data.MaxCalMult)^2
+    Data.ProjMass       = Data.SubFrArea * (Data.ProjLength*7.9/1000) * 2.5 * 0.95 --Volume of the projectile as a cylinder * density of steel
     Data.ShovePower     = 0.2
-    Data.PenAera        = (Data.PenModifier*Data.SubFrAera)^ACF.PenAreaMod  
+    Data.PenArea        = (Data.PenModifier*Data.SubFrArea)^ACF.PenAreaMod  
     
-    Data.DragCoef       = ((Data.SubFrAera/10000)/Data.ProjMass)
+    Data.DragCoef       = ((Data.SubFrArea/10000)/Data.ProjMass)
     Data.CaliberMod     = Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
     Data.LimitVel       = 1150                                      --Most efficient penetration speed in m/s
     Data.KETransfert    = 0.2                                   --Kinetic energy transfert to the target for movement purposes                                      
@@ -72,7 +72,7 @@ end
 function Round.getDisplayData(Data)
     local GUIData = {}
     local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+    GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
     return GUIData
 end
 
@@ -260,7 +260,7 @@ function Round.guiupdate( Panel, Table )
     
     -------------------------------------------------------------------------------
     
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
     
 end
 
