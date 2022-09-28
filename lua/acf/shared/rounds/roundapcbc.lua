@@ -28,10 +28,10 @@ function Round.convert( Crate, PlayerData )
     
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
-    Data.ProjMass       = Data.FrAera * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
+    Data.ProjMass       = Data.FrArea * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
     Data.ShovePower     = 0.2
-    Data.PenAera        = Data.FrAera^ACF.PenAreaMod
-    Data.DragCoef       = ((Data.FrAera/10000)/Data.ProjMass)
+    Data.PenArea        = Data.FrArea^ACF.PenAreaMod
+    Data.DragCoef       = ((Data.FrArea/10000)/Data.ProjMass)
     Data.LimitVel       = 800                                       --Most efficient penetration speed in m/s
     Data.KETransfert    = 0.1                                   --Kinetic energy transfert to the target for movement purposes
     Data.Ricochet       = 57                                        --Base ricochet angle
@@ -58,7 +58,7 @@ end
 function Round.getDisplayData(Data)
     local GUIData = {}
     local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    GUIData.MaxPen = (Energy.Penetration/Data.PenAera)*ACF.KEtoRHA
+    GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
     return GUIData
 end
 
@@ -268,7 +268,7 @@ function Round.guiupdate( Panel, Table )
     
     ------------------------------------------------------------------------------- 
     
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenAera, Data.LimitVel )
+    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
     
 end
 
