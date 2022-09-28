@@ -7,10 +7,10 @@ Material.sname          = "Ceramic"
 Material.desc           = "The ceramic is mostly used to stop shells and penetrations in general, but its too fragil and tends to break easily."
 Material.year           = 1955
 
-Material.massMod        = 0.8
+Material.massMod        = 0.82
 Material.curve          = 0.95
 
-Material.effectiveness  = 2.4
+Material.effectiveness  = 1.15
 Material.resiliance     = 0.01
 
 Material.spallarmor     = 1

@@ -22,7 +22,7 @@ ACF_defineGun("20mmAC", { --id
 	nomag = true,
 	weight = 170,
 	year = 1930,
-	rofmod = 1,
+	rofmod = 0.7,
 	round = {
 		maxlength = 32,
 		propweight = 0.13
@@ -39,7 +39,7 @@ ACF_defineGun("30mmAC", {
 	caliber = 3.01,
 	weight = 255,
 	year = 1935,
-	rofmod = 1,
+	rofmod = 0.7,
 	round = {
 		maxlength = 39,
 		propweight = 0.350
@@ -56,7 +56,7 @@ ACF_defineGun("40mmAC", {
 	caliber = 4.0,
 	weight = 425,
 	year = 1940,
-	rofmod = 0.92,
+	rofmod = 0.7,
 	round = {
 		maxlength = 45,
 		propweight = 0.9
@@ -73,7 +73,7 @@ ACF_defineGun("50mmAC", {
 	caliber = 5.0,
 	weight = 880,
 	year = 1965,
-	rofmod = 0.9,
+	rofmod = 0.7,
 	round = {
 		maxlength = 52,
 		propweight = 1.2
@@ -90,7 +90,7 @@ ACF_defineGun("20mmHAC", { --id
     caliber = 2.0,
     weight = 320,
     year = 1960,
-    rofmod = 0.8,
+    rofmod = 0.5,
     round = {
         maxlength = 24,
         propweight = 0.13
@@ -107,7 +107,7 @@ ACF_defineGun("30mmHAC", {
     caliber = 3.0,
     weight = 700,
     year = 1935,
-    rofmod = 0.55,
+    rofmod = 0.45,
     round = {
         maxlength = 28,
         propweight = 0.350
@@ -124,7 +124,7 @@ ACF_defineGun("40mmHAC", {
     caliber = 4.0,
     weight = 1400,
     year = 1000,
-    rofmod = 0.55,
+    rofmod = 0.48,
     round = {
         maxlength = 34,
         propweight = 0.9
