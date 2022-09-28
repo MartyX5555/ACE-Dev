@@ -58,7 +58,7 @@ SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
 SWEP.ViewModelFlip = true
 SWEP.ViewModel = "models/weapons/v_pist_elite.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_elite.mdl"
-SWEP.HoldType = "pistol"
+SWEP.HoldType = "duel"
 SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 

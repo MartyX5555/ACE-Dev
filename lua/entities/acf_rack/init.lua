@@ -607,6 +607,10 @@ function ENT:AddMissile()
     missile.Launcher        = self
     missile.ForceTdelay     = self.ForceTdelay
     
+    if CPPI then
+        missile:CPPISetOwner(ply)
+    end
+
     local BulletData = ACFM_CompactBulletData(Crate)
     BulletData.IsShortForm  = true    
     BulletData.Owner        = ply
@@ -655,6 +659,8 @@ end
 
 function ENT:LoadAmmo( Reload )
     
+    self:TrimDistantCrates()
+
     if not self:CanReload() then return false end
     
     local missile = self:AddMissile()

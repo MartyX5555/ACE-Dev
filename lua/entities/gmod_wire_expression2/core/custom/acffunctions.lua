@@ -912,35 +912,38 @@ e2function string entity:acfPropMaterial()
 	return (this.ACF.Material or "RHA")
 end
 
---Meant mainly for the armor analyzer. It doesnt work though.
---[[
--- Returns the material of an entity
-e2function table entity:acfPropMaterialData(number Type)
-	if not validPhysics(this) then return {} end
-	if restrictInfo(self, this) then return {} end
-	if not ACF_Check(this) then return {} end
+__e2setcost( 10 )
 
-	local material = this.ACF.Material or "RHA"
-	local MatData = ACE.Armors[material]
-	if not MatData then return {} end
+e2function table entity:acfPropArmorData()
+	local ret = E2Lib.newE2Table()
 
-	local curve, effectiveness, massMod
+	if not validPhysics(this) then return ret end
+	if restrictInfo(self, this) then return ret end
+	if not ACF_Check(this) then return ret end
 
-	curve = MatData.curve
-	massMod = MatData.massMod
+	local mat = this.ACF.Material
+	if not mat then return ret end
 
-	if Type > 0 then
+	local matData = ACE.Armors[mat]
+	if not matData then return ret end
 
-		effectiveness = MatData.HEATeffectiveness or MatData.effectiveness
+	ret.size = 4
 
-	else
+	ret.s.Curve = matData.curve
+	ret.stypes.Curve = "n"
 
-		effectiveness = MatData.effectiveness
-	end
+	ret.s.Effectiveness = matData.effectiveness
+	ret.stypes.Effectiveness = "n"
 
-	return { Curve = curve , Effectiveness = effectiveness, Material = material }
+	ret.s.HEATeffectiveness = matData.HEATeffectiveness or matData.effectiveness
+	ret.stypes.HEATeffectiveness = "n"
+
+	ret.s.Material = mat
+	ret.stypes.Material = "s"
+
+	return ret
 end
-]]
+
 -- [ Fuel Functions ] --
 
 
