@@ -114,7 +114,6 @@ do
         Engine.FuelType         = Lookup.fuel or "Petrol"
         Engine.EngineType       = Lookup.enginetype or "GenericPetrol"
         Engine.TorqueCurve      = Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
-        Engine.CurveFactor      = Lookup.curvefactor
         Engine.RequiresFuel     = Lookup.requiresfuel
         Engine.SoundPitch       = Lookup.pitch or 1
         Engine.SpecialHealth    = true
@@ -561,7 +560,7 @@ function ENT:CalcRPM()
     self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1+self.HasDriver*ACF.DriverTorqueBoost)
 
     -- Calculate the current torque from flywheel RPM
-    local perc = (self.FlyRPM - self.IdleRPM) / self.CurveFactor / self.LimitRPM
+    local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
     self.Torque = boost * self.Throttle * ACF_CalcCurve(self.TorqueCurve, perc) * self.PeakTorque * (self.FlyRPM < self.LimitRPM and 1 or 0)
 
     local Drag 
