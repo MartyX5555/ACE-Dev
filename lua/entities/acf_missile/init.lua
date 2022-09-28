@@ -35,6 +35,12 @@ function ENT:Initialize()
 
 end
 
+function ENT:CanTool(ply, _, mode)
+    if mode ~= "wire_adv" or (CPPI and ply ~= self:CPPIGetOwner()) then return false end
+
+    return true
+end
+
 --===========================================================================================
 ----- BulletData functions
 --=========================================================================================== 

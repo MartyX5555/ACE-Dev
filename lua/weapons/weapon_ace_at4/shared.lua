@@ -59,7 +59,7 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_RPG.mdl"
 SWEP.WorldModel = "models/weapons/w_rocket_launcher.mdl"
 SWEP.HoldType = "rpg"
-SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 2 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = false
 
 

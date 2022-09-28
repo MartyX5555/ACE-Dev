@@ -29,16 +29,16 @@ SWEP.Purpose		= "Achtung Minen!"
 SWEP.Instructions	= "Left mouse to drop mine"
 
 -- Primary fire settings
-SWEP.Primary.Sound			= "weapons/ar2/ar2_empty.wav"
+SWEP.Primary.Sound			= "weapons/slam/mine_mode.wav"
 SWEP.Primary.NumShots		= 1
 SWEP.Primary.Recoil			= 10
 SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 3
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 1
+SWEP.Primary.DefaultClip	= 3
 SWEP.Primary.Automatic		= 0
-SWEP.Primary.Ammo		= "RPG_Round"
+SWEP.Primary.Ammo		= "Grenade"
 
 SWEP.Secondary.Ammo		= "none"
 SWEP.Secondary.ClipSize		= -1
@@ -85,19 +85,23 @@ function SWEP:PrimaryAttack()
 
 	local Forward = self:GetOwner():EyeAngles():Forward()
 
-if not self:GetOwner():HasGodMode() then
-	local ent = ents.Create( "ace_boundingmine" )
+	if not self:GetOwner():HasGodMode() then
+		local ent = ents.Create( "ace_boundingmine" )
 
-	if ( IsValid( ent ) ) then
+		if ( IsValid( ent ) ) then
 
-		ent:SetPos( self:GetOwner():GetShootPos() + Forward * 32 )
-		ent:SetAngles( self:GetOwner():EyeAngles() )
-		ent:Spawn()
-		ent:SetVelocity( Forward * 10 )
-		ent:SetOwner( self:GetOwner() )
-		self:GetOwner():AddCleanup( "aceexplosives", ent )
+			ent:SetPos( self:GetOwner():GetShootPos() + Forward * 32 )
+			ent:SetAngles( self:GetOwner():EyeAngles() )
+			ent:Spawn()
+			ent:SetVelocity( Forward * 10 )
+			ent:SetOwner( self:GetOwner() )
+			self:GetOwner():AddCleanup( "aceexplosives", ent )
+
+			if CPPI then
+				ent:CPPISetOwner(Entity(0))
+			end
+		end
 	end
-end
 	self.lastFire = CurTime()
 --	print("Inaccuracy: "..self.InaccuracyAccumulation)
 

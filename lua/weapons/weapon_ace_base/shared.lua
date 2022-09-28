@@ -30,7 +30,7 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 --Recoil (crosshair movement) settings--
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
-SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
+SWEP.HeatReductionRate = 150 --Heat loss per second when not firing
 SWEP.HeatPerShot = 5 --Heat generated per shot
 SWEP.HeatMax = 30 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
@@ -190,12 +190,10 @@ function SWEP:GetShootDir()
     spreadY = spreadY * degrees
 
     local shootDir = owner:GetAimVector()
-
-    --There's gotta be a nicer way to do this with more proper math, but for now this works
-    local upAxis = owner:GetAimVector():Angle():Right()
-    local sideAxis = owner:GetAimVector():Angle():Up()
-    shootDir = shootDir:RotateAroundAxis(upAxis, spreadY)
-    shootDir = shootDir:RotateAroundAxis(sideAxis, spreadX)
+    local sideAxis = shootDir:Cross(Vector(0, 0, 1)):GetNormalized()
+    local upAxis = shootDir:Cross(sideAxis):GetNormalized()
+    shootDir = shootDir:RotateAroundAxis(upAxis, spreadX)
+    shootDir = shootDir:RotateAroundAxis(sideAxis, spreadY)
 
     return shootDir
 end
@@ -236,15 +234,17 @@ function SWEP:PrimaryAttack()
         self:CallOnClient("PrimaryAttack")
     end
 
-    if IsFirstTimePredicted() then
+    if IsFirstTimePredicted() or game.SinglePlayer() then
         local owner = self:GetOwner()
 
         for i = 1, self.Primary.BulletCount do
             self:Shoot()
         end
 
-        if sounds and CLIENT then
-            ACE_NetworkedSound(owner, self.Primary.Sound, self.BulletData.PropMass)
+        if sounds then
+            if SERVER then
+                ACE_NetworkedSound(owner, owner, self.Primary.Sound, self.BulletData.PropMass)
+            end
 
             self:EmitSound(sounds.main.Package[math.random(#sounds.main.Package)])
         elseif not sounds then
@@ -260,7 +260,9 @@ function SWEP:PrimaryAttack()
         self.Heat = math.min(self.Heat + self.HeatPerShot, self.HeatMax)
     end
 
-    self:TakePrimaryAmmo(1)
+    if SERVER then
+        self:TakePrimaryAmmo(1)
+    end
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
     self:GetOwner():SetAnimation(PLAYER_ATTACK1)
     self:SetNextPrimaryFire(CurTime() + math.Round(1 / self.FireRate, 2))
@@ -301,20 +303,18 @@ if CLIENT then
     end
 end
 
-local tickInterval = engine.TickInterval()
 local lastRecoilTime = SysTime()
+local delta = engine.TickInterval()
 
 function SWEP:HandleRecoil()
-    local delay = self.HeatReductionDelay or (1 / self.FireRate + tickInterval)
+    local delay = self.HeatReductionDelay or (1 / self.FireRate + delta)
 
-    if IsFirstTimePredicted() and CurTime() - self.LastFired > delay then
-        self.Heat = math.max(self.Heat - tickInterval * self.HeatReductionRate, 0)
+    if CurTime() - self.LastFired > delay then
+        self.Heat = math.max(self.Heat - (self.HeatReductionRate * delta), 0)
     end
 
-    if CLIENT then
+    if game.SinglePlayer() and SERVER or CLIENT then
         local owner = self:GetOwner()
-
-        local delta = SysTime() - lastRecoilTime
 
         local zoomBonus = self:GetZoomState() and self.ZoomRecoilBonus or 1
         local crouchBonus = owner:Crouching() and self.CrouchRecoilBonus or 1
@@ -324,16 +324,19 @@ function SWEP:HandleRecoil()
         eyeAngles.p = eyeAngles.p - delta * self.Heat * totalBonus
         eyeAngles.y = eyeAngles.y - delta * self.Heat * self.RecoilSideBias * totalBonus
         owner:SetEyeAngles(eyeAngles)
-
-        lastRecoilTime = SysTime()
     end
+
+    delta = self.JustReloaded and 0 or (SysTime() - lastRecoilTime)
+    lastRecoilTime = SysTime()
+
+    self.JustReloaded = false
 end
 
 function SWEP:OnThink()
 end
 
 function SWEP:Think()
-    if not self.m_bInitialized then
+    if CLIENT and not self.m_bInitialized then
         self:Initialize()
     end
 
@@ -358,6 +361,8 @@ end
 
 function SWEP:OnReload()
 end
+
+SWEP.JustReloaded = false
 
 function SWEP:Reload()
     if self:Clip1() == self.Primary.ClipSize then return end
@@ -385,6 +390,8 @@ function SWEP:Reload()
             self:EmitSound(self.ReloadSound)
         end
     end
+
+    self.JustReloaded = true
 end
 
 function SWEP:Deploy()

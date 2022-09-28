@@ -3,14 +3,14 @@ AddCSLuaFile ("shared.lua")
 
 include ("shared.lua")
 
-SWEP.DeployDelay = 6 --No more rocket 2 taps or sprinting lawnchairs
+SWEP.DeployDelay = 0 --No more rocket 2 taps or sprinting lawnchairs
 
 function SWEP:DoAmmoStatDisplay()
 
 
-	local sendInfo = string.format( "Anti Personel Mine")
+	local sendInfo = string.format( "Smoke Grenade")
 
-			sendInfo = sendInfo .. string.format(", %.1fm blast", 2 ^ 0.33 * 8) --4 taken from mine entity
+			sendInfo = sendInfo .. string.format(", 10m radius")
 
 
 

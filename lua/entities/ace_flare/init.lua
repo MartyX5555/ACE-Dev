@@ -140,7 +140,11 @@ function ENT:PhysicsCollide( Table , PhysObj )
 
     if not IsValid(HitEnt) then return end
 
-    if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
-        HitEnt:Ignite( self.Heat, 1 )
-    end
+	if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
+		HitEnt:Ignite( self.Heat, 1 )
+	end
+end
+
+function ENT:CanTool()
+	return false
 end

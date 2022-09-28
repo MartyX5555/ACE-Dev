@@ -2271,6 +2271,34 @@ function ents_methods:acfPropDuctility ()
 	return ( this.ACF.Ductility or 0 ) * 100
 end
 
+--- Returns the armor data of an entity
+-- @server
+-- @return table A table with keys: Curve, Effectiveness, HEATEffectiveness, Material
+function ents_methods:acfPropArmorData()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+
+	local empty = {}
+	if not validPhysics( this ) then return empty end
+	if restrictInfo( this ) then return empty end
+	if not ACF_Check( this ) then return empty end
+
+	local mat = this.ACF.Material
+	if not mat then return empty end
+
+	local matData = ACE.Armors[mat]
+	if not matData then return empty end
+
+	return {
+		Curve = matData.curve,
+		Effectiveness = matData.effectiveness,
+		HEATEffectiveness = matData.HEATeffectiveness or matData.effectiveness,
+		Material = mat
+	}
+end
+
 -- [ Fuel Functions ] --
 
 --- Returns true if the entity is an ACF fuel tank

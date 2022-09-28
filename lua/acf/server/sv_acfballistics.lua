@@ -29,7 +29,7 @@ local DebugTime = 0.1
    creates a new bullet being fired
 ]]--------------------------------------------------------------------------------------------------
 function ACF_CreateBullet( BulletData )
-   
+
    -- Increment the index
    ACF.CurBulletIndex = ACF.CurBulletIndex + 1     
 
@@ -58,7 +58,12 @@ function ACF_CreateBullet( BulletData )
 
    end 
 
-   BulletData.Filter          = BulletData.Filter or { BulletData.Gun }
+   if BulletData.Filter then
+      table.Add(BulletData.Filter, { BulletData.Gun } )
+   else
+      BulletData.Filter = { BulletData.Gun }
+   end
+
    BulletData.Index           = ACF.CurBulletIndex
 
    ACF.Bullet[ACF.CurBulletIndex] = table.Copy(BulletData)     --Place the bullet at the current index pos
