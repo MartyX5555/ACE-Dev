@@ -134,52 +134,6 @@ function Round.cratetxt( BulletData )
     
 end
 
-function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
-    
-    return false
-    
-end
-
-function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
-    
-    return false
-
-end
-
-function Round.endflight( Index, Bullet, HitPos, HitNormal )
-    
-    ACF_RemoveBullet( Index )
-    
-end
-
-function Round.endeffect( Effect, Bullet )
-
-end
-
-function Round.pierceeffect( Effect, Bullet )
-    
-    local Spall = EffectData()
-        Spall:SetEntity( Bullet.Crate )
-        Spall:SetOrigin( Bullet.SimPos )
-        Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
-        Spall:SetScale( Bullet.SimFlight:Length() )
-        Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Penetration", Spall )
-    
-end
-
-function Round.ricocheteffect( Effect, Bullet )
-    
-    local Spall = EffectData()
-        Spall:SetEntity( Bullet.Crate )
-        Spall:SetOrigin( Bullet.SimPos )
-        Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
-        Spall:SetScale( Bullet.SimFlight:Length() )
-        Spall:SetMagnitude( Bullet.RoundMass )
-    util.Effect( "ACF_AP_Ricochet", Spall )
-    
-end
-
 function Round.guicreate( Panel, Table )
     
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.FLR )
@@ -196,7 +150,6 @@ function Round.guicreate( Panel, Table )
     acfmenupanel:CPanelText("VelocityDisplay", "")  --Proj muzzle velocity (Name, Desc)
     acfmenupanel:CPanelText("BurnRateDisplay", "")  --Proj muzzle penetration (Name, Desc)
     acfmenupanel:CPanelText("BurnDurationDisplay", "")  --HE Blast data (Name, Desc)
-    --acfmenupanel:CPanelText("DistractChanceDisplay", "")  --HE Fragmentation data (Name, Desc)
     
     Round.guiupdate( Panel, Table )
     
@@ -206,9 +159,9 @@ function Round.guiupdate( Panel, Table )
     
     local PlayerData = {}
         PlayerData.Id           = acfmenupanel.AmmoData.Data.id         --AmmoSelect GUI
-        PlayerData.Type         = "FLR"                                     --Hardcoded, match ACFRoundTypes table index
-        PlayerData.PropLength   = acfmenupanel.AmmoData.PropLength  --PropLength slider
-        PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength  --ProjLength slider
+        PlayerData.Type         = "FLR"                                 --Hardcoded, match ACFRoundTypes table index
+        PlayerData.PropLength   = acfmenupanel.AmmoData.PropLength      --PropLength slider
+        PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength      --ProjLength slider
         PlayerData.Data5        = acfmenupanel.AmmoData.FillerVol
         PlayerData.Data10       = acfmenupanel.AmmoData.Tracer and 1 or 0
     
