@@ -4,7 +4,7 @@ SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Grenades/Mines"
 
 if CLIENT then
-	SWEP.PrintName		= "Frag Grenade"
+	SWEP.PrintName		= "Smoke Grenade"
 	SWEP.Slot		    = 4
 	SWEP.SlotPos		= 3
 end
@@ -13,8 +13,8 @@ SWEP.Spawnable		= true
 
 --Visual
 SWEP.ViewModelFlip 	= true
-SWEP.ViewModel		= "models/weapons/v_eq_fraggrenade.mdl"
-SWEP.WorldModel		= "models/weapons/w_eq_fraggrenade.mdl"
+SWEP.ViewModel		= "models/weapons/v_eq_smokegrenade.mdl"
+SWEP.WorldModel		= "models/weapons/w_eq_smokegrenade.mdl"
 SWEP.ReloadSound	= "weapons/knife/knife_deploy1.wav"
 SWEP.HoldType		= "grenade"
 
@@ -58,14 +58,14 @@ function SWEP:ThrowNade(power)
 
 		timer.Simple(0.5, function()
 			local wep = owner:GetActiveWeapon()
-			if owner:Alive() and wep:GetClass() ~= "weapon_ace_grenade" or not owner:Alive() or wep:Clip1() == 0 then return end
+			if owner:Alive() and wep:GetClass() ~= "weapon_ace_smokegrenade" or not owner:Alive() or wep:Clip1() == 0 then return end
 			if wep.JustDeployed then return end
 
 			wep:SendWeaponAnim(ACT_VM_DRAW)
 		end)
 
 		local wep = owner:GetActiveWeapon()
-		if owner:Alive() and wep:GetClass() ~= "weapon_ace_grenade" then return end
+		if owner:Alive() and wep:GetClass() ~= "weapon_ace_smokegrenade" then return end
 		if wep.JustDeployed then return end
 
 		if owner:Alive() then
@@ -83,7 +83,7 @@ function SWEP:ThrowNade(power)
 
 		local aim = owner:GetAimVector()
 
-		local ent = ents.Create("ace_grenade")
+		local ent = ents.Create("ace_smokegrenade")
 		ent:SetPos(owner:GetShootPos())
 		ent:SetAngles(owner:EyeAngles())
 		ent:Spawn()
@@ -117,11 +117,11 @@ function SWEP:SecondaryAttack()
 	self:SetNextSecondaryFire( CurTime() + self.Primary.Delay )
 	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
+	self.JustDeployed = false
+
 	if CLIENT then
 		return
 	end
-
-	self.JustDeployed = false
 
 	self:SendWeaponAnim( ACT_VM_PULLPIN )
 	self:GetOwner():SetAnimation( ACT_HANDGRENADE_THROW1 )
