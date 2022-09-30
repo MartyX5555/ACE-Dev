@@ -191,10 +191,10 @@ function ENT:CalcFlight()
 
         if DiffLength >= 0.001 then
             local Torque        = DiffLength * self.TorqueMul * Speed
-            local AngVelDiff    = Torque / self.Inertia * DeltaTime 
+            local AngVelDiff    = Torque / self.Inertia * DeltaTime
             local DiffAxis      = AimDiff:Cross(Dir):GetNormalized()
 
-            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff-- * 3.5
+            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff * self.RotMultipler
         end
 
         self.RotAxis = self.RotAxis * 0.99
@@ -425,6 +425,7 @@ function ENT:ConfigureFlight()
     local Length        = GunData.length
     local Width         = GunData.caliber
 
+    self.RotMultipler   = GunData.rotmult or 1
     self.Inertia        = 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
     self.TorqueMul      = Length * 3
     self.RotAxis        = vector_origin

@@ -313,7 +313,9 @@ do
         ["140mmSB"]         = "140mmSBC",
         ["170mmSB"]         = "170mmSBC",
         ["70mmFFARDAGR"]    = "70mmFFAR",
-        ["9M113 ASM"]       = "9M133 ASM"
+        ["9M113 ASM"]       = "9M133 ASM",
+        ["9M311"]           = "9M311 SAM",
+        ["SIMBAD-RC SAM"]   = "Mistral SAM"
     }
 
     --List of munitions no longer stay on ACE
