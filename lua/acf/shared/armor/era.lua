@@ -10,8 +10,8 @@ Material.year           = 1955
 Material.massMod        = 2
 Material.curve          = 0.95
 
-Material.effectiveness      = 5
-Material.HEATeffectiveness  = 20
+Material.effectiveness      = 2.5   --5 --Data before to angle factor. Needs proper testing
+Material.HEATeffectiveness  = 8     --20
 
 Material.resiliance         = 1
 Material.HEATresiliance     = 1
@@ -31,7 +31,7 @@ Material.spallmult      = 0
 Material.ArmorMul       = 1
 Material.NormMult       = 1
 
-Material.Stopshock      = true
+Material.Stopshock      = true      -- Use this value if the material is meant to stop shockwaves
 
 if SERVER then
 
@@ -61,6 +61,10 @@ if SERVER then
     -- Possible Complications: When an explosion occurs in an ERA corner and average explosion pos is inside of contraption.
     function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
+        print("\narmor: "..armor.."mm")
+        print("losArmor: "..losArmor.."mm")
+        print("angle effectiveness: "..math.Round( ((losArmor/armor)*100 - 100) ).."%" )
+
         local HitRes = {}
 
         local curve         = Material.curve
@@ -69,18 +73,18 @@ if SERVER then
         local resiliance    = Material.resiliance
         local sensor        = Material.APSensorFactor
         
-        local blastArmor = effectiveness * armor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
+        local blastArmor = effectiveness * losArmor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 
         --ERA is more effective vs HEAT than vs kinetic 
         if Material.HEATList[Type] then    
 
-            blastArmor  = Material.HEATeffectiveness * armor
+            blastArmor  = Material.HEATeffectiveness * losArmor
             resiliance  = Material.HEATresiliance
             sensor      = Material.HEATSensorFactor
 
         elseif Material.HEList[Type] then
 
-            blastArmor  = Material.Neffectiveness * armor
+            blastArmor  = Material.Neffectiveness * armor -- Intentional
             resiliance  = Material.Nresiliance
             sensor      = 1
 
