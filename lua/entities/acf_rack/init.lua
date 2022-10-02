@@ -799,7 +799,7 @@ function ENT:FireMissile()
     
     if self.Ready and self.Legal and (self.PostReloadWait < CurTime()) then
         
-        ACF_GetPhysicalParent(self)
+        self.BaseEntity = ACF_GetPhysicalParent(self) or game.GetWorld()
         
         local nextMsl = self:PeekMissile()
 

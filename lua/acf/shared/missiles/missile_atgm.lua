@@ -59,6 +59,8 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
                 },    
 
     agility     = 0.14,                                         -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
@@ -105,20 +107,22 @@ ACF_defineGun("9M133 ASM", {                                    -- id
     viewcone    = 25,                                           -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.05,                                         -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
 -- The AT-3, a short-range wire-guided missile with better anti-tank effectiveness than the BGM-71E but much slower.
 ACF_defineGun("AT-3 ASM", { --id
-    name        = "AT-3 Missile",
+    name        = "AT-3 Sagger Missile",
     desc        = "The AT-3 missile (9M14P1) is a short-range wire-guided anti-tank munition. While powerful and lightweight its speed will make you die of old age before you hit the target.",
     model       = "models/missiles/at3.mdl",
-    effect      = "Rocket Motor ATGM",
+    effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xAT3RK",                                    -- Which rack to spawn this missile on?
     length      = 43,                                           -- Used for the physics calculations
     caliber     = 13,
-    weight      = 48,                                           -- Don't scale down the weight though!
+    weight      = 12.5,                                           -- Don't scale down the weight though!
     year        = 1969,
     rofmod      = 0.4,
     rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
@@ -130,13 +134,13 @@ ACF_defineGun("AT-3 ASM", { --id
         casing          = 0.1,                                  -- thickness of missile casing, cm
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.2,                                  -- motor mass - motor casing
-        thrust          = 7000,                                 -- average thrust - kg*in/s^2
-        burnrate        = 150,                                  -- cm^3/s at average chamber pressure
-        starterpct      = 0.2,                                  -- percentage of the propellant consumed in the starter motor.
-        minspeed        = 1500,                                 -- minimum speed beyond which the fins work at 100% efficiency
-        dragcoef        = 0.005,                                -- drag coefficient while falling
-        dragcoefflight  = 0.1,                                  -- drag coefficient during flight
-        finmul          = 0.1,                                  -- fin multiplier (mostly used for unpropelled guidance)
+        thrust          = 1500,                                 -- average thrust - kg*in/s^2
+        burnrate        = 200,                                  -- cm^3/s at average chamber pressure
+        starterpct      = 0.5,                                  -- percentage of the propellant consumed in the starter motor.
+        minspeed        = 2000,                                 -- minimum speed beyond which the fins work at 100% efficiency
+        dragcoef        = 0.015,                                -- drag coefficient while falling
+        dragcoefflight  = 0.01,                                  -- drag coefficient during flight
+        finmul          = 0.2,                                  -- fin multiplier (mostly used for unpropelled guidance)
         penmul          = math.sqrt(1)                          -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -154,6 +158,7 @@ ACF_defineGun("AT-3 ASM", { --id
     skinindex   = {HEAT = 0, HE = 1},
 
     agility     = 0.1,                                          -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
@@ -205,14 +210,16 @@ ACF_defineGun("Ataka ASM", { --id
     viewcone    = 40,                                           -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.05,                                     -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+    
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
 ACF_defineGun("AT-2 ASM", { --id
-    name        = "AT-2 Missile",
-    desc        = "The 9M17P is a powerful long-range antitank missile, which sacrifices flight speed for killing power. Extremely agile, consider it a direct upgrade to the AT-3.",
+    name        = "AT-2 Fleyta Missile",
+    desc        = "The AT-2 Missile (9M17P) is a more powerful, yet light, Anti-Tank Missile, the big brother of the Sagger. Being agile, deliveries a powerful payload at the cost of being slower than the AT-3",
     model       = "models/missiles/at2.mdl",
-    effect      = "Rocket Motor ATGM",
+    effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xRK",                                       -- Which rack to spawn this missile on?
     length      = 55,                                           -- Used for the physics calculations
@@ -220,7 +227,7 @@ ACF_defineGun("AT-2 ASM", { --id
     weight      = 27,                                          -- Don't scale down the weight though!
     year        = 1969,
     rofmod      = 0.4,
-    rotmult     = 6,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    rotmult     = 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
         model           = "models/missiles/at2.mdl",
@@ -228,14 +235,14 @@ ACF_defineGun("AT-2 ASM", { --id
         maxlength       = 55,
         casing          = 0.1,                                  -- thickness of missile casing, cm
         armour          = 5,                                    -- effective armour thickness of casing, in mm
-        propweight      = 0.1,                                  -- motor mass - motor casing
-        thrust          = 1500,                                 -- average thrust - kg*in/s^2
-        burnrate        = 25,                                   -- cm^3/s at average chamber pressure
+        propweight      = 1.2,                                  -- motor mass - motor casing
+        thrust          = 1250,                                 -- average thrust - kg*in/s^2
+        burnrate        = 20,                                   -- cm^3/s at average chamber pressure
         starterpct      = 0.5,                                  -- percentage of the propellant consumed in the starter motor.
-        minspeed        = 500,                                  -- minimum speed beyond which the fins work at 100% efficiency    --was 500
-        dragcoef        = 0.0001,                               -- drag coefficient while falling                                 --was 0.001
+        minspeed        = 1500,                                  -- minimum speed beyond which the fins work at 100% efficiency    --was 500
+        dragcoef        = 0.015,                               -- drag coefficient while falling                                 --was 0.001
         dragcoefflight  = 0.01,                                 -- drag coefficient during flight
-        finmul          = 0.3,                                  -- fin multiplier (mostly used for unpropelled guidance)          --was 0.1
+        finmul          = 0.15,                                  -- fin multiplier (mostly used for unpropelled guidance)          --was 0.1
         penmul          = math.sqrt(1.3)                        -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -252,7 +259,8 @@ ACF_defineGun("AT-2 ASM", { --id
                     ["2x AGM-114"] = true, 
                     ["4x AGM-114"] = true
                 },                                  
-    agility     = 0.2,                                          -- multiplier for missile turn-rate.
+    agility     = 0.6,                                          -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
@@ -268,7 +276,7 @@ ACF_defineGun("FGM-148 ASM", {
     weight      = 11.8,                                         -- Don't scale down the weight though!  --was 97.2
     year        = 1989,                                         -- year
     rofmod      = 0.74,                                         -- Rate Of Fire    --was 1.45
-    rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    rotmult     = 0.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
         model           = "models/mcace/Jevelinemissile.mdl",   -- models/mcace/Jevelinemissile.mdl    --model that will be fired out of tube
@@ -298,6 +306,8 @@ ACF_defineGun("FGM-148 ASM", {
                 },    
     agility     = 0.5,                                          -- multiplier for missile turn-rate.
     armdelay    = 1,                                            -- minimum fuse arming delay
-    
+
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     prepush     = false,                                        -- Additional push and delaying motor ignition
 } )

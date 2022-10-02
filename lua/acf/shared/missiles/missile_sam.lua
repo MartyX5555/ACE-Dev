@@ -64,6 +64,7 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
     agility         = 3,                                        -- multiplier for missile turn-rate.        --was 1
     armdelay        = 0.00,                                     -- minimum fuse arming delay        -was 0.3
     guidelay        = 0,                                     -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2
 } )
 
@@ -112,6 +113,7 @@ ACF_defineGun("Mistral SAM", {                                -- id
 
     agility     = 2,                                            -- multiplier for missile turn-rate.        --was 1
     guidelay    = 0,                                         -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00                                          -- minimum fuse arming delay        -was 0.3
 } )
 
@@ -163,6 +165,7 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
     agility         = 1,                                        -- multiplier for missile turn-rate.    --was 1.5
     armdelay        = 0.00,                                     -- minimum fuse arming delay    
     guidelay        = 0.75,                                     -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2
 } )
 
@@ -212,5 +215,6 @@ ACF_defineGun("9M311 SAM", {                                        -- id
     agility         = 0.8,                                        -- multiplier for missile turn-rate.
     armdelay        = 0.00,                                     -- minimum fuse arming delay
     guidelay        = 0,                                     -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2
 } )

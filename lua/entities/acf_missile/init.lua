@@ -189,7 +189,7 @@ function ENT:CalcFlight()
         local AimDiff       = Dir - VelNorm
         local DiffLength    = AimDiff:Length()
 
-        if DiffLength >= 0.001 then
+        if DiffLength >= 0.001 and  Time > self.GhostPeriod then
             local Torque        = DiffLength * self.TorqueMul * Speed
             local AngVelDiff    = Torque / self.Inertia * DeltaTime
             local DiffAxis      = AimDiff:Cross(Dir):GetNormalized()
@@ -207,6 +207,7 @@ function ENT:CalcFlight()
     --Rocket motor is out or drowned
     local DragCoef = 0
     if Time > self.CutoutTime or (self:WaterLevel() == 3 and self.NotDrownable ) then
+
         DragCoef = (self:WaterLevel() == 3 and self.NotDrownable ) and self.DragCoef*5 or self.DragCoef --5 times extra drag underwater
 
         if self.Motor ~= 0 then
@@ -235,33 +236,97 @@ function ENT:CalcFlight()
 
     local EndPos        = Pos + Vel
 
-    -- Hit/Impact detection
+    do
 
-    local tracedata     = {}
-    tracedata.start     = Pos
-    tracedata.endpos    = EndPos
-    tracedata.filter    = self.Filter
-    tracedata.mins      = vector_origin
-    tracedata.maxs      = tracedata.mins
+        -- Hit/Impact detection
 
-    local trace = util.TraceHull(tracedata)
+        local tracedata     = {}
+        tracedata.start     = Pos
+        tracedata.endpos    = EndPos
+        tracedata.filter    = self.Filter
+        tracedata.mins      = vector_origin
+        tracedata.maxs      = tracedata.mins
 
-    if trace.Hit then
+        --Becomes volumetric once ghosting is over. So we avoid most of expensive calculations below
+        if Time > self.GhostPeriod then
 
-        if not (IsValid(trace.Entity) and Time < self.GhostPeriod) then
-            self.HitNorm    = trace.HitNormal
-            self:DoFlight(trace.HitPos)
-            self.LastVel    = Vel / DeltaTime
+            local MRadius = (self.BulletData.Caliber/2)*0.5
+            local maxs = Vector(MRadius,MRadius,MRadius)
+            local mins = -maxs
+
+            tracedata.mins      = mins
+            tracedata.maxs      = maxs
+        end
+
+        local trace = util.TraceHull(tracedata)
+
+        -- Cframe pls
+        if trace.Hit then
+
+            local HitTarget  = trace.Entity
+
+            -- Detonate when ghost time allows to.
+            if not (IsValid(HitTarget) and Time < self.GhostPeriod) then
+
+                self.HitNorm    = trace.HitNormal
+                self:DoFlight(trace.HitPos)
+                self.LastVel    = Vel / DeltaTime
+                self:Detonate()
+                return
+
+            -- Determine if the detected ent is not part of the same contraption that fired this missile.
+            elseif HitTarget:GetClass() ~= "acf_missile" then
+
+                local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
+                local RootLauncher = self.Launcher.BaseEntity
+
+                if RootLauncher:EntIndex() ~= RootTarget:EntIndex() then
+
+                    local IsPart = false
+
+                    self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
+
+                    for k, physEnt in pairs(self.physentities) do
+                        
+                        if not IsValid(physEnt) then goto cont end
+
+                        if physEnt:EntIndex() == RootLauncher:EntIndex() then
+
+                            local mi, ma = physEnt:GetCollisionBounds() 
+                            debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
+
+                            IsPart = true
+                            break
+                        end
+
+                        ::cont::
+                    end
+
+                    if not IsPart then
+
+                        local mi, ma = RootTarget:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(RootTarget:GetPos(), mi, ma, RootTarget:GetAngles(), 5, Color(255,0,0,100))
+
+                        mi, ma = RootLauncher:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(RootLauncher:GetPos(), mi, ma, RootLauncher:GetAngles(), 5, Color(255,255,0,100))
+
+                        self.HitNorm    = trace.HitNormal
+                        self:DoFlight(trace.HitPos)
+                        self.LastVel    = Vel / DeltaTime
+                        self:Detonate()
+                        return
+                    end
+                end
+            end
+        end
+
+        --Detonation by fuse, if available
+        if Time > self.GhostPeriod and self.Fuse:GetDetonate(self, self.Guidance) then
+            self.LastVel = Vel / DeltaTime
             self:Detonate()
             return
         end
 
-    end
-
-    if self.Fuse:GetDetonate(self, self.Guidance) then
-        self.LastVel = Vel / DeltaTime
-        self:Detonate()
-        return
     end
 
     self.LastVel    = Vel
@@ -310,8 +375,6 @@ function ENT:Launch()
     self.Launched   = true
     self.ThinkDelay = 1 / 66
     self.Filter     = self.Filter or {self}
-
-    self.GhostPeriod = CurTime() + ACFM_GhostPeriod:GetFloat()
 
     self:SetParent(nil)
 
@@ -405,7 +468,7 @@ function ENT:ConfigureFlight()
     local Round         = GunData.round
 
     self:MotorStart( GunData, Round, BulletData )
-
+    
     self.FlightTime     = 0
     self.Gravity        = GetConVar("sv_gravity"):GetFloat()
     self.DragCoef       = Round.dragcoef
@@ -429,6 +492,8 @@ function ENT:ConfigureFlight()
     self.Inertia        = 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
     self.TorqueMul      = Length * 3
     self.RotAxis        = vector_origin
+
+    self.GhostPeriod = CurTime() + (GunData.ghosttime or 1)
 
     self:UpdateBodygroups()
     self:UpdateSkin()

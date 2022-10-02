@@ -30,12 +30,9 @@ CreateConVar('sbox_max_acf_ammo', 50)                           -- ammo limit
 CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents limit
 CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
 
-
 --CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
-
-ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )      -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
 
 -- Cvars for legality checking
 CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)

@@ -65,6 +65,7 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     agility         = 3,                                    -- multiplier for missile turn-rate.      --was 5
     armdelay        = 0.00,                                 -- minimum fuse arming delay        --was 0.4
     guidelay        = 0.25,                                 -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.075,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 3
 } )
 
@@ -115,6 +116,7 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     agility         = 3,                                    -- multiplier for missile turn-rate. -- was 2
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
     guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.075,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2.5
 } )
 
@@ -162,6 +164,7 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
 
     agility         = 3,                                    -- multiplier for missile turn-rate.  --was 0.7
     armdelay        = 0.00,                                 -- minimum fuse arming delay --was 0.3
-    guidelay        = 0.25,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    guidelay        = 0.5,                                  -- Required time (in seconds) for missile to start guiding at target once launched
+    ghosttime       = 0.05,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 3
 } )

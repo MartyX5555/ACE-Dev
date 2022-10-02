@@ -31,7 +31,7 @@ ACF_defineGun("Type 63 RA", {                               -- id
     year        = 1960,
     rofmod      = 0.3,
     roundclass  = "Rocket",
-    rotmult     = 60,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    rotmult     = 60,       -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round       =   {
         model           = "models/missiles/glatgm/mgm51.mdl",
@@ -65,6 +65,7 @@ ACF_defineGun("Type 63 RA", {                               -- id
 
     viewcone    = 180,                                      -- cone radius, 180 = full 360 tracking
     agility     = 0.08,
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
 
@@ -117,6 +118,7 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     
     agility     = 0.07,
     viewcone    = 180,
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
@@ -170,6 +172,7 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     
     agility     = 0.03,
     viewcone    = 180, 
+    ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
@@ -221,5 +224,7 @@ ACF_defineGun("RW61 RA", {                                  -- id
     viewcone    = 55,                                       -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 1,                                        -- multiplier for missile turn-rate.
+    ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                      -- minimum fuse arming delay
 } )
