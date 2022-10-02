@@ -17,9 +17,9 @@ function ENT:Initialize()
     self.HeatLoss = math.Round( (self.Heat - ACE.AmbientTemp) / self.Life,1)
 
     local phys = IsValid(self.PhysObj) and self.PhysObj or self:GetPhysicsObject()
-    phys:SetMass(2)
+    phys:SetMass(3)
     phys:EnableDrag( true )
-    phys:SetDragCoefficient( 45 )
+    phys:SetDragCoefficient( 50 )
     phys:SetBuoyancyRatio( 2 )
 
     self:SetGravity( 0.01 )
@@ -141,7 +141,14 @@ function ENT:PhysicsCollide( Table , PhysObj )
     if not IsValid(HitEnt) then return end
 
 	if HitEnt:IsNPC() or (HitEnt:IsPlayer() and not HitEnt:HasGodMode()) then
-		HitEnt:Ignite( self.Heat, 1 )
+		if vFireInstalled then
+
+			CreateVFireEntFires(HitEnt, 3)
+		else
+
+			HitEnt:Ignite( self.Heat, 1 )
+		end
+
 	end
 end
 

@@ -64,6 +64,7 @@ ACF_defineGun("AGM-114 ASM", {                          --id
     viewcone    = 40,   								-- getting outside this cone will break the lock.  Divided by 2.
     
     agility     = 0.07,									-- multiplier for missile turn-rate.
+    ghosttime   = 0.2,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00,     								-- minimum fuse arming delay
     IRsensitivity   = 0.5                                   -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
 
@@ -116,6 +117,8 @@ ACF_defineGun("AGM-45 ASM", {                           -- id
     viewcone    = 10,                                   -- I don't think a fucking SAM site should have to dodge much >_>
     
     agility     = 0.03,                                 -- multiplier for missile turn-rate.  --was 0.08
+    ghosttime   = 0.2,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                  -- minimum fuse arming delay
 } )
 
@@ -165,6 +168,8 @@ ACF_defineGun("AGM-122 ASM", {                          -- id
     viewcone    = 14,                                   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.3,                                  -- multiplier for missile turn-rate.  --was 0.3
+    ghosttime   = 0.2,                                     -- Time where this missile will be unable to hit surfaces, in seconds
+
     armdelay    = 0.00                                  -- minimum fuse arming delay        --was 0.4
 } )
 
@@ -211,7 +216,8 @@ ACF_defineGun("AGM-65 ASM", {                           -- id
     viewcone    = 60,                                   -- getting outside this cone will break the lock.  Divided by 2.
 
     agility     = 0.15,    								-- multiplier for missile turn-rate.
+    ghosttime   = 0.2,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay    = 0.00,     							-- minimum fuse arming delay --was 0.3
     IRsensitivity   = 0.75                              -- Determinates the heat % to remove from flares in front of this missile. 1 Becomes this missile invulnerable to be jammed by flares. Values from 0-1
-
+    
 } )

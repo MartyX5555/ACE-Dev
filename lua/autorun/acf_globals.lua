@@ -30,12 +30,9 @@ CreateConVar('sbox_max_acf_ammo', 50)                           -- ammo limit
 CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents limit
 CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
 
-
 --CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
 CreateConVar('acf_meshvalue', 1) 
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
-
-ACFM_GhostPeriod = CreateConVar( "ACFM_GhostPeriod", 0.1 )      -- Should missiles ignore impacts for a duration after they're launched? Set to 0 to disable, or set to a number of seconds that missiles should "ghost" through entities. 
 
 -- Cvars for legality checking
 CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)
@@ -103,7 +100,7 @@ ACF.Threshold           = 264.7                     -- Health Divisor (don't for
 ACF.PartialPenPenalty   = 5                         -- Exponent for the damage penalty for partial penetration
 ACF.PenAreaMod          = 0.85
 ACF.KinFudgeFactor      = 2.1                       -- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
-ACF.KEtoRHA             = 0.25                      -- Empirical conversion from (kinetic energy in KJ)/(Aera in Cm2) to RHA penetration
+ACF.KEtoRHA             = 0.25                      -- Empirical conversion from (kinetic energy in KJ)/(Area in Cm2) to RHA penetration
 ACF.GroundtoRHA         = 0.15                      -- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
 ACF.KEtoSpall           = 1
 ACF.AmmoMod             = 2.6                       -- Ammo modifier. 1 is 1x the amount of ammo
@@ -204,6 +201,7 @@ include("autorun/acf_missile/folder.lua")
 include("acf/shared/sh_ace_functions.lua")
 include("acf/shared/sh_ace_loader.lua")
 include("acf/shared/sh_ace_concommands.lua")
+include("acf/shared/sh_acfm_roundinject.lua")
 
 if SERVER then
 
