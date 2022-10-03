@@ -36,7 +36,8 @@ function ENT:Initialize()
     self.LegalIssues            = ""
     
     self.Active                 = false
-    
+    self.Heat                   = ACE.AmbientTemp
+
     self:CreateRadar((self.ACFName or "Missile Radar"), (self.ConeDegs or 180))
     
     self:EnableClientInfo(true)
@@ -82,10 +83,14 @@ function ENT:SetActive(active)
         local sequence = self:LookupSequence("active") or 0
         self:ResetSequence(sequence)
         self.AutomaticFrameAdvance = true
+
+        self.Heat = ACE.AmbientTemp + 50
     else
         local sequence = self:LookupSequence("idle") or 0
         self:ResetSequence(sequence)
         self.AutomaticFrameAdvance = false
+
+        self.Heat = ACE.AmbientTemp
     end
 
 end
