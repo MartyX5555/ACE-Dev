@@ -46,7 +46,7 @@ CreateConVar( "acf_legal_ignore_visclip", 0 , FCVAR_ARCHIVE)
 CreateConVar( "acf_legal_ignore_parent", 0 , FCVAR_ARCHIVE)
 
 -- Prop Protection system
---CreateConVar( "acf_enable_dp", 'false' , FCVAR_ARCHIVE )    -- Enable the inbuilt damage protection system.    
+CreateConVar( "acf_enable_dp", 0 , FCVAR_ARCHIVE )    -- Enable the inbuilt damage protection system.    
 
 -- Cvars for recoil/he push
 CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
@@ -182,7 +182,6 @@ ACF.SpreadScale         = 16                        -- The maximum amount that d
 ACF.GunInaccuracyScale  = 1                         -- A multiplier for gun accuracy.
 ACF.GunInaccuracyBias   = 2                         -- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
-ACF.EnableDefaultDP     = true                      -- GetConVar('acf_enable_dp'):GetBool()           -- Enable the inbuilt damage protection system.
 ACF.EnableKillicons     = true                      -- Enable killicons overwriting.
 
 if ACF.AllowCSLua > 0 then
@@ -214,9 +213,9 @@ if SERVER then
     include("acf/server/sv_heat.lua")
     include("acf/server/sv_legality.lua")
 
-    if ACF.EnableDefaultDP then
-        include("acf/server/sv_acfpermission.lua")
-    end
+
+    include("acf/server/sv_acfpermission.lua")
+
 
     AddCSLuaFile("acf/client/cl_acfballistics.lua")
     AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")
@@ -225,12 +224,9 @@ if SERVER then
 
     AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
-    if ACF.EnableDefaultDP then
+    AddCSLuaFile("acf/client/cl_acfpermission.lua")
+    AddCSLuaFile("acf/client/gui/cl_acfsetpermission.lua")
 
-        AddCSLuaFile("acf/client/cl_acfpermission.lua")
-        AddCSLuaFile("acf/client/gui/cl_acfsetpermission.lua")
-
-    end
 
 elseif CLIENT then
 
@@ -238,12 +234,8 @@ elseif CLIENT then
     include("acf/client/cl_acfrender.lua")
     include("acf/client/cl_extension.lua")
 
-    if ACF.EnableDefaultDP then
-    
-        include("acf/client/cl_acfpermission.lua")
-        include("acf/client/gui/cl_acfsetpermission.lua")
-        
-    end
+    include("acf/client/cl_acfpermission.lua")
+    include("acf/client/gui/cl_acfsetpermission.lua")
     
     CreateConVar("acf_cl_particlemul", 1)
     CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
@@ -358,7 +350,6 @@ hook.Add( "Think", "Update ACF Internal Clock", function()
 end )
 
 
-
 function ACF_CVarChangeCallback(CVar, Prev, New)
     --if( Cvar == "acf_year" ) then
         --ACF.Year = math.Clamp(New,1900,2021)
@@ -382,6 +373,8 @@ function ACF_CVarChangeCallback(CVar, Prev, New)
         ACF.ScaledHEMax = math.max(New,50)
     elseif( CVar == "acf_explosions_scaled_ents_max" ) then
         ACF.ScaledEntsMax = math.max(New,1)
+    elseif( CVar == "acf_enable_dp" ) then
+        ACE_SendDPStatus()
     end
 end
 
@@ -396,8 +389,21 @@ cvars.AddChangeCallback("acf_debris_lifetime", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_debris_children", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_explosions_scaled_he_max", ACF_CVarChangeCallback)
 cvars.AddChangeCallback("acf_explosions_scaled_ents_max", ACF_CVarChangeCallback)
+cvars.AddChangeCallback("acf_enable_dp", ACF_CVarChangeCallback)
 
 if SERVER then
+
+    function ACE_SendDPStatus()
+
+        local Cvar = GetConVar("acf_enable_dp"):GetInt()
+        local bool = tobool(Cvar)
+
+        net.Start("ACE_DPStatus")
+            net.WriteBool(bool)
+        net.Broadcast()
+
+    end
+
     function ACF_SendNotify( ply, success, msg )
         net.Start( "ACF_Notify" )
         net.WriteBit( success )
@@ -405,6 +411,7 @@ if SERVER then
         net.Send( ply )
     end
 else
+
     local function ACF_Notify()
         local Type = NOTIFY_ERROR
         if tobool( net.ReadBit() ) then Type = NOTIFY_GENERIC end
@@ -413,8 +420,6 @@ else
     end
     net.Receive( "ACF_Notify", ACF_Notify )
 end
-
-
 
 do
 

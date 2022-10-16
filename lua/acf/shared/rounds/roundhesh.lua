@@ -123,7 +123,7 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 		local HitRes = ACF_RoundImpact( Bullet, Speed/4+Bullet.FillerMass*250, Energy, Target, HitPos, HitNormal/10 , Bone )
 
 		table.insert( Bullet.Filter , Target )
-		ACF_Spall_HESH( HitPos , Bullet.Flight , {Target} , Bullet.FillerMass*ACF.HEPower , Bullet.Caliber*5 , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+		ACF_Spall_HESH( HitPos, Bullet.Flight, Bullet.Filter, Bullet.FillerMass*ACF.HEPower, Bullet.Caliber*5, Target.ACF.Armour, Bullet.Owner, Target.ACF.Material) --Do some spalling
 	
 	else 
 		table.insert( Bullet.Filter , Target )
