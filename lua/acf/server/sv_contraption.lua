@@ -36,7 +36,8 @@ local AllowedEnts = {
     [ "acf_ammo" ]                  = true,
     [ "acf_engine" ]                = true,
     [ "acf_fueltank" ]              = true,
-    [ "acf_gearbox" ]               = true
+    [ "acf_gearbox" ]               = true,
+    [ "primitive_shape" ]           = true
 
 }
 

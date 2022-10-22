@@ -61,9 +61,9 @@ if SERVER then
     -- Possible Complications: When an explosion occurs in an ERA corner and average explosion pos is inside of contraption.
     function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
-        print("\narmor: "..armor.."mm")
-        print("losArmor: "..losArmor.."mm")
-        print("angle effectiveness: "..math.Round( ((losArmor/armor)*100 - 100) ).."%" )
+        --print("\narmor: "..armor.."mm")
+        --print("losArmor: "..losArmor.."mm")
+        --print("angle effectiveness: "..math.Round( ((losArmor/armor)*100 - 100) ).."%" )
 
         local HitRes = {}
 

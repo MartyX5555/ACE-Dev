@@ -189,16 +189,18 @@ function ENT:CalcFlight()
         local AimDiff       = Dir - VelNorm
         local DiffLength    = AimDiff:Length()
 
-        if DiffLength >= 0.001 and  Time > self.GhostPeriod then
-            local Torque        = DiffLength * self.TorqueMul * Speed
+        if DiffLength >= 0.001 and DiffLength < 1.95 and  Time > self.GhostPeriod then
+
+            local Torque        = DiffLength * self.TorqueMul * Speed * self.RotMultipler
             local AngVelDiff    = Torque / self.Inertia * DeltaTime
             local DiffAxis      = AimDiff:Cross(Dir):GetNormalized()
 
-            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff * self.RotMultipler
+            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff 
         end
 
         self.RotAxis = self.RotAxis * 0.99
-            DirAng:RotateAroundAxis(self.RotAxis, self.RotAxis:Length())
+
+        DirAng:RotateAroundAxis(self.RotAxis, self.RotAxis:Length()) 
         Dir = DirAng:Forward()
 
         self.LastLOS = nil
@@ -284,6 +286,7 @@ function ENT:CalcFlight()
 
                     local IsPart = false
 
+                    --Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
                     self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
 
                     for k, physEnt in pairs(self.physentities) do
@@ -319,6 +322,8 @@ function ENT:CalcFlight()
                 end
             end
         end
+
+
 
         --Detonation by fuse, if available
         if Time > self.GhostPeriod and self.Fuse:GetDetonate(self, self.Guidance) then
@@ -489,6 +494,7 @@ function ENT:ConfigureFlight()
     local Width         = GunData.caliber
 
     self.RotMultipler   = GunData.rotmult or 1
+    self.MaxTorque      = GunData.maxrottq or 1000000
     self.Inertia        = 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
     self.TorqueMul      = Length * 3
     self.RotAxis        = vector_origin

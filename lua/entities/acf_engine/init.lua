@@ -482,8 +482,16 @@ function ENT:CalcMassRatio()
         
     end
 
+    --phys / parented
+    --total: 6000 kgs
+    --5000/1000 = 5 ratio
+    --1000/5000 = 0.2 ratio
+    --local Tmass = PhysMass + Mass
+
     self.MassRatio = PhysMass / Mass
-    
+    --self.MassRatio = 1 / (Tmass/10000)
+    --self.MassRatio = (PhysMass^0.9225) / Mass
+
     Wire_TriggerOutput( self, "Mass", math.Round( Mass, 2 ) )
     Wire_TriggerOutput( self, "Physical Mass", math.Round( PhysMass, 2 ) )
     
@@ -637,9 +645,9 @@ function ENT:CalcRPM()
     SmoothRPM = SmoothRPM / 10
 
     local Power = self.Torque * SmoothRPM / 9548.8
-    Wire_TriggerOutput(self, "Torque", math.floor(self.Torque))
-    Wire_TriggerOutput(self, "Power", math.floor(Power))
-    Wire_TriggerOutput(self, "RPM", self.FlyRPM)
+    Wire_TriggerOutput(self, "Torque", math.Round(self.Torque))
+    Wire_TriggerOutput(self, "Power", math.Round(Power))
+    Wire_TriggerOutput(self, "RPM", math.Round(self.FlyRPM))
     --Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
     
     if self.Sound then

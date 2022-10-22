@@ -50,7 +50,7 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
 
     ent         = "acf_missile_to_rack",                        -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Wire"},
-    fuses       = {"Contact", "Optical"},
+    fuses       = {"Contact", "Optical", "Plunging"},
 
     racks       = {                                             -- a whitelist for racks that this missile can load into.
                     ["1x BGM-71E"] = true, 
@@ -140,7 +140,7 @@ ACF_defineGun("AT-3 ASM", { --id
         minspeed        = 2000,                                 -- minimum speed beyond which the fins work at 100% efficiency
         dragcoef        = 0.015,                                -- drag coefficient while falling
         dragcoefflight  = 0.01,                                  -- drag coefficient during flight
-        finmul          = 0.2,                                  -- fin multiplier (mostly used for unpropelled guidance)
+        finmul          = 0.3,                                  -- fin multiplier (mostly used for unpropelled guidance)
         penmul          = math.sqrt(1)                          -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -238,7 +238,7 @@ ACF_defineGun("AT-2 ASM", { --id
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.2,                                  -- motor mass - motor casing
         thrust          = 1250,                                 -- average thrust - kg*in/s^2
-        burnrate        = 20,                                   -- cm^3/s at average chamber pressure
+        burnrate        = 250,                                   -- cm^3/s at average chamber pressure
         starterpct      = 0.5,                                  -- percentage of the propellant consumed in the starter motor.
         minspeed        = 1500,                                  -- minimum speed beyond which the fins work at 100% efficiency    --was 500
         dragcoef        = 0.015,                               -- drag coefficient while falling                                 --was 0.001

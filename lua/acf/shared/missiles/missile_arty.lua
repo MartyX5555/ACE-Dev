@@ -32,6 +32,7 @@ ACF_defineGun("Type 63 RA", {                               -- id
     rofmod      = 0.3,
     roundclass  = "Rocket",
     rotmult     = 60,       -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
     round       =   {
         model           = "models/missiles/glatgm/mgm51.mdl",
@@ -86,6 +87,7 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     rofmod      = 0.25,
     roundclass  = "Rocket",
     rotmult     = 20,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
     round       =   {
         model           = "models/missiles/9m31.mdl",
@@ -140,6 +142,7 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     rofmod      = 0.2,
     roundclass  = "Rocket",
     rotmult     = 30,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    maxrottq    = 3000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
     round       =   {
         model           = "models/missiles/aim120.mdl",
