@@ -70,11 +70,22 @@ if not util.LegacyTraceLine then
 	util.LegacyTraceLine = util.TraceLine
 end
 
+-- Reload support
+util.TraceLine = util.LegacyTraceLine
+
 function util.TraceLine(TraceData, ...)
 	if istable(TraceData) then
 		TraceData.mins = Zero
 		TraceData.maxs = Zero
 	end
 
-	return Hull(TraceData, ...)
+	local TraceRes = Hull(TraceData, ...)
+
+	-- TraceHulls don't hit player hitboxes properly, if we hit a player, retry as a regular TraceLine
+	-- This fixes issues with SWEPs and toolgun traces hitting players when aiming near but not at them
+	if istable(TraceRes) and TraceRes.Entity and TraceRes.Entity:IsPlayer() then
+		return util.LegacyTraceLine(TraceData, ...)
+	end
+
+	return TraceRes
 end
