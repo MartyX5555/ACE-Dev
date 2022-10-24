@@ -62,10 +62,19 @@ elseif SERVER then
 end
 
 -- Workaround to issue: https://github.com/Facepunch/garrysmod-issues/issues/4142. Brought from ACF3
-function util.TraceLine( tracedata )
+local Hull = util.TraceHull
+local Zero = Vector()
 
-    tracedata.mins   = vector_origin
-    tracedata.maxs   = tracedata.mins
+-- Available for use, just in case
+if not util.LegacyTraceLine then
+	util.LegacyTraceLine = util.TraceLine
+end
 
-    return util.TraceHull(tracedata)
+function util.TraceLine(TraceData, ...)
+	if istable(TraceData) then
+		TraceData.mins = Zero
+		TraceData.maxs = Zero
+	end
+
+	return Hull(TraceData, ...)
 end
