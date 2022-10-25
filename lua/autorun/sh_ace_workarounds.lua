@@ -83,7 +83,9 @@ function util.TraceLine(TraceData, ...)
 
 	-- TraceHulls don't hit player hitboxes properly, if we hit a player, retry as a regular TraceLine
 	-- This fixes issues with SWEPs and toolgun traces hitting players when aiming near but not at them
-	if istable(TraceRes) and TraceRes.Entity and TraceRes.Entity:IsPlayer() then
+	local HitEnt = TraceRes.Entity
+
+	if istable(TraceRes) and HitEnt and (HitEnt:IsPlayer() or HitEnt:IsNPC()) then
 		return util.LegacyTraceLine(TraceData, ...)
 	end
 
