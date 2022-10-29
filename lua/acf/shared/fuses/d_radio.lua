@@ -42,32 +42,32 @@ configs[#configs + 1] =
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
---We need to clamp the value to 0.25 since many ppl could complain about why their missiles are exploding once fired despite of they have not adjusted a proper arm delay...
+--We need to clamp the value to 0.5 since many ppl could complain about why their missiles are exploding once fired despite of they have not adjusted a proper arm delay...
 function this:Configure(missile, guidance)
     self.TimeStarted = CurTime()
-    self.Primer = math.max(self.Primer, 0.25)
+    self.Primer = math.max(self.Primer, 0.5)
 end
 
 do
 
     local blacklist = {
         player = true,
-        acf_missile = true,
-        acf_glatgm = true,
         ace_debris = true,
         ace_grenade = true,
         ace_smokegrenade = true,
         ace_flare = true,
         ace_antitankmine = true,
         ace_antipersonelmine = true,
-        ace_boundingmine = true
+        ace_boundingmine = true,
+        acf_missile = true,
+        acf_glatgm = true,
     }
 
     --Question: Should radio fuze be limited to detect props in front of the missile only? Its weird it detonates by detecting something behind it.
     function this:GetDetonate(missile, guidance)
         
         if not self:IsArmed() then return false end
-        
+
         local MissilePos = missile:GetPos()
         local Dist = self.Distance
 
