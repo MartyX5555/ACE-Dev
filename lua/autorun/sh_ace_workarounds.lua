@@ -70,9 +70,6 @@ if not util.LegacyTraceLine then
 	util.LegacyTraceLine = util.TraceLine
 end
 
--- Reload support
-util.TraceLine = util.LegacyTraceLine
-
 function util.TraceLine(TraceData, ...)
 	if istable(TraceData) then
 		TraceData.mins = Zero
@@ -85,7 +82,7 @@ function util.TraceLine(TraceData, ...)
 	-- This fixes issues with SWEPs and toolgun traces hitting players when aiming near but not at them
 	local HitEnt = TraceRes.Entity
 
-	if istable(TraceRes) and HitEnt and (HitEnt:IsPlayer() or HitEnt:IsNPC()) then
+	if istable(TraceRes) and IsValid(HitEnt) and (HitEnt:IsPlayer() or HitEnt:IsNPC()) then
 		return util.LegacyTraceLine(TraceData, ...)
 	end
 
