@@ -263,7 +263,7 @@ do
             local ratio       = 1 - (Diff / Bullet.DeltaTime)
             local ScaledPos   = LerpVector(ratio, Bullet.Pos, Bullet.NextPos)
 
-            if FlightRes.Hit and FlightRes.Fraction < ratio then 
+            if FlightRes.Hit and FlightRes.Fraction < ratio or Bullet.HasPenned then 
                ScaledPos = FlightRes.HitPos
             end
 
