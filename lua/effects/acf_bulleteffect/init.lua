@@ -139,27 +139,21 @@ end
 function EFFECT:ApplyMovement( Bullet )
 
     local setPos = Bullet.SimPos
-    if((math.abs(setPos.x) > 16380) or (math.abs(setPos.y) > 16380) or (setPos.z < -16380)) then
-        self.Alive = false
 
-        return
-    end
-    if( setPos.z < 16380 ) then
-        self:SetPos( setPos )--Moving the effect to the calculated position
-        self:SetAngles( Bullet.SimFlight:Angle() )
+    self:SetPos( setPos )--Moving the effect to the calculated position
+    self:SetAngles( Bullet.SimFlight:Angle() )
 
-        local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length()) 
+    local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length()) 
 
-        --sonic crack sound
-        if not Bullet.CrackCreated and not Bullet.IsMissile then
-            if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
-                if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
+    --sonic crack sound
+    if not Bullet.CrackCreated and not Bullet.IsMissile then
+        if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
+            if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
 
-                    if not Bullet.Impacted then
+                if not Bullet.Impacted then
 
-                        ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+                    ACE_SBulletCrack(Bullet, Bullet.Caliber) 
 
-                    end
                 end
             end
         end
