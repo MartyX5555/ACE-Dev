@@ -45,109 +45,86 @@ configs[#configs + 1] =
 do
 
     local whitelist = {
-        prop_physics = true,
-        primitive_shape = true,
+        [ "acf_rack" ]                  = true,
+        [ "prop_vehicle_prisoner_pod" ] = true,
+        [ "ace_crewseat_gunner" ]       = true,
+        [ "ace_crewseat_loader" ]       = true,
+        [ "ace_crewseat_driver" ]       = true,
+        [ "ace_rwr_dir" ]               = true,
+        [ "ace_rwr_sphere" ]            = true,
+        [ "acf_missileradar" ]          = true,
+        [ "acf_opticalcomputer" ]       = true,
+        [ "gmod_wire_expression2" ]     = true,
+        [ "gmod_wire_gate" ]            = true,          
+        [ "prop_physics" ]              = true,
+        [ "ace_ecm" ]                   = true,
+        [ "ace_trackingradar" ]         = true,
+        [ "ace_irst" ]                  = true,
+        [ "acf_gun" ]                   = true,
+        [ "acf_ammo" ]                  = true,
+        [ "acf_engine" ]                = true,
+        [ "acf_fueltank" ]              = true,
+        [ "acf_gearbox" ]               = true,
+        [ "primitive_shape" ]           = true,
+        [ "primitive_airfoil" ]         = true,
+        [ "primitive_rail_slider" ]     = true,
+        [ "primitive_slider" ]          = true,
+        [ "primitive_ladder" ]          = true
     }
 
-    local ignoredents = {}
-    local StartsWith = string.StartWith
-
-    local function FilterShit(ent)
-
-        print(table.Count(ignoredents))
+    local function FilterFunction(ent)
 
         local Class = ent:GetClass()
 
-        --Skip blacklisted ents like world entities
-        if not whitelist[Class] then 
+        --Skip ents like world entities
+        if whitelist[Class] then 
+            return true
+        end     
 
-            print(Class)
-
-            if not StartsWith( Class, "acf_" ) or not StartsWith( Class, "ace_" ) or not StartsWith( Class, "gmod_" )   then
-                return false 
-            end
-
-        end 
-
-        --Skip ents that were told to be skipped
-        if ignoredents[ent:EntIndex()] then 
-            return false 
-        end         
-
-        return true 
+        return false 
     end
 
     --Question: Should radio fuze be limited to detect props in front of the missile only? Its weird it detonates by detecting something behind it.
     function this:GetDetonate(missile, guidance)
         
-        --Legacy way until i figure to fix the new one.
         if not self:IsArmed() then return false end
 
         local MissilePos = missile:GetPos()
         local Dist = self.Distance
 
-        ignoredents = {}
-
         local trace = {}
         trace.start       = MissilePos
         trace.endpos      = MissilePos + missile.LastVel * 0.5 --small compensation for incoming impacts.
-        trace.filter      = FilterShit
+        trace.filter      = FilterFunction
         trace.mins        = Vector(-Dist, -Dist, -Dist)
-        trace.maxs        = Vector(Dist, Dist, Dist)
+        trace.maxs        = -trace.mins
         trace.ignoreworld = true
 
         local tr = util.TraceHull(trace)
 
-        local retry = true
-
-        local It = 0
-
-        while retry do
-
-            It = It + 1 --In case of total failure. Mostly to avoid shitting my game....
-            if It > 100 then print("failed!") break end
-
-            retry = false
-
-            if tr.Hit then
-
-                local HitEnt = tr.Entity
-
-                if IsValid(HitEnt) then
-
-                    local HitPos = HitEnt:GetPos()
-                    local tolocal = missile:WorldToLocal(HitPos)
-
-                    debugoverlay.Text(HitPos + VectorRand(-1, 1), "This Ent2: "..(HitEnt:GetClass()) , 5 )
-
-                    if HitEnt:GetClass() == "acf_missile" or HitEnt:GetClass() == "acf_glatgm" then
-
-                        ignoredents[HitEnt:EntIndex()] = true
-                        tr = util.TraceHull(trace)
-
-                        retry = true
-                        goto cont
-                    end
-
-
-
-                    if tolocal.x < 0 then
-
-                        ignoredents[HitEnt:EntIndex()] = true
-                        tr = util.TraceHull(trace)
-
-                        retry = true
-                        goto cont
-                    end
-                end
-            end
-            ::cont::
-        end
-
         if tr.Hit then
 
-            debugoverlay.Box(MissilePos, trace.mins, trace.maxs, 1, Color(255,100,0,10))
-            return true
+            local HitEnt = tr.Entity
+
+            if ACF_Check( HitEnt ) then
+
+                local HitPos    = HitEnt:GetPos()
+                local tolocal   = missile:WorldToLocal(HitPos)
+
+                local HitId     = HitEnt.ACF.ContraptionId or 1
+                local OwnId     = missile.ContrapId or 1        
+
+                --Trigger the fuze if our hit was caused to an ent which is not ours, in front of it.
+                if HitId ~= OwnId and tolocal.x > 0 then
+
+                    debugoverlay.Text(HitPos + Vector(0,0,20), "Valid Hit On: "..(HitEnt:GetClass()) , 5 )
+                    debugoverlay.Box(MissilePos, trace.mins, trace.maxs, 1, Color(0,255,0,10))
+                    return true
+                end
+
+                debugoverlay.Text(HitPos + Vector(0,0,20), "Invalid Hit on: "..(HitEnt:GetClass()) , 5 )
+                debugoverlay.Box(MissilePos, trace.mins, trace.maxs, 1, Color(255,0,0,10))
+            end            
         end
 
         return false
