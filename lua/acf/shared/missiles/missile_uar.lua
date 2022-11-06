@@ -11,9 +11,7 @@ ACF_defineGunClass("UAR", {
     sound           = "acf_extra/airfx/rocket_fire2.wav",
     soundDistance   = " ",
     soundNormal     = " ",
-    effect          = "Rocket Motor Arty", --Tiny motor for tiny rocket
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "SM"} -- Including FL would mean changing the way round classes work.
+    effect          = "Rocket Motor Arty"
 } )
 
 

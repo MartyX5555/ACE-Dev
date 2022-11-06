@@ -6,14 +6,11 @@ ACF_defineGunClass("ATGM", {
     muzzleflash     = "40mm_muzzleflash_noscale",
     rofmod          = 1,
     sound           = "acf_extra/airfx/rocket_fire2.wav",
-    year = 1969,
+    year            = 1969,
     soundDistance   = " ",
     soundNormal     = " ",
---    effect          = "Rocket_Smoke_Trail",
     effect          = "Rocket Motor ATGM",
-    reloadmul       = 5,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "SM"} -- Including FL would mean changing the way round classes work.
+    reloadmul       = 5
 } )
 
 -- The BGM-71E, a wire guided missile with medium anti-tank effectiveness.

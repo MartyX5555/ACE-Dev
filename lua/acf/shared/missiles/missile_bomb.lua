@@ -12,9 +12,7 @@ ACF_defineGunClass("BOMB", {
     soundNormal     = " ",
     nothrust        = true,
     
-    reloadmul       = 8,
-    
-    ammoBlacklist   = {"AP", "APHE", "FL"}          -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 

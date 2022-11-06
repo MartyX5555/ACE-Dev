@@ -12,9 +12,7 @@ ACF_defineGunClass("GBU", {
 	soundNormal     = " ",
 	nothrust		= true,
     
-	reloadmul       = 2,
-
-	ammoBlacklist   = {"AP", "APHE", "FL"} 			-- Including FL would mean changing the way round classes work.
+	reloadmul       = 2
 } )
 
 

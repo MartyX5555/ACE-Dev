@@ -13,9 +13,7 @@ ACF_defineGunClass("ASM", {
     soundNormal     = " ",
     effect          = "Rocket Motor Missile1",          -- Small/Medium size missile
 
-    reloadmul       = 8,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "SM"}        -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 

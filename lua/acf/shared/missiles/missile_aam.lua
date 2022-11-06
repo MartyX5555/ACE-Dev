@@ -12,9 +12,7 @@ ACF_defineGunClass("AAM", {
     soundNormal     = " ",
     effect          = "Rocket Motor Missile1",
     year = 1953,
-    reloadmul       = 8,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT","THEAT"} -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 -- The AIM-9 Sidewinder. The perfect choice for dogfights at short range. Although respectable payload, still tiny.

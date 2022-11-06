@@ -11,9 +11,7 @@ ACF_defineGunClass("SAM", {
     soundDistance   = " ",
     soundNormal     = " ",
     effect          = "Rocket Motor",
-    reloadmul       = 8,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT","THEAT"} -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 -- The FIM-92, a lightweight, medium-speed short-range anti-air missile.
