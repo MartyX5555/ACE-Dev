@@ -140,8 +140,10 @@ function ENT:CalcFlight()
     -- If the missile has guidance and can turn
     if TargetPos then
 
+        local missileInac = self.guidanceInac
+
         local Dist      = Pos:Distance(TargetPos)
-        TargetPos       = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
+        TargetPos       = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000)) + Vector(math.random(-missileInac,missileInac),math.random(-missileInac,missileInac),math.random(-missileInac,missileInac))
         local LOS       = (TargetPos - Pos):GetNormalized()
         local LastLOS   = self.LastLOS
         local NewDir    = Dir
@@ -482,6 +484,7 @@ function ENT:ConfigureFlight()
 
     self.FinMultiplier  = Round.finmul
     self.Agility        = GunData.agility or 1
+    self.guidanceInac   = GunData.guidanceInac or 0
     self.CurPos         = BulletData.Pos
     self.CurDir         = BulletData.Flight:GetNormalized()
     self.LastPos        = self.CurPos
@@ -744,7 +747,7 @@ do
         local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )   --Calling the standard damage prop function
 
         -- Detonate if the shot penetrates the casing.
-        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0
+        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0 
 
         if HitRes.Kill then
 
@@ -753,18 +756,15 @@ do
 
             self.Exploding = true
 
-            if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
+            if IsValid(Inflictor) and Inflictor:IsPlayer() then
                 self.Inflictor = Inflictor
             end
 
             --self:ForceDetonate()
 
         end
-
         return HitRes
-
     end
-
 end
 
 hook.Add("CanDrive", "acf_missile_CanDrive", function(ply, ent)
