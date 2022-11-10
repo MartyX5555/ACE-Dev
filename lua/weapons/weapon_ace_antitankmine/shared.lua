@@ -96,10 +96,6 @@ function SWEP:PrimaryAttack()
 			ent:SetVelocity( Forward * 10 )
 			ent:SetOwner( self:GetOwner() )
 			self:GetOwner():AddCleanup( "aceexplosives", ent )
-
-			if CPPI then
-				ent:CPPISetOwner(Entity(0))
-			end
 		end
 	end
 	self.lastFire = CurTime()

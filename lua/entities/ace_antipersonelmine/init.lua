@@ -23,6 +23,21 @@ function ENT:Initialize()
 	if ( IsValid( phys ) ) then phys:Wake() end
 end
 
+function ENT:CanTool(ply, _, toolname)
+	if ((CPPI and self:CPPICanTool(ply, "remover")) or (not CPPI)) and toolname == "remover" then
+		return true
+	end
+
+	return false
+end
+
+function ENT:CanProperty(ply, property)
+	if ((CPPI and self:CPPICanTool(ply, "remover")) or (not CPPI)) and property == "remover" then
+		return true
+	end
+
+	return false
+end
 
 function ENT:Think()
 
