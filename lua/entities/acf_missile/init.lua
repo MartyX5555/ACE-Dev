@@ -264,7 +264,7 @@ function ENT:CalcFlight()
 
         local trace = util.TraceHull(tracedata)
 
-        -- Cframe pls
+        -- We have CFW
         if trace.Hit then
 
             local HitTarget  = trace.Entity
@@ -281,47 +281,80 @@ function ENT:CalcFlight()
             -- Determine if the detected ent is not part of the same contraption that fired this missile.
             elseif HitTarget:GetClass() ~= "acf_missile" then
 
-                local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
-                local RootLauncher = self.Launcher.BaseEntity
+                local IsPart = false
 
-                if RootLauncher:EntIndex() ~= RootTarget:EntIndex() then
+                if CFW then
 
-                    local IsPart = false
+                    local conTarget   = HitTarget:GetContraption() or {}
+                    local conLauncher = self.Launcher:GetContraption() or {}
 
-                    --Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
-                    self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
+                    if conTarget == conLauncher then -- Not required to do anything else.
 
-                    for k, physEnt in pairs(self.physentities) do
-                        
-                        if not IsValid(physEnt) then goto cont end
+                        local mi, ma = HitTarget:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(HitTarget:GetPos(), mi, ma, HitTarget:GetAngles(), 5, Color(0,255,0,100))
 
-                        if physEnt:EntIndex() == RootLauncher:EntIndex() then
-
-                            local mi, ma = physEnt:GetCollisionBounds() 
-                            debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
-
-                            IsPart = true
-                            break
-                        end
-
-                        ::cont::
+                        print("Its part")
+                        IsPart = true
                     end
 
-                    if not IsPart then
+                else -- Press F to pay respects for the low end PCs by this
 
-                        local mi, ma = RootTarget:GetCollisionBounds() 
+                    local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
+                    local RootLauncher = self.Launcher.BaseEntity
+
+                    if RootLauncher:EntIndex() ~= RootTarget:EntIndex() then
+
+                        --Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
+                        self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
+
+                        for k, physEnt in pairs(self.physentities) do
+                            
+                            if not IsValid(physEnt) then goto cont end
+
+                            if physEnt:EntIndex() == RootLauncher:EntIndex() then
+
+                                local mi, ma = physEnt:GetCollisionBounds() 
+                                debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
+
+                                IsPart = true
+                                break
+                            end
+
+                            ::cont::
+                        end
+
+                    end
+                end
+
+                if not IsPart then
+
+                    local mi, ma
+
+                    if CFW then
+
+                        mi, ma = HitTarget:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(HitTarget:GetPos(), mi, ma, HitTarget:GetAngles(), 5, Color(255,0,0,100))
+
+                        mi, ma = self.Launcher:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(self.Launcher:GetPos(), mi, ma, self.Launcher:GetAngles(), 5, Color(255,255,0,100))
+
+                    else
+
+                        mi, ma = RootTarget:GetCollisionBounds() 
                         debugoverlay.BoxAngles(RootTarget:GetPos(), mi, ma, RootTarget:GetAngles(), 5, Color(255,0,0,100))
 
                         mi, ma = RootLauncher:GetCollisionBounds() 
                         debugoverlay.BoxAngles(RootLauncher:GetPos(), mi, ma, RootLauncher:GetAngles(), 5, Color(255,255,0,100))
 
-                        self.HitNorm    = trace.HitNormal
-                        self:DoFlight(trace.HitPos)
-                        self.LastVel    = Vel / DeltaTime
-                        self:Detonate()
-                        return
                     end
+
+                    self.HitNorm    = trace.HitNormal
+                    self:DoFlight(trace.HitPos)
+                    self.LastVel    = Vel / DeltaTime
+                    self:Detonate()
+                    return
                 end
+
             end
         end
 
