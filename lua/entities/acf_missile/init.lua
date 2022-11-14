@@ -297,7 +297,7 @@ function ENT:CalcFlight()
                         IsPart = true
                     end
 
-                else -- Press F to pay respects for the low end PCs by this
+                else -- Press F to pay respects for the low end PCs by this. USE CFW.
 
                     local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
                     local RootLauncher = self.Launcher.BaseEntity
