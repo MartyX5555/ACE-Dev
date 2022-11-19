@@ -201,17 +201,17 @@ function Permissions:Update()
 		end
 	end
 	
-	if currentMode then
+	if IsValid(currentMode) then
 		currentMode:SetText(string.format(currentModeTxt, CurrentPermission))
 		currentMode:SizeToContents()
 	end
 
-	if button then
+	if IsValid(button) then
 		button:SetEnabled( cvarstat and CPPI )
 		button2:SetEnabled( cvarstat and CPPI )
 	end
 
-	if status2 then
+	if IsValid(status2) then
 
 		condition = ""
 
