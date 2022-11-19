@@ -62,7 +62,8 @@ end
 
 
 function this.ClientPanel(Panel)
-	Panel:ClearControls()
+	if not IsValid(Panel) then return end
+
 	if !this.ClientCPanel then this.ClientCPanel = Panel end
 	Panel:SetName("ACF Damage Permissions")
 	
