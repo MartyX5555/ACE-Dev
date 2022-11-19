@@ -186,7 +186,7 @@ end
 
 function Permissions:Update()
 
-	if list then	
+	if IsValid(list) then	
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
