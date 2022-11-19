@@ -65,8 +65,6 @@ end
 function Menu.MakePanel(Panel)
 
 	Permissions:RequestUpdate()
-
-	Panel:ClearControls()
 	
 	if not PermissionModes then return end
 	
