@@ -388,3 +388,12 @@ function ACE_CheckRound( id )
 
     return true
 end
+
+function ACE_CheckGun( gunid )
+
+    local gundata = ACF.Weapons.Guns[ gunid ]
+
+    if not gundata then return false end
+
+    return true
+end

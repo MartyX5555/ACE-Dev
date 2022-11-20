@@ -176,38 +176,40 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
     if not Owner:CheckLimit("_acf_ammo") then return false end
     
     local Ammo = ents.Create("acf_ammo")
-    if not Ammo:IsValid() then return false end
 
-    Ammo:SetAngles(Angle)
-    Ammo:SetPos(Pos)
-    Ammo:Spawn()
-    Ammo:SetPlayer(Owner)
-    Ammo.Owner = Owner
-    
-    Ammo.Model = ACF.Weapons.Ammo[Id].model 
-    Ammo:SetModel( Ammo.Model ) 
-    
-    Ammo:PhysicsInit( SOLID_VPHYSICS )          
-    Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
-    Ammo:SetSolid( SOLID_VPHYSICS )
+    if IsValid(Ammo) then
 
-    Ammo.Id = Id
-    Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+        Ammo:SetAngles(Angle)
+        Ammo:SetPos(Pos)
+        Ammo:Spawn()
+        Ammo:SetPlayer(Owner)
+        Ammo.Owner = Owner
+        
+        Ammo.Model = ACF.Weapons.Ammo[Id].model 
+        Ammo:SetModel( Ammo.Model ) 
+        
+        Ammo:PhysicsInit( SOLID_VPHYSICS )          
+        Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
+        Ammo:SetSolid( SOLID_VPHYSICS )
 
-    Ammo.Ammo       = Ammo.Capacity
-    Ammo.EmptyMass  = ACF.Weapons.Ammo[Ammo.Id].weight or 1
+        Ammo.Id = Id
+        Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
-    Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
+        Ammo.Ammo       = Ammo.Capacity
+        Ammo.EmptyMass  = ACF.Weapons.Ammo[Ammo.Id].weight or 1
 
-    Ammo.LastMass   = 1
-    Ammo:UpdateMass()
+        Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
 
-    Owner:AddCount( "_acf_ammo", Ammo )
-    Owner:AddCleanup( "acfmenu", Ammo )
-    
-    table.insert(ACF.AmmoCrates, Ammo)
-    
-    return Ammo
+        Ammo.LastMass   = 1
+        Ammo:UpdateMass()
+
+        Owner:AddCount( "_acf_ammo", Ammo )
+        Owner:AddCleanup( "acfmenu", Ammo )
+        
+        table.insert(ACF.AmmoCrates, Ammo)
+        
+        return Ammo
+    end
 end
 
 list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
@@ -262,7 +264,7 @@ end
 
 function ENT:UpdateOverlayText()
     
-    local roundType = self.RoundType
+    local roundType = self.BulletData.Type
     
     if table.IsEmpty( self.BulletData or {} ) then  return end
 
@@ -283,14 +285,14 @@ function ENT:UpdateOverlayText()
     
         text = roundType .. " - " .. self.Ammo .. " / " .. self.Capacity
 
-        local RoundData = ACF.RoundTypes[ self.RoundType ]
+        local RoundData = ACF.RoundTypes[ self.BulletData.Type ]
     
         if RoundData and RoundData.cratetxt then
             text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
         end
 
         if self.IsTwoPiece then
-            text = text .. "\nUses 2 piece ammo\n30% reload penalty"
+            text = text .. "\n\nUses 2 piece ammo\n30% reload penalty"
         end
     end
 
@@ -326,18 +328,16 @@ do
 
     function ENT:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
 
-        --Replaces id if its old
-        self.RoundId = BackComp[Data1] or Data1 or "100mmC"
-
-        local GunData = ACF.Weapons.Guns[self.RoundId]
-        if not GunData then  
-            self.RoundId = "100mmC"
-            GunData = ACF.Weapons.Guns[self.RoundId]
+        if not ACE_CheckGun( Data1 ) then
+            Data1 = BackComp[Data1] or "100mmC"
+        end
+        if not ACE_CheckRound( Data2 ) then 
+            Data2 = AmmoComp[ Data2 ] or "AP"
         end
 
-        --Data 1 to 4 are should always be Round ID, Round Type, Propellant lenght, Projectile lenght
-
-        self.RoundType          = AmmoComp[ Data2 ] or ( ACE_CheckRound( Data2 ) and Data2 ) or "AP"   -- Type of round, IE AP, HE, HEAT ...
+        --For some reason, removing this will also break several things with missile code. bad
+        self.RoundId            = Data1
+        self.RoundType          = Data2                               -- Type of round, IE AP, HE, HEAT ...
         self.RoundPropellant    = Data3                     or 0      -- Lenght of propellant
         self.RoundProjectile    = Data4                     or 0      -- Lenght of the projectile
         self.RoundData5         = Data5                     or 0
@@ -373,71 +373,89 @@ do
         self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
         self.BulletData         = self:ConvertData( PlayerData )
 
-        local Efficiency        = 0.1576 * ACF.AmmoMod
-        local vol               = math.floor(self:GetPhysicsObject():GetVolume())
+        PrintTable(self.BulletData)
 
-        self.Volume = vol*Efficiency
+        self:BuildAmmoCapacity()
+
+    end
+
+    local Floor = math.floor
+    local MaxValue = math.max
+
+    function ENT:BuildAmmoCapacity()
+
+        local AmmoGunData = ACF.Weapons.Guns[self.BulletData.Id]
+        local vol         = math.floor(self:GetPhysicsObject():GetVolume())
 
         --ammo capacity start code
-        if self.BulletData.Type ~= "Refill" then   
+        if self.BulletData.Type == "Refill" then   
 
-            --Getting entity´s dimensions
-            local Min,Max = self:GetCollisionBounds()  
-            local Size = (Max - Min)
+            self.Capacity = 99999999
+            self.AmmoMassMax = vol   
 
-            local width = (GunData.caliber)/ACF.AmmoWidthMul/1.6
-            local shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3
+        else
 
-            --Vertical placement
-            local cap1 = (math.floor(Size.z/shellLength) * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
-            --Horizontal Placement 1
-            local cap2 = (math.floor(Size.x/shellLength) * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
-            --Horizontal placement 2
-            local cap3 = (math.floor(Size.y/shellLength) * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
-            --Vertical 2 piece placement
-            local cap4 = math.floor(math.floor(Size.z/shellLength*2)/2 * math.floor(Size.x/width) * math.floor(Size.y/width)) or 1
-            --Horizontal 2 piece  Placement 1
-            local cap5 = math.floor(math.floor(Size.x/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.y/width)) or 1
-            --Horizontal 2 piece  placement 2
-            local cap6 = math.floor(math.floor(Size.y/shellLength*2)/2 * math.floor(Size.z/width) * math.floor(Size.x/width)) or 1
+            --Getting entity's dimensions
+            local Data = ACF.Weapons.Ammo[self.Id]
 
-            local tval1 = math.max(cap1,cap2,cap3)
-            local tval2 = math.max(cap4,cap5,cap6)
+            local Dimensions = Vector( Data.Lenght, Data.Width, Data.Height )
 
-            if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
-                self.Capacity = tval2
-                self.IsTwoPiece = true
+            local GunId = AmmoGunData.gunclass 
+            local WeaponType = ACF.Classes.GunClass[GunId].type
+
+            local width, shellLength
+
+            if WeaponType == "missile" then
+
+                width       = AmmoGunData.caliber
+                shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
             else
-                self.Capacity = tval1
-                self.IsTwoPiece = false
+
+                width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/1.6
+                shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3                
             end
 
-            self.AmmoMassMax = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
+            local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
+            local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width) 
+            local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width) 
+
+            --Split the shell in 2, leave the other piece next to it.
+            local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
+            local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+            local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+
+            local FCap      = MaxValue(cap1,cap2,cap3)
+            local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
+
+            self.IsTwoPiece = false
+
+            if FpieceCap > FCap*1.3 then --only if the 2 piece system allows to have 30% extra shells
+                FCap = FpieceCap
+                self.IsTwoPiece = true
+            end
+
+            self.Capacity       = FCap
+            self.AmmoMassMax    = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
 
             debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
             debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
 
-        -- for refill ammocrates Calculations 
-        else 
-        
-            self.Capacity = 99999999
-            self.AmmoMassMax = vol*1    
-
         -- end capacity calculations
         end 
-    
-        self.Caliber    = GunData.caliber or 1
+        
+        self.Volume     = vol --Used by the missile reload bonus
+        self.Caliber    = AmmoGunData.caliber or 1
         self.RoFMul     = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-        self.RoFMul     = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0) --30% ROF penalty for 2 piece
+        self.RoFMul     = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0)                      --30% ROF penalty for 2 piece
 
         self:SetNWString( "Ammo", self.Ammo )
-        self:SetNWString( "WireName", self.BulletData.Type ~= "Refill" and (GunData.name .. " Ammo") or "ACE Universal Supply Crate" )
-    
-        self.NetworkData = ACF.RoundTypes[self.RoundType].network
+        self:SetNWString( "WireName", self.BulletData.Type ~= "Refill" and (AmmoGunData.name .. " Ammo") or "ACE Universal Supply Crate" )
+
+        self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
         self:NetworkData( self.BulletData )
-    
+
         self:UpdateOverlayText()
-    
+        
     end
 
 end
@@ -585,16 +603,16 @@ function ENT:Think()
         end
 
     -- Completely new, fresh, genius, beautiful, flawless refill system.
-    elseif self.RoundType == "Refill" and self.Load then
-    
+    elseif self.BulletData.Type == "Refill" and self.Load then
+
         for _,Ammo in pairs( ACF.AmmoCrates ) do
-        
-            if Ammo.RoundType ~= "Refill" then
-            
-                local dist = self:GetPos():Distance(Ammo:GetPos())
+
+            if Ammo.BulletData.Type ~= "Refill" then
+
+                local distsqrt = self:GetPos():DistToSqr( Ammo:GetPos() )
                 
-                if dist < ACF.RefillDistance then
-                
+                if distsqrt < ACF.RefillDistance ^ 2 then
+
                     if Ammo.Capacity > Ammo.Ammo then
                     
                         self.SupplyingTo = self.SupplyingTo or {}
@@ -646,7 +664,7 @@ function ENT:RefillEffect( Target )
     umsg.Start("ACF_RefillEffect")
         umsg.Float( self:EntIndex() )
         umsg.Float( Target:EntIndex() )
-        umsg.String( Target.RoundType )
+        umsg.String( Target.BulletData.Type )
     umsg.End()
 end
 

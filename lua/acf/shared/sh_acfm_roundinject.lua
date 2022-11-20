@@ -13,7 +13,9 @@ local function checkIfDataIsMissile(data)
 	local class = guns[data.Id]
 	
 	if not (class and class.gunclass) then
-		oldDisplayData(data)
+		if oldDisplayData then
+			oldDisplayData(data)
+		end
 		return
 	end
 	

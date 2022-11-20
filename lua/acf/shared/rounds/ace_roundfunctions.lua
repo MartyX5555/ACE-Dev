@@ -116,48 +116,48 @@ function ACF_CalcCrateStats( CrateVol, RoundVol )
 	
 	return Cap, CapMul, RoFMul
 end
+do
 
---This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
-function ACE_AmmoCapacity( ProjLenght, PropLenght, Caliber )
+	local Floor = math.floor
+	local MaxValue = math.max
 
-    local Cal = (Caliber)/ACF.AmmoWidthMul/1.6
-	local shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
+	--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
+	function ACE_AmmoCapacity( ProjLenght, PropLenght, Caliber )
 
-	local Lenght = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Lenght
-	local Width = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Width
-	local Height = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].Height
-	
-    local CrateVol = ACF.Weapons.Ammo[acfmenupanel.AmmoData["Id"]].volume
+		--NOTE: MISSILES WILL NOT RESPECT THIS!!
+	    local width = (Caliber)/ACF.AmmoWidthMul/1.6
+		local shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
 
-	local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
-	local RoFMul = (CrateVol > 40250) and (1-(math.log(CrateVol*0.00066)/math.log(2)-4)*0.05) or 1
-	
-	local cap1 = (math.floor(Height/shellLength) * math.floor(Lenght/Cal) * math.floor(Width/Cal)) or 1
-		--Horizontal Placement 1
-	local cap2 = (math.floor(Lenght/shellLength) * math.floor(Height/Cal) * math.floor(Width/Cal)) or 1
-		--Horizontal placement 2
-	local cap3 = (math.floor(Width/shellLength) * math.floor(Height/Cal) * math.floor(Lenght/Cal)) or 1
-		--Vertical 2 piece placement
-	local cap4 = math.floor(math.floor(Height/shellLength*2)/2 * math.floor(Lenght/Cal) * math.floor(Width/Cal)) or 1
-		--Horizontal 2 piece  Placement 1
-	local cap5 = math.floor(math.floor(Lenght/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Width/Cal)) or 1
-		--Horizontal 2 piece  placement 2
-	local cap6 = math.floor(math.floor(Width/shellLength*2)/2 * math.floor(Height/Cal) * math.floor(Lenght/Cal)) or 1
-	
-    local Cap
-	local TwoPiece
-	local tval1 = math.max(cap1,cap2,cap3)
-	local tval2 = math.max(cap4,cap5,cap6)
+		local Id 		 = acfmenupanel.AmmoData.Id
+		local AmmoData   = ACF.Weapons.Ammo[Id]
+	    local CrateVol   = AmmoData.volume
+		local Dimensions = Vector(AmmoData.Lenght,AmmoData.Width,AmmoData.Height)
 
-	if (tval2-tval1)/(tval1+tval2) > 0.3 then --2 piece ammo time, uses 2 piece if 2 piece leads to more than 30% shells
-		Cap = tval2
-		TwoPiece = true
-	else
-		Cap = tval1
-		TwoPiece = false
+	    local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
+	    local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width) 
+	    local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width) 
+
+	    --Split the shell in 2, leave the other piece next to it.
+	    local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
+	    local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+	    local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+
+	    local Cap       = MaxValue(cap1,cap2,cap3)
+	    local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
+
+	    local TwoPiece = false
+
+	    if FpieceCap > Cap*1.3 then  --only if the 2 piece system allows to have 30% extra shells
+	        Cap 	 = FpieceCap
+	        TwoPiece = true
+	    end
+
+		local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
+		local RoFMul = (CrateVol > 40250) and (1-(math.log(CrateVol*0.00066)/math.log(2)-4)*0.05) or 1
+
+	    return Cap, CapMul, RoFMul, TwoPiece
 	end
-    
-    return Cap, CapMul, RoFMul, TwoPiece
+
 end
 
 --General Ammo Capacity diplay shown on ammo config
