@@ -1041,26 +1041,30 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 end
 
 -- Variable name in the table, slider text title, slider decimeals, description text below slider 
-function PANEL:AmmoCheckbox(Name, Title, Desc) 
+function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip ) 
 
    if not acfmenupanel["CData"][Name] then
+
+      acfmenupanel["CData"][Name] = acfmenupanel["CData"][Name]
 
       acfmenupanel["CData"][Name] = vgui.Create( "DCheckBoxLabel" )
       acfmenupanel["CData"][Name]:SetText( Title or "" )
       acfmenupanel["CData"][Name]:SetTextColor( Color( 0, 0, 0) )
       acfmenupanel["CData"][Name]:SizeToContents()
+      acfmenupanel["CData"][Name]:SetChecked(acfmenupanel.AmmoData[Name] or false)
 
-      if acfmenupanel.AmmoData[Name] != nil then
-         acfmenupanel["CData"][Name]:SetChecked(acfmenupanel.AmmoData[Name])
-      else
-         acfmenupanel.AmmoData[Name] = false
+      acfmenupanel["CData"][Name].OnChange = function( value, bval )
+
+         bval = bval and 1 or 0 -- converting to number since booleans sucks in this duty
+
+         acfmenupanel.AmmoData[Name] = tonumber(bval) print(isstring(acfmenupanel.AmmoData[Name]))
+
+         self:UpdateAttribs()
+
       end
 
-      acfmenupanel["CData"][Name].OnChange = function( check, bval )
-         acfmenupanel.AmmoData[Name] = bval
-
-         self:UpdateAttribs( {Name, bval} )
-
+      if Tooltip and Tooltip ~= "" then
+         acfmenupanel["CData"][Name]:SetTooltip( Tooltip )
       end
 
       acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name] )
@@ -1069,9 +1073,9 @@ function PANEL:AmmoCheckbox(Name, Title, Desc)
 
    acfmenupanel["CData"][Name]:SetText( Title )
    
-   
    if not acfmenupanel["CData"][Name.."_text"] and Desc then
 
+      acfmenupanel["CData"][Name.."_text"] = acfmenupanel["CData"][Name.."_text"]
       acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
       acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
       acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )

@@ -24,10 +24,11 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
     length          = 302 * 0.8,
-    caliber         = 8,
+    caliber         = 12.7,
     weight          = 75,                                   -- Don't scale down the weight though!
     rofmod          = 0.5,
     year            = 1953,
+    modeldiameter   = 3 * 2.54,
     rotmult         = 0.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -75,12 +76,12 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
-    length          = 370 * 0.8,
-    caliber         = 12,
+    length          = 370,
+    caliber         = 18,
     weight          = 125,                                  -- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
     year            = 1991,
     rofmod          = 0.35,
-    modeldiameter   = 7.1 * 2.54,                           -- in cm
+    modeldiameter   = 4 * 2.54,                           -- in cm
     rotmult         = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -128,7 +129,7 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
     length          = 396 * 0.6,
-    caliber         = 22,
+    caliber         = 38.1,
     weight          = 463,                                  -- Don't scale down the weight though!
     year            = 1974,
     rofmod          = 0.32,

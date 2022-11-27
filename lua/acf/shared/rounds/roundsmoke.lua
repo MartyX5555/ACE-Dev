@@ -24,12 +24,14 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 	
-	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Tracer       =  PlayerData.Tracer        or 0
+    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	PlayerData.Data6 = math.max(PlayerData.Data6 or 0, 0)
 	PlayerData.Data7 = tonumber(PlayerData.Data7) or 0  --catching some possible errors with string data in legacy dupes
-	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
 	
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 	
@@ -251,15 +253,16 @@ function Round.guicreate( Panel, Table )
 
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
-	
+	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)	
+
 	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Smoke Filler", "")			--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("WPVol",0,0,1000,3, "WP Filler", "")			--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FuseLength",0,0,1000,3, "Timed Fuse", "")
 	
-	acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")			--Tracer checkbox (Name, Title, Desc)
-	
+	ACE_Checkboxes()
+
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "")	--HE Blast data (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "")	--HE Fragmentation data (Name, Desc)
@@ -278,9 +281,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data6 = acfmenupanel.AmmoData.WPVol
 		PlayerData.Data7 = acfmenupanel.AmmoData.FuseLength
-		local Tracer = 0
-		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
-		PlayerData.Data10 = Tracer				--Tracer
+        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
+        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
 	
 	local Data = Round.convert( Panel, PlayerData )
 	
@@ -291,7 +293,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data6", Data.WPVol )
 	RunConsoleCommand( "acfmenu_data7", Data.FuseLength )
-	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 	
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
@@ -302,16 +305,17 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:AmmoSlider("WPVol",Data.WPVol,Data.MinFillerVol,Data.MaxFillerVol,3, "WP Filler Volume", "WP Filler Mass : "..(math.floor(Data.WPMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FuseLength",Data.FuseLength,0,10,1, "Fuse Time", (Data.FuseLength).." s")
 	
-	acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )			--Tracer checkbox (Name, Title, Desc)
+	ACE_Checkboxes( Data )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
-	---acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/1000).." m\n")	--Proj muzzle velocity (Name, Desc)
-	---acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." ---g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
-	
+
 end
 
 list.Set( "SPECSRoundTypes", "SM", Round ) 
 list.Set( "ACFRoundTypes", "SM", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "SM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

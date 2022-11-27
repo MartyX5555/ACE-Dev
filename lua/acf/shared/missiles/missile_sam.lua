@@ -22,10 +22,10 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
     effect          = "Rocket Motor FFAR",                      --Tiny motor for tiny rocket
     gunclass        = "SAM",
     rack            = "1x FIM-92",                              -- Which rack to spawn this missile on?
-    length          = 66,
+    length          = 90 * 2,
     caliber         = 11,
     weight          = 20,                                       -- 15.1,    -- Don't scale down the weight though!
-    modeldiameter   = 6.6,                                      -- in cm
+    modeldiameter   = 3,                                      -- in cm
     year            = 1978,
     rofmod          = 0.15,
     rotmult         = 0.1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
@@ -33,7 +33,7 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
     round = {
         model           = "models/missiles/fim_92.mdl",
         rackmdl         = "models/missiles/fim_92_folded.mdl",
-        maxlength       = 195,
+        maxlength       = 125,
         casing          = 0.5,                                  -- thickness of missile casing, cm
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.5,                                  -- motor mass - motor casing
@@ -74,10 +74,10 @@ ACF_defineGun("Mistral SAM", {                                -- id
     effect          = "Rocket Motor FFAR",                      -- Tiny motor for tiny rocket
     gunclass        = "SAM",
     rack            = "2x FIM-92",                              -- Which rack to spawn this missile on?
-    length          = 40,
+    length          = 90 * 2,
     caliber         = 11,
     weight          = 19.7,                                      -- 15.1,    -- Don't scale down the weight though!
-    modeldiameter   = 6.6,                                      -- in cm
+    modeldiameter   = 3,                                      -- in cm
     year            = 1974,
     rofmod          = 0.15,
     rotmult         = 0.25,
@@ -85,7 +85,7 @@ ACF_defineGun("Mistral SAM", {                                -- id
     round = {
         model           = "models/missiles/fim_92_folded.mdl",
         rackmdl         = "models/missiles/fim_92_folded.mdl",
-        maxlength       = 195,
+        maxlength       = 130,
         casing          = 0.01,                                 -- thickness of missile casing, cm
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.5,                                  -- motor mass - motor casing
@@ -123,18 +123,19 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
     effect          = "Rocket Motor",
     gunclass        = "SAM",
     rack            = "1x Strela-1",                            -- Which rack to spawn this missile on?
-    length          = 60,
+    length          = 114 * 2,
     caliber         = 12,
     weight          = 72,                                      -- 15.1,    -- Don't scale down the weight though!
     modeldiameter   = 12,                                       -- in cm
     year            = 1960,
     rofmod          = 0.3,
+    modeldiameter   = 10,
     rotmult         = 1,
 
     round = {
         model           = "models/missiles/9m31.mdl",
         rackmdl         = "models/missiles/9m31f.mdl",
-        maxlength       = 165,
+        maxlength       = 190,
         casing          = 0.05,                                 -- thickness of missile casing, cm
         armour          = 10,                                   -- effective armour thickness of casing, in mm
         propweight      = 1,                                    -- motor mass - motor casing
@@ -175,17 +176,18 @@ ACF_defineGun("9M311 SAM", {                                        -- id
     effect      = "Rocket Motor",
     gunclass    = "SAM",
     rack        = "1x 9m311",                                   -- Which rack to spawn this missile on?
-    length      = 109,                                          -- Used for the physics calculations
+    length      = 302 * 0.8,                                          -- Used for the physics calculations
     caliber     = 12,
     weight      = 71,                                           -- Don't scale down the weight though!
     year        = 1982,
     rofmod      = 0.3,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1,
 
     round = {
         model           = "models/missiles/aim9.mdl",
         rackmdl         = "models/missiles/aim9.mdl",
-        maxlength       = 140,
+        maxlength       = 250,
         casing          = 0.1,                                  -- thickness of missile casing, cm
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 0.8,                                  -- motor mass - motor casing

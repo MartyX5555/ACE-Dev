@@ -345,8 +345,8 @@ do
         self.RoundData7         = Data7                     or 0
         self.RoundData8         = Data8                     or 0
         self.RoundData9         = Data9                     or 0
-        self.RoundData10        = Data10                    or 0
-        self.RoundData11        = Data11                    or 0   
+        self.RoundData10        = tonumber(Data10)          or 0 -- Tracer. For some reason, both Data10 and Data are sent as strings. Needs to review this.
+        self.RoundData11        = tonumber(Data11)          or 0 -- Two Piece check
         self.RoundData12        = Data12                    or 0   
         self.RoundData13        = Data13                    or 0   
         self.RoundData14        = Data14                    or 0   
@@ -363,8 +363,8 @@ do
         PlayerData.Data7        = self.RoundData7 
         PlayerData.Data8        = self.RoundData8 
         PlayerData.Data9        = self.RoundData9 
-        PlayerData.Data10       = self.RoundData10 
-        PlayerData.Data11       = self.RoundData11  
+        PlayerData.Tracer       = self.RoundData10
+        PlayerData.TwoPiece     = self.RoundData11  
         PlayerData.Data12       = self.RoundData12  
         PlayerData.Data13       = self.RoundData13  
         PlayerData.Data14       = self.RoundData14  
@@ -372,8 +372,6 @@ do
 
         self.ConvertData        = ACF.RoundTypes[self.RoundType].convert
         self.BulletData         = self:ConvertData( PlayerData )
-
-        PrintTable(self.BulletData)
 
         self:BuildAmmoCapacity()
 
@@ -385,15 +383,22 @@ do
     function ENT:BuildAmmoCapacity()
 
         local AmmoGunData = ACF.Weapons.Guns[self.BulletData.Id]
-        local vol         = math.floor(self:GetPhysicsObject():GetVolume())
+        local vol         = Floor(self:GetPhysicsObject():GetVolume())
+        local WireName    = "No data"
+        local Capacity
+        local AmmoMaxMass
 
         --ammo capacity start code
         if self.BulletData.Type == "Refill" then   
 
-            self.Capacity = 99999999
-            self.AmmoMassMax = vol   
+            Capacity = 99999999
+            AmmoMaxMass = vol   
+
+            WireName = "ACE Universal Supply Crate" 
 
         else
+
+            self.IsTwoPiece = false
 
             --Getting entity's dimensions
             local Data = ACF.Weapons.Ammo[self.Id]
@@ -407,7 +412,7 @@ do
 
             if WeaponType == "missile" then
 
-                width       = AmmoGunData.caliber
+                width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
                 shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
             else
 
@@ -427,29 +432,36 @@ do
             local FCap      = MaxValue(cap1,cap2,cap3)
             local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
 
-            self.IsTwoPiece = false
-
-            if FpieceCap > FCap*1.3 then --only if the 2 piece system allows to have 30% extra shells
-                FCap = FpieceCap
-                self.IsTwoPiece = true
+            --Why would you need the 2 piece for rounds below 50mm? Unless you want legos there....
+            if AmmoGunData.caliber >= 5 then
+                if FpieceCap > FCap and self.BulletData.TwoPiece > 0 then
+                    FCap = FpieceCap
+                    self.IsTwoPiece = true
+                end
             end
 
-            self.Capacity       = FCap
-            self.AmmoMassMax    = ((self.BulletData.ProjMass + self.BulletData.PropMass) * self.Capacity * 2) or 1 -- why *2 ?
+            Capacity    = FCap
+            AmmoMaxMass = ( (self.BulletData.ProjMass + self.BulletData.PropMass) * Capacity ) or 1
 
-            debugoverlay.Box(self:GetPos()+Vector(0,0,10),Vector(0,0,0), Vector(shellLength,width,width), 10, Color(255,0,0,100))
-            debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Bullet Dimensions", 10)
+            debugoverlay.Box(self:GetPos()+Vector(0,0,50),-Vector(shellLength/2,width/2,width/2), Vector(shellLength/2,width/2,width/2), 20, Color(255,0,0,100))
+            debugoverlay.Text(self:GetPos()+Vector(0,0,50), "Bullet Dimensions", 20)
+            debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Mass per Round: "..(self.BulletData.ProjMass + self.BulletData.PropMass).."kgs", 20 )
+            debugoverlay.Text(self:GetPos()+Vector(0,0,10), "Total Ammo Mass: "..self.AmmoMassMax.."kgs", 20 )
+
+            WireName = AmmoGunData.name .. " Ammo"
 
         -- end capacity calculations
         end 
         
-        self.Volume     = vol --Used by the missile reload bonus
-        self.Caliber    = AmmoGunData.caliber or 1
-        self.RoFMul     = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-        self.RoFMul     = self.RoFMul + (((self.IsTwoPiece) and 0.3) or 0)                      --30% ROF penalty for 2 piece
+        self.AmmoMassMax = AmmoMaxMass
+        self.Capacity    = Capacity
+        self.Volume      = vol --Used by the missile reload bonus
+        self.Caliber     = AmmoGunData.caliber or 1
+        self.RoFMul      = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
+        self.RoFMul      = self.RoFMul + (self.IsTwoPiece and 0.3 or 0)                          --30% ROF penalty for 2 piece
 
         self:SetNWString( "Ammo", self.Ammo )
-        self:SetNWString( "WireName", self.BulletData.Type ~= "Refill" and (AmmoGunData.name .. " Ammo") or "ACE Universal Supply Crate" )
+        self:SetNWString( "WireName", WireName )
 
         self.NetworkData = ACF.RoundTypes[self.BulletData.Type].network
         self:NetworkData( self.BulletData )

@@ -22,11 +22,12 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
     rack        = "1x BGM-71E",                                 -- Which rack to spawn this missile on?
-    length      = 46,                                           -- Used for the physics calculations
+    length      = 79 * 2,                                           -- Used for the physics calculations
     caliber     = 13,
     weight      = 76.4,                                         -- Don't scale down the weight though!
     year        = 1970,
     rofmod      = 0.55,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -70,12 +71,13 @@ ACF_defineGun("9M133 ASM", {                                    -- id
     effect          = "Rocket Motor ATGM",
     gunclass        = "ATGM",
     rack            = "1x Kornet",                              -- Which rack to spawn this missile on?
-    length          = 66,
+    length          = 74 * 2,
     caliber         = 15.2,
     weight          = 29,                                       -- Don't scale down the weight though!
     modeldiameter   = 15.2,                                     -- in cm
     year = 1994,
     rofmod = 0.7,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -122,11 +124,12 @@ ACF_defineGun("AT-3 ASM", { --id
     effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xAT3RK",                                    -- Which rack to spawn this missile on?
-    length      = 43,                                           -- Used for the physics calculations
+    length      = 42 * 2,                                           -- Used for the physics calculations
     caliber     = 13,
     weight      = 12.5,                                           -- Don't scale down the weight though!
     year        = 1969,
     rofmod      = 0.4,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -174,12 +177,13 @@ ACF_defineGun("Ataka ASM", { --id
     effect          = "Rocket Motor ATGM",
     gunclass        = "ATGM",
     rack            = "1x Ataka",                               -- Which rack to spawn this missile on?
-    length          = 85,
+    length          = 92 * 2,
     caliber         = 13,
     weight          = 198,                                      -- Don't scale down the weight though!
     modeldiameter   = 17.2 * 1.27,                              -- in cm
     year            = 1984,
     rofmod          = 0.6,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -227,11 +231,12 @@ ACF_defineGun("AT-2 ASM", { --id
     effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xRK",                                       -- Which rack to spawn this missile on?
-    length      = 55,                                           -- Used for the physics calculations
+    length      = 62 * 2,                                           -- Used for the physics calculations
     caliber     = 16, 
     weight      = 27,                                          -- Don't scale down the weight though!
     year        = 1969,
     rofmod      = 0.4,
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -278,11 +283,12 @@ ACF_defineGun("FGM-148 ASM", {
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
     rack        = "1x Javelin",                                 -- Which rack to spawn this missile on?
-    length      = 110,                                          -- Used for the physics calculations
+    length      = 51 * 2,                                          -- Used for the physics calculations
     caliber     = 12.7,                                         -- caliber
     weight      = 11.8,                                         -- Don't scale down the weight though!  --was 97.2
     year        = 1989,                                         -- year
     rofmod      = 0.74,                                         -- Rate Of Fire    --was 1.45
+    modeldiameter   = 3 * 2.54,
     rotmult     = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -319,12 +325,3 @@ ACF_defineGun("FGM-148 ASM", {
 
     prepush     = false,                                        -- Additional push and delaying motor ignition
 } )
-
-
-ACF.Weapons     = list.Get("ACFEnts")
-ACF.Classes     = list.Get("ACFClasses")
-ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds classes from clientside with just an integer
-
-ACE.Armors      = list.Get("ACE_MaterialTypes")
-ACE.GSounds     = list.Get("ACESounds")

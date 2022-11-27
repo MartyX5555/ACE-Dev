@@ -74,11 +74,13 @@ function TOOL:LeftClick( trace )
 	local DupeClass = duplicator.FindEntityClass( TypeId["ent"] ) 
 	
 	if DupeClass then
+
 		local ArgTable = {}
-			ArgTable[2] = trace.HitNormal:Angle():Up():Angle() 
-			ArgTable[1] = trace.HitPos + trace.HitNormal*50
-			debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
-			debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
+		ArgTable[2] = trace.HitNormal:Angle():Up():Angle() 
+		ArgTable[1] = trace.HitPos + trace.HitNormal*50
+
+		debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
+		debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
 			
 		local ArgList = list.Get("ACFCvars")
 		
@@ -93,13 +95,16 @@ function TOOL:LeftClick( trace )
 			ACF_SendNotify( ply, success, msg )
 		else
 			-- Using the Duplicator entity register to find the right factory function
-			local Ent = DupeClass.Func( ply, unpack( ArgTable ) )
+			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
 			
+			--PrintTable(DupeClass)
+			--PrintTable(ArgTable)
+
 			Ent:Activate()
 			Ent:DropToFloor()
 			Ent:GetPhysicsObject():EnableMotion( false )
-			
+
 			undo.Create( ACF.Weapons[Type][Id]["ent"] )
 				undo.AddEntity( Ent )
 				undo.SetPlayer( ply )
