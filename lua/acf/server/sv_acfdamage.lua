@@ -1026,7 +1026,7 @@ end
 
 do
     -- Config
-    local AmmoExplosionScale = 0.25
+    local AmmoExplosionScale = 0.5
     local FuelExplosionScale = 0.005
 
     --converts what would be multiple simultaneous cache detonations into one large explosion
