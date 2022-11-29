@@ -607,6 +607,8 @@ function ENT:AddMissile()
     missile.Launcher        = self
     missile.ForceTdelay     = self.ForceTdelay
     
+    missile.ContrapId = ACF_Check( self ) and self.ACF.ContraptionId or 1
+
     if CPPI then
         missile:CPPISetOwner(ply)
     end
