@@ -803,6 +803,16 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
     return HitRes
 end
 
+--helper function to replace ENT:ApplyForceOffset()
+--Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
+local m_insq = 1/(39.37)^2
+local function ACF_ApplyForceOffset(Phys, Force, Pos)
+    Phys:ApplyForceCenter(Force)
+    local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
+    local angf = off:Cross(Force)*m_insq*360/(2*3.1416)
+    Phys:ApplyTorqueCenter(angf)
+end
+
 --Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE )
 
@@ -823,25 +833,19 @@ function ACF_KEShove(Target, Pos, Vec, KE )
     if not Target.acfphystotal then return end 
 
     local physratio = Target.acfphystotal / Target.acftotal
-    
-    if isvector(Pos) then
         
-        local Scaling = 1
+    local Scaling = 1
 
-        --Scale down the offset relative to chassis if the gun is parented
-        if Target:EntIndex() ~= parent:EntIndex() then
-            Scaling = 87.5
-        end
-
-        local Local     = parent:WorldToLocal(Pos) / Scaling
-        local Res       = Local + phys:GetMassCenter()
-        Pos             = parent:LocalToWorld(Res)
-
-        phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
-
-    else
-        phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
+    --Scale down the offset relative to chassis if the gun is parented
+    if Target:EntIndex() ~= parent:EntIndex() then
+        Scaling = 87.5
     end
+
+    local Local     = parent:WorldToLocal(Pos) / Scaling
+    local Res       = Local + phys:GetMassCenter()
+    Pos             = parent:LocalToWorld(Res)
+
+    ACF_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos )
 end
 
 -- helper function to process children of an acf-destroyed prop
