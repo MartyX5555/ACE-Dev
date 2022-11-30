@@ -117,6 +117,6 @@ function ACFFuelTankGUIUpdate( Table )
         acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
     end
     acfmenupanel.CData.DisplayModel:SetModel( Tanks[TankID].model )
-    acfmenupanel:CPanelText("FuelTankParentable", "\nThis entity can be parented.\n", "DermaDefaultBold")
+    --acfmenupanel:CPanelText("FuelTankParentable", "\nThis entity can be parented.\n", "DermaDefaultBold")
 
 end

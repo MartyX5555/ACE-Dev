@@ -184,9 +184,12 @@ function Round.guicreate( Panel, Table )
 	
 	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.FLR )
 	
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
+
 	acfmenupanel:CPanelText("BonusDisplay", "")
 
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
+	acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)	
 	

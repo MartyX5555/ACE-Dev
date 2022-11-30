@@ -98,10 +98,6 @@ function ACFGearboxGUICreate( Table )
     acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : "..(Table.maxtq).."n-m / "..math.Round(Table.maxtq*0.73).."ft-lb")
     acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
     
-    if Table.parentable then
-        acfmenupanel:CPanelText("Parentable", "\nThis gearbox can be parented without welding.\n","DermaDefaultBold")
-    end
-    
     if Table.auto then
         acfmenupanel:CPanelText( "ShiftPointGen", "\nShift Point Generator:" )
         
