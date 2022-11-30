@@ -857,13 +857,6 @@ do
                 self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
                 self:CreateShell( self.BulletData )
                 
-                local PhysObj = self:GetPhysicsObject()
-                local HasPhys = not self:GetParent():IsValid()  --No parented
-
-                --nil is due to using applyforcecenter in KEShove function, so masscenter no longer required.
-
-                --local LocalPos = HasPhys and nil or self:GetPos()
-                --local LocalPos = not HasPhys and self:GetPos() or nil
                 local Dir = -self:GetForward()
                 local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
 
