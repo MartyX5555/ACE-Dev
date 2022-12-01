@@ -347,10 +347,12 @@ end
 function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.HEATFS )
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
 	
 	acfmenupanel:CPanelText("BonusDisplay", "")
 	
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
+	acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
 	
 	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)

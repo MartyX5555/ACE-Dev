@@ -134,11 +134,9 @@ do
 		local width, shellLength
 
 		if ClassData.type == "missile" then
-
             width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
             shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
 		else
-
 	    	width 		= (Caliber)/ACF.AmmoWidthMul/1.6
 			shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
 		end
@@ -178,24 +176,22 @@ do
 	end
 
 	--General Ammo Capacity diplay shown on ammo config
-	function ACE_AmmoCapacityDisplay( Data )
+	function ACE_AmmoCapacityDisplay(Data)
 
 		local Cap, CapMul, RoFMul, TwoPiece = ACE_AmmoCapacity( Data )
 
-		local plur = 'Contains '..Cap..' round'
+		local plur = ""..Cap..' round'
 		
 		if Cap > 1 then
-		    plur = 'Contains '..Cap..' rounds'
+		    plur = ""..Cap..' rounds'
 		end
 		
-		local bonustxt = "Crate info: +"..(math.Round((CapMul-1)*100,1)).."% capacity, "..(RoFMul < 1 and "+" or "")..(math.Round((RoFMul-1)*-100,1)).."% RoF\n"..plur
+		local bonustxt = "Storage: "..plur
 		
 		if TwoPiece then	
 			bonustxt = bonustxt..'. Uses 2 piece ammo.'	
 		end
-		
 		acfmenupanel:CPanelText("BonusDisplay", bonustxt )
-
 	end
 
 	function ACE_AmmoRangeStats( MuzzleVel, DragCoef, ProjMass, PenArea, LimitVel )
@@ -228,12 +224,14 @@ do
 			if not acfmenupanel then return end
 
 			if not Data or not PlayerData then
+				acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
 
-				acfmenupanel:CPanelText("BonusDisplay", "")
+				acfmenupanel:CPanelText("BonusDisplay", "\n")
 				acfmenupanel:CPanelText("Desc", "")
-				acfmenupanel:AmmoStats( 0,0,0,0 )
+				acfmenupanel:AmmoStats( 0, 0, 0, 0 )
 
 			else
+				acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
 
 				ACE_AmmoCapacityDisplay( Data )
     			acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)
@@ -252,13 +250,13 @@ do
 
 			if not Data then
 
-			    acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "", Trtip)                           	--Tracer checkbox (Name, Title, Desc)
+			    acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: ", "", Trtip)                           	--Tracer checkbox (Name, Title, Desc)
 			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip )
 			    acfmenupanel:CPanelText("RicoDisplay", "")                                  		--estimated rico chance
 			    acfmenupanel:CPanelText("PenetrationDisplay", "")                           		--Proj muzzle penetration (Name, Desc)
 			else
 
-			    acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
+			    acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
 			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip ) 
 
 			    local None, Mean, Max = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
@@ -274,10 +272,10 @@ do
 			if not acfmenupanel then return end
 
 			if not Data then
-			    acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "", Trtip)                           	--Tracer checkbox (Name, Title, Desc)
+			    acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: ", "", Trtip)                           	--Tracer checkbox (Name, Title, Desc)
 			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip )
 			else
-		    	acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
+		    	acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
 		    	acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip ) 	
 			end
 		end

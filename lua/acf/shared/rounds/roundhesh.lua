@@ -194,9 +194,12 @@ function Round.guicreate( Panel, Table )
 	
 	acfmenupanel:AmmoSelect(ACF.AmmoBlacklist.HESH)
 	
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
+	
 	acfmenupanel:CPanelText("BonusDisplay", "")
 
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
+	acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
 	
 	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)

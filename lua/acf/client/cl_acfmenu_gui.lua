@@ -1089,9 +1089,9 @@ function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip )
    
 end
 
-function PANEL:AmmoStats(RoundLenght, MaxTotalLenght ,MuzzleVel ,MaxPen)
-
-    acfmenupanel:CPanelText("AmmoStats", "Round Length : "..RoundLenght.."/"..MaxTotalLenght.." cms\n\nMuzzle Velocity : "..MuzzleVel.." m\\s\nMax penetration : "..MaxPen.." mm RHA") --Total round length (Name, Desc)
+function PANEL:AmmoStats(RoundLenght, MaxTotalLenght, MuzzleVel, MaxPen)
+   acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
+   acfmenupanel:CPanelText("AmmoStats", "Round Length: "..RoundLenght.."/"..MaxTotalLenght.." cms\nMuzzle Velocity: "..MuzzleVel.." m\\s\nMax penetration: "..MaxPen.." mm RHA") --Total round length (Name, Desc)
    
 end
 
