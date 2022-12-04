@@ -195,7 +195,6 @@ end
 
 include("acf/shared/sh_ace_particles.lua")
 include("acf/shared/sh_ace_sound_loader.lua")
-include("autorun/acf_missile/folder.lua")
 include("acf/shared/sh_ace_functions.lua")
 include("acf/shared/sh_ace_loader.lua")
 include("acf/shared/sh_ace_concommands.lua")
@@ -441,8 +440,5 @@ do
 end
 
 cleanup.Register( "aceexplosives" )
-
-AddCSLuaFile("autorun/acf_missile/folder.lua")
-include("autorun/acf_missile/folder.lua")
 
 print('[ACE | INFO]- Done!')

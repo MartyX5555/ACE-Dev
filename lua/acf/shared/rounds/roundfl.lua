@@ -9,7 +9,7 @@ Round.type  = "Ammo"                                -- Tells the spawn menu what
 Round.name  = "[FL] - "..ACFTranslation.ShellFL[1]  -- Human readable name
 Round.model = "models/munitions/dart_100mm.mdl"     -- Shell flight model
 Round.desc  = ACFTranslation.ShellFL[2]
-Round.netid = 8                                     -- Unique ammotype ID for network transmission
+Round.netid = 10                                     -- Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
     

@@ -8,9 +8,6 @@ ACF.Guidance = ACF.Guidance or {}
 local this = ACF.Guidance[ClassName] or inherit.NewSubOf(ACF.Guidance.Wire)
 ACF.Guidance[ClassName] = this
 
----
-
-
 this.Name = ClassName
 
 --Currently acquired target.
@@ -54,8 +51,6 @@ end
 
 function this:Configure(missile)
     
-    self:super().Configure(self, missile)
-    
     self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
     self.ViewConeCos = math.cos(math.rad(self.ViewCone))
     self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
@@ -96,11 +91,6 @@ end
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
 
-    self:PreGuidance(missile)
-    
-    local override = self:ApplyOverride(missile)
-    if override then return override end
-
     self:CheckTarget(missile)
     
     if not IsValid(self.Target) or self.Target:GetParent():IsValid() then 
@@ -110,7 +100,7 @@ function this:GetGuidance(missile)
     local missilePos        = missile:GetPos()
     local missileForward    = missile:GetForward()
     local targetPhysObj     = self.Target:GetPhysicsObject()
-    local targetPos         = self.Target:GetPos()
+    local targetPos         = self.Target:WorldSpaceCenter()
 
     local mfo               = missile:GetForward()
     local mdir              = (targetPos - missilePos):GetNormalized()
@@ -126,28 +116,13 @@ function this:GetGuidance(missile)
     
 end
 
-function this:ApplyOverride(missile)
-    
-    if self.Override then
-    
-        local ret = self.Override:GetGuidanceOverride(missile, self)
-        
-        if ret then     
-            ret.ViewCone = self.ViewCone
-            ret.ViewConeRad = math.rad(self.ViewCone)
-            return ret
-        end
-    end
-end
 
 function this:CheckTarget(missile)
 
-    if not (self.Target or self.Override) then  
-        local target = self:AcquireLock(missile)
+    local target = self:AcquireLock(missile)
 
-        if IsValid(target) then 
-            self.Target = target
-        end
+    if IsValid(target) then 
+        self.Target = target
     end
 end
 
@@ -209,12 +184,11 @@ end
 
 function this:GetWhitelistedEntsInCone(missile)
 
-    local missilePos = missile:GetPos()
-    local missileForward = missile:GetForward()
-    local minDot = math.cos(math.rad(self.SeekCone))
+    local missilePos        = missile:GetPos()
+    local missileForward    = missile:GetForward()
+    local minDot            = math.cos(math.rad(self.SeekCone))
     
-    --local found = ents.FindInCone(missilePos, missileForward, 50000, self.SeekCone)
-    local found = JankCone(missilePos, missileForward, 50000, self.SeekCone)
+    local found             = JankCone(missilePos, missileForward, 50000, self.SeekCone)
     
     local foundAnim = {}
     local foundEnt
@@ -224,50 +198,34 @@ function this:GetWhitelistedEntsInCone(missile)
     for i, foundEnt in pairs(found) do
     
         if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then goto cont end
-        local foundLocalPos = foundEnt:GetPos() - missilePos    
-        local foundDistSqr = foundLocalPos:LengthSqr()
+
+        local foundLocalPos     = foundEnt:GetPos() - missilePos    
+        local foundDistSqr      = foundLocalPos:LengthSqr()
         
-        if foundDistSqr < minDistSqr then goto cont end     
+        if foundDistSqr < minDistSqr then goto cont end  
+
         local foundDot = foundLocalPos:GetNormalized():Dot(missileForward)
     
         if foundDot < minDot then goto cont end
+
         table.insert(foundAnim, foundEnt)
-        
-        model = foundEnt:GetModel()
-        --print(model)
         
         ::cont::
     end
     
     return foundAnim
-    
 end
-
-
-
 
 function this:HasLOSVisibility(ent, missile)
 
-    local traceArgs = 
-    {
-        start = missile:GetPos(),
-        endpos = ent:GetPos(),
-        mask = MASK_SOLID_BRUSHONLY,
-        filter = {missile, ent},
-        mins = Vector(0,0,0),
-        maxs = Vector(0,0,0)
-    }
-    
-    local res = util.TraceHull(traceArgs)
-    
-    --debugoverlay.Line( missile:GetPos(), ent:GetPos(), 15, Color(res.Hit and 255 or 0, res.Hit and 0 or 255, 0), true )
-    
-    return not res.Hit
+    local Trdata = {}
+    Trdata.start  = missile:GetPos()
+    Trdata.endpos = ent:GetPos()
+    Trdata.mask   = MASK_SOLID_BRUSHONLY
+    local Tr = util.TraceLine(Trdata)
 
+    return not Tr.Hit
 end
-
-
-
 
 -- Return the first entity found within the seek-tolerance, or the entity within the seek-cone closest to the seek-tolerance.
 function this:AcquireLock(missile)

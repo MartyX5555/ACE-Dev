@@ -31,22 +31,8 @@ function this:Configure(missile)
 end
 
 function this:GetGuidance(missile)
-
-	self:PreGuidance(missile)
-
-	return self:ApplyOverride(missile) or {}
-	
+	return {}
 end
-
-function this:PreGuidance(missile)
-
-end
-
-
-function this:ApplyOverride(missile)
-
-end
-
 
 function this:GetDisplayConfig(Type)
 	return {}

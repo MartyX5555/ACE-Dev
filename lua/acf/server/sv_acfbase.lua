@@ -64,7 +64,7 @@ function ACF_Activate( Entity , Recalc )
     local PhysObj = Entity:GetPhysicsObject()
 
     if PhysObj:GetMesh() then Count = #PhysObj:GetMesh() end
-    if PhysObj:IsValid() and Count and Count>100 then
+    if PhysObj:IsValid() and Count and Count > 100 then
 
         if not Entity.ACF.Area then
             Entity.ACF.Area = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107

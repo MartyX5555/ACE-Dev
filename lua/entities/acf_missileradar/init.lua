@@ -258,8 +258,17 @@ function ENT:ScanForMissiles()
     
     for k, missile in pairs(missiles) do
     
+        local LOSdata = {}
+        LOSdata.start = thisPos
+        LOSdata.endpos = missile.CurPos
+        LOSdata.collisiongroup = COLLISION_GROUP_WORLD
+
+        local TrLOS = util.TraceLine(LOSdata)
+
+        if TrLOS.Hit then goto cont end
+
         i = i + 1
-    
+
         entArray[i] = missile
         posArray[i] = missile.CurPos
         velArray[i] = missile.LastVel
@@ -270,6 +279,8 @@ function ENT:ScanForMissiles()
             closest = missile.CurPos
             closestSqr = curSqr
         end
+
+        ::cont::
     end
     
     if not closest then closestSqr = 0 end

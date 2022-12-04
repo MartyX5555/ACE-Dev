@@ -9,7 +9,7 @@ Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name  = "[FLR] - "..ACFTranslation.ShellFLR[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc  = ACFTranslation.ShellFLR[2]
-Round.netid = 8 --Unique ammotype ID for network transmission
+Round.netid = 11 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
 
@@ -44,19 +44,21 @@ function Round.convert( Crate, PlayerData )
     local ServerData    = {}
     local GUIData       = {}
     
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Tracer       =  PlayerData.Tracer        or 0
+    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
     if not PlayerData.Data5 then PlayerData.Data5 = 0 end
-    if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
     
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
-    
+
     --Shell sturdiness calcs
     Data.ProjMass           = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
     Data.MuzzleVel          = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 
     local Energy            = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    local MaxVol            = ACF_RoundShellCapacity( Energy.Momentum, Data.FrAera, Data.Caliber, Data.ProjLength )
+    local MaxVol            = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 
     GUIData.MinFillerVol    = 0
     GUIData.MaxFillerVol    = math.min(GUIData.ProjVolume,MaxVol*0.9)
@@ -68,8 +70,8 @@ function Round.convert( Crate, PlayerData )
     
     --Random bullshit left
     Data.ShovePower         = 0.1
-    Data.PenAera            = Data.FrAera^ACF.PenAreaMod
-    Data.DragCoef           = ((Data.FrAera/375)/Data.ProjMass)
+    Data.PenAera            = Data.FrArea^ACF.PenAreaMod
+    Data.DragCoef           = ((Data.FrArea/375)/Data.ProjMass)
     Data.LimitVel           = 700                                       --Most efficient penetration speed in m/s
     Data.KETransfert        = 0.1                                   --Kinetic energy transfert to the target for movement purposes
     Data.Ricochet           = 75                                        --Base ricochet angle

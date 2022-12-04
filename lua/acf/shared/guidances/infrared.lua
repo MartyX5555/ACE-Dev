@@ -47,7 +47,7 @@ end
 
 function this:Configure(missile)
 
-    self:super().Configure(self, missile)
+    --self:super().Configure(self, missile)
     
     self.ViewCone           = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
     self.ViewConeCos        = (math.cos(math.rad(self.ViewCone)))*1.2
@@ -59,21 +59,14 @@ end
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
 
-    self:PreGuidance(missile)
-    
-    local override = self:ApplyOverride(missile)
-    if override then return override end
-
     self:CheckTarget(missile)
-    
-    if not IsValid(self.Target) then 
-        return {} 
-    end
 
-    local missilePos = missile:GetPos()
-    local missileForward = missile:GetForward()
-    local targetPhysObj = self.Target:GetPhysicsObject()
-    local targetPos = (self.HeatPos or self.Target:GetPos()) + Vector(0,0,25)
+    if not IsValid(self.Target) then return {} end
+
+    local missilePos        = missile:GetPos()
+    local missileForward    = missile:GetForward()
+    local targetPhysObj     = self.Target:GetPhysicsObject()
+    local targetPos         = self.HeatPos or self.Target:WorldSpaceCenter()
 
     local mfo       = missile:GetForward()
     local mdir      = (targetPos - missilePos):GetNormalized()
@@ -85,22 +78,6 @@ function this:GetGuidance(missile)
     else
         self.TargetPos = targetPos
         return {TargetPos = targetPos, ViewCone = self.ViewCone*1.3}
-    end
-
-end
-
-function this:ApplyOverride(missile)
-    
-    if self.Override then
-        
-        local ret = self.Override:GetGuidanceOverride(missile, self)
-        
-        if ret then     
-            ret.ViewCone = self.ViewCone
-            ret.ViewConeRad = math.rad(self.ViewCone)
-            return ret
-        end
-        
     end
 
 end
@@ -124,9 +101,7 @@ function this:GetWhitelistedEntsInCone(missile)
     local LOSdata       = {}
     local LOStr         = {}
 
-    local entpos        = Vector()
-    local difpos        = Vector()
-    local dist          = 0
+    local entpos, difpos, dist
 
     for k, scanEnt in ipairs(ScanArray) do
 
@@ -143,14 +118,11 @@ function this:GetWhitelistedEntsInCone(missile)
         -- skip any ent far than maximum distance
         if dist > self.MaximumDistance then goto cont end
 
-        LOSdata.start           = missilePos
-        LOSdata.endpos          = entpos
-        LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
-        LOSdata.filter          = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
-        LOSdata.mins            = Vector(0,0,0)
-        LOSdata.maxs            = Vector(0,0,0)
+        LOSdata.start   = missilePos
+        LOSdata.endpos  = entpos
+        LOSdata.mask    = MASK_SOLID_BRUSHONLY
 
-        LOStr = util.TraceHull( LOSdata )
+        LOStr = util.TraceLine( LOSdata )
     
         --Trace did not hit world   
         if not LOStr.Hit then 
@@ -182,19 +154,12 @@ function this:AcquireLock(missile)
 
     local bestAng       = 0
     local bestent       = NULL
-
-    local Heat          = 0
-
-    local entpos        = Vector()
-    local difpos        = Vector()
-    local entvel        = Vector()
-    local dist          = 0
-
     local physEnt       = NULL
 
-    local ang           = Angle()
-    local absang        = Angle()
-    local testang       = Angle()
+    local Heat
+
+    local entpos, difpos, entvel, dist
+    local ang, absang, testang
 
     for k, classifyent in ipairs(found) do
 
@@ -203,61 +168,55 @@ function this:AcquireLock(missile)
         dist    = difpos:Length()
         entvel  = classifyent:GetVelocity()
 
-        print(self.IRsensitivity)
-
-        --if the target is a Heat Emitter, track its heat       
-        if classifyent.Heat then 
-            
-            if classifyent:GetClass() == "ace_flare" then
-
-                Heat = (classifyent.TotalHeat or classifyent.Heat) * self.IRsensitivity 
-                print("Heat detected by missile: "..Heat)
-
-            else
-                Heat = classifyent.Heat 
-            end
-
-        --if is not a Heat Emitter, track the friction's heat           
-        else
-            
-            physEnt = classifyent:GetPhysicsObject()
-        
-            --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-            if IsValid(physEnt) then
-
-                --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-                if not physEnt:IsMoveable() then goto cont end
-            end
-                
-            Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
-            
-        end
-        
-        --Skip if not Hotter than AmbientTemp in deg C.
-        if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end  
-               
-        ang       = missile:WorldToLocalAngles((entpos - missilePos):Angle())   --Used for testing if inrange
-        absang    = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+        ang       = missile:WorldToLocalAngles((entpos - missilePos):Angle())   -- Used for testing if inrange
+        absang    = Angle(math.abs(ang.p),math.abs(ang.y),0)                    -- Since I like ABS so much
                 
         if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone
+
+            --print(self.IRsensitivity)
+
+            --if the target is a Heat Emitter, track its heat       
+            if classifyent.Heat then 
+                
+                if classifyent:GetClass() == "ace_flare" then
+
+                    Heat = (classifyent.TotalHeat or classifyent.Heat) * self.IRsensitivity 
+                    print("Heat detected by missile: "..Heat)
+
+                else
+                    Heat = classifyent.Heat 
+                end
+
+            --if is not a Heat Emitter, track the friction's heat           
+            else
+
+                physEnt = classifyent:GetPhysicsObject()
+            
+                --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
+                if IsValid(physEnt) then
+
+                    --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
+                    if not physEnt:IsMoveable() then goto cont end
+                end
                     
-            testang = Heat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
-                                  
+                Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
+                
+            end  
+
+            --Skip if not Hotter than AmbientTemp in deg C.
+            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end   
+                        
+                testang = Heat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
+
             --Sorts targets as closest to being directly in front of radar                        
             if testang > bestAng then 
                                     
                 bestAng = testang
-                bestent = classifyent
-                                    
-
-                if bestent:GetClass() == "ace_flare" then
-                    print("jammed by flare")
-                end
+                bestent = classifyent                   
 
             end
+        end      
 
-        end
-                
         ::cont::
     end
 

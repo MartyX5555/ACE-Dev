@@ -189,5 +189,5 @@ function this:GetWireTarget()
 end
 
 function this:GetDisplayConfig(Type)
-	return {["Wire Length"] = math.Round(self.WireLength / 39.37, 1) .. " m"}
+	return {["Wire Max Length"] = math.Round(self.WireLength / 39.37, 1) .. " m"}
 end

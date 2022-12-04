@@ -10,7 +10,7 @@ Round.type = "Ammo" --Tells the spawn menu what entity to spawn
 Round.name = "[HP] - "..ACFTranslation.HP[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.HP[2]
-Round.netid = 3 --Unique ammotype ID for network transmission
+Round.netid = 18 --Unique ammotype ID for network transmission
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )

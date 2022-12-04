@@ -7,7 +7,7 @@ Round.type  = "Ammo"                                        -- Tells the spawn m
 Round.name  = "[APCBC] - "..ACFTranslation.ShellAPCBC[1]    -- Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl"       -- Shell flight model
 Round.desc  = ACFTranslation.ShellAPCBC[2]
-Round.netid = 19                                            -- Unique ammotype ID for network transmission
+Round.netid = 4                                            -- Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
     

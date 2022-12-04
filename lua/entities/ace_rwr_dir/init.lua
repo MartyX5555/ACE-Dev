@@ -37,7 +37,7 @@ function ENT:Initialize()
 	self.Cone = 45
 
 	self.LegalTick = 0
-	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+	self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
 	self.IsLegal = true
 end
 
@@ -101,42 +101,43 @@ function ENT:Think()
 
 		local ScanArray = ACE.radarEntities
 
-		local thisPos = self:GetPos()
-		local detected = 0
-		local radIDs = {}
-		local detAngs = {}
-		local randinac = Angle(1+math.Rand(-0.15,0.15),1+math.Rand(-0.05,0.05),0) 
-
+		local thisPos 	= self:GetPos()
+		local detected 	= 0
+		local radIDs 	= {}
+		local detAngs 	= {}
+		
 		for k, scanEnt in pairs(ScanArray) do
 		
+			local randinac 	= Angle( 1 + math.Rand(-0.15,0.15),1+math.Rand(-0.05,0.05), 0 ) 
+
 			local entpos = scanEnt:GetPos()
 			local difpos = (thisPos - entpos)
 
-			if(IsValid(scanEnt)) then
+			if IsValid(scanEnt) then
+
 				local radActive = scanEnt.Active 
 
 				if radActive then
-					local nonlocang = (-difpos):Angle()
-					local ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
-					local ang2 = self:WorldToLocalAngles(nonlocang)
-					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
-					local absang2 = Angle(math.abs(ang2.p),math.abs(ang2.y),0)--Since I like ABS so much
 
+					local nonlocang = (-difpos):Angle()
+					local ang 		= scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
+					local ang2 		= self:WorldToLocalAngles(nonlocang)
+					local absang 	= Angle(math.abs(ang.p),math.abs(ang.y),0)		--Since I like ABS so much
+					local absang2 	= Angle(math.abs(ang2.p),math.abs(ang2.y),0)	--Since I like ABS so much
 
 					if (absang.p < (scanEnt.Cone + 8)  and absang.y < (scanEnt.Cone + 8)) then --Entity is within radar cone
+
 						if (absang2.p < self.Cone and absang2.y < self.Cone) then --Entity is within radar cone
 
-							local LOStr = util.TraceLine( { 
-								start = thisPos ,
-								endpos = entpos,collisiongroup = COLLISION_GROUP_WORLD,
-								filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end, --Hits anything in the world.
-								mins = Vector(0,0,0),
-								maxs = Vector(0,0,0)
-								} ) 
+							local LOSdata 	= {}
+							LOSdata.start 			= thisPos
+							LOSdata.endpos 			= entpos
+							LOSdata.collisiongroup 	= COLLISION_GROUP_WORLD
+							local LOStr =  util.TraceLine(LOSdata)
 
 							if not LOStr.Hit then --Trace did not hit world
 
-								detected = 1
+								detected = detected + 1
 
 								table.insert(radIDs,ACE.radarIDs[scanEnt])
 								table.insert(detAngs, Angle(nonlocang.p * randinac.p, nonlocang.y * randinac.y, nonlocang.r * randinac.r) )--3 

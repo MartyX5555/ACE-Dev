@@ -302,7 +302,7 @@ do
             Power = math.max(Power - PowerSpent,0)  
         end
 
-        util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
+        util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*12 )
         --debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
         
     end

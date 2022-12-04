@@ -16,29 +16,15 @@ this.ViewCone = 30
 -- An entity with a Position wire-output
 this.InputSource = nil
 
-this.desc = "This guidance package reads a target-position from the launcher and guides the munition towards it."
-
-
-
-
-function this:Init()
-	
-end
-
-
+this.desc = "This guidance package reads a target-position from the launcher and guides the munition towards it. Both the launcher and the missile must have line of sight with the target."
 
 
 function this:Configure(missile)
-    
-    self:super().Configure(self, missile)
     
     self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
     self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 
 end
-
-
-
 
 function this:GetGuidance(missile)
 
@@ -49,6 +35,7 @@ function this:GetGuidance(missile)
     end
 
 	if posVec then
+
 		local mfo       = missile:GetForward()
 		local mdir      = (posVec - missile:GetPos()):GetNormalized()
 		local dot       = mfo.x * mdir.x + mfo.y * mdir.y + mfo.z * mdir.z
@@ -57,20 +44,19 @@ function this:GetGuidance(missile)
         	return {TargetPos = nil}
 		end
 
-		local traceArgs = 
-		{
-			start = missile:GetPos(),
-			endpos = posVec,
-			mask = MASK_SOLID_BRUSHONLY,
-			filter = {missile},
-        	mins = Vector(0,0,0),
-        	maxs = Vector(0,0,0)
-		}
+		local LOSdata = {} 
+        LOSdata.start   = missile.Launcher:GetPos()
+        LOSdata.endpos  = posVec
+        LOSdata.mask    = MASK_SOLID_BRUSHONLY
+
+        local LOSPlataform = util.TraceLine( LOSdata )
 		
-		local res = util.TraceHull(traceArgs)
-		
-		local dist = res.StartPos:Distance(res.HitPos)
-		if res.Hit and dist < 80 then
+        LOSdata.start = missile:GetPos()
+
+        local LOSMissile = util.TraceLine( LOSdata )
+
+		local dist = missile:Distance(LOSMissile.HitPos)
+		if LOSPlataform.Hit or LOSMissile.Hit and dist < 80 then
 			return {}
 		end
 		

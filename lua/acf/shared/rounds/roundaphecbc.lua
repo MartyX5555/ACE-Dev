@@ -7,7 +7,7 @@ Round.type  = "Ammo"                                            -- Tells the spa
 Round.name  = "[APHECBC] - "..ACFTranslation.ShellAPHECBC[1]    -- Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl"           -- Shell flight model
 Round.desc  = ACFTranslation.ShellAPHECBC[2]
-Round.netid = 21                                                -- Unique ammotype ID for network transmission
+Round.netid = 8                                               -- Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
     
