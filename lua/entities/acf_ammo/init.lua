@@ -581,7 +581,6 @@ function ENT:Think()
             local Gun = self.Master[Key]
             if IsValid(Gun) then
                 Gun:Unlink( self )
-                self.Ammo = 0
             end
         end        
 
