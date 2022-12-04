@@ -108,13 +108,14 @@ do
 	--Formula from https://mathscinotes.wordpress.com/2013/10/03/parameter-determination-for-pejsa-velocity-model/
 	--not terribly accurate for acf, particularly small caliber (7.62mm off by 120 m/s at 800m), but is good enough for quick indicator
 	function ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenArea, LimitVel, Range ) --range in m, vel is m/s
+
 		local V0 = (MuzzleVel * 39.37 * ACF.VelScale) 	-- initial velocity
 		local D0 = (DragCoef * V0^2 / ACF.DragDiv)		-- initial drag
-		local K1 = ( D0 / (V0^(3/2)) )^-1  				-- estimated drag coefficient
-		
-		local Vel = (math.sqrt(V0) - ((Range*39.37) / (2 * K1)) )^2
+		local K1 = ( D0 / (V0^(3/2)) )^-1				-- estimated drag coefficient
+
+		local Vel = (  math.max( math.sqrt(V0) - ((Range*39.37) / (2 * K1)), 0)   )^2 
 		local Pen = (ACF_Kinetic( Vel, ProjMass, LimitVel ).Penetration/PenArea)*ACF.KEtoRHA
-		
+
 		return (Vel*0.0254), Pen
 	end
 
