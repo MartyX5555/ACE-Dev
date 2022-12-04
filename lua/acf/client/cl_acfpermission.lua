@@ -33,10 +33,10 @@ net.Receive("ACF_refreshfeedback", function(len)
 	local str, notify
 	
 	if success then
-		str = "Successfully updated your ACF damage permissions!"
+		str = "Successfully updated your ACE damage permissions!"
 		notify = "NOTIFY_GENERIC"
 	else
-		str = "Failed to update your ACF damage permissions."
+		str = "Failed to update your ACE damage permissions."
 		notify = "NOTIFY_ERROR"
 	end
 	
@@ -62,7 +62,8 @@ end
 
 
 function this.ClientPanel(Panel)
-	if not IsValid(Panel) then return end
+
+	if IsValid(Panel) then Panel:Clear() end
 
 	if !this.ClientCPanel then this.ClientCPanel = Panel end
 	Panel:SetName("ACF Damage Permissions")

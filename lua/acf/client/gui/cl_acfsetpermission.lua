@@ -22,7 +22,7 @@ local ModeDescTxt
 local ModeDescDefault   = "Can't find any info for this mode!"
 local currentMode
 local currentModeTxt    = "\nThe current damage permission mode is %s."
-local introTxt 		    = "Damage Permission Modes change the way that ACF damage works.\n\nYou can change the DP mode if you are an admin."
+local introTxt 		    = "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."
 
 local statusTxt 		= "\nCurrent Protection status:"
 local condition  		= "Unknown"
