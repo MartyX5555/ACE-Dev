@@ -234,8 +234,6 @@ function ACE_refreshdata( Data )
         for i, ent in pairs(Entities) do
             if not IsValid(ent) then goto cont end
 
-            print("Id to class: "..ent:GetClass())
-
             ent.ACF = ent.ACF or {}
             ent.ACF.ContraptionId = ContrId --Id is always changing.
 

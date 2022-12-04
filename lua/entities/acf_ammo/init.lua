@@ -457,8 +457,7 @@ do
         self.Capacity    = Capacity
         self.Volume      = vol --Used by the missile reload bonus
         self.Caliber     = AmmoGunData.caliber or 1
-        self.RoFMul      = (vol > 40250) and (1-(math.log(vol*0.00066)/math.log(2)-4)*0.05) or 1 --*0.0625 for 25% @ 4x8x8, 0.025 10%, 0.0375 15%, 0.05 20%
-        self.RoFMul      = self.RoFMul + (self.IsTwoPiece and 0.3 or 0)                          --30% ROF penalty for 2 piece
+        self.RoFMul      = self.IsTwoPiece and 0.3 or 0                          --30% ROF penalty for 2 piece
 
         self:SetNWString( "Ammo", self.Ammo )
         self:SetNWString( "WireName", WireName )
@@ -577,6 +576,15 @@ function ENT:Think()
     -- cookoff handling
     if self.Damaged then
     
+        --Unlink any gun from this crate
+        for Key,Value in pairs(self.Master) do
+            local Gun = self.Master[Key]
+            if IsValid(Gun) then
+                Gun:Unlink( self )
+                self.Ammo = 0
+            end
+        end        
+
         local CrateType = self.BulletData.Type or "Refill"
 
         --If that is a refill, remove it

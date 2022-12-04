@@ -168,17 +168,15 @@ do
 		    end
 		end
 
-		local CapMul = (CrateVol > 40250) and ((math.log(CrateVol*0.00066)/math.log(2)-4)*0.15+1) or 1
-		local RoFMul = (CrateVol > 40250) and (1-(math.log(CrateVol*0.00066)/math.log(2)-4)*0.05) or 1
-		RoFMul = RoFMul + (((TwoPiece) and 0.3) or 0)
+		local RoFNerf = TwoPiece and 30 or nil
 
-	    return Cap, CapMul, RoFMul, TwoPiece
+	    return Cap, RoFNerf, TwoPiece
 	end
 
 	--General Ammo Capacity diplay shown on ammo config
 	function ACE_AmmoCapacityDisplay(Data)
 
-		local Cap, CapMul, RoFMul, TwoPiece = ACE_AmmoCapacity( Data )
+		local Cap, RoFNerf, TwoPiece = ACE_AmmoCapacity( Data )
 
 		local plur = ""..Cap..' round'
 		
@@ -189,7 +187,7 @@ do
 		local bonustxt = "Storage: "..plur
 		
 		if TwoPiece then	
-			bonustxt = bonustxt..'. Uses 2 piece ammo.'	
+			bonustxt = bonustxt..". Uses 2 piece ammo. -"..RoFNerf.."% RoF"
 		end
 		acfmenupanel:CPanelText("BonusDisplay", bonustxt )
 	end
@@ -217,6 +215,12 @@ do
 
 	end
 
+	function ACE_AmmoStats(RoundLenght, MaxTotalLenght, MuzzleVel, MaxPen)
+	   acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
+	   acfmenupanel:CPanelText("AmmoStats", "Round Length: "..RoundLenght.."/"..MaxTotalLenght.." cms\nMuzzle Velocity: "..MuzzleVel.." m\\s\nMax penetration: "..MaxPen.." mm RHA") --Total round length (Name, Desc)
+	   
+	end
+
 	do 
 
 		function ACE_UpperCommonDataDisplay( Data, PlayerData )
@@ -224,18 +228,18 @@ do
 			if not acfmenupanel then return end
 
 			if not Data or not PlayerData then
-				acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
+				acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
 
 				acfmenupanel:CPanelText("BonusDisplay", "\n")
 				acfmenupanel:CPanelText("Desc", "")
-				acfmenupanel:AmmoStats( 0, 0, 0, 0 )
+				ACE_AmmoStats( 0, 0, 0, 0 )
 
 			else
-				acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
+				acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
 
 				ACE_AmmoCapacityDisplay( Data )
     			acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)
-				acfmenupanel:AmmoStats( (Floor( ( Data.PropLength + Data.ProjLength + (Floor(Data.Tracer*5)/10))*100) /100), (Data.MaxTotalLength) ,Floor(Data.MuzzleVel*ACF.VelScale) , Floor(Data.MaxPen) )
+				ACE_AmmoStats( (Floor( ( Data.PropLength + Data.ProjLength + (Floor(Data.Tracer*5)/10))*100) /100), (Data.MaxTotalLength) ,Floor(Data.MuzzleVel*ACF.VelScale) , Floor(Data.MaxPen) )
 			end
 
 		end

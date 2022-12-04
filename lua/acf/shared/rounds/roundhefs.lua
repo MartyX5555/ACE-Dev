@@ -192,7 +192,7 @@ function Round.guicreate( Panel, Table )
 	
 	acfmenupanel:AmmoSelect(ACF.AmmoBlacklist.HEFS)
 
-	acfmenupanel:CPanelText("CrateInfoBold", "Crate information", "DermaDefaultBold")
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
 
 	acfmenupanel:CPanelText("BonusDisplay", "")
 
