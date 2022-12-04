@@ -13,9 +13,7 @@ ACF_defineGunClass("ASM", {
     soundNormal     = " ",
     effect          = "Rocket Motor Missile1",          -- Small/Medium size missile
 
-    reloadmul       = 8,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "SM"}        -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 
@@ -27,10 +25,10 @@ ACF_defineGun("AGM-114 ASM", {                          --id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "2x AGM-114",                     -- Which rack to spawn this missile on?
-    length          = 66,
+    length          = 86 * 2,
     caliber         = 16,
-    weight          = 196,                              -- Don't scale down the weight though!
-    modeldiameter   = 17.2 * 1.27,                      -- in cm
+    weight          = 45,                              -- Don't scale down the weight though!
+    modeldiameter   = 3 * 2.54,                      -- in cm
     year            = 1984,
     round = {
         model           = "models/missiles/agm_114.mdl",
@@ -78,10 +76,10 @@ ACF_defineGun("AGM-45 ASM", {                           -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "1xRK",                           -- Which rack to spawn this missile on?
-    length          = 1000,
-    caliber         = 12,
-    weight          = 354,                              -- Don't scale down the weight though!
-    modeldiameter   = 7.1 * 2.54,                       -- in cm
+    length          = 370, 
+    caliber         = 20.3,
+    weight          = 177,                              -- Don't scale down the weight though!
+    modeldiameter   = 4 * 2.54,                       -- in cm
     year            = 1969,
     rofmod          = 0.6,
     round = {
@@ -130,11 +128,14 @@ ACF_defineGun("AGM-122 ASM", {                          -- id
     effect      = "Rocket Motor Missile1",
     gunclass    = "ASM",
     rack        = "1xRK",                               -- Which rack to spawn this missile on?
-    length      = 205,
+    length      = 302 * 0.8,
     caliber     = 12.7,                                 -- Aim-9 is listed as 9 as of 6/30/2017, why?  Wiki lists it as a 5" rocket!
-    weight      = 177,                                  -- Don't scale down the weight though!
+    weight      = 88,                                  -- Don't scale down the weight though!
     rofmod      = 0.3,
     year        = 1986,
+    modeldiameter   = 3 * 2.54,
+    rotmult         = 0.25,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+
     round = {
         model           = "models/missiles/aim9.mdl",
         rackmdl         = "models/missiles/aim9.mdl",
@@ -181,8 +182,8 @@ ACF_defineGun("AGM-65 ASM", {                           -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "1xRK",                           -- Which rack to spawn this missile on?
-    length          = 1000,
-    caliber         = 22,
+    length          = 396 * 0.6,
+    caliber         = 30.5,
     weight          = 300,                              -- Don't scale down the weight though!
     year            = 1974,
     modeldiameter   = 9.0 * 2.54,                       -- in cm

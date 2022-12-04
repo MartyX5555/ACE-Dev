@@ -11,9 +11,7 @@ ACF_defineGunClass("ARTY", {
     year = 1944,
     soundDistance   = " ",
     soundNormal     = " ",
-    effect          = "Rocket Motor Arty",
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "SM","HESH"}             -- Including FL would mean changing the way round classes work.
+    effect          = "Rocket Motor Arty"
 } )
 
 
@@ -27,10 +25,11 @@ ACF_defineGun("Type 63 RA", {                               -- id
     gunclass    = "ARTY",
     rack        = "1xRK_small",                             -- Which rack to spawn this missile on?
     weight      = 80,
-    length      = 80,
+    length      = 66 * 2,
     year        = 1960,
     rofmod      = 0.3,
     roundclass  = "Rocket",
+    modeldiameter   = 7,
     rotmult     = 60,       -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
     maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
@@ -82,10 +81,11 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     gunclass    = "ARTY",
     rack        = "1xRK",                                   -- Which rack to spawn this missile on?
     weight      = 160,
-    length      = 320, --320
+    length      = 114 * 2, --320
     year        = 1980,
     rofmod      = 0.25,
     roundclass  = "Rocket",
+    modeldiameter   = 10,
     rotmult     = 20,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
     maxrottq    = 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
@@ -137,11 +137,12 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     gunclass    = "ARTY",
     rack        = "1xRK",                                   -- Which rack to spawn this missile on?
     weight      = 320,
-    length      = 420,
+    length      = 214 * 2,
     year        = 1983,
     rofmod      = 0.2,
     roundclass  = "Rocket",
-    rotmult     = 30,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    modeldiameter   = 4 * 2.54,
+    rotmult     = 25,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
     maxrottq    = 3000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
     round       =   {
@@ -191,10 +192,11 @@ ACF_defineGun("RW61 RA", {                                  -- id
     gunclass    = "ARTY",
     rack        = "380mmRW61",                              -- Which rack to spawn this missile on?
     weight      = 1800,
-    length      = 38,
+    length      = 95 * 2,
     year        = 1944,
     rofmod      = 0.25,
     roundclass  = "Rocket",
+    modeldiameter   = 16,
     rotmult     = 100,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round       =

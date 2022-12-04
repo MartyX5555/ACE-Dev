@@ -460,6 +460,7 @@ function this.CanDamage(Type, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gu
 	local owner = (CPPI and Entity:CPPIGetOwner()) or Entity:GetOwner()
 	
 	if not (IsValid(owner) and owner:IsPlayer()) then
+
 		if IsValid(Entity) and Entity:IsPlayer() then
 			owner = Entity
 		else
@@ -469,11 +470,11 @@ function this.CanDamage(Type, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gu
 	end
 	
 	if not (IsValid(Inflictor) and Inflictor:IsPlayer()) then
+
 		if this.DefaultCanDamage then return
 		else return this.DefaultCanDamage end
 	end
-	
-	--print(this.DamagePermission(owner, Inflictor, Entity))
+
 	return this.DamagePermission(owner, Inflictor, Entity)
 end
 hook.Add("ACF_BulletDamage", "ACF_DamagePermissionCore", this.CanDamage)
@@ -527,7 +528,7 @@ end
 function this.PermissionsRaw(ownerid, attackerid, value)
 	if not ownerid then return end
 	
-	local ownerprefs = this.GetDamagePermissions(ownerid)
+	local ownerprefs = this.GetDamagePermissions(ownerid) --PrintTable(ownerprefs)
 	
 	if attackerid then
 		local old = ownerprefs[attackerid] and true or nil
@@ -576,24 +577,32 @@ net.Receive("ACF_dmgfriends", function(len, ply)
 	local perms = net.ReadTable()
 	local ownerid = ply:SteamID()
 	
-	//Msg("ownerid = ", ownerid)
-	//PrintTable(perms)
+	ply.HasDisabledPerms = nil
 	
 	local changed
 	for k, v in pairs(perms) do
 		changed = this.PermissionsRaw(ownerid, k, v)
 		//Msg(k, " has ", changed and "changed\n" or "not changed\n")
 		
+		if ownerid == k then
+			if not v then
+				ply.HasDisabledPerms = true
+			end
+		end
+
 		if changed then
 			local targ = plyBySID(k)
-			if targ then
+			if IsValid(targ) then
+
 				local note = v and "given you" or "removed your"
+				local MsgNote = v and "given" or "removed"
 				//Msg("Sending", targ, " ", note, "\n")
-				targ:SendLua( string.format( "GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACF!", "NOTIFY_GENERIC" ) )
+				targ:SendLua( string.format( "GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC" ) )
+				print("[ACE | INFO]- The user "..ply:Nick().." has "..MsgNote.." permissions to damage objects with ACE "..(v and "to" or "from").." "..((targ == ply) and "himself" or targ:Nick()) )
 			end
 		end
 	end
-	
+
 	net.Start("ACF_refreshfeedback")
 		net.WriteBit(true)
 	net.Send(ply)

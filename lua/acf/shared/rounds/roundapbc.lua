@@ -22,9 +22,10 @@ function Round.convert( Crate, PlayerData )
     local ServerData    = {}
     local GUIData       = {}
     
-    if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-    if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
-    if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Tracer       =  PlayerData.Tracer        or 0
+    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
     
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
     
@@ -180,16 +181,13 @@ function Round.guicreate( Panel, Table )
 
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.AP )
     
-    acfmenupanel:CPanelText("BonusDisplay", "")
-    
-    acfmenupanel:CPanelText("Desc", "") --Description (Name, Desc)
-    
-    acfmenupanel:AmmoStats(0,0,0,0)     --AmmoStats -->> RoundLenght, MuzzleVelocity & MaxPen
+    ACE_UpperCommonDataDisplay()
     
     acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     
     acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")           --Tracer checkbox (Name, Title, Desc)
+    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", "" )
 
     acfmenupanel:CPanelText("RicoDisplay", "")  --estimated rico chance
     acfmenupanel:CPanelText("PenetrationDisplay", "")   --Proj muzzle penetration (Name, Desc)
@@ -205,9 +203,8 @@ function Round.guiupdate( Panel, Table )
         PlayerData.Type = "APBC"                                        --Hardcoded, match ACFRoundTypes table index
         PlayerData.PropLength = acfmenupanel.AmmoData.PropLength    --PropLength slider
         PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength    --ProjLength slider
-        local Tracer = 0
-        if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
-        PlayerData.Data10 = Tracer              --Tracer
+        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
+        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
     
     local Data = Round.convert( Panel, PlayerData )
     
@@ -216,28 +213,14 @@ function Round.guiupdate( Panel, Table )
     RunConsoleCommand( "acfmenu_data3", Data.PropLength )       --For Gun ammo, Data3 should always be Propellant
     RunConsoleCommand( "acfmenu_data4", Data.ProjLength )       --And Data4 total round mass
     RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    
-    ---------------------------Ammo Capacity-------------------------------------
-    ACE_AmmoCapacityDisplay( Data )
-    -------------------------------------------------------------------------------
-    
-    acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
-    
+    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+
+ 
     acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 
-    acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )           --Tracer checkbox (Name, Title, Desc)
-    
-    acfmenupanel:AmmoStats((math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100), (Data.MaxTotalLength) ,math.floor(Data.MuzzleVel*ACF.VelScale) ,math.floor(Data.MaxPen))
-
-    ---------------------------Chance of Ricochet table----------------------------    
-    
-    local None, Mean, Max = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-    acfmenupanel:CPanelText("RicoDisplay", '0% chance of ricochet at: '..None..'°\n50% chance of ricochet at: '..Mean..'°\n100% chance of ricochet at: '..Max..'°')
-    
-    ------------------------------------------------------------------------------- 
-    
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
+    ACE_UpperCommonDataDisplay( Data, PlayerData )
+    ACE_CommonDataDisplay( Data )
     
 end
 

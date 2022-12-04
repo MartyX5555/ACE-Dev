@@ -388,3 +388,42 @@ function ACE_CheckRound( id )
 
     return true
 end
+
+function ACE_CheckGun( gunid )
+
+    local gundata = ACF.Weapons.Guns[ gunid ]
+
+    if not gundata then return false end
+
+    return true
+end
+
+--[[ IDK if this will take some usage
+function ACE_Msg( type, txt )
+
+    if not isstring(type) then
+        ErrorNoHaltWithStack(( "bad argument #1 to 'type' (string expected, got " .. type( type ) .. ")" ))
+        return
+    end
+
+    if not isstring(txt) then
+        ErrorNoHaltWithStack(( "bad argument #2 to 'txt' (string expected, got " .. type( type ) .. ")" ))
+        return
+    end
+
+    local Info
+
+    if type == "warn"
+        Info = "WARN"
+    elseif type == "error"
+        Info = "ERROR"
+    elseif type == "info"
+        Info = "INFO"
+    end
+
+    local prefix = "[ACE | "..Info.."]- "
+
+    print( prefix..txt )
+
+end
+]]

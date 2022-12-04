@@ -43,7 +43,7 @@ function ACFIRSTGUICreate( Table )
 	acfmenupanel:CPanelText("ViewCone", "View cone : "..((Table.viewcone or 180) * 2).." degs")
 	acfmenupanel:CPanelText("MaxRange", "View range : "..math.Round(Table.maxdist / 39.37 , 2).." m")
 	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.." kg")
-	acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n","DermaDefaultBold")
+	--acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n","DermaDefaultBold")
 
 	acfmenupanel.CustomDisplay:PerformLayout()
 

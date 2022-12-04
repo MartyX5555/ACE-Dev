@@ -71,11 +71,13 @@ function Round.convert( Crate, PlayerData )
 
     Data["LengthAdj"] = 0.5
 
-    PlayerData["PropLength"]    = PlayerData["PropLength"]  or 0
-    PlayerData["ProjLength"]    = PlayerData["ProjLength"]  or 0
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Tracer       =  PlayerData.Tracer        or 0
+    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
     PlayerData["Data5"]         = PlayerData["Data5"]       or 0    -- flechette count
     PlayerData["Data6"]         = PlayerData["Data6"]       or 0    -- flechette spread
-    PlayerData["Data10"]        = PlayerData["Data10"]      or 0    -- tracer
+
 
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
@@ -280,21 +282,14 @@ function Round.guicreate( Panel, Table )
 
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist["FL"] )
     
-    acfmenupanel:CPanelText("BonusDisplay", "")
-
-    acfmenupanel:CPanelText("Desc", "") --Description (Name, Desc)
-
-    acfmenupanel:AmmoStats(0,0,0,0)     --AmmoStats -->> RoundLenght, MuzzleVelocity & MaxPen
+    ACE_UpperCommonDataDisplay()
 
     acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("Flechettes",2,3,128,0, "Flechettes", "")   --flechette count Slider (Name, Value, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("FlechetteSpread",10,5,60,1, "Flechette Spread", "")    --flechette spread Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
-    acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")           --Tracer checkbox (Name, Title, Desc)
-
-    acfmenupanel:CPanelText("RicoDisplay", "")  --estimated rico chance
-    acfmenupanel:CPanelText("PenetrationDisplay", "")   --Proj muzzle penetration (Name, Desc)
+    ACE_CommonDataDisplay()
 
     Round.guiupdate( Panel, Table )
 
@@ -310,9 +305,8 @@ function Round.guiupdate( Panel, Table )
         PlayerData["Data5"]         = acfmenupanel.AmmoData["Flechettes"]       --Flechette count slider
         PlayerData["Data6"]         = acfmenupanel.AmmoData["FlechetteSpread"]      --flechette spread slider
 
-        local Tracer = 0
-        if acfmenupanel.AmmoData["Tracer"] then Tracer = 1 end
-        PlayerData["Data10"] = Tracer               --Tracer
+        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
+        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
 
     local Data = Round.convert( Panel, PlayerData )
 
@@ -323,31 +317,15 @@ function Round.guiupdate( Panel, Table )
     RunConsoleCommand( "acfmenu_data5", Data.Flechettes )
     RunConsoleCommand( "acfmenu_data6", Data.FlechetteSpread )
     RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    
-    ---------------------------Ammo Capacity-------------------------------------
-    ACE_AmmoCapacityDisplay( Data )
-    -------------------------------------------------------------------------------
-    
-    acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData["Type"]]["desc"]) --Description (Name, Desc)
-    
-    acfmenupanel:AmmoStats((math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100), (Data.MaxTotalLength) ,math.floor(Data.MuzzleVel*ACF.VelScale) ,math.floor(Data.MaxPen))
-    
+    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+
     acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data["MaxTotalLength"],3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )   --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data["MaxTotalLength"],3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")    --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("Flechettes",Data.Flechettes,Data.MinFlechettes,Data.MaxFlechettes,0, "Flechettes", "Flechette Radius: "..math.Round(Data["FlechetteRadius"]*10,2).." mm")
     acfmenupanel:AmmoSlider("FlechetteSpread",Data.FlechetteSpread,Data.MinSpread,Data.MaxSpread,1, "Flechette Spread", "")
 
-    acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )           --Tracer checkbox (Name, Title, Desc)
-
-    ---------------------------Chance of Ricochet table----------------------------    
-    
-    local None, Mean, Max = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
-    acfmenupanel:CPanelText("RicoDisplay", '0% chance of ricochet at: '..None..'°\n50% chance of ricochet at: '..Mean..'°\n100% chance of ricochet at: '..Max..'°')
-    
-    -------------------------------------------------------------------------------
-    
-    ACE_AmmoRangeStats( Data.MuzzleVel, Data.DragCoef, Data.ProjMass, Data.PenArea, Data.LimitVel )
-
+    ACE_UpperCommonDataDisplay( Data, PlayerData )
+    ACE_CommonDataDisplay( Data )
 end
 
 list.Set( "SPECSRoundTypes", "FL", Round ) 

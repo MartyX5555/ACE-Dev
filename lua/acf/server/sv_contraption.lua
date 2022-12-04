@@ -37,7 +37,11 @@ local AllowedEnts = {
     [ "acf_engine" ]                = true,
     [ "acf_fueltank" ]              = true,
     [ "acf_gearbox" ]               = true,
-    [ "primitive_shape" ]           = true
+    [ "primitive_shape" ]           = true,
+    [ "primitive_airfoil" ]         = true,
+    [ "primitive_rail_slider" ]     = true,
+    [ "primitive_slider" ]          = true,
+    [ "primitive_ladder" ]          = true
 
 }
 
@@ -220,7 +224,23 @@ end
 
 
 -- Optimization resource, this will try to clean the main table just to reduce Ent count
-function ACE_refreshdata()
+function ACE_refreshdata( Data )
+
+    --Not really perfect, but better than nothing. Cframepls
+    if istable(Data) and not table.IsEmpty(Data) then
+        local Entities = Data[1].CreatedEntities --wtf wire
+
+        local ContrId = math.random(1, 10000)
+
+        for i, ent in pairs(Entities) do
+            if not IsValid(ent) then goto cont end
+
+            ent.ACF = ent.ACF or {}
+            ent.ACF.ContraptionId = ContrId --Id is always changing.
+
+            ::cont::
+        end
+    end
 
     --print('[ACE | INFO]- Starting Refreshing. . .')
     for index, Ent in ipairs(ACE.contraptionEnts) do 
@@ -240,7 +260,7 @@ function ACE_refreshdata()
             
                 goto cont
             end
-        end     
+        end
 
         ::cont::
     end

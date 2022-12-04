@@ -88,7 +88,7 @@ function ENT:Draw()
         ACF_TrimInvalidRefillEffects(self.RefillAmmoEffect)
         ACF_DrawRefillAmmo( self.RefillAmmoEffect )
     end
-    
+
 end
 
 usermessage.Hook("ACF_RefillEffect", function( msg )

@@ -12,9 +12,7 @@ ACF_defineGunClass("AAM", {
     soundNormal     = " ",
     effect          = "Rocket Motor Missile1",
     year = 1953,
-    reloadmul       = 8,
-
-    ammoBlacklist   = {"AP", "APHE", "FL", "HEAT","THEAT"} -- Including FL would mean changing the way round classes work.
+    reloadmul       = 8
 } )
 
 -- The AIM-9 Sidewinder. The perfect choice for dogfights at short range. Although respectable payload, still tiny.
@@ -25,11 +23,12 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
-    length          = 200,
-    caliber         = 8,
+    length          = 302 * 0.8,
+    caliber         = 12.7,
     weight          = 75,                                   -- Don't scale down the weight though!
     rofmod          = 0.5,
     year            = 1953,
+    modeldiameter   = 3 * 2.54,
     rotmult         = 0.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -78,12 +77,12 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
-    length          = 1000,
-    caliber         = 12,
+    length          = 370,
+    caliber         = 18,
     weight          = 125,                                  -- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
     year            = 1991,
     rofmod          = 0.35,
-    modeldiameter   = 7.1 * 2.54,                           -- in cm
+    modeldiameter   = 4 * 2.54,                           -- in cm
     rotmult         = 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
@@ -132,8 +131,8 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "AAM",
     rack            = "1xRK",                               -- Which rack to spawn this missile on?
-    length          = 1000,
-    caliber         = 22,
+    length          = 396 * 0.6,
+    caliber         = 38.1,
     weight          = 463,                                  -- Don't scale down the weight though!
     year            = 1974,
     rofmod          = 0.32,
@@ -172,3 +171,4 @@ ACF_defineGun("AIM-54 AAM", {                               -- id
     ghosttime       = 0.05                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
 } )
+

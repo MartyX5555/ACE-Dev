@@ -133,7 +133,7 @@ function ACFGunGUICreate( Table )
         acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
         acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
 
-        acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
+        --acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
     end
     
     acfmenupanel.CustomDisplay:PerformLayout()

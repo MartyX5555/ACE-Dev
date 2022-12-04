@@ -22,7 +22,7 @@ local ModeDescTxt
 local ModeDescDefault   = "Can't find any info for this mode!"
 local currentMode
 local currentModeTxt    = "\nThe current damage permission mode is %s."
-local introTxt 		    = "Damage Permission Modes change the way that ACF damage works.\n\nYou can change the DP mode if you are an admin."
+local introTxt 		    = "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."
 
 local statusTxt 		= "\nCurrent Protection status:"
 local condition  		= "Unknown"
@@ -65,8 +65,6 @@ end
 function Menu.MakePanel(Panel)
 
 	Permissions:RequestUpdate()
-
-	Panel:ClearControls()
 	
 	if not PermissionModes then return end
 	
@@ -188,7 +186,7 @@ end
 
 function Permissions:Update()
 
-	if list then	
+	if IsValid(list) then	
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
@@ -203,17 +201,17 @@ function Permissions:Update()
 		end
 	end
 	
-	if currentMode then
+	if IsValid(currentMode) then
 		currentMode:SetText(string.format(currentModeTxt, CurrentPermission))
 		currentMode:SizeToContents()
 	end
 
-	if button then
+	if IsValid(button) then
 		button:SetEnabled( cvarstat and CPPI )
 		button2:SetEnabled( cvarstat and CPPI )
 	end
 
-	if status2 then
+	if IsValid(status2) then
 
 		condition = ""
 

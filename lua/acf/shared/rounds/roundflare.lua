@@ -135,59 +135,66 @@ function Round.cratetxt( BulletData )
 end
 
 function Round.guicreate( Panel, Table )
-    
-    acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.FLR )
-    
-    acfmenupanel:CPanelText("BonusDisplay", "")
 
-    acfmenupanel:CPanelText("Desc", "") --Description (Name, Desc)
-    acfmenupanel:CPanelText("LengthDisplay", "")    --Total round length (Name, Desc)
-    
-    acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Dual Spectrum Filler", "")--Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-    
-    acfmenupanel:CPanelText("VelocityDisplay", "")  --Proj muzzle velocity (Name, Desc)
-    acfmenupanel:CPanelText("BurnRateDisplay", "")  --Proj muzzle penetration (Name, Desc)
-    acfmenupanel:CPanelText("BurnDurationDisplay", "")  --HE Blast data (Name, Desc)
-    
-    Round.guiupdate( Panel, Table )
-    
+	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.FLR )
+	
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
+
+	acfmenupanel:CPanelText("BonusDisplay", "")
+
+	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
+	acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
+	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)	
+	
+	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Dual Spectrum Filler", "")--Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	
+	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("BurnRateDisplay", "")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("BurnDurationDisplay", "")	--HE Blast data (Name, Desc)
+	--acfmenupanel:CPanelText("DistractChanceDisplay", "")	--HE Fragmentation data (Name, Desc)
+	
+	Round.guiupdate( Panel, Table )
+	
 end
 
 function Round.guiupdate( Panel, Table )
-    
-    local PlayerData = {}
-        PlayerData.Id           = acfmenupanel.AmmoData.Data.id         --AmmoSelect GUI
-        PlayerData.Type         = "FLR"                                 --Hardcoded, match ACFRoundTypes table index
-        PlayerData.PropLength   = acfmenupanel.AmmoData.PropLength      --PropLength slider
-        PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength      --ProjLength slider
-        PlayerData.Data5        = acfmenupanel.AmmoData.FillerVol
-        PlayerData.Data10       = acfmenupanel.AmmoData.Tracer and 1 or 0
-    
-    local Data = Round.convert( Panel, PlayerData )
-    
-    RunConsoleCommand( "acfmenu_data1", acfmenupanel.AmmoData.Data.id )
-    RunConsoleCommand( "acfmenu_data2", PlayerData.Type )
-    RunConsoleCommand( "acfmenu_data3", Data.PropLength )       --For Gun ammo, Data3 should always be Propellant
-    RunConsoleCommand( "acfmenu_data4", Data.ProjLength )       --And Data4 total round mass
-    RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
-    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    
-    ---------------------------Ammo Capacity-------------------------------------
-    ACE_AmmoCapacityDisplay( Data )
-    -------------------------------------------------------------------------------
-    acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Dual Spectrum Filler", "Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")   --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	
+	local PlayerData = {}
+		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
+		PlayerData.Type = "FLR"										--Hardcoded, match ACFRoundTypes table index
+		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
+		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
+		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
+        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
+        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
+	
+	local Data = Round.convert( Panel, PlayerData )
+	
+	RunConsoleCommand( "acfmenu_data1", acfmenupanel.AmmoData.Data.id )
+	RunConsoleCommand( "acfmenu_data2", PlayerData.Type )
+	RunConsoleCommand( "acfmenu_data3", Data.PropLength )		--For Gun ammo, Data3 should always be Propellant
+	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
+	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
+	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+	
+	---------------------------Ammo Capacity-------------------------------------
+	ACE_AmmoCapacityDisplay( Data )
+	-------------------------------------------------------------------------------
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Dual Spectrum Filler", "Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
-    acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
-    acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm") --Total round length (Name, Desc)
-    acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")   --Proj muzzle velocity (Name, Desc) 
-    
-    acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
-    acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")
-    
+	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+Data.Tracer)*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)	
+	
+	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
+	acfmenupanel:CPanelText("BurnDurationDisplay", "Burn Duration : " .. math.Round(Data.BurnTime, 1) .. " s")
+
 end
 
 list.Set( "SPECSRoundTypes", "FLR", Round ) 

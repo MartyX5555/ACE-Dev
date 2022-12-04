@@ -11,9 +11,7 @@ ACF_defineGunClass("FFAR", {
     sound           = "acf_extra/airfx/rocket_fire2.wav",
     soundDistance   = " ",
     soundNormal     = " ",
-    effect          = "Rocket Motor FFAR",
-
-    ammoBlacklist   = {"AP", "APHE", "FL"} -- Including FL would mean changing the way round classes work.
+    effect          = "Rocket Motor FFAR"
 } )
 
 
@@ -29,9 +27,10 @@ ACF_defineGun("40mmFFAR", { --id
     gunclass    = "FFAR",
     rack        = "40mm7xPOD",  -- Which rack to spawn this missile on?
     weight      = 6,
-    length      = 2, -- Length affects inertia calculations
+    length      = 38 * 2, -- Length affects inertia calculations
     rofmod      = 0.1,
     year        = 1960,
+    modeldiameter   = 2,
     round       =
     {
         model       = "models/missiles/ffar_40mm.mdl",
@@ -72,10 +71,11 @@ ACF_defineGun("70mmFFAR", { --id
     gunclass    = "FFAR",
     rack        = "70mm7xPOD",  -- Which rack to spawn this missile on?
     weight      = 12,
-    length      = 15,
+    length      = 64 * 2,
     year        = 1960,
     rofmod      = 0.06,
     roundclass  = "Rocket",
+    modeldiameter   = 3,
     round       =
     {
         model       = "models/missiles/ffar_70mm.mdl",

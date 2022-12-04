@@ -35,12 +35,14 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-	if not PlayerData.PropLength then PlayerData.PropLength = 0 end
-	if not PlayerData.ProjLength then PlayerData.ProjLength = 0 end
+    PlayerData.PropLength   =  PlayerData.PropLength    or 0
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.Tracer       =  PlayerData.Tracer        or 0
+    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
 	if not PlayerData.Data7 then PlayerData.Data7 = 0 end
-	if not PlayerData.Data10 then PlayerData.Data10 = 0 end
+
 
 	PlayerData.Type = 'HEATFS'
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
@@ -345,10 +347,12 @@ end
 function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.HEATFS )
+	acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
 	
 	acfmenupanel:CPanelText("BonusDisplay", "")
 	
 	acfmenupanel:CPanelText("Desc", "")	--Description (Name, Desc)
+	acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
 	acfmenupanel:CPanelText("LengthDisplay", "")	--Total round length (Name, Desc)
 	
 	--Slider (Name, Value, Min, Max, Decimals, Title, Desc)
@@ -357,7 +361,7 @@ function Round.guicreate( Panel, Table )
 	acfmenupanel:AmmoSlider("ConeAng",0,0,1000,3, "HEAT Cone Angle", "")
 	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Total HEAT Warhead volume", "")
 	
-	acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")			--Tracer checkbox (Name, Title, Desc)
+	ACE_Checkboxes()
 	
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "")	--HE Blast data (Name, Desc)
@@ -379,9 +383,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data6 = acfmenupanel.AmmoData.ConeAng
-		local Tracer = 0
-		if acfmenupanel.AmmoData.Tracer then Tracer = 1 end
-		PlayerData.Data10 = Tracer				--Tracer
+        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
+        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
 	
 	local Data = Round.convert( Panel, PlayerData )
 	
@@ -391,7 +394,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data6", Data.ConeAng )
-	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 	
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
@@ -402,7 +406,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	
-	acfmenupanel:AmmoCheckbox("Tracer", "Tracer : "..(math.floor(Data.Tracer*5)/10).."cm\n", "" )			--Tracer checkbox (Name, Title, Desc)
+	ACE_Checkboxes( Data )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
@@ -431,3 +435,6 @@ end
 list.Set("HERoundTypes", 'HEATFS', Round )
 list.Set( "ACFRoundTypes", "HEATFS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEATFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
+
+ACF.RoundTypes  = list.Get("ACFRoundTypes")
+ACF.IdRounds    = list.Get("ACFIdRounds")

@@ -25,33 +25,28 @@ function ENT:GetReloadTime(nextMsl)
     
 end
 
-
-
-
 function ENT:GetFireDelay(nextMsl)
 
     if not IsValid(nextMsl) then 
-        --self:SetNWFloat(  "Interval",     self.LastValidFireDelay or 1)
         return self.LastValidFireDelay or 1 
     end
 
     local bdata = nextMsl.BulletData
+    local gun = ACF.Weapons.Guns[bdata.Id]
+    
+    if not gun then 
+        return self.LastValidFireDelay or 1 
+    end
+    
+    local class = ACF.Classes.GunClass[gun.gunclass]
 
-    local gun = list.Get("ACFEnts").Guns[bdata.Id]
-    
-    if not gun then return self.LastValidFireDelay or 1 end
-    
-    local class = list.Get("ACFClasses").GunClass[gun.gunclass]
-
-    
     local interval =  math.max(( (bdata.RoundVolume / 500) ^ 0.60 ) * (gun.rofmod or 1) * (class.rofmod or 1), 0.1)
     self.LastValidFireDelay = interval
-    self:SetNWFloat(    "Interval",     interval)
+    self:SetNWFloat( "Interval", interval)
     
     return interval
     
 end
-
 
 local RackWireDescs = {
     --Inputs
@@ -607,6 +602,8 @@ function ENT:AddMissile()
     missile.Launcher        = self
     missile.ForceTdelay     = self.ForceTdelay
     
+    missile.ContrapId = ACF_Check( self ) and self.ACF.ContraptionId or 1
+
     if CPPI then
         missile:CPPISetOwner(ply)
     end

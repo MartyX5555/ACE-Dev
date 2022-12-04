@@ -140,8 +140,10 @@ function ENT:CalcFlight()
     -- If the missile has guidance and can turn
     if TargetPos then
 
+        local missileInac = self.guidanceInac
+
         local Dist      = Pos:Distance(TargetPos)
-        TargetPos       = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000))
+        TargetPos       = TargetPos + (Vector(0,0,self.Gravity * Dist / 100000)) + Vector(math.random(-missileInac,missileInac),math.random(-missileInac,missileInac),math.random(-missileInac,missileInac))
         local LOS       = (TargetPos - Pos):GetNormalized()
         local LastLOS   = self.LastLOS
         local NewDir    = Dir
@@ -262,7 +264,7 @@ function ENT:CalcFlight()
 
         local trace = util.TraceHull(tracedata)
 
-        -- Cframe pls
+        -- We have CFW
         if trace.Hit then
 
             local HitTarget  = trace.Entity
@@ -279,47 +281,80 @@ function ENT:CalcFlight()
             -- Determine if the detected ent is not part of the same contraption that fired this missile.
             elseif HitTarget:GetClass() ~= "acf_missile" then
 
-                local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
-                local RootLauncher = self.Launcher.BaseEntity
+                local IsPart = false
 
-                if RootLauncher:EntIndex() ~= RootTarget:EntIndex() then
+                if CFW then
 
-                    local IsPart = false
+                    local conTarget   = HitTarget:GetContraption() or {}
+                    local conLauncher = self.Launcher:GetContraption() or {}
 
-                    --Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
-                    self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
+                    if conTarget == conLauncher then -- Not required to do anything else.
 
-                    for k, physEnt in pairs(self.physentities) do
-                        
-                        if not IsValid(physEnt) then goto cont end
+                        local mi, ma = HitTarget:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(HitTarget:GetPos(), mi, ma, HitTarget:GetAngles(), 5, Color(0,255,0,100))
 
-                        if physEnt:EntIndex() == RootLauncher:EntIndex() then
-
-                            local mi, ma = physEnt:GetCollisionBounds() 
-                            debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
-
-                            IsPart = true
-                            break
-                        end
-
-                        ::cont::
+                        print("Its part")
+                        IsPart = true
                     end
 
-                    if not IsPart then
+                else -- Press F to pay respects for the low end PCs by this. USE CFW.
 
-                        local mi, ma = RootTarget:GetCollisionBounds() 
+                    local RootTarget = ACF_GetPhysicalParent( HitTarget ) or game.GetWorld()
+                    local RootLauncher = self.Launcher.BaseEntity
+
+                    if RootLauncher:EntIndex() ~= RootTarget:EntIndex() then
+
+                        --Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
+                        self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
+
+                        for k, physEnt in pairs(self.physentities) do
+                            
+                            if not IsValid(physEnt) then goto cont end
+
+                            if physEnt:EntIndex() == RootLauncher:EntIndex() then
+
+                                local mi, ma = physEnt:GetCollisionBounds() 
+                                debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
+
+                                IsPart = true
+                                break
+                            end
+
+                            ::cont::
+                        end
+
+                    end
+                end
+
+                if not IsPart then
+
+                    local mi, ma
+
+                    if CFW then
+
+                        mi, ma = HitTarget:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(HitTarget:GetPos(), mi, ma, HitTarget:GetAngles(), 5, Color(255,0,0,100))
+
+                        mi, ma = self.Launcher:GetCollisionBounds() 
+                        debugoverlay.BoxAngles(self.Launcher:GetPos(), mi, ma, self.Launcher:GetAngles(), 5, Color(255,255,0,100))
+
+                    else
+
+                        mi, ma = RootTarget:GetCollisionBounds() 
                         debugoverlay.BoxAngles(RootTarget:GetPos(), mi, ma, RootTarget:GetAngles(), 5, Color(255,0,0,100))
 
                         mi, ma = RootLauncher:GetCollisionBounds() 
                         debugoverlay.BoxAngles(RootLauncher:GetPos(), mi, ma, RootLauncher:GetAngles(), 5, Color(255,255,0,100))
 
-                        self.HitNorm    = trace.HitNormal
-                        self:DoFlight(trace.HitPos)
-                        self.LastVel    = Vel / DeltaTime
-                        self:Detonate()
-                        return
                     end
+
+                    self.HitNorm    = trace.HitNormal
+                    self:DoFlight(trace.HitPos)
+                    self.LastVel    = Vel / DeltaTime
+                    self:Detonate()
+                    return
                 end
+
             end
         end
 
@@ -482,6 +517,7 @@ function ENT:ConfigureFlight()
 
     self.FinMultiplier  = Round.finmul
     self.Agility        = GunData.agility or 1
+    self.guidanceInac   = GunData.guidanceInac or 0
     self.CurPos         = BulletData.Pos
     self.CurDir         = BulletData.Flight:GetNormalized()
     self.LastPos        = self.CurPos
@@ -744,7 +780,7 @@ do
         local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )   --Calling the standard damage prop function
 
         -- Detonate if the shot penetrates the casing.
-        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0
+        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0 
 
         if HitRes.Kill then
 
@@ -753,18 +789,15 @@ do
 
             self.Exploding = true
 
-            if( Inflictor and Inflictor:IsValid() and Inflictor:IsPlayer() ) then
+            if IsValid(Inflictor) and Inflictor:IsPlayer() then
                 self.Inflictor = Inflictor
             end
 
             --self:ForceDetonate()
 
         end
-
         return HitRes
-
     end
-
 end
 
 hook.Add("CanDrive", "acf_missile_CanDrive", function(ply, ent)
