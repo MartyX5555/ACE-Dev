@@ -14,8 +14,10 @@ if CLIENT then
 end
 
 ACF.SoundToolSupport = {
+
 	acf_gun = {
-		GetSound = function(ent) return {Sound = ent.Sound} end,
+
+		GetSound = function(ent) return { Sound = ent.Sound } end,
 		
 		SetSound = function(ent, soundData) 
 			ent.Sound = soundData.Sound
@@ -23,6 +25,7 @@ ACF.SoundToolSupport = {
 		end,
 		
 		ResetSound = function(ent)
+
 			local Class = ent.Class
 			local Classes = list.Get("ACFClasses")
 			
@@ -39,7 +42,8 @@ ACF.SoundToolSupport = {
 	},
 	
 	acf_engine = {
-		GetSound = function(ent) return {Sound = ent.SoundPath, Pitch = ent.SoundPitch} end,
+
+		GetSound = function(ent) return { Sound = ent.SoundPath, Pitch = ent.SoundPitch } end,
 		
 		SetSound = function(ent, soundData) 
 			ent.SoundPath = soundData.Sound
@@ -47,11 +51,12 @@ ACF.SoundToolSupport = {
 		end,
 		
 		ResetSound = function(ent)
+
 			local Id = ent.Id
 			local List = list.Get("ACFEnts")
 			local pitch = List["Mobility"][Id]["pitch"] or 1
 			
-			local soundData = {Sound = List["Mobility"][Id]["sound"], Pitch = pitch}
+			local soundData = { Sound = List["Mobility"][Id]["sound"], Pitch = pitch }
 			
 			local setSound = ACF.SoundToolSupport["acf_engine"].SetSound
 			setSound( ent, soundData )
@@ -59,7 +64,8 @@ ACF.SoundToolSupport = {
 	},
 
 	acf_rack = {
-		GetSound = function(ent) return {Sound = ent.Sound} end,
+
+		GetSound = function(ent) return { Sound = ent.Sound } end,
 		
 		SetSound = function(ent, soundData) 
 			ent.Sound = soundData.Sound
@@ -67,6 +73,7 @@ ACF.SoundToolSupport = {
 		end,
 		
 		ResetSound = function(ent)
+			
 			local Class = ent.Class
 			local Classes = list.Get("ACFClasses")
 			
@@ -78,7 +85,8 @@ ACF.SoundToolSupport = {
 	},
 	
 	acf_missileradar = {
-		GetSound = function(ent) return {Sound = ent.Sound} end,
+
+		GetSound = function(ent) return { Sound = ent.Sound } end,
 		
 		SetSound = function(ent, soundData) 
 			ent.Sound = soundData.Sound
@@ -95,15 +103,16 @@ ACF.SoundToolSupport = {
 }
 
 local function ReplaceSound( ply , Entity , data)
-	if !IsValid( Entity ) then return end
+	if not IsValid( Entity ) then return end
 	local sound = data[1]
 	local pitch = data[2] or 1
 	
 	timer.Simple(1, function()
 		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
+
 		local class = Entity:GetClass()
-		
 		local support = ACF.SoundToolSupport[class]
+
 		if not support then return end
 	
 		support.SetSound(Entity, {Sound = sound, Pitch = pitch})

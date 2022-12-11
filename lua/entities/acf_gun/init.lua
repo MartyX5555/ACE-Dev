@@ -156,14 +156,9 @@ do
             Gun:SetColor(Color(ClassData.color[1],ClassData.color[2],ClassData.color[3], 255))
         end
 
-        Gun.PGRoFmod = 1 --per gun rof
-
-        if(Lookup.rofmod) then
-            Gun.PGRoFmod = math.max(0.01, Lookup.rofmod)
-        end
-
+        Gun.PGRoFmod    = Lookup.rofmod and math.max(0.01, Lookup.rofmod) or 1 --per gun rof
         Gun.CurrentShot = 0
-        Gun.MagSize = 1
+        Gun.MagSize     = 1
     
         --IDK why does this has been broken, giving it sense now
         --to cover guns that uses magazines
@@ -919,22 +914,21 @@ function ENT:LoadAmmo( AddTime, Reload )
         self.BulletData = AmmoEnt.BulletData
         self.BulletData.Crate = AmmoEnt:EntIndex()
         
-        local cb = 1
-        if(self.CrateBonus and (self.MagReload == 0)) then
-            cb = self.CrateBonus
-            if (cb == 0) then cb = 1 end
+        local CrateReload = 1
+        if self.CrateBonus and (self.MagReload == 0) then
+            CrateReload = 1 + self.CrateBonus
         end
         
         local Adj = not self.BulletData.LengthAdj and 1 or self.BulletData.LengthAdj --FL firerate bonus adjustment
-        local ReloadBuff = 1
+        local CrewReload = 1
 
         if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-            ReloadBuff = 1.25-(self.LoaderCount*0.25)
+            CrewReload = 1.25-(self.LoaderCount*0.25)
         end
-        
-        self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * cb * ReloadBuff, self.ROFLimit)
+
+        self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrateReload * CrewReload, self.ROFLimit)
         Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
-        
+
         self.RateOfFire = (60/self.ReloadTime)
         Wire_TriggerOutput(self, "Fire Rate", self.RateOfFire)
         Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass*1000) )

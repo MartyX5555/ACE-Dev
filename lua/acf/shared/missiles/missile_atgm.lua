@@ -57,8 +57,8 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
                     ["4x BGM-71E"] = true
                 },    
 
-    agility         = 0.42,                                     -- multiplier for missile turn-rate.
-    guidanceInac    = 50,                                       -- How much inaccuracy this missile will have when its being guided. In units
+    agility         = 0.14, --0.42                                    -- multiplier for missile turn-rate.
+    guidanceInac    = 1, --50                                       -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                          -- minimum fuse arming delay
@@ -109,8 +109,8 @@ ACF_defineGun("9M133 ASM", {                                    -- id
 
     viewcone    = 25,                                           -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility         = 0.15,                                     -- multiplier for missile turn-rate.
-    guidanceInac    = 60,                                       -- How much inaccuracy this missile will have when its being guided. In units    
+    agility         = 0.05, --0.15                                    -- multiplier for missile turn-rate.
+    guidanceInac    = 1, --60                                       -- How much inaccuracy this missile will have when its being guided. In units    
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                          -- minimum fuse arming delay
@@ -162,8 +162,8 @@ ACF_defineGun("AT-3 ASM", { --id
 
     skinindex   = {HEAT = 0, HE = 1},
 
-    agility         = 0.3,                                          -- multiplier for missile turn-rate.
-    guidanceInac    = 50,                                       -- How much inaccuracy this missile will have when its being guided. In units
+    agility         = 0.1, --0.3                                         -- multiplier for missile turn-rate.
+    guidanceInac    = 1, --50                                      -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
     
     armdelay        = 0.00                                          -- minimum fuse arming delay
@@ -217,8 +217,8 @@ ACF_defineGun("Ataka ASM", { --id
     seekcone    = 20,                                           -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 25
     viewcone    = 40,                                           -- getting outside this cone will break the lock.  Divided by 2.
 
-    agility     = 0.15,                                     -- multiplier for missile turn-rate.
-    guidanceInac    = 50,                                   -- How much inaccuracy this missile will have when its being guided. In units
+    agility     = 0.05,  --0.15                                   -- multiplier for missile turn-rate.
+    guidanceInac    = 1, --50                                  -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime   = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
     
     armdelay    = 0.00                                          -- minimum fuse arming delay
@@ -270,8 +270,8 @@ ACF_defineGun("AT-2 ASM", { --id
                     ["2x AGM-114"] = true, 
                     ["4x AGM-114"] = true
                 },                                  
-    agility         = 1.8,                                      -- multiplier for missile turn-rate.
-    guidanceInac    = 50,                                       -- How much inaccuracy this missile will have when its being guided. In units
+    agility         = 0.6, --1.8                                      -- multiplier for missile turn-rate.
+    guidanceInac    = 1, --50                                     -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay        = 0.00                                      -- minimum fuse arming delay
 } )
@@ -318,9 +318,9 @@ ACF_defineGun("FGM-148 ASM", {
     racks       = {                                             -- a whitelist for racks that this missile can load into.
                     ["1x Javelin"] = true
                 },    
-    agility         = 1.5,                                      -- multiplier for missile turn-rate.
+    agility         = 0.5,  --1.5                                    -- multiplier for missile turn-rate.
     armdelay        = 1,                                        -- minimum fuse arming delay
-    guidanceInac    = 15,                                       -- How much inaccuracy this missile will have when its being guided. In units
+    guidanceInac    = 1, --15                                      -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
 
     prepush     = false,                                        -- Additional push and delaying motor ignition

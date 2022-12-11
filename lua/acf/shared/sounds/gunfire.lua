@@ -584,35 +584,38 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
  )
 
 --Generic Howitzer gunfire
-ACE_DefineGunFireSound( "weapons/acf_gun/howitzer_new2.wav", 
+ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav", 
 	{
 		main = {
-			Volume 	= 1,
+			Volume 	= 10,
 			Pitch 	= 100,
 			Package = {
-				"weapons/acf_gun/howitzer_new2.wav"			
+				"ace_weapons/multi_sound/content/howitzer/close/close1.wav",
+				"ace_weapons/multi_sound/content/howitzer/close/close2.wav",
+				"ace_weapons/multi_sound/content/howitzer/close/close3.wav",
+				"ace_weapons/multi_sound/content/howitzer/close/close4.wav"			
 			}
 
 		},
 		mid = {
-			Volume 	= 100,
+			Volume 	= 10,
 			Pitch 	= 100,
 			Package = {
-				"acf_other/gunfire/cannon/cannon_mid_far1.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far2.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far3.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far4.wav"			
+				"ace_weapons/multi_sound/content/howitzer/medium/mid1.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid2.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid3.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid4.wav"		
 			}
 
 		},
 		far = {
-			Volume 	= 100,
+			Volume 	= 10,
 			Pitch 	= 100,
 			Package = {
-				"acf_other/gunfire/cannon/cannon_mid_far1.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far2.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far3.wav",
-				"acf_other/gunfire/cannon/cannon_mid_far4.wav"			
+				"ace_weapons/multi_sound/content/howitzer/medium/mid1.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid2.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid3.wav",
+				"ace_weapons/multi_sound/content/howitzer/medium/mid4.wav"			
 			}
 		}
 	}
