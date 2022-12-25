@@ -244,7 +244,7 @@ function ACF_UpdateChecking( )
             print("[ACE | INFO]- You have an experimental version! Your version: "..ACF.Version..". Main version: "..rev)
         elseif rev == 0 then
         
-            print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
+            print("[ACE | ERROR]- Unable to find the latest version! Failed to connect to GitHub.")
             
         else
         
@@ -254,7 +254,11 @@ function ACF_UpdateChecking( )
         end
         ACF.CurrentVersion = rev
         
-    end, function() end)
+    end, function()
+        print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
+
+        ACF.CurrentVersion = 0
+    end)
 end
 
 
