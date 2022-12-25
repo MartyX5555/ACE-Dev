@@ -179,6 +179,8 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 
     if IsValid(Ammo) then
 
+        Id = Id or "Ammo2x4x4"
+
         Ammo:SetAngles(Angle)
         Ammo:SetPos(Pos)
         Ammo:Spawn()
