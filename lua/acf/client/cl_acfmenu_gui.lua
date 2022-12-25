@@ -505,15 +505,15 @@ function ACFHomeGUICreate( Table )
    local color
    local versionstring
 
-   if ACF.CurrentVersion > 0 then
-   if ACF.Version >= ACF.CurrentVersion then
-      versionstring = "Up To Date"
-      color = Color(0,225,0,255)
-   else
-      versionstring = "Out Of Date"
-      color = Color(225,0,0,255)
+   if ACF.CurrentVersion and ACF.CurrentVersion > 0 then
+      if ACF.Version >= ACF.CurrentVersion then
+         versionstring = "Up To Date"
+         color = Color(0,225,0,255)
+      else
+         versionstring = "Out Of Date"
+         color = Color(225,0,0,255)
 
-   end
+      end
    else
       versionstring = "No internet Connection available!"
       color = Color(225,0,0,255)
