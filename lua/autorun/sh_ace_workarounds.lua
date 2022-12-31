@@ -59,11 +59,11 @@ if CLIENT then
 
 	do
 
-		local ply = LocalPlayer()
-
 		net.Receive("ACE_HasGodMode", function()
 
+			local ply = LocalPlayer()
 			local Bool = net.ReadBool()
+			
 			ply.ACE_HasGodMode = Bool
 
 		end)
@@ -79,6 +79,9 @@ elseif SERVER then
 	do
 
 		local function SendGodStatus( bool, ply )
+
+			print("God Update")
+			print(bool)
 
 			net.Start("ACE_HasGodMode")
 				net.WriteBool(bool)
