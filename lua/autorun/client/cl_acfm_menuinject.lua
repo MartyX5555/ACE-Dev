@@ -187,7 +187,7 @@ function CreateRackSelectGUI(node)
         acfmenupanel.CData.RackSelect.OnSelect = function( index , value , data )
             RunConsoleCommand( "acfmenu_data9", data )
 
-            local rack = ACF.Weapons.Rack[data]
+            local rack = ACF.Weapons.Racks[data]
 
             if rack then
 

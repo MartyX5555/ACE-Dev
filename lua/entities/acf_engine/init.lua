@@ -5,6 +5,8 @@ AddCSLuaFile( "cl_init.lua" )
 
 include('shared.lua')
 
+local EngineTable = ACF.Weapons.Engines
+
 do
 
     local EngineWireDescs = {
@@ -77,24 +79,19 @@ do
 
         local Engine = ents.Create( "acf_engine" )
         if not IsValid( Engine ) then return false end
-    
-        local EID
-        local List = list.Get("ACFEnts")
 
-        if List.Mobility[Id] then 
-            EID = Id 
-        else 
-            EID = BackComp[Id] or "5.7-V8" 
+        if not ACE_CheckEngine( Id ) then 
+            Id = BackComp[Id] or "5.7-V8" 
         end
 
-        local Lookup = List.Mobility[EID]
+        local Lookup = EngineTable[Id]
     
         Engine:SetAngles(Angle)
         Engine:SetPos(Pos)
         Engine:Spawn()
         Engine:SetPlayer(Owner)
         Engine.Owner = Owner
-        Engine.Id = EID
+        Engine.Id = Id
     
         Engine.Model            = Lookup.model
         Engine.SoundPath        = Lookup.sound
@@ -176,7 +173,7 @@ function ENT:Update( ArgsTable )
     end
 
     local Id = ArgsTable[4] -- Argtable[4] is the engine ID
-    local Lookup = list.Get("ACFEnts").Mobility[Id]
+    local Lookup = EngineTable[Id]
 
     if Lookup.model ~= self.Model then
         return false, "The new engine must have the same model!"
@@ -330,25 +327,19 @@ function ENT:ACF_Activate()
         if not Entity.ACF.Area then
             Entity.ACF.Area = (PhysObj:GetSurfaceArea() * 6.45) * 0.52505066107
         end
-        --if not Entity.ACF.Volume then
-        --  Entity.ACF.Volume = (PhysObj:GetVolume() * 16.38)
-        --end
+
     else
         local Size = Entity.OBBMaxs(Entity) - Entity.OBBMins(Entity)
         if not Entity.ACF.Area then
             Entity.ACF.Area = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
         end
-        --if not Entity.ACF.Volume then
-        --  Entity.ACF.Volume = Size.x * Size.y * Size.z * 16.38
-        --end
+
     end
     
     Entity.ACF.Ductility = Entity.ACF.Ductility or 0
-    --local Area = (Entity.ACF.Area+Entity.ACF.Area*math.Clamp(Entity.ACF.Ductility,-0.8,0.8))
+
     local Area = (Entity.ACF.Area)
-    --local Armour = (Entity:GetPhysicsObject():GetMass()*1000 / Area / 0.78) / (1 + math.Clamp(Entity.ACF.Ductility, -0.8, 0.8))^(1/2) --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
     local Armour = (Entity:GetPhysicsObject():GetMass()*1000 / Area / 0.78) 
-    --local Health = (Area/ACF.Threshold) * (1 + math.Clamp(Entity.ACF.Ductility, -0.8, 0.8))                                               --Setting the threshold of the prop Area gone
     local Health = (Area/ACF.Threshold)
     
     local Percent = 1 

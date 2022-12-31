@@ -24,7 +24,7 @@ ACE.CrackDistanceMultipler  = 1
 ACE.EnableTinnitus          = 1
 
 --Defines the distance where ring ears start to affect to player
-ACE.TinnitusZoneMultipler   = 1
+ACE.TinnitusZoneMultipler   = 1.5
 
 
 ACE.Sounds          = ACE.Sounds or {}
@@ -96,9 +96,7 @@ function ACE_SHasLOS( EventPos )
     LOSTr.start     = EventPos + Vector(0,0,10)
     LOSTr.endpos    = headPos
     LOSTr.filter    = function( ent ) if ( ACE.Sounds.LOSWhitelist[ent:GetClass()] ) then return true end end --Only hits the whitelisted ents
-    LOSTr.mins      = vector_origin
-    LOSTr.maxs      = LOSTr.mins
-    local LOS       = util.TraceHull(LOSTr)
+    local LOS       = util.TraceLine(LOSTr)
 
     --debugoverlay.Line(EventPos, LOS.HitPos , 5, Color(0,255,255))
 
@@ -279,17 +277,13 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                     if ACE.EnableTinnitus then
                         local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
                         if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
-                            if not entply.OnTinnitus then
-                                entply.OnTinnitus = true
-                                timer.Simple(0.01, function()
-                                    entply:SetDSP( 32, true )
-                                    entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )   
 
-                                    timer.Simple(2, function()
-                                        entply.OnTinnitus = nil     
-                                    end)
-                                end)
-                            end
+                            timer.Simple(0.01, function()
+                                entply:SetDSP( 33, true )
+                                entply:StopSound( "acf_other/explosions/ring/tinnitus.mp3" ) --See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
+                                entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )   --Disabled sound
+
+                            end)
                         end
 
                         --debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)

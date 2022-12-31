@@ -97,9 +97,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 
     if not Owner:CheckLimit("_acf_missileradar") then return false end
 
-    local weapon = ACF.Weapons.Guns[Data1]
-
-    local radar = ACF.Weapons.Radar[Id]
+    local radar = ACF.Weapons.Radars[Id]
     
     if not radar then return false end
     

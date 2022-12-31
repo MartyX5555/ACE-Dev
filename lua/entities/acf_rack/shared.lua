@@ -27,7 +27,7 @@ function ENT:GetMunitionAngPos(missile, attach, attachname)
     if not gun then return angpos end
     
     local offset    = (gun.modeldiameter or gun.caliber) / (2.54 * 2)
-    local rack      = ACF.Weapons.Rack[self.Id]
+    local rack      = ACF.Weapons.Racks[self.Id]
 
     if not rack then return angpos end
     

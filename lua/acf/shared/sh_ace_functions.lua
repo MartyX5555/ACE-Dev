@@ -384,6 +384,7 @@ do
     end
 end
 
+--TODO: Use a universal function
 function ACE_CheckRound( id )
 
     local rounddata = ACF.RoundTypes[ id ]
@@ -398,6 +399,51 @@ function ACE_CheckGun( gunid )
     local gundata = ACF.Weapons.Guns[ gunid ]
 
     if not gundata then return false end
+
+    return true
+end
+
+function ACE_CheckRack( rackid )
+
+    local rackdata = ACF.Weapons.Racks[ rackid ]
+
+    if not rackdata then return false end
+
+    return true
+end
+
+function ACE_CheckAmmo( ammoid )
+
+    local Ammodata = ACF.Weapons.Ammo[ ammoid ]
+
+    if not Ammodata then return false end
+
+    return true
+end
+
+function ACE_CheckEngine( engineid )
+
+    local enginedata = ACF.Weapons.Engines[ engineid ]
+
+    if not enginedata then return false end
+
+    return true
+end
+
+function ACE_CheckGearbox( gearid )
+
+    local geardata = ACF.Weapons.Gearboxes[ gearid ]
+
+    if not geardata then return false end
+
+    return true
+end
+
+function ACE_CheckFuelTank( fueltankid )
+
+    local fueltankid = ACF.Weapons.FuelTanksSize[ fueltankid ]
+
+    if not fueltankid then return false end
 
     return true
 end

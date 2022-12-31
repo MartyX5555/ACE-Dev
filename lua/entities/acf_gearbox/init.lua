@@ -3,200 +3,210 @@ AddCSLuaFile("cl_init.lua")
 
 include("shared.lua")
 
-local GearboxWireDescs = {
-    ["Gear"]        = "Sets the gear of this gearbox.",
-    ["GearUp"]      = "Increases one gear above the current one.",
-    ["GearDown"]    = "Decreases one gear below the current one.",
-    ["Clutch"]      = "Applies Clutch to gearbox. Values from 0 to 1.",
-    ["Brake"]       = "Applies Brake to gearbox. The value you put, the strenght of the brake."
-}
+local GearboxTable = ACF.Weapons.Gearboxes
 
-function ENT:Initialize()
-    
-    self.IsGeartrain    = true
-    self.Master         = {}
-    self.IsMaster       = true
-    
-    self.WheelLink      = {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
-    
-    self.TotalReqTq     = 0
-    self.RClutch        = 0
-    self.LClutch        = 0
-    self.LBrake         = 0
-    self.RBrake         = 0
-    self.SteerRate      = 0
+do
 
-    self.Gear           = 0
-    self.GearRatio      = 0
-    self.ChangeFinished = 0
-    
-    self.LegalThink     = 0
-    
-    self.RPM            = {}
-    self.CurRPM         = 0
-    self.CVT            = false
-    self.DoubleDiff     = false
-    self.Auto           = false
-    self.InGear         = false
-    self.CanUpdate      = true
-    self.LastActive     = 0
-    self.Legal          = true
-    self.Parentable     = false
-    self.RootParent     = nil
-    self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-    self.LegalIssues    = ""
-    
-    --self.Heat         = ACE.AmbientTemp
-    
-end  
+    local GearboxWireDescs = {
+        ["Gear"]        = "Sets the gear of this gearbox.",
+        ["GearUp"]      = "Increases one gear above the current one.",
+        ["GearDown"]    = "Decreases one gear below the current one.",
+        ["Clutch"]      = "Applies Clutch to gearbox. Values from 0 to 1.",
+        ["Brake"]       = "Applies Brake to gearbox. The value you put, the strenght of the brake."
+    }
 
-function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
-
-    if not Owner:CheckLimit("_acf_misc") then return false end
-    
-    local Gearbox   = ents.Create("acf_gearbox")
-    local List      = list.Get("ACFEnts")
-    local Classes   = list.Get("ACFClasses")
-
-    if not IsValid( Gearbox ) then return false end
-
-    Gearbox:SetAngles(Angle)
-    Gearbox:SetPos(Pos)
-    Gearbox:Spawn()
-
-    Gearbox:SetPlayer(Owner)
-    Gearbox.Owner       = Owner
-    Gearbox.Id          = Id
-    Gearbox.Model       = List.Mobility[Id].model
-    Gearbox.Mass        = List.Mobility[Id].weight          or 1
-    Gearbox.SwitchTime  = List.Mobility[Id].switch
-    Gearbox.MaxTorque   = List.Mobility[Id].maxtq
-    Gearbox.Gears       = List.Mobility[Id].gears           or 2 --hmmmmmm ok? just if everything fails
-    Gearbox.Dual        = List.Mobility[Id].doubleclutch    or false
-    Gearbox.CVT         = List.Mobility[Id].cvt             or false
-    Gearbox.DoubleDiff  = List.Mobility[Id].doublediff      or false
-    Gearbox.Auto        = List.Mobility[Id].auto            or false
-    Gearbox.Parentable  = List.Mobility[Id].parentable      or false
-    
-    if Gearbox.CVT then
-        Gearbox.TargetMinRPM = Data3
-        Gearbox.TargetMaxRPM = math.max(Data4,Data3+100)
-        Gearbox.CVTRatio = nil
-    end
-    
-    Gearbox.GearTable = List.Mobility[Id].geartable
-        Gearbox.GearTable.Final = Data10
-        Gearbox.GearTable[1] = Data1
-        Gearbox.GearTable[2] = Data2
-        Gearbox.GearTable[3] = Data3
-        Gearbox.GearTable[4] = Data4
-        Gearbox.GearTable[5] = Data5
-        Gearbox.GearTable[6] = Data6
-        Gearbox.GearTable[7] = Data7
-        Gearbox.GearTable[8] = Data8
-        Gearbox.GearTable[9] = Data9
-        Gearbox.GearTable[0] = List.Mobility[Id].geartable[0]
+    function ENT:Initialize()
         
-        Gearbox.Gear0 = Data10
-        Gearbox.Gear1 = Data1
-        Gearbox.Gear2 = Data2
-        Gearbox.Gear3 = Data3
-        Gearbox.Gear4 = Data4
-        Gearbox.Gear5 = Data5
-        Gearbox.Gear6 = Data6
-        Gearbox.Gear7 = Data7
-        Gearbox.Gear8 = Data8
-        Gearbox.Gear9 = Data9
+        self.IsGeartrain    = true
+        self.Master         = {}
+        self.IsMaster       = true
         
-    Gearbox.GearRatio = (Gearbox.GearTable[0] or 0)*Gearbox.GearTable.Final
-    
-    if Gearbox.Auto then
-        Gearbox.ShiftPoints = {}
-        for part in string.gmatch(Data9, "[^,]+") do Gearbox.ShiftPoints[#Gearbox.ShiftPoints+1] = tonumber(part) end
-        Gearbox.ShiftPoints[0] = -1
-        Gearbox.Reverse = Gearbox.Gears+1
-        Gearbox.GearTable[Gearbox.Reverse] = Data8
-        Gearbox.Drive = 1
-        Gearbox.ShiftScale = 1
-    end
-    
-    Gearbox:SetModel( Gearbox.Model )   
+        self.WheelLink      = {} -- a "Link" has these components: Ent, Side, Axis, Rope, RopeLen, Output, ReqTq, Vel
         
-    local Inputs = {"Gear ("..GearboxWireDescs["Gear"]..")","Gear Up ("..GearboxWireDescs["GearUp"]..")","Gear Down ("..GearboxWireDescs["GearDown"]..")"}
-    if Gearbox.CVT then
-        table.insert(Inputs,"CVT Ratio")
-    elseif Gearbox.DoubleDiff then
-        table.insert(Inputs, "Steer Rate")
-    elseif Gearbox.Auto then
-        table.insert(Inputs, "Hold Gear")
-        table.insert(Inputs, "Shift Speed Scale")
-        Gearbox.Hold = false
-    end
-    
-    if Gearbox.Dual then
-        table.insert(Inputs, "Left Clutch")
-        table.insert(Inputs, "Right Clutch")
-        table.insert(Inputs, "Left Brake")
-        table.insert(Inputs, "Right Brake")
-    else
-        table.insert(Inputs, "Clutch ("..GearboxWireDescs["Clutch"]..")")
-        table.insert(Inputs, "Brake ("..GearboxWireDescs["Brake"]..")")
-    end
-    
-    local Outputs = { "Ratio", "Entity", "Current Gear" }
-    local OutputTypes = { "NORMAL", "ENTITY", "NORMAL" }
-    if Gearbox.CVT then
-        table.insert(Outputs,"Min Target RPM")
-        table.insert(Outputs,"Max Target RPM")
-        table.insert(OutputTypes,"NORMAL")
-    end
-    
-    Gearbox.Inputs = Wire_CreateInputs( Gearbox, Inputs )
-    Gearbox.Outputs = WireLib.CreateSpecialOutputs( Gearbox, Outputs, OutputTypes )
-    Wire_TriggerOutput(Gearbox, "Entity", Gearbox)
-    
-    if Gearbox.CVT then
-        Wire_TriggerOutput(Gearbox, "Min Target RPM", Gearbox.TargetMinRPM)
-        Wire_TriggerOutput(Gearbox, "Max Target RPM", Gearbox.TargetMaxRPM)
-    end
-    
-    Gearbox.LClutch = Gearbox.MaxTorque
-    Gearbox.RClutch = Gearbox.MaxTorque
+        self.TotalReqTq     = 0
+        self.RClutch        = 0
+        self.LClutch        = 0
+        self.LBrake         = 0
+        self.RBrake         = 0
+        self.SteerRate      = 0
 
-    Gearbox:PhysicsInit( SOLID_VPHYSICS )       
-    Gearbox:SetMoveType( MOVETYPE_VPHYSICS )        
-    Gearbox:SetSolid( SOLID_VPHYSICS )
+        self.Gear           = 0
+        self.GearRatio      = 0
+        self.ChangeFinished = 0
+        
+        self.LegalThink     = 0
+        
+        self.RPM            = {}
+        self.CurRPM         = 0
+        self.CVT            = false
+        self.DoubleDiff     = false
+        self.Auto           = false
+        self.InGear         = false
+        self.CanUpdate      = true
+        self.LastActive     = 0
+        self.Legal          = true
+        self.Parentable     = false
+        self.RootParent     = nil
+        self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+        self.LegalIssues    = ""
+        
+        --self.Heat         = ACE.AmbientTemp
+        
+    end  
 
-    local phys = Gearbox:GetPhysicsObject()     
-    if IsValid( phys ) then 
-        phys:SetMass( Gearbox.Mass ) 
-        Gearbox.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
+    function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+
+        if not Owner:CheckLimit("_acf_misc") then return false end
+        
+        local Gearbox   = ents.Create("acf_gearbox")
+
+        if not IsValid( Gearbox ) then return false end
+
+        if not ACE_CheckGearbox( Id ) then
+            Id = "1Gear-T-S" --deal with it
+        end
+
+        local GearboxData = GearboxTable[Id]
+
+        Gearbox:SetAngles(Angle)
+        Gearbox:SetPos(Pos)
+        Gearbox:Spawn()
+
+        Gearbox:SetPlayer(Owner)
+        Gearbox.Owner       = Owner
+        Gearbox.Id          = Id
+        Gearbox.Model       = GearboxData.model
+        Gearbox.Mass        = GearboxData.weight          or 1
+        Gearbox.SwitchTime  = GearboxData.switch
+        Gearbox.MaxTorque   = GearboxData.maxtq           or 0
+        Gearbox.Gears       = GearboxData.gears           or 2 --hmmmmmm ok? just if everything fails
+        Gearbox.Dual        = GearboxData.doubleclutch    or false
+        Gearbox.CVT         = GearboxData.cvt             or false
+        Gearbox.DoubleDiff  = GearboxData.doublediff      or false
+        Gearbox.Auto        = GearboxData.auto            or false
+        Gearbox.Parentable  = GearboxData.parentable      or false
+        
+        if Gearbox.CVT then
+            Gearbox.TargetMinRPM = Data3
+            Gearbox.TargetMaxRPM = math.max(Data4,Data3+100)
+            Gearbox.CVTRatio = nil
+        end
+        
+        Gearbox.GearTable = GearboxData.geartable
+            Gearbox.GearTable.Final = Data10
+            Gearbox.GearTable[1] = Data1
+            Gearbox.GearTable[2] = Data2
+            Gearbox.GearTable[3] = Data3
+            Gearbox.GearTable[4] = Data4
+            Gearbox.GearTable[5] = Data5
+            Gearbox.GearTable[6] = Data6
+            Gearbox.GearTable[7] = Data7
+            Gearbox.GearTable[8] = Data8
+            Gearbox.GearTable[9] = Data9
+            Gearbox.GearTable[0] = GearboxData.geartable[0]
+            
+            Gearbox.Gear0 = Data10
+            Gearbox.Gear1 = Data1
+            Gearbox.Gear2 = Data2
+            Gearbox.Gear3 = Data3
+            Gearbox.Gear4 = Data4
+            Gearbox.Gear5 = Data5
+            Gearbox.Gear6 = Data6
+            Gearbox.Gear7 = Data7
+            Gearbox.Gear8 = Data8
+            Gearbox.Gear9 = Data9
+            
+        Gearbox.GearRatio = (Gearbox.GearTable[0] or 0)*Gearbox.GearTable.Final
+        
+        if Gearbox.Auto then
+            Gearbox.ShiftPoints = {}
+            for part in string.gmatch(Data9, "[^,]+") do Gearbox.ShiftPoints[#Gearbox.ShiftPoints+1] = tonumber(part) end
+            Gearbox.ShiftPoints[0] = -1
+            Gearbox.Reverse = Gearbox.Gears+1
+            Gearbox.GearTable[Gearbox.Reverse] = Data8
+            Gearbox.Drive = 1
+            Gearbox.ShiftScale = 1
+        end
+        
+        Gearbox:SetModel( Gearbox.Model )   
+            
+        local Inputs = {"Gear ("..GearboxWireDescs["Gear"]..")","Gear Up ("..GearboxWireDescs["GearUp"]..")","Gear Down ("..GearboxWireDescs["GearDown"]..")"}
+        if Gearbox.CVT then
+            table.insert(Inputs,"CVT Ratio")
+        elseif Gearbox.DoubleDiff then
+            table.insert(Inputs, "Steer Rate")
+        elseif Gearbox.Auto then
+            table.insert(Inputs, "Hold Gear")
+            table.insert(Inputs, "Shift Speed Scale")
+            Gearbox.Hold = false
+        end
+        
+        if Gearbox.Dual then
+            table.insert(Inputs, "Left Clutch")
+            table.insert(Inputs, "Right Clutch")
+            table.insert(Inputs, "Left Brake")
+            table.insert(Inputs, "Right Brake")
+        else
+            table.insert(Inputs, "Clutch ("..GearboxWireDescs["Clutch"]..")")
+            table.insert(Inputs, "Brake ("..GearboxWireDescs["Brake"]..")")
+        end
+        
+        local Outputs = { "Ratio", "Entity", "Current Gear" }
+        local OutputTypes = { "NORMAL", "ENTITY", "NORMAL" }
+        if Gearbox.CVT then
+            table.insert(Outputs,"Min Target RPM")
+            table.insert(Outputs,"Max Target RPM")
+            table.insert(OutputTypes,"NORMAL")
+        end
+        
+        Gearbox.Inputs = Wire_CreateInputs( Gearbox, Inputs )
+        Gearbox.Outputs = WireLib.CreateSpecialOutputs( Gearbox, Outputs, OutputTypes )
+        Wire_TriggerOutput(Gearbox, "Entity", Gearbox)
+        
+        if Gearbox.CVT then
+            Wire_TriggerOutput(Gearbox, "Min Target RPM", Gearbox.TargetMinRPM)
+            Wire_TriggerOutput(Gearbox, "Max Target RPM", Gearbox.TargetMaxRPM)
+        end
+        
+        Gearbox.LClutch = Gearbox.MaxTorque
+        Gearbox.RClutch = Gearbox.MaxTorque
+
+        Gearbox:PhysicsInit( SOLID_VPHYSICS )       
+        Gearbox:SetMoveType( MOVETYPE_VPHYSICS )        
+        Gearbox:SetSolid( SOLID_VPHYSICS )
+
+        local phys = Gearbox:GetPhysicsObject()     
+        if IsValid( phys ) then 
+            phys:SetMass( Gearbox.Mass ) 
+            Gearbox.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
+        end
+        
+        Gearbox.In = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "input" )).Pos)
+        Gearbox.OutL = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftL" )).Pos)
+        Gearbox.OutR = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftR" )).Pos)
+        
+        Owner:AddCount("_acf_misc", Gearbox)
+        Owner:AddCleanup( "acfmenu", Gearbox )
+        
+        Gearbox:ChangeGear(1)
+        
+        if Gearbox.Dual or Gearbox.DoubleDiff then
+            Gearbox:SetBodygroup(1, 1)
+        else
+            Gearbox:SetBodygroup(1, 0)
+        end
+        
+        Gearbox:SetNWString( "WireName", GearboxData.name )
+        Gearbox:UpdateOverlayText()
+        
+        ACF_Activate( Gearbox, 0 )
+        
+        return Gearbox
     end
-    
-    Gearbox.In = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "input" )).Pos)
-    Gearbox.OutL = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftL" )).Pos)
-    Gearbox.OutR = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "driveshaftR" )).Pos)
-    
-    Owner:AddCount("_acf_misc", Gearbox)
-    Owner:AddCleanup( "acfmenu", Gearbox )
-    
-    Gearbox:ChangeGear(1)
-    
-    if Gearbox.Dual or Gearbox.DoubleDiff then
-        Gearbox:SetBodygroup(1, 1)
-    else
-        Gearbox:SetBodygroup(1, 0)
-    end
-    
-    Gearbox:SetNWString( "WireName", List.Mobility[Id].name )
-    Gearbox:UpdateOverlayText()
-    
-    ACF_Activate( Gearbox, 0 )
-    
-    return Gearbox
+    list.Set( "ACFCvars", "acf_gearbox", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
+    duplicator.RegisterEntityClass("acf_gearbox", MakeACF_Gearbox, "Pos", "Angle", "Id", "Gear1", "Gear2", "Gear3", "Gear4", "Gear5", "Gear6", "Gear7", "Gear8", "Gear9", "Gear0" )
+
 end
-list.Set( "ACFCvars", "acf_gearbox", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
-duplicator.RegisterEntityClass("acf_gearbox", MakeACF_Gearbox, "Pos", "Angle", "Id", "Gear1", "Gear2", "Gear3", "Gear4", "Gear5", "Gear6", "Gear7", "Gear8", "Gear9", "Gear0" )
 
 function ENT:Update( ArgsTable )
     -- That table is the player data, as sorted in the ACFCvars above, with player who shot, 
@@ -207,24 +217,24 @@ function ENT:Update( ArgsTable )
     end
     
     local Id = ArgsTable[4] -- Argtable[4] is the engine ID
-    local List = list.Get("ACFEnts")
+    local GearboxData = GearboxTable[Id]
     
-    if List.Mobility[Id].model ~= self.Model then
+    if GearboxData.model ~= self.Model then
         return false, "The new gearbox must have the same model!"
     end
         
     if self.Id != Id then
     
         self.Id         = Id
-        self.Mass       = List.Mobility[Id].weight          or 1
-        self.SwitchTime = List.Mobility[Id].switch
-        self.MaxTorque  = List.Mobility[Id].maxtq
-        self.Gears      = List.Mobility[Id].gears           or 2
-        self.Dual       = List.Mobility[Id].doubleclutch    or false
-        self.CVT        = List.Mobility[Id].cvt             or false
-        self.DoubleDiff = List.Mobility[Id].doublediff      or false
-        self.Auto       = List.Mobility[Id].auto            or false
-        self.Parentable = List.Mobility[Id].parentable      or false
+        self.Mass       = GearboxData.weight          or 1
+        self.SwitchTime = GearboxData.switch
+        self.MaxTorque  = GearboxData.maxtq           or 0
+        self.Gears      = GearboxData.gears           or 2
+        self.Dual       = GearboxData.doubleclutch    or false
+        self.CVT        = GearboxData.cvt             or false
+        self.DoubleDiff = GearboxData.doublediff      or false
+        self.Auto       = GearboxData.auto            or false
+        self.Parentable = GearboxData.parentable      or false
         
         local Inputs = {"Gear","Gear Up","Gear Down"}
         if self.CVT then
@@ -283,7 +293,7 @@ function ENT:Update( ArgsTable )
     self.GearTable[7] = ArgsTable[11]
     self.GearTable[8] = ArgsTable[12]
     self.GearTable[9] = ArgsTable[13]
-    self.GearTable[0] = List.Mobility[Id].geartable[0]
+    self.GearTable[0] = GearboxData.geartable[0]
     
     self.Gear0 = ArgsTable[14]
     self.Gear1 = ArgsTable[5]
@@ -320,7 +330,7 @@ function ENT:Update( ArgsTable )
         self:SetBodygroup(1, 0)
     end 
     
-    self:SetNWString( "WireName", List.Mobility[Id].name )
+    self:SetNWString( "WireName", GearboxData.name )
     self:UpdateOverlayText()
     
     ACF_Activate( self, 1 )

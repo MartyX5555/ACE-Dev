@@ -4,8 +4,13 @@ AddCSLuaFile("cl_init.lua")
 
 include("shared.lua")
 
+local GunClasses = ACF.Classes.GunClass
+
+local GunTable  = ACF.Weapons.Guns
+local AmmoTable = ACF.Weapons.Ammo
+
 function ENT:Initialize()
-    
+
     self.SpecialHealth      = true  --If true needs a special ACF_Activate function
     self.SpecialDamage      = true  --If true needs a special ACF_OnDamage function
 
@@ -171,6 +176,7 @@ do
 
 end
 
+
 function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
     if not Owner:CheckLimit("_acf_ammo") then return false end
@@ -179,7 +185,11 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
 
     if IsValid(Ammo) then
 
-        Id = Id or "Ammo2x4x4"
+        if not ACE_CheckAmmo( Id ) then
+            Id = "Ammo2x4x4"
+        end
+
+        local AmmoData = AmmoTable[Id]
 
         Ammo:SetAngles(Angle)
         Ammo:SetPos(Pos)
@@ -187,7 +197,7 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
         Ammo:SetPlayer(Owner)
         Ammo.Owner = Owner
         
-        Ammo.Model = ACF.Weapons.Ammo[Id].model 
+        Ammo.Model = AmmoData.model 
         Ammo:SetModel( Ammo.Model ) 
         
         Ammo:PhysicsInit( SOLID_VPHYSICS )          
@@ -198,7 +208,7 @@ function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, 
         Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
 
         Ammo.Ammo       = Ammo.Capacity
-        Ammo.EmptyMass  = ACF.Weapons.Ammo[Ammo.Id].weight or 1
+        Ammo.EmptyMass  = AmmoData.weight or 1
 
         Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
 
@@ -384,7 +394,7 @@ do
 
     function ENT:BuildAmmoCapacity()
 
-        local AmmoGunData = ACF.Weapons.Guns[self.BulletData.Id]
+        local AmmoGunData = GunTable[self.BulletData.Id]
         local vol         = Floor(self:GetPhysicsObject():GetVolume())
         local WireName    = "No data"
         local Capacity
@@ -403,12 +413,12 @@ do
             self.IsTwoPiece = false
 
             --Getting entity's dimensions
-            local Data = ACF.Weapons.Ammo[self.Id]
+            local Data = AmmoTable[self.Id]
 
             local Dimensions = Vector( Data.Lenght, Data.Width, Data.Height )
 
             local GunId = AmmoGunData.gunclass 
-            local WeaponType = ACF.Classes.GunClass[GunId].type
+            local WeaponType = GunClasses[GunId].type
 
             local width, shellLength
 
@@ -496,11 +506,10 @@ end
 function ENT:GetInaccuracy()
     local SpreadScale = ACF.SpreadScale
     local inaccuracy = 0
-    local Gun = list.Get("ACFEnts").Guns[self.RoundId]
+    local Gun = GunTable[self.RoundId]
     
     if Gun then
-        local Classes = list.Get("ACFClasses")
-        inaccuracy = (Classes.GunClass[Gun.gunclass] or {spread = 0}).spread
+        inaccuracy = (GunClasses[Gun.gunclass] or {spread = 0}).spread
     end
     
     local coneAng = inaccuracy * ACF.GunInaccuracyScale
@@ -537,6 +546,8 @@ function ENT:FirstLoad()
 end
 
 function ENT:Think()
+
+    if not self.BulletData then return false end
 
     if ACF.CurTime > self.NextLegalCheck then
 

@@ -7,10 +7,15 @@ include('shared.lua')
 
 DEFINE_BASECLASS( "base_wire_entity" )
 
+local GunClasses    = ACF.Classes.GunClass
+local RackClasses   = ACF.Classes.Rack
+
+local GunTable      = ACF.Weapons.Guns
+local RackTable     = ACF.Weapons.Racks
+
 function ENT:GetReloadTime(nextMsl)
 
-    local Racks = list.Get("ACFEnts")
-    local Rack = Racks.Rack[self.Id]
+    local Rack = RackTable[self.Id]
     local reloadMul = Rack.reloadmul or self.ReloadMultiplier or 1
 
     local reloadBonus = (self.ReloadMultiplierBonus or 0)
@@ -32,13 +37,13 @@ function ENT:GetFireDelay(nextMsl)
     end
 
     local bdata = nextMsl.BulletData
-    local gun = ACF.Weapons.Guns[bdata.Id]
+    local gun = GunTable[bdata.Id]
     
     if not gun then 
         return self.LastValidFireDelay or 1 
     end
     
-    local class = ACF.Classes.GunClass[gun.gunclass]
+    local class = GunClasses[gun.gunclass]
 
     local interval =  math.max(( (bdata.RoundVolume / 500) ^ 0.60 ) * (gun.rofmod or 1) * (class.rofmod or 1), 0.1)
     self.LastValidFireDelay = interval
@@ -458,9 +463,6 @@ function ENT:Think()
     
 end
 
-
-
-
 function ENT:TrimNullMissiles()
     for k, v in pairs(self.Missiles) do
         if not IsValid(v) then
@@ -554,28 +556,18 @@ end
 
 
 function ENT:SetLoadedWeight()
-    
+
+    self:TrimNullMissiles()
+  
     local baseWeight = self.Mass
     
-    self:TrimNullMissiles()
-    
-    local addWeight = 0
-    
     for k, missile in pairs(self.Missiles) do
-        --addWeight = addWeight + missile.RoundWeight + 1 --addWeight = addWeight + missile.RoundWeight + 1
         
         local phys = missile:GetPhysicsObject()     
         if (IsValid(phys)) then         
             phys:SetMass( missile.RoundWeight ) --phys:SetMass( 5 )  -- Will result in slightly heavier rack but is probably a good idea to have some mass for any damage calcs.
         end 
     end
-    
-    self.LegalWeight = baseWeight + addWeight 
-    
-    local phys = self:GetPhysicsObject()    
-    if (IsValid(phys)) then         
-        phys:SetMass( self.LegalWeight )
-    end 
     
 end
 
@@ -692,11 +684,9 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
     if not Owner:CheckLimit("_acf_rack") then return false end
     
-    local Rack      = UpdateRack or ents.Create("acf_rack")
-    local List      = ACF.Weapons.Rack
-    local Classes   = ACF.Classes.Rack
+    local Rack = UpdateRack or ents.Create("acf_rack")
     
-    if not Rack:IsValid() then return false end
+    if not IsValid(Rack) then return false end
     
     Rack:SetAngles(Angle)
     Rack:SetPos(Pos)
@@ -708,22 +698,25 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     end
     
     Id = Id or Rack.Id
-    
+
+    if not ACE_CheckRack( rackid ) then
+        Id = "1xRK"
+    end
+
+    local gundef = RackTable[Id]
+
     Rack:SetPlayer(Owner)
-    Rack.Owner = Owner
+    Rack.Owner  = Owner
     Rack.Id     = Id
-    
-    local gundef = List[Id] or error("Couldn't find the " .. tostring(Id) .. " gun-definition!")
-    
+
     Rack.MinCaliber     = gundef.mincaliber
     Rack.MaxCaliber     = gundef.maxcaliber
-    Rack.Caliber        = gundef["caliber"]
-    Rack.Model          = gundef["model"]
-    Rack.Mass           = gundef["weight"]
-    Rack.LegalWeight    = Rack.Mass
-    Rack.name           = gundef["name"]
-    Rack.Class          = gundef["gunclass"]
-    
+    Rack.Caliber        = gundef.caliber
+    Rack.Model          = gundef.model
+    Rack.Mass           = gundef.weight   
+    Rack.name           = gundef.name     
+    Rack.Class          = gundef.gunclass
+
     -- Custom BS for karbine. Per Rack ROF.
     Rack.PGRoFmod = 1
     if(gundef["rofmod"]) then
@@ -740,17 +733,16 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
         Rack.MagReload = math.max(Rack.MagReload, gundef["magreload"])
     end
     
+    local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
     
-    local gunclass = Classes[Rack.Class] or error("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
+    Rack.Muzzleflash        = gundef.muzzleflash    or gunclass.muzzleflash     or ""
+    Rack.RoFmod             = gunclass["rofmod"]                                or 1
+    Rack.Sound              = gundef.sound          or gunclass.sound           or ""
+    Rack.Inaccuracy         = gundef["spread"]      or gunclass["spread"]       or 1
     
-    Rack.Muzzleflash        = gundef.muzzleflash or gunclass.muzzleflash or ""
-    Rack.RoFmod             = gunclass["rofmod"]
-    Rack.Sound              = gundef.sound or gunclass.sound
-    Rack.Inaccuracy         = gundef["spread"] or gunclass["spread"]
-    
-    Rack.HideMissile        = ACF_GetRackValue(Id, "hidemissile")
-    Rack.ProtectMissile     = gundef.protectmissile or gunclass.protectmissile
-    Rack.CustomArmour       = gundef.armour or gunclass.armour
+    Rack.HideMissile        = ACF_GetRackValue(Id, "hidemissile")               or false
+    Rack.ProtectMissile     = gundef.protectmissile or gunclass.protectmissile  or false
+    Rack.CustomArmour       = gundef.armour         or gunclass.armour          or 1
 
     Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
     Rack.WhitelistOnly      = ACF_GetRackValue(Id, "whitelistonly")
@@ -771,7 +763,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
     
     local phys = Rack:GetPhysicsObject()    
     if (phys:IsValid()) then 
-        phys:SetMass(Rack.Mass)
+        phys:SetMass(Rack.Mass or 1)
     end     
 
     hook.Call("ACF_RackCreate", nil, Rack)

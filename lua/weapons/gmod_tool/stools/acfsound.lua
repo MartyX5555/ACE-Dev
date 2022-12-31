@@ -1,4 +1,6 @@
 
+ACF = ACF or {}
+
 local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "ACF" or "Construction");
 
 TOOL.Category		= cat
@@ -12,6 +14,11 @@ if CLIENT then
 	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
 	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
 end
+
+local GunClasses = ACF.Classes.GunClass
+local GunTable = ACF.Weapons.Guns
+
+local EngineTable = ACF.Weapons.Engines
 
 ACF.SoundToolSupport = {
 
@@ -27,14 +34,11 @@ ACF.SoundToolSupport = {
 		ResetSound = function(ent)
 
 			local Class = ent.Class
-			local Classes = list.Get("ACFClasses")
-			
-			local List = list.Get("ACFEnts")
-			local lookup = List.Guns[ent.Id]
+			local lookup = GunTable[ent.Id]
 
-			local sound = lookup.sound or Classes["GunClass"][Class]["sound"]
+			local sound = lookup.sound or GunClasses[Class]["sound"]
 
-			local soundData = {Sound = sound}
+			local soundData = { Sound = sound }
 			
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
@@ -53,10 +57,10 @@ ACF.SoundToolSupport = {
 		ResetSound = function(ent)
 
 			local Id = ent.Id
-			local List = list.Get("ACFEnts")
-			local pitch = List["Mobility"][Id]["pitch"] or 1
+			local pitch = EngineTable[Id]["pitch"] or 1
+			local sound = EngineTable[Id]["sound"] or ""
 			
-			local soundData = { Sound = List["Mobility"][Id]["sound"], Pitch = pitch }
+			local soundData = { Sound = sound, Pitch = pitch }
 			
 			local setSound = ACF.SoundToolSupport["acf_engine"].SetSound
 			setSound( ent, soundData )
@@ -75,9 +79,9 @@ ACF.SoundToolSupport = {
 		ResetSound = function(ent)
 			
 			local Class = ent.Class
-			local Classes = list.Get("ACFClasses")
-			
-			local soundData = {Sound = Classes["GunClass"][Class]["sound"]}
+			local sound = GunClasses[Class]["sound"] or ""
+
+			local soundData = { Sound = sound }
 			
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )

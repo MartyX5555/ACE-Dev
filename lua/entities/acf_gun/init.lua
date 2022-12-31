@@ -3,6 +3,10 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+local GunClasses = ACF.Classes.GunClass
+
+local GunTable = ACF.Weapons.Guns
+
 function ENT:Initialize()
         
     self.ReloadTime             = 1
@@ -114,8 +118,7 @@ do
     function MakeACF_Gun(Owner, Pos, Angle, Id)
 
         local EID       = BackComp[Id] or Id or "100mmC"
-        local List      = ACF.Weapons
-        local Lookup    = List.Guns[EID]
+        local Lookup    = GunTable[EID]
     
         if Lookup.gunclass == "SL" then
             if not Owner:CheckLimit("_acf_smokelauncher") then return false end
@@ -130,7 +133,7 @@ do
         end
     
         local Gun = ents.Create("acf_gun")
-        local ClassData = ACF.Classes.GunClass[Lookup.gunclass]
+        local ClassData = GunClasses[Lookup.gunclass]
 
         if not IsValid(Gun) then return false end
 
@@ -458,7 +461,7 @@ end
 function ENT:CanProperty( ply, property )
 
     if property == "bodygroups" then
-        local longbarrel = list.Get("ACFClasses").GunClass[self.Class].longbarrel
+        local longbarrel = GunClasses[self.Class].longbarrel
         if longbarrel ~= nil then
             timer.Simple(0.25, function() --need to wait until after the property is actually set
                 if self:GetBodygroup( longbarrel.index ) == longbarrel.submodel then

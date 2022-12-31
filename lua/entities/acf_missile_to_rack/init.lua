@@ -29,7 +29,7 @@ function ENT:Think()
         
         local rackId = self.RackID
         
-        if not (rackId and ACF.Weapons.Rack[rackId]) then
+        if not (rackId and ACF.Weapons.Racks[rackId]) then
             local GunClass = ACF.Weapons.Guns[self.Id]
             
             if not GunClass then 

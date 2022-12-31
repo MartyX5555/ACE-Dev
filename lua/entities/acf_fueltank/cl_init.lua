@@ -27,7 +27,7 @@ function ACFFuelTankGUICreate( Table )
         acfmenupanel.FuelTankData.FuelID = "Petrol"
     end
     
-    local Tanks = list.Get("ACFEnts").FuelTanks
+    local Tanks = list.Get("ACFEnts").FuelTanksSize
     local SortedTanks = {}
     for n in pairs(Tanks) do table.insert(SortedTanks,n) end
     table.sort(SortedTanks)
@@ -73,7 +73,7 @@ function ACFFuelTankGUIUpdate( Table )
 
     if not acfmenupanel.CustomDisplay then return end
     
-    local Tanks = list.Get("ACFEnts").FuelTanks
+    local Tanks = list.Get("ACFEnts").FuelTanksSize
     
     local TankID    = acfmenupanel.FuelTankData.Id
     local FuelID    = acfmenupanel.FuelTankData.FuelID

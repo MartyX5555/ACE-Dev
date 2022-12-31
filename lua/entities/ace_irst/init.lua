@@ -34,7 +34,7 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 
     Id = Id or "Small-IRST"
 
-    local radar = ACF.Weapons.Radar[Id]
+    local radar = ACF.Weapons.Radars[Id]
     
     if not radar then return false end
     

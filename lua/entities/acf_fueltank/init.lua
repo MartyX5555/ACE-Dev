@@ -6,53 +6,59 @@ include("shared.lua")
 --don't forget:
 --armored tanks
 
-local FueltankWireDescs = {
-    --Inputs
-    ["Refuel"]      = "Allows to this tank to supply other fuel tanks.\n Fuel type must be equal to the tank which you want to supply.",
+local TankTable = ACF.Weapons.FuelTanksSize
 
-    --Outputs
-    ["Fuel"]        = "Returns the current fuel level.",
-    ["Capacity"]    = "Returns the max capacity of this fuel tank.",
-    ["Leaking"]     = "Is the fuel tank leaking?"
-}
+do
 
-function ENT:Initialize()
-    
-    self.CanUpdate      = true
-    self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
-    self.SpecialDamage  = true  --If true, use the ACF_OnDamage function defined by this ent
-    self.IsExplosive    = true      
-    self.Exploding      = false
-    
-    self.Size           = 0     --outer dimensions
-    self.Volume         = 0     --total internal volume in cubic inches
-    self.Capacity       = 0     --max fuel capacity in liters
-    self.Fuel           = 0     --current fuel level in liters
-    self.FuelType       = nil
-    self.EmptyMass      = 0     --mass of tank only
-    self.NextMassUpdate = 0
-    self.Id             = nil   --model id
-    self.Active         = false
-    self.SupplyFuel     = false
-    self.Leaking        = 0
-    self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-    self.Legal          = true
-    self.LegalIssues    = ""
-    
-    self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty ("..FueltankWireDescs["Refuel"]..")" } )
-    self.Outputs = WireLib.CreateSpecialOutputs( self,
-        { "Fuel ("..FueltankWireDescs["Fuel"]..")", "Capacity ("..FueltankWireDescs["Capacity"]..")", "Leaking ("..FueltankWireDescs["Leaking"]..")", "Entity" }, 
-        { "NORMAL", "NORMAL", "NORMAL", "ENTITY" }
-    )
-    Wire_TriggerOutput( self, "Leaking", 0 )
-    Wire_TriggerOutput( self, "Entity", self )
-    
-    self.Master = {} --engines linked to this tank
-    ACF.FuelTanks = ACF.FuelTanks or {} --master list of acf fuel tanks
-    
-    self.LastThink = 0
-    self.NextThink = CurTime() +  1
-    
+    local FueltankWireDescs = {
+        --Inputs
+        ["Refuel"]      = "Allows to this tank to supply other fuel tanks.\n Fuel type must be equal to the tank which you want to supply.",
+
+        --Outputs
+        ["Fuel"]        = "Returns the current fuel level.",
+        ["Capacity"]    = "Returns the max capacity of this fuel tank.",
+        ["Leaking"]     = "Is the fuel tank leaking?"
+    }
+
+    function ENT:Initialize()
+        
+        self.CanUpdate      = true
+        self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
+        self.SpecialDamage  = true  --If true, use the ACF_OnDamage function defined by this ent
+        self.IsExplosive    = true      
+        self.Exploding      = false
+        
+        self.Size           = 0     --outer dimensions
+        self.Volume         = 0     --total internal volume in cubic inches
+        self.Capacity       = 0     --max fuel capacity in liters
+        self.Fuel           = 0     --current fuel level in liters
+        self.FuelType       = nil
+        self.EmptyMass      = 0     --mass of tank only
+        self.NextMassUpdate = 0
+        self.Id             = nil   --model id
+        self.Active         = false
+        self.SupplyFuel     = false
+        self.Leaking        = 0
+        self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+        self.Legal          = true
+        self.LegalIssues    = ""
+        
+        self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty ("..FueltankWireDescs["Refuel"]..")" } )
+        self.Outputs = WireLib.CreateSpecialOutputs( self,
+            { "Fuel ("..FueltankWireDescs["Fuel"]..")", "Capacity ("..FueltankWireDescs["Capacity"]..")", "Leaking ("..FueltankWireDescs["Leaking"]..")", "Entity" }, 
+            { "NORMAL", "NORMAL", "NORMAL", "ENTITY" }
+        )
+        Wire_TriggerOutput( self, "Leaking", 0 )
+        Wire_TriggerOutput( self, "Entity", self )
+        
+        self.Master = {} --engines linked to this tank
+        ACF.FuelTanks = ACF.FuelTanks or {} --master list of acf fuel tanks
+        
+        self.LastThink = 0
+        self.NextThink = CurTime() +  1
+        
+    end
+
 end
 
 function ENT:ACF_Activate( Recalc )
@@ -142,14 +148,18 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 end
 
 function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
-    --print('created!')
     
     if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
+
+    if not ACE_CheckFuelTank( Data1 ) then print(Data1)
+        print("Amongos")
+        Data1 = "Tank_4x4x2"
+    end
+
+    local TankData = TankTable[Data1]
     
-    local SId = Data1
-    local Tanks = list.Get("ACFEnts").FuelTanks
-    if not Tanks[SId].model then return false end --SId = "Tank_4x4x2" end
-    
+    if not TankData then return false end
+
     local Tank = ents.Create("acf_fueltank")
     if not IsValid(Tank) then return false end
     Tank:SetAngles(Angle)
@@ -159,8 +169,8 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
     Tank.Owner = Owner
     
     Tank.Id = Id
-    Tank.SizeId = SId
-    Tank.Model = Tanks[Tank.SizeId].model
+    Tank.SizeId = Data1
+    Tank.Model = TankData.model
     Tank:SetModel( Tank.Model ) 
     
     Tank:PhysicsInit( SOLID_VPHYSICS )          
@@ -168,11 +178,10 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
     Tank:SetSolid( SOLID_VPHYSICS )
     
     Tank.LastMass = 1
-
-    Tank:UpdateFuelTank(Id, SId, Data2)
+    Tank:UpdateFuelTank(Id, Data1, Data2)
     
-    local electric = (Data2 == 'Electric') and Tanks[Tank.SizeId].name..' Li-Ion Battery'
-    local gas      = Data2.." "..Tanks[Tank.SizeId].name..( not Tanks[Tank.SizeId].notitle and " Fuel Tank" or "")
+    local electric = (Data2 == 'Electric') and TankData.name..' Li-Ion Battery'
+    local gas      = Data2.." "..TankData.name..( not TankData.notitle and " Fuel Tank" or "")
 
     local name = "ACE "..(electric or gas)
 
@@ -194,37 +203,37 @@ duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle",
 function ENT:UpdateFuelTank(Id, Data1, Data2)
     --print('updated!')
     
-    local lookup = list.Get("ACFEnts").FuelTanks
+    local TankData = TankTable[Data1]
     local pct = 1 --how full is the tank?
+    
     if self.Capacity and not (self.Capacity == 0) then --if updating existing tank, keep fuel level
         pct = self.Fuel / self.Capacity
     end
     
-    local PhysObj = self:GetPhysicsObject()
-    local Area = PhysObj:GetSurfaceArea()
-    local Wall = 0.03937 --wall thickness in inches (1mm)
-    self.Volume = PhysObj:GetVolume() - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
-    self.Capacity = self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
-    self.EmptyMass = (Area*Wall)*16.387*(7.9/1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
+    local PhysObj   = self:GetPhysicsObject()
+    local Area      = PhysObj:GetSurfaceArea()
+    local Wall      = 0.03937 --wall thickness in inches (1mm)
+
+    self.Volume         = PhysObj:GetVolume() - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
+    self.Capacity       = self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
+    self.EmptyMass      = (Area*Wall)*16.387*(7.9/1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
     
-    self.FuelType = Data2
-    self.IsExplosive = self.FuelType ~= "Electric" and lookup[Data1].explosive ~= false
-    self.NoLinks = lookup[Data1].nolinks == true
+    self.FuelType       = Data2
+    self.IsExplosive    = self.FuelType ~= "Electric" and TankData.explosive ~= false
+    self.NoLinks        = TankData.nolinks == true
     
     if self.FuelType == "Electric" then
-        self.Liters = self.Capacity --batteries capacity is different from internal volume
-        self.Capacity = self.Capacity * ACF.LiIonED
-        self.Fuel = pct * self.Capacity
+        self.Liters     = self.Capacity --batteries capacity is different from internal volume
+        self.Capacity   = self.Capacity * ACF.LiIonED
+        self.Fuel       = pct * self.Capacity
     else
-        self.Fuel = pct * self.Capacity
+        self.Fuel       = pct * self.Capacity
     end
     
     self:UpdateFuelMass()
 
-    local Tanks = list.Get("ACFEnts").FuelTanks
-
-    local electric = (Data2 == 'Electric') and Tanks[self.SizeId].name..' Li-Ion Battery'
-    local gas      = Data2.." "..Tanks[self.SizeId].name..( not Tanks[self.SizeId].notitle and " Fuel Tank" or "")
+    local electric = (Data2 == 'Electric') and TankData.name..' Li-Ion Battery'
+    local gas      = Data2.." "..TankData.name..( not TankData.notitle and " Fuel Tank" or "")
 
     local name = "ACE "..(electric or gas)
     

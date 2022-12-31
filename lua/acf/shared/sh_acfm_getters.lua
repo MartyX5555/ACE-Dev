@@ -1,12 +1,13 @@
 
 AddCSLuaFile()
 
+local GunsTable = ACF.Weapons.Guns
 
 function ACF_GetGunValue(bdata, val)
 
     bdata = (type(bdata) == "table" and bdata.Id) or bdata
 
-    local guns = list.Get("ACFEnts").Guns
+    local guns = GunsTable
     local class = guns[bdata]
 
     if class then
@@ -42,7 +43,7 @@ function ACF_GetRackValue(rdata, val)
 
     rdata = (type(rdata) == "table" and rdata.Id) or rdata
 
-    local guns = ACF.Weapons.Rack
+    local guns = ACF.Weapons.Racks
     local class = guns[rdata]
 
     if class then        
@@ -65,7 +66,7 @@ end
 
 function ACF_RackCanLoadCaliber(rackId, cal)
 
-    local rack = ACF.Weapons.Rack[rackId]
+    local rack = ACF.Weapons.Racks[rackId]
     if not rack then return false, "Rack '" .. tostring(rackId) .. "' does not exist." end
 
     if rack.caliber then 
@@ -91,10 +92,10 @@ end
 
 function ACF_CanLinkRack(rackId, ammoId, bdata, rack)
 
-    local rack = ACF.Weapons.Rack[rackId]
+    local rack = ACF.Weapons.Racks[rackId]
     if not rack then return false, "Rack '" .. tostring(rackId) .. "' does not exist." end
 
-    local gun = list.Get("ACFEnts").Guns[ammoId]
+    local gun = GunsTable[ammoId]
     if not rack then return false, "Ammo '" .. tostring(ammoId) .. "' does not exist." end
     
     
@@ -137,7 +138,7 @@ function ACF_GetCompatibleRacks(ammoId)
 
     local ret = {}
 
-    for rackId, data in pairs(ACF.Weapons.Rack) do
+    for rackId, data in pairs(ACF.Weapons.Racks) do
         if ACF_CanLinkRack(rackId, ammoId) then
             ret[#ret+1] = rackId
         end

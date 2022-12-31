@@ -1,18 +1,22 @@
 
 -- Loads all files from shared folder
-
 AddCSLuaFile()
 
-local GunClasses    = {}
-local GunTable      = {}
-local MobilityTable = {}
-local FuelTankTable = {}
+ACF = ACF or {}
 
-local Racks         = {}
-local RackClasses   = {}
+local GunClasses        = {}
+local RackClasses       = {}
+local RadarClasses      = {}
 
-local Radars        = {}
-local RadarClasses  = {}
+local GunTable          = {}
+local RackTable         = {}
+local Radars            = {}
+
+local EngineTable       = {}
+local GearboxTable      = {}
+local MobilityTable     = {}
+local FuelTankTable     = {}
+local FuelTankSizeTable = {}
 
 local GSoundData    = {}
 
@@ -23,32 +27,32 @@ local gun_base = {
 }
 local engine_base = {
     ent = "acf_engine",
-    type = "Mobility"
+    type = "Engines"
 }
 local gearbox_base = {
     ent = "acf_gearbox",
-    type = "Mobility",
+    type = "Gearboxes",
     sound = "vehicles/junker/jnk_fourth_cruise_loop2.wav"
 }
 local fueltank_base = {
     ent = "acf_fueltank",
-    type = "Mobility"
+    type = "FuelTanks"
 }
 local rack_base = {
     ent =   "acf_rack",
-    type =  "Rack"
+    type =  "Racks"
 }
 local radar_base = {
     ent =   "acf_missileradar",
-    type =  "Radar"
+    type =  "Radars"
 }
 local trackradar_base = {
     ent =   "ace_trackingradar",
-    type =  "Radar"
+    type =  "Radars"
 }
 local irst_base = {
     ent = "ace_irst",
-    type = "Radar"
+    type = "Radars"
 }
 
 -- add gui stuff to base classes if this is client
@@ -101,7 +105,7 @@ end
 function ACF_DefineRack( id, data )
     data.id = id
     table.Inherit( data, rack_base )
-    Racks[ id ] = data
+    RackTable[ id ] = data
 end
 
 -- Rack class definition
@@ -124,7 +128,7 @@ function ACF_DefineEngine( id, data )
 
         data.id = id
         table.Inherit( data, engine_base )
-        MobilityTable[ id ] = data
+        EngineTable[ id ] = data
     end
 end
 
@@ -132,7 +136,7 @@ end
 function ACF_DefineGearbox( id, data )
     data.id = id
     table.Inherit( data, gearbox_base )
-    MobilityTable[ id ] = data
+    GearboxTable[ id ] = data
 end
 
 
@@ -140,14 +144,14 @@ end
 function ACF_DefineFuelTank( id, data )
     data.id = id
     table.Inherit( data, fueltank_base )
-    MobilityTable[ id ] = data
+    FuelTankTable[ id ] = data 
 end
 
 -- fueltank size definition
 function ACF_DefineFuelTankSize( id, data )
     data.id = id
     table.Inherit( data, fueltank_base )
-    FuelTankTable[ id ] = data
+    FuelTankSizeTable[ id ] = data
 end
 
 
@@ -277,15 +281,16 @@ ACF.IdRounds = list.Get("ACFIdRounds")  --Lookup tables so i can get rounds clas
 
 -- now that the tables are populated, throw them in the acf ents list
 list.Set( "ACFClasses"  , "GunClass"    , GunClasses    )
-list.Set( "ACFEnts"     , "Guns"        , GunTable      )            
-list.Set( "ACFEnts"     , "Mobility"    , MobilityTable )
-list.Set( "ACFEnts"     , "FuelTanks"   , FuelTankTable )
-
 list.Set( "ACFClasses"  , "Rack"        , RackClasses   )
-list.Set( "ACFEnts"     , "Rack"        , Racks         )
-
 list.Set( "ACFClasses"  , "Radar"       , RadarClasses  )
-list.Set( "ACFEnts"     , "Radar"       , Radars        )
+
+list.Set( "ACFEnts"     , "Guns"        , GunTable      ) 
+list.Set( "ACFEnts"     , "Racks"       , RackTable     )      
+list.Set( "ACFEnts"     , "Engines"     , EngineTable   )
+list.Set( "ACFEnts"     , "Gearboxes"   , GearboxTable  )     
+list.Set( "ACFEnts"     , "FuelTanks"   , FuelTankTable )
+list.Set( "ACFEnts"     , "FuelTanksSize", FuelTankSizeTable )
+list.Set( "ACFEnts"     , "Radars"      , Radars        )
 
 list.Set( "ACESounds"   , "GunFire"     , GSoundData    )
 

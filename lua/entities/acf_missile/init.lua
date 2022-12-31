@@ -5,6 +5,10 @@ include("shared.lua")
 
 DEFINE_BASECLASS("acf_explosive")
 
+local GunTable      = ACF.Weapons.Guns
+local GuidanceTable = ACF.Guidance
+local FuseTable     = ACF.Fuse
+
 function ENT:Initialize()
 
     self.PhysObj = self.Entity:GetPhysicsObject()
@@ -48,7 +52,7 @@ function ENT:SetBulletData(bdata) -- Called before to Initialize()
 
     self.BaseClass.SetBulletData(self, bdata)
 
-    local gun = list.Get("ACFEnts").Guns[bdata.Id]
+    local gun = GunTable[bdata.Id]
 
     self:SetModelEasy( gun and (gun.round.model or gun.model) or "models/missiles/aim9.mdl" )
 
@@ -74,12 +78,12 @@ function ENT:ParseBulletData(bdata)
     local fuse      = bdata.Data8
 
     if guidance then
-        guidance = ACFM_CreateConfigurable(guidance, ACF.Guidance, bdata, "guidance")
+        guidance = ACFM_CreateConfigurable(guidance, GuidanceTable, bdata, "guidance")
         if guidance then self:SetGuidance(guidance) end
     end
 
     if fuse then
-        fuse = ACFM_CreateConfigurable(fuse, ACF.Fuse, bdata, "fuses")
+        fuse = ACFM_CreateConfigurable(fuse, FuseTable, bdata, "fuses")
         if fuse then self:SetFuse(fuse) end
     end
 
@@ -402,11 +406,11 @@ function ENT:Launch()
     if not IsValid(self.PhysObj) then self.PhysObj = self.Entity:GetPhysicsObject() end
 
     if not self.Guidance then
-        self:SetGuidance(ACF.Guidance.Dumb())
+        self:SetGuidance(GuidanceTable.Dumb())
     end
 
     if not self.Fuse then
-        self:SetFuse(ACF.Fuse.Contact())
+        self:SetFuse(FuseTable.Contact())
     end
 
     self.Guidance:Configure(self)
@@ -504,7 +508,7 @@ end
 function ENT:ConfigureFlight()
 
     local BulletData    = self.BulletData
-    local GunData       = list.Get("ACFEnts").Guns[BulletData.Id]
+    local GunData       = GunTable[BulletData.Id]
     local Round         = GunData.round
 
     self:MotorStart( GunData, Round, BulletData )
@@ -557,7 +561,7 @@ end
 function ENT:SetFuse(fuse)
 
     self.Fuse = fuse
-    fuse:Configure(self, self.Guidance or self:SetGuidance(ACF.Guidance.Dumb()))
+    fuse:Configure(self, self.Guidance or self:SetGuidance(GuidanceTable.Dumb()))
 
     return fuse
 
@@ -666,8 +670,7 @@ end
 --=========================================================================================== 
 function ENT:LaunchEffect()
 
-    local guns  = list.Get("ACFEnts").Guns
-    local class = guns[self.BulletData.Id]
+    local class = GunTable[self.BulletData.Id]
 
     local sound = self.BulletData.Sound or ACF_GetGunValue(self.BulletData, "sound")
 
