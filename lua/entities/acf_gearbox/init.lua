@@ -64,6 +64,8 @@ do
 
         if not ACE_CheckGearbox( Id ) then
             Id = "1Gear-T-S" --deal with it
+            Data1   = 0.1 --gear1
+            Data10  = 0.5 --gear2
         end
 
         local GearboxData = GearboxTable[Id]
@@ -116,7 +118,7 @@ do
             Gearbox.Gear8 = Data8
             Gearbox.Gear9 = Data9
             
-        Gearbox.GearRatio = (Gearbox.GearTable[0] or 0)*Gearbox.GearTable.Final
+        Gearbox.GearRatio = (Gearbox.GearTable[0] or 0) * Gearbox.GearTable.Final
         
         if Gearbox.Auto then
             Gearbox.ShiftPoints = {}
