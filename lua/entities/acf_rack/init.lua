@@ -696,10 +696,8 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
         Owner:AddCount("_acf_rack", Rack)
         Owner:AddCleanup( "acfmenu", Rack )
     end
-    
-    Id = Id or Rack.Id
 
-    if not ACE_CheckRack( rackid ) then
+    if not ACE_CheckRack( Id ) then
         Id = "1xRK"
     end
 

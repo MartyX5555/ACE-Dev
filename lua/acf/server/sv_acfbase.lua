@@ -12,14 +12,14 @@ function ACF_GetPhysicalParent( obj )
     
     local Parent = obj
     
-    while Parent:GetParent():IsValid() do
+    while IsValid(Parent:GetParent()) do
         Parent = Parent:GetParent()
     end
     
     --update cached parent
     obj.acfphysparent = Parent
     obj.acfphysstale = ACF.CurTime + 10 --when cached parent is considered stale and needs updating
-    
+
     return Parent
 end
 
