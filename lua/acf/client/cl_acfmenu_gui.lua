@@ -291,6 +291,8 @@ function PANEL:Init( )
 
       -------------------- Engine folder --------------------
 
+      --TODO: Do a menu like fueltanks to engines & gearboxes? Would be cleaner.
+
       --Creates the engine category
       for _, EngineData in pairs(self.WeaponDisplay["Engines"]) do
 
