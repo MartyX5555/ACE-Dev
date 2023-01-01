@@ -15,7 +15,6 @@ function ENT:Initialize()
     self.Ready                  = true
     self.Firing                 = nil
     self.Reloading              = nil
-    self.CrateBonus             = 1
     self.NextFire               = 0
     self.LastSend               = 0
     self.LastLoadDuration       = 0
@@ -30,7 +29,7 @@ function ENT:Initialize()
     self.IsMaster               = true          -- needed?
     self.AmmoLink               = {}
     self.CrewLink               = {}
-    self.HasGunner              = 0
+    self.HasGunner              = false
     self.LoaderCount            = 0
     self.CurAmmo                = 1
     self.Sequence               = 1
@@ -115,27 +114,42 @@ do
         ["170mmSB"]         = "170mmSBC"
     }
 
+    local rapidgun = {
+        RAC = true,
+        MG  = true,
+        AC  = true,
+        SA  = true,
+        HMG = true
+    }
+
     function MakeACF_Gun(Owner, Pos, Angle, Id)
 
-        local EID       = BackComp[Id] or Id or "100mmC"
-        local Lookup    = GunTable[EID]
-    
-        if Lookup.gunclass == "SL" then
-            if not Owner:CheckLimit("_acf_smokelauncher") then return false end
-        else
-    
-            if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
-                if not Owner:CheckLimit("_acf_rapidgun") then return false end
-            elseif Lookup.caliber >= ACF.LargeCaliber then
-                if not Owner:CheckLimit("_acf_largegun") then return false end
-            end 
-            if not Owner:CheckLimit("_acf_gun") then return false end
-        end
-    
         local Gun = ents.Create("acf_gun")
+        if not IsValid(Gun) then return false end
+
+        if not ACE_CheckGun( Id ) then
+            Id = BackComp[Id] or "100mmC"
+        end
+
+        local Lookup    = GunTable[Id]
         local ClassData = GunClasses[Lookup.gunclass]
 
-        if not IsValid(Gun) then return false end
+        if Lookup.gunclass == "SL" then
+            if not Owner:CheckLimit("_acf_smokelauncher") then return false end
+            Owner:AddCount("_acf_smokelauncher", Gun)
+
+        elseif rapidgun[Lookup.gunclass] then
+            if not Owner:CheckLimit("_acf_rapidgun") then return false end
+            Owner:AddCount("_acf_rapidgun", Gun)
+
+        elseif Lookup.caliber >= ACF.LargeCaliber then
+            if not Owner:CheckLimit("_acf_largegun") then return false end
+            Owner:AddCount("_acf_largegun", Gun)
+
+        else
+            if not Owner:CheckLimit("_acf_gun") then return false end
+            Owner:AddCount("_acf_gun", Gun)
+        end
 
         Gun:SetAngles(Angle)
         Gun:SetPos(Pos)
@@ -143,7 +157,7 @@ do
     
         Gun:SetPlayer(Owner)
         Gun.Owner           = Owner
-        Gun.Id              = EID
+        Gun.Id              = Id
         Gun.Caliber         = Lookup.caliber
         Gun.Model           = Lookup.model
         Gun.Mass            = Lookup.weight
@@ -223,6 +237,7 @@ do
         local longbarrel = ClassData.longbarrel
         if longbarrel ~= nil then
             timer.Simple(0.25, function() --need to wait until after the property is actually set
+                if not IsValid(Gun) then return end
                 if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
                     local Muzzle = Gun:GetAttachment( Gun:LookupAttachment( longbarrel.newpos ) )
                     Gun.Muzzle = Gun:WorldToLocal(Muzzle.Pos)
@@ -240,18 +255,6 @@ do
     
         Owner:AddCleanup( "acfmenu", Gun )
     
-        if Lookup.gunclass == "SL" then
-            Owner:AddCount("_acf_smokelauncher", Gun)
-        else
-        
-        if Lookup.gunclass == "RAC" or Lookup.gunclass == "MG" or Lookup.gunclass == "AC" then
-            Owner:AddCount("_acf_rapidgun", Gun)
-        elseif Lookup.caliber >= ACF.LargeCaliber then
-            Owner:AddCount("_acf_largegun", Gun)
-        end
-            Owner:AddCount("_acf_gun", Gun)
-        end
-        
         ACF_Activate(Gun, 0)
         
         return Gun
@@ -284,7 +287,7 @@ function ENT:UpdateOverlayText()
     text = text .. "\nTemp: " .. math.Round(self.Heat) .. " °C / 200 °C"
 
     if #self.CrewLink > 0 then
-        text = text .. "\n\nHas Gunner: ".. (self.HasGunner > 0 and "Yes" or "No") 
+        text = text .. "\n\nHas Gunner: ".. (self.HasGunner and "Yes" or "No") 
         text = text .. ( self.noloaders and "" or "\nTotal Loaders: "..self.LoaderCount  )
     end
 
@@ -323,14 +326,14 @@ function ENT:Link( Target )
         end
     
         --Don't link if it's already linked
-        if self.HasGunner == 1 then
+        if self.HasGunner then
             return false, "The gun already has a gunner!"   
         end
     
         table.insert( self.CrewLink, Target )
         table.insert( Target.Master, self )
     
-        self.HasGunner = 1
+        self.HasGunner = true
 
         return true, "Link successful!"
 
@@ -349,7 +352,7 @@ function ENT:Link( Target )
             return false, "That crewseat is too far to be linked to this gun!"
         end
 
-        if self.HasGunner == 0 then --IK there is going to be an exploit to delete the gunner after placing a loader but idk how to fix *shrugs*
+        if not self.HasGunner then --IK there is going to be an exploit to delete the gunner after placing a loader but idk how to fix *shrugs* --NO LONGER
             return false, "You need a gunner before you can have a loader!" 
         end
     
@@ -440,7 +443,7 @@ function ENT:Unlink( Target )
     for Key,Value in pairs(self.CrewLink) do
         if Value == Target then
             if Target:GetClass() == "ace_crewseat_gunner" then
-                self.HasGunner = 0          
+                self.HasGunner = false          
             elseif Target:GetClass() == "ace_crewseat_loader" then
                 self.LoaderCount = self.LoaderCount - 1         
             end
@@ -606,6 +609,39 @@ function ENT:TrimDistantCrates()
     
 end
 
+function ENT:TrimDistantCrewSeats()
+    for Key, Seat in pairs(self.CrewLink) do
+        if IsValid( Seat ) then --Legality check missing atm
+            if RetDist( self, Seat ) > 100 then
+                self:Unlink( Seat )
+                soundstr =  "physics/metal/metal_canister_impact_hard" .. tostring(math.random(1, 3)) .. ".wav"
+                self:EmitSound(soundstr,500,100)
+            end
+        end
+    end
+end
+
+--[[
+    function ENT:TrimInvalidLoaders()
+
+        local Crewmates = table.Copy(self.CrewLink)
+
+        if self.LoaderCount > 0 and not self.HasGunner then
+            for k, Crew in pairs(Crewmates) do
+
+                PrintTable(Crewmates)
+
+                if IsValid(Crew) then
+                    print("Removing loader...")
+                    if Crew:GetClass() == "ace_crewseat_loader" then
+                        self:Unlink( Crew )
+                    end
+                end
+            end
+        end
+    end
+]]
+
 function ENT:Think()
     
     --Legality check part
@@ -646,16 +682,11 @@ function ENT:Think()
     if self.LastSend+1 <= Time then
 
         local Ammo          = 0
-        local CrateBonus    = {}
-        local rofbonus      = 0
-        local totalcap      = 0
         
         for Key, Crate in pairs(self.AmmoLink) do --UnlinkDistance
             if IsValid( Crate ) and Crate.Load and Crate.Legal then
                 if RetDist( self, Crate ) < 512 * self.LinkRangeMul then
                     Ammo = Ammo + (Crate.Ammo or 0)
-                    CrateBonus[Crate.RoFMul] = (CrateBonus[Crate.RoFMul] or 0) + Crate.Capacity
-                    totalcap = totalcap + Crate.Capacity
                 else
                     self:Unlink( Crate )
                     soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
@@ -664,23 +695,8 @@ function ENT:Think()
             end
         end
         
-        for Key, Seat in pairs(self.CrewLink) do --UnlinkDistance
-            if IsValid( Seat ) then --Legality check missing atm
-                if RetDist( self, Seat ) < 100 * self.LinkRangeMul then
-                --Do stuff
-                else
-                    self:Unlink( Seat )
-                    soundstr =  "physics/metal/metal_canister_impact_hard" .. tostring(math.random(1, 3)) .. ".wav"
-                    self:EmitSound(soundstr,500,100)
-                end
-            end
-        end
-        
-        for mul, cap in pairs(CrateBonus) do
-            rofbonus = rofbonus + (cap/totalcap)*mul 
-        end
+        self:TrimDistantCrewSeats()
 
-        self.CrateBonus = rofbonus or 1
         self.Ammo = Ammo
         self:UpdateOverlayText()
         
@@ -771,7 +787,7 @@ do
         end
         
         -- No gunner = more inaccuracy
-        if self.HasGunner == 0 then 
+        if not self.HasGunner then 
             IaccMult = IaccMult*1.5
         end
         
@@ -806,15 +822,14 @@ do
 
         if ( bool and self.IsUnderWeight and self.Ready and self.Legal ) then
 
-        --print('FireShell2')   
-            
             local Blacklist = {}
             if not ACF.AmmoBlacklist[self.BulletData.Type] then
                 Blacklist = {}
             else
                 Blacklist = ACF.AmmoBlacklist[self.BulletData.Type] 
             end
-            if ( ACF.RoundTypes[self.BulletData.Type] and !table.HasValue( Blacklist, self.Class ) ) then       --Check if the roundtype loaded actually exists
+            
+            if ( ACF.RoundTypes[self.BulletData.Type] and not table.HasValue( Blacklist, self.Class ) ) then       --Check if the roundtype loaded actually exists
             
                 self.HeatFire = true  --Used by Heat            
 
@@ -862,6 +877,7 @@ do
                 
                 self.Ready = false
                 self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
+
                 if((self.CurrentShot >= self.MagSize) and (self.MagSize > 1)) then
                     self:LoadAmmo(self.MagReload, false)    
                     self:EmitSound("weapons/357/357_reload4.wav",500,100)
@@ -917,11 +933,6 @@ function ENT:LoadAmmo( AddTime, Reload )
         self.BulletData = AmmoEnt.BulletData
         self.BulletData.Crate = AmmoEnt:EntIndex()
         
-        local CrateReload = 1
-        if self.CrateBonus and (self.MagReload == 0) then
-            CrateReload = 1 + self.CrateBonus
-        end
-        
         local Adj = not self.BulletData.LengthAdj and 1 or self.BulletData.LengthAdj --FL firerate bonus adjustment
         local CrewReload = 1
 
@@ -929,7 +940,7 @@ function ENT:LoadAmmo( AddTime, Reload )
             CrewReload = 1.25-(self.LoaderCount*0.25)
         end
 
-        self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrateReload * CrewReload, self.ROFLimit)
+        self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
         Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 
         self.RateOfFire = (60/self.ReloadTime)
@@ -939,9 +950,9 @@ function ENT:LoadAmmo( AddTime, Reload )
         
         self.NextFire = curTime + self.ReloadTime
         local reloadTime = self.ReloadTime
-        
+
         if AddTime then
-            reloadTime = reloadTime + AddTime * self.CrateBonus
+            reloadTime = reloadTime + AddTime
         end
         if Reload then
             self:ReloadEffect()
