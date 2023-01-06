@@ -14,9 +14,10 @@ local Radars            = {}
 
 local EngineTable       = {}
 local GearboxTable      = {}
-local MobilityTable     = {}
 local FuelTankTable     = {}
 local FuelTankSizeTable = {}
+
+local MobilityTable = {}
 
 local GSoundData    = {}
 
@@ -59,9 +60,6 @@ local irst_base = {
 if CLIENT then
     gun_base.guicreate          = function( Panel, Table ) ACFGunGUICreate( Table )         end or nil
     gun_base.guiupdate          = function() return end
-    
-    --engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Create( tbl )        end or nil -- experimental
-    --engine_base.guiupdate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil
     
     engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil 
 
@@ -129,6 +127,7 @@ function ACF_DefineEngine( id, data )
         data.id = id
         table.Inherit( data, engine_base )
         EngineTable[ id ] = data
+        MobilityTable[ id ] = data
     end
 end
 
@@ -137,6 +136,7 @@ function ACF_DefineGearbox( id, data )
     data.id = id
     table.Inherit( data, gearbox_base )
     GearboxTable[ id ] = data
+    MobilityTable[ id ] = data
 end
 
 
@@ -144,7 +144,8 @@ end
 function ACF_DefineFuelTank( id, data )
     data.id = id
     table.Inherit( data, fueltank_base )
-    FuelTankTable[ id ] = data 
+    FuelTankTable[ id ] = data
+    MobilityTable[ id ] = data
 end
 
 -- fueltank size definition
@@ -294,6 +295,10 @@ list.Set( "ACFEnts"     , "Radars"      , Radars        )
 
 list.Set( "ACESounds"   , "GunFire"     , GSoundData    )
 
+--Small remainder of Mobility table. Still being used in stuff like starfall/e2. This can change
+
+list.Set( "ACFEnts"     , "Mobility"        , MobilityTable ) 
+
 ACF.Weapons     = list.Get("ACFEnts")
 ACF.Classes     = list.Get("ACFClasses")
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
@@ -301,3 +306,5 @@ ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds 
 
 ACE.Armors      = list.Get("ACE_MaterialTypes")
 ACE.GSounds     = list.Get("ACESounds")
+
+local Test = MobilityTable["4Gear-L-S"] PrintTable(Test)
