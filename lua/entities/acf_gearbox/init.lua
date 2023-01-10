@@ -94,7 +94,7 @@ do
             Gearbox.CVTRatio = nil
         end
         
-        Gearbox.GearTable = GearboxData.geartable
+        Gearbox.GearTable = table.Copy(GearboxData.geartable)
             Gearbox.GearTable.Final = Data10
             Gearbox.GearTable[1] = Data1
             Gearbox.GearTable[2] = Data2
