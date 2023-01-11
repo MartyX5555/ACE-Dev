@@ -151,8 +151,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
     
     if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
 
-    if not ACE_CheckFuelTank( Data1 ) then print(Data1)
-        print("Amongos")
+    if not ACE_CheckFuelTank( Data1 ) then
         Data1 = "Tank_4x4x2"
     end
 

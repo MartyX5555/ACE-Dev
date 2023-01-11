@@ -306,5 +306,3 @@ ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds 
 
 ACE.Armors      = list.Get("ACE_MaterialTypes")
 ACE.GSounds     = list.Get("ACESounds")
-
-local Test = MobilityTable["4Gear-L-S"] PrintTable(Test)
