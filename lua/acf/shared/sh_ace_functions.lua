@@ -362,29 +362,36 @@ do
         [6] = "Texto"
     }
 
+    --Dedicated function to get the material due to old numeric ids must be passed to the new string indexing now. Could change in a future.
     function ACE_GetMaterialData( Mat )
 
-        if not ACE.Armors or table.IsEmpty(ACE.Armors) then
-            print("[ACE|ERROR]- No Armor material data found! Have the armor folder been renamed or removed? Unexpected results could occur!")
-            return nil
-        end
+        if not ACE_CheckMaterial( Mat ) then
 
-        Mat = not isstring(Mat) and ACE.BackCompMat[Mat] or Mat
+            Mat = not isstring(Mat) and ACE.BackCompMat[Mat] or "RHA"
+
+            if not ACE_CheckMaterial( Mat ) then
+                print("[ACE|ERROR]- No Armor material data found! Have the armor folder been renamed or removed? Unexpected results could occur!")
+                return nil
+            end
+        end
 
         local MatData = ACE.Armors[Mat]
-
-        if not MatData or table.IsEmpty(MatData) then
-            print("[ACE|ERROR]- We got an invalid or unknown armor [ "..Mat.." ] which is not able to be processed. Dealing as RHA...")
-
-            MatData = ACE.Armors["RHA"]
-
-        end
 
         return MatData
     end
 end
 
 --TODO: Use a universal function
+function ACE_CheckMaterial( MatId )
+
+    local matdata = ACE.Armors[ MatId ]
+
+    if not matdata then return false end
+
+    return true
+
+end
+
 function ACE_CheckRound( id )
 
     local rounddata = ACF.RoundTypes[ id ]
