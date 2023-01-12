@@ -85,12 +85,6 @@ local ents_methods, wrap, unwrap = instance.Types.Entity.Methods, instance.Types
 local ang_meta, aunwrap = instance.Types.Angle, instance.Types.Angle.Unwrap
 local vec_meta, vunwrap = instance.Types.Vector, instance.Types.Vector.Unwrap
 
-SF.Permissions.registerPrivilege("acf.createMobility", "Create acf engine", "Allows the user to create ACF engines and gearboxes")
-SF.Permissions.registerPrivilege("acf.createFuelTank", "Create acf fuel tank", "Allows the user to create ACF fuel tanks")
-SF.Permissions.registerPrivilege("acf.createGun", "Create acf gun", "Allows the user to create ACF guns")
-SF.Permissions.registerPrivilege("acf.createAmmo", "Create acf ammo", "Allows the user to create ACF ammoboxes")
-SF.Permissions.registerPrivilege("entities.acf", "ACF", "Allows the user to control ACF components", { entities = {} })
-
 local plyCount = SF.LimitObject("acf_components", "acf_components", -1, "The number of ACF components allowed to spawn via Starfall")
 local plyBurst = SF.BurstObject("acf_components", "acf_components", 4, 4, "Rate ACF components can be spawned per second.", "Number of ACF components that can be spawned in a short time.")
 
@@ -214,12 +208,10 @@ function acf_library.createMobility(pos, ang, id, frozen, gear_ratio)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Mobility")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Mobility (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Mobility")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Mobility (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -341,12 +333,10 @@ function acf_library.createFuelTank(pos, ang, id, fueltype, frozen)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Fuel Tank")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Fuel Tank (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Fuel Tank")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Fuel Tank (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -433,12 +423,10 @@ function acf_library.createGun(pos, ang, id, frozen)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Gun")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Gun (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Gun")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Gun (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -752,12 +740,10 @@ function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Ammo")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Ammo (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Ammo")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Ammo (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
