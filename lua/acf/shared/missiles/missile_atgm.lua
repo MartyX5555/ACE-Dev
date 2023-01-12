@@ -73,12 +73,11 @@ ACF_defineGun("9M133 ASM", {                                    -- id
     rack            = "1x Kornet",                              -- Which rack to spawn this missile on?
     length          = 74 * 2,
     caliber         = 15.2,
-    weight          = 29,                                       -- Don't scale down the weight though!
-    modeldiameter   = 15.2,                                     -- in cm
-    year = 1994,
-    rofmod = 0.7,
-    modeldiameter   = 3 * 2.54,
-    rotmult     = 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+    weight          = 29,                                       -- Don't scale down the weight though!                                
+    year            = 1994,
+    rofmod          = 0.7,
+    modeldiameter   = 3 * 2.54, -- in cm
+    rotmult         = 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
     round = {
         model           = "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",  -- shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
