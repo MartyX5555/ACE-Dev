@@ -94,16 +94,16 @@ SF.Permissions.registerPrivilege("entities.acf", "ACF", "Allows the user to cont
 local plyCount = SF.LimitObject("acf_components", "acf_components", -1, "The number of ACF components allowed to spawn via Starfall")
 local plyBurst = SF.BurstObject("acf_components", "acf_components", 4, 4, "Rate ACF components can be spawned per second.", "Number of ACF components that can be spawned in a short time.")
 
-local function propOnDestroy(ent, instance)
-	local ply = instance.player
+local function propOnDestroy(ent, inst)
+	local ply = inst.player
 	plyCount:free(ply, 1)
-	instance.data.props.props[ent] = nil
+	inst.data.props.props[ent] = nil
 end
 
-local function register(ent, instance)
-	ent:CallOnRemove("starfall_prop_delete", propOnDestroy, instance)
-	plyCount:free(instance.player, -1)
-	instance.data.props.props[ent] = true
+local function register(ent, inst)
+	ent:CallOnRemove("starfall_prop_delete", propOnDestroy, inst)
+	plyCount:free(inst.player, -1)
+	inst.data.props.props[ent] = true
 end
 
 --- Returns true if functions returning sensitive info are restricted to owned props
@@ -1097,7 +1097,7 @@ function ents_methods:acfGetLinkedWheels ()
 	if not ( isEngine(this) or isGearbox(this) ) then SF.Throw( "Target must be a engine, or gearbox", 2 ) end
 
 	local wheels = {}
-	for k, ent in pairs( ACF_GetLinkedWheels( this ) ) do
+	for _, ent in pairs( ACF_GetLinkedWheels( this ) ) do
 		table.insert( wheels, wrap( ent ) )
 	end
 
@@ -1905,7 +1905,7 @@ function ents_methods:acfAmmoCount ()
 	if not isGun( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local Ammo = 0
-	for Key, AmmoEnt in pairs( this.AmmoLink ) do
+	for _, AmmoEnt in pairs( this.AmmoLink ) do
 		if AmmoEnt and AmmoEnt:IsValid() and AmmoEnt[ "Load" ] then
 			Ammo = Ammo + ( AmmoEnt.Ammo or 0 )
 		end
@@ -1925,7 +1925,7 @@ function ents_methods:acfTotalAmmoCount ()
 	if not isGun( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local Ammo = 0
-	for Key, AmmoEnt in pairs( this.AmmoLink ) do
+	for _, AmmoEnt in pairs( this.AmmoLink ) do
 		if AmmoEnt and AmmoEnt:IsValid() then
 			Ammo = Ammo + ( AmmoEnt.Ammo or 0 )
 		end
