@@ -126,7 +126,6 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
     length          = 114 * 2,
     caliber         = 12,
     weight          = 72,                                      -- 15.1,    -- Don't scale down the weight though!
-    modeldiameter   = 12,                                       -- in cm
     year            = 1960,
     rofmod          = 0.3,
     modeldiameter   = 10,

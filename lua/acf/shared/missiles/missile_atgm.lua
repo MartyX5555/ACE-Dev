@@ -179,7 +179,6 @@ ACF_defineGun("Ataka ASM", { --id
     length          = 92 * 2,
     caliber         = 13,
     weight          = 198,                                      -- Don't scale down the weight though!
-    modeldiameter   = 17.2 * 1.27,                              -- in cm
     year            = 1984,
     rofmod          = 0.6,
     modeldiameter   = 3 * 2.54,
