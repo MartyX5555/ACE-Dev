@@ -22,7 +22,7 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
     rack        = "1x BGM-71E",                                 -- Which rack to spawn this missile on?
-    length      = 79 * 2,                                           -- Used for the physics calculations
+    length      = 73 * 2,                                           -- Used for the physics calculations
     caliber     = 13,
     weight      = 76.4,                                         -- Don't scale down the weight though!
     year        = 1970,
