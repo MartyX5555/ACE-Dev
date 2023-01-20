@@ -9,7 +9,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 
 
 --Main settings--
-SWEP.FireRate = 5 --Rounds per second
+SWEP.FireRate = 1 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8

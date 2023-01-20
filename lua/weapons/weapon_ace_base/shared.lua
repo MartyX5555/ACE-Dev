@@ -269,6 +269,10 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + math.Round(1 / self.FireRate, 2))
 
     self.LastFired = CurTime()
+
+    if self.Primary.ClipSize == 1 and self:Clip1() == 0 and self:Ammo1() > 0 then
+        self:Reload()
+    end
 end
 
 function SWEP:OnSecondaryAttack()
@@ -366,9 +370,10 @@ end
 SWEP.JustReloaded = false
 
 function SWEP:Reload()
+    local nextFire = self:GetNextPrimaryFire()
+
     if self:Clip1() == self.Primary.ClipSize then return end
     if self:Ammo1() == 0 then return end
-    if CurTime() < self:GetNextPrimaryFire() then return end
 
     self:OnReload()
 
@@ -393,6 +398,8 @@ function SWEP:Reload()
     end
 
     self.JustReloaded = true
+
+    self:SetNextPrimaryFire(nextFire) -- Stop reloads from resetting the fire delay
 end
 
 function SWEP:Deploy()

@@ -12,6 +12,8 @@ SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 SWEP.HoldType = "pistol"
 SWEP.ViewModelFlip = false
 
+SWEP.FireRate = 0.5
+
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8
 SWEP.Primary.Ammo = "pistol"
@@ -75,6 +77,12 @@ function SWEP:PrimaryAttack()
 	self:EmitSound(self.Primary.Sound)
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+
+	self:SetNextPrimaryFire(CurTime() + math.Round(1 / self.FireRate, 2))
+
+	if self:Clip1() == 0 and self:Ammo1() > 0 then
+		self:Reload()
+	end
 end
 
 function SWEP:SecondaryAttack()
