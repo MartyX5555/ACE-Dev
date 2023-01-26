@@ -9,7 +9,7 @@ SWEP.SlotPos = 3 --Priority in which the weapon appears, 1 tries to put it at th
 
 
 --Main settings--
-SWEP.FireRate = 0.25 --Rounds per second
+SWEP.FireRate = 0.35 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 8
@@ -25,7 +25,7 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.ReloadSound = "Weapon_Pistol.Reload" --Sound other players hear when you reload - this is NOT your first-person sound
                                         --Most models have a built-in first-person reload sound
 
-SWEP.ZoomFOV = 60
+SWEP.ZoomFOV = 50
 SWEP.HasScope = false --True if the weapon has a sniper-style scope
 
 
@@ -47,19 +47,20 @@ SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does n
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.25 --First-shot random spread, in degrees
+SWEP.BaseSpread = 0.75 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
 SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.UnscopedSpread = 7 --Spread, in degrees, when unscoped with a scoped weapon
 
+SWEP.CarrySpeedMul              = 0.6
 
 --Model settings--
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_RPG.mdl"
 SWEP.WorldModel = "models/weapons/w_rocket_launcher.mdl"
 SWEP.HoldType = "rpg"
-SWEP.DeployDelay = 2 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 4 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = false
 
 

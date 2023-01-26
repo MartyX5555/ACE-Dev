@@ -12,7 +12,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 3.3 --Rounds per second
 
 SWEP.Primary.ClipSize = 7
-SWEP.Primary.DefaultClip = 21
+SWEP.Primary.DefaultClip = 40
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/xm1014_multi.mp3"
@@ -43,15 +43,15 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 3 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 3 --First-shot random spread, in degrees
+SWEP.BaseSpread = 2.5 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 0 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -70,8 +70,8 @@ function SWEP:InitBulletData()
     self.BulletData.Type = "AP"
     self.BulletData.Id = 1
     self.BulletData.Caliber = 1.2
-    self.BulletData.PropLength = 2.3 --Volume of the case as a cylinder * Powder density converted from g to kg		
-    self.BulletData.ProjLength = 3 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+    self.BulletData.PropLength = 2.5 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.ProjLength = 3.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
     self.BulletData.Data5 = 0 --He Filler or Flechette count
     self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread
     self.BulletData.Data7 = 0
@@ -89,7 +89,7 @@ function SWEP:InitBulletData()
     self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
     --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
     --		self.BulletData.DragCoef  = ((self.BulletData.FrArea/10000)/self.BulletData.ProjMass)	
-    self.BulletData.DragCoef = 0.0125 --Alternatively manually set it
+    self.BulletData.DragCoef = 0.0075 --Alternatively manually set it
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2

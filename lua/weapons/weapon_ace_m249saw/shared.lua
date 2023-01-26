@@ -2,17 +2,17 @@ SWEP.PrintName = "M249 SAW"
 SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "LMGs"
-SWEP.Purpose = "Rambo by day, spray n' pray by night"
+SWEP.Purpose = "SUPPRESSING FIIIIRRRRREEEEE!!!!!! BRATATAT"
 SWEP.Spawnable = true
 SWEP.Slot = 2 --Which inventory column the weapon appears in
 SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
 
 
 --Main settings--
-SWEP.FireRate = 11 --Rounds per second
+SWEP.FireRate = 13 --Rounds per second
 
-SWEP.Primary.ClipSize = 200
-SWEP.Primary.DefaultClip = 400
+SWEP.Primary.ClipSize = 300
+SWEP.Primary.DefaultClip = 1200
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "AR2"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/m249saw_multi.mp3"
@@ -43,23 +43,24 @@ SWEP.RecoilSideBias = 0.15 --How much the recoil is biased to one side proportio
 
 SWEP.ZoomRecoilBonus = 0.6 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.1 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0.5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0 --First-shot random spread, in degrees
-SWEP.MaxSpread = 3 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.5 --First-shot random spread, in degrees
+SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.MovementSpread = 5 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
 
+SWEP.CarrySpeedMul              = 0.6
 
 --Model settings--
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_mach_m249para.mdl"
 SWEP.WorldModel = "models/weapons/w_mach_m249para.mdl"
 SWEP.HoldType = "ar2"
-SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 4 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 
 

@@ -38,20 +38,20 @@ SWEP.HeatMax = 35 --Maximum heat - determines max rate at which recoil is applie
                 --Also determines point at which random spread is at its highest intensity
                 --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
-SWEP.RecoilSideBias = 0.025 --How much the recoil is biased to one side proportional to vertical recoil
+SWEP.RecoilSideBias = -0.15 --How much the recoil is biased to one side proportional to vertical recoil
                         --Positive numbers bias to the right, negative to the left
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0.5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
 SWEP.BaseSpread = 0 --First-shot random spread, in degrees
-SWEP.MaxSpread = 1.5 --Maximum added random spread from heat value, in degrees
+SWEP.MaxSpread = 1 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 5 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -86,8 +86,8 @@ function SWEP:InitBulletData()
     self.BulletData.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
     self.BulletData.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
     self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-    --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
-    self.BulletData.DragCoef = (self.BulletData.FrArea / 10000) / self.BulletData.ProjMass
+	self.BulletData.DragCoef  = 0.01 --Alternatively manually set it
+--    self.BulletData.DragCoef = (self.BulletData.FrArea / 10000) / self.BulletData.ProjMass
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2

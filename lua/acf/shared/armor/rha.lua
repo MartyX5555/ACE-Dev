@@ -4,11 +4,11 @@ local Material          = {}
 Material.id             = "RHA"
 Material.name           = "Rolled homogeneous Armor"
 Material.sname          = "RHA"
-Material.desc           = "Material which has no special traits. Your standart ACF armor."
+Material.desc           = "Material with no special traits. Your standard ACF armor."
 Material.year           = 1900 -- Dont blame about this, ik that RHA has existed before this year but it would be cool to see: when?
 
 Material.massMod        = 1
-Material.curve          = 1
+Material.curve          = 0.99
 
 Material.effectiveness  = 1
 Material.resiliance     = 1

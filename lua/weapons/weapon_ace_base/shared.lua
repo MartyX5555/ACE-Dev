@@ -1,7 +1,7 @@
 SWEP.PrintName = "ACE Base Weapon"
 SWEP.Category = "ACE - Special"
 SWEP.Purpose = "The base code upon which other ACE weapons are built."
-SWEP.Author = "Cheezus"
+SWEP.Author = "\n Cheezus, Kemgus, and RDC"
 SWEP.Spawnable = false
 SWEP.Slot = 2 --Which inventory column the weapon appears in
 SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
@@ -41,7 +41,7 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0.2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
@@ -59,6 +59,16 @@ SWEP.WorldModel = "models/weapons/w_rif_ak47.mdl"
 SWEP.HoldType = "ar2"
 SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
+
+
+
+SWEP.CarrySpeedMul              = 1 --WalkSpeedMult when carrying the weapon
+
+SWEP.NormalPlayerWalkSpeed      = 200 --Default walk and sprint speed in case all else fails
+SWEP.NormalPlayerRunSpeed       = 400
+
+SWEP.SwayScale = 0.3
+SWEP.BobScale = 0.4
 
 
 AddCSLuaFile("cl_ace_spawnmenu.lua")
@@ -180,7 +190,7 @@ function SWEP:GetShootDir()
     local degrees = math.Clamp((self.Heat / self.HeatMax) ^ 2 * self.MaxSpread + self.BaseSpread, self.BaseSpread, self.BaseSpread + self.MaxSpread)
 
     --Inaccuracy based on player speed
-    degrees = degrees + math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1) * self.MovementSpread
+    degrees = degrees + math.min(owner:GetVelocity():Length() / self.NormalPlayerRunSpeed, 1) * self.MovementSpread
 
     if not self:GetZoomState() and self.HasScope then
         degrees = degrees + self.UnscopedSpread * (owner:Crouching() and self.CrouchRecoilBonus or 1)
@@ -238,7 +248,7 @@ function SWEP:PrimaryAttack()
     if IsFirstTimePredicted() or game.SinglePlayer() then
         local owner = self:GetOwner()
 
-        for i = 1, self.Primary.BulletCount do
+        for _ = 1, self.Primary.BulletCount do
             self:Shoot()
         end
 
@@ -282,13 +292,16 @@ function SWEP:SecondaryAttack()
     self:OnSecondaryAttack()
 
     if SERVER and not self.Reloading then
-        self:SetZoomState(not self:GetZoomState())
+        local ZS = not self:GetZoomState()
+        self:SetZoomState(ZS)
+        self:SetOwnerZoomSpeed(ZS)
     end
 end
 
 function SWEP:Holster()
     if SERVER then
         self:SetZoomState(false)
+        self:SetOwnerZoomSpeed(false)
     end
 
     if self.ShotgunReload then
@@ -391,6 +404,7 @@ function SWEP:Reload()
 
     if SERVER then
         self:SetZoomState(false)
+        self:SetOwnerZoomSpeed(false)
 
         if self.ReloadSound then
             self:EmitSound(self.ReloadSound)
@@ -407,4 +421,20 @@ function SWEP:Deploy()
 
     self:SendWeaponAnim(ACT_VM_DRAW)
     self:SetNextPrimaryFire(CurTime() + self.DeployDelay)
+end
+
+
+
+function SWEP:SetOwnerZoomSpeed(setSpeed)
+    if CLIENT then return end
+
+    local owner = self:GetOwner()
+
+    if setSpeed then
+        owner:SetWalkSpeed(math.min(self.NormalPlayerWalkSpeed * 0.5 * self.CarrySpeedMul, self.NormalPlayerWalkSpeed))
+        owner:SetRunSpeed(math.min(self.NormalPlayerRunSpeed * 0.5 * self.CarrySpeedMul, self.NormalPlayerRunSpeed))
+    elseif self.NormalPlayerWalkSpeed and self.NormalPlayerRunSpeed then
+        owner:SetWalkSpeed(math.min(self.NormalPlayerWalkSpeed * self.CarrySpeedMul, self.NormalPlayerWalkSpeed))
+        owner:SetRunSpeed(math.min(self.NormalPlayerRunSpeed * self.CarrySpeedMul, self.NormalPlayerRunSpeed))
+    end
 end
