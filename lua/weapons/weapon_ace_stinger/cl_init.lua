@@ -7,6 +7,7 @@ function SWEP:DoDrawCrosshair(x, y)
 
     local owner = self:GetOwner()
     local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
+    local VectorPos = Vector(self:GetTarPosX(), self:GetTarPosY(), self:GetTarPosZ())
     inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
 
     if Zoom then
@@ -23,7 +24,7 @@ function SWEP:DoDrawCrosshair(x, y)
 
         surface.DrawOutlinedRect(x - 215, y - 215, 215 * 2, 215 * 2, thiccness, Color(255, 120, 0))
         --Draw basic crosshair that increases in size with Inaccuracy Accumulation
-        local tarpos2d = Vector(TarPosx or 0, TarPosy or 0, TarPosz or 0):ToScreen()
+        local tarpos2d = VectorPos:ToScreen()
         tarpos2d = Vector(math.floor(tarpos2d.x + 0.5), math.floor(tarpos2d.y + 0.5), 0)
 
 

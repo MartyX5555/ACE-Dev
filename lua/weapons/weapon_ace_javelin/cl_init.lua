@@ -7,7 +7,7 @@ function SWEP:DoDrawCrosshair(x, y)
 
     local owner = self:GetOwner()
     local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
-    local VectorPos = Vector(TarPosx or 0, TarPosy or 0, TarPosz or 0)
+    local VectorPos = Vector(self:GetTarPosX(), self:GetTarPosY(), self:GetTarPosZ())
     inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
 
     if Zoom then
@@ -32,7 +32,10 @@ function SWEP:DoDrawCrosshair(x, y)
         rectSize = 15
         thickness = 2
 
-        surface.DrawOutlinedRect(x + math.Clamp(tarpos2d.x - x, -215, 215) - rectSize, y + math.Clamp(tarpos2d.y - y, -215, 215) - rectSize, rectSize * 2, rectSize * 2, thickness)
+        if VectorPos ~= Vector() then
+            surface.DrawOutlinedRect(x + math.Clamp(tarpos2d.x - x, -215, 215) - rectSize, y + math.Clamp(tarpos2d.y - y, -215, 215) - rectSize, rectSize * 2, rectSize * 2, thickness)
+        end
+
         surface.SetDrawColor(tempcolor2)
         surface.DrawLine(tarpos2d.x - 50000, tarpos2d.y, tarpos2d.x + 50000, tarpos2d.y)
         surface.DrawLine(tarpos2d.x, tarpos2d.y - 50000, tarpos2d.x, tarpos2d.y + 50000)

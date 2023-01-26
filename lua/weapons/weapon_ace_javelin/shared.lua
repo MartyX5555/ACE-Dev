@@ -79,8 +79,15 @@ SWEP.SeekSensitivity = 1
 
 SWEP.LockProgress = 0
 SWEP.Lockrate = 0.002 --Lock rate per second
-SWEP.LaunchAuth = 0
 
+function SWEP:SetupDataTables()
+    self:NetworkVar("Bool", 1, "LaunchAuth")
+    self:NetworkVar("Float", 1, "TarPosX")
+    self:NetworkVar("Float", 2, "TarPosY")
+    self:NetworkVar("Float", 3, "TarPosZ")
+
+    BaseClass.SetupDataTables(self)
+end
 
 if CLIENT then
     local WorldModel = ClientsideModel(SWEP.WorldModel)
@@ -216,6 +223,8 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 end
 
 function SWEP:PrimaryAttack()
+    if not self:GetLaunchAuth() then return end
+
     if self:Clip1() == 0 and self:Ammo1() > 0 then
         self:Reload()
 
@@ -231,7 +240,7 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
     if SERVER then
-        if ( IsValid( self.TarEnt ) and self.LaunchAuth  ) then
+        if ( IsValid( self.TarEnt ) and self:GetLaunchAuth()  ) then
             local ent = ents.Create( "ace_missile_swep_guided" )
 
 
@@ -277,6 +286,7 @@ function SWEP:PrimaryAttack()
                 local inertia = ent.phys:GetInertia()
                 ent.phys:ApplyTorqueCenter(Vector(-5, 0, 0) * Vector(inertia.x, inertia.y, inertia.z))
             end
+
             self:EmitSound(self.Primary.Sound)
             self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
             self:GetOwner():SetAnimation(PLAYER_ATTACK1)
@@ -284,8 +294,7 @@ function SWEP:PrimaryAttack()
             self.LockProgress = 0
             owner:StopSound( "acf_extra/airfx/caution2.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
-            self.LaunchAuth = false
-            owner:SendLua(string.format("LaunchAuth = false"))
+            self:SetLaunchAuth(false)
 
             if self:Ammo1() > 0 then
                 self:GetOwner():RemoveAmmo( 1, "RPG_Round")
@@ -299,6 +308,7 @@ function SWEP:PrimaryAttack()
 
     end
 
+    --if CLIENT or not self.LaunchAuth then return end
 end
 
 function SWEP:GetWhitelistedEntsInCone()
@@ -470,28 +480,27 @@ function SWEP:Think()
 
             self.LockProgress = self.LockProgress + self.Lockrate
 
-            if not self.LaunchAuth and self.LockProgress > 1 then
+            if not self:GetLaunchAuth() and self.LockProgress > 1 then
                 owner:StopSound( "acf_extra/airfx/caution2.wav" )
                 owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 87, 0.3, CHAN_AUTO )
             end
 
             if self.LockProgress > 1 then
-                self.LaunchAuth = true
-                owner:SendLua(string.format("LaunchAuth = true"))
+                self:SetLaunchAuth(true)
             end
         elseif self.LockProgress > 0 then
             self.LockProgress = 0
             owner:StopSound( "acf_extra/airfx/caution2.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
-            self.LaunchAuth = false
-            owner:SendLua(string.format("LaunchAuth = false"))
+            self:SetLaunchAuth(false)
         end
 
         if ( IsValid( self.TarEnt ) ) then
             local TarPos = self.TarEnt:GetPos()
-            owner:SendLua(string.format("TarPosx =" .. TarPos.x))
-            owner:SendLua(string.format("TarPosy =" .. TarPos.y))
-            owner:SendLua(string.format("TarPosz =" .. TarPos.z))
+
+            self:SetTarPosX(TarPos.x)
+            self:SetTarPosY(TarPos.y)
+            self:SetTarPosZ(TarPos.z)
         end
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )

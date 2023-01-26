@@ -79,8 +79,15 @@ SWEP.SeekSensitivity = 2
 
 SWEP.LockProgress = 0
 SWEP.Lockrate = 0.005 --Lock rate per second
-SWEP.LaunchAuth = 0
 
+function SWEP:SetupDataTables()
+    self:NetworkVar("Bool", 1, "LaunchAuth")
+    self:NetworkVar("Float", 1, "TarPosX")
+    self:NetworkVar("Float", 2, "TarPosY")
+    self:NetworkVar("Float", 3, "TarPosZ")
+
+    BaseClass.SetupDataTables(self)
+end
 
 function SWEP:InitBulletData()
     self.BulletData = {}
@@ -184,6 +191,8 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 end
 
 function SWEP:PrimaryAttack()
+    if not self:GetLaunchAuth() then return end
+
     if self:Clip1() == 0 and self:Ammo1() > 0 then
         self:Reload()
 
@@ -199,7 +208,7 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
     if SERVER then
-        if ( IsValid( self.TarEnt ) and self.LaunchAuth  ) then
+        if ( IsValid( self.TarEnt ) and self:GetLaunchAuth()  ) then
             local ent = ents.Create( "ace_missile_swep_guided" )
 
             local owner = self:GetOwner()
@@ -418,28 +427,27 @@ function SWEP:Think()
 
             self.LockProgress = self.LockProgress + self.Lockrate
 
-            if not self.LaunchAuth and self.LockProgress > 1 then
+            if not self:GetLaunchAuth() and self.LockProgress > 1 then
                 owner:StopSound( "acf_extra/airfx/radar_track.wav" )
                 owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 105, 0.3, CHAN_AUTO )
             end
 
             if self.LockProgress > 1 then
-                self.LaunchAuth = true
-                owner:SendLua(string.format("LaunchAuth = true"))
+                self:SetLaunchAuth(true)
             end
         elseif self.LockProgress > 0 then
             self.LockProgress = 0
             owner:StopSound( "acf_extra/airfx/radar_track.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
-            self.LaunchAuth = false
-            owner:SendLua(string.format("LaunchAuth = false"))
+            self:SetLaunchAuth(false)
         end
 
         if ( IsValid( self.TarEnt ) ) then
             local TarPos = self.TarEnt:GetPos()
-            owner:SendLua(string.format("TarPosx =" .. TarPos.x))
-            owner:SendLua(string.format("TarPosy =" .. TarPos.y))
-            owner:SendLua(string.format("TarPosz =" .. TarPos.z))
+
+            self:SetTarPosX(TarPos.x)
+            self:SetTarPosY(TarPos.y)
+            self:SetTarPosZ(TarPos.z)
         end
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )
@@ -459,7 +467,7 @@ function SWEP:Holster()
     self.LockProgress = 0
     owner:StopSound( "acf_extra/airfx/caution2.wav" )
     owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
-    self.LaunchAuth = false --Does it desync? Yes! Do I care? Ehhhh. It'll resync anyways.
+    self:SetLaunchAuth(false)
 
     BaseClass.Holster(self)
 
