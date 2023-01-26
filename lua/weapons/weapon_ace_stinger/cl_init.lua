@@ -27,8 +27,9 @@ function SWEP:DoDrawCrosshair(x, y)
         local tarpos2d = VectorPos:ToScreen()
         tarpos2d = Vector(math.floor(tarpos2d.x + 0.5), math.floor(tarpos2d.y + 0.5), 0)
 
-
-        surface.DrawCircle(x + math.Clamp(tarpos2d.x - x, -215, 215), y + math.Clamp(tarpos2d.y - y, -215, 215), 50, tempcolor)
+        if self:GetLockProgress() > 0 then
+            surface.DrawCircle(x + math.Clamp(tarpos2d.x - x, -215, 215), y + math.Clamp(tarpos2d.y - y, -215, 215), 50, tempcolor)
+        end
 
     --    surface.DrawLine(x + ReticleSize + 3, y, x + ReticleSize + 20, y)
     --    surface.DrawLine(x - ReticleSize - 3, y, x - ReticleSize - 20, y)

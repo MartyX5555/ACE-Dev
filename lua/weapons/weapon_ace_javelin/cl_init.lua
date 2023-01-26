@@ -32,7 +32,7 @@ function SWEP:DoDrawCrosshair(x, y)
         rectSize = 15
         thickness = 2
 
-        if VectorPos ~= Vector() then
+        if self:GetLockProgress() > 0 then
             surface.DrawOutlinedRect(x + math.Clamp(tarpos2d.x - x, -215, 215) - rectSize, y + math.Clamp(tarpos2d.y - y, -215, 215) - rectSize, rectSize * 2, rectSize * 2, thickness)
         end
 

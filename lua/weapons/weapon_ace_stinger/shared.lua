@@ -77,7 +77,6 @@ SWEP.IronSightsAng = Vector( 0, 0, 0 )
 
 SWEP.SeekSensitivity = 2
 
-SWEP.LockProgress = 0
 SWEP.Lockrate = 0.005 --Lock rate per second
 
 function SWEP:SetupDataTables()
@@ -85,6 +84,7 @@ function SWEP:SetupDataTables()
     self:NetworkVar("Float", 1, "TarPosX")
     self:NetworkVar("Float", 2, "TarPosY")
     self:NetworkVar("Float", 3, "TarPosZ")
+    self:NetworkVar("Float", 4, "LockProgress")
 
     BaseClass.SetupDataTables(self)
 end
@@ -421,22 +421,22 @@ function SWEP:Think()
         self.TarEnt = self:AcquireLock()
 
         if lasttarget == self.TarEnt and ( IsValid( self.TarEnt ) ) and Zoom  then
-            if self.LockProgress == 0 then
+            if self:GetLockProgress() == 0 then
                 owner:EmitSound( "acf_extra/airfx/radar_track.wav", 75, 105, 1, CHAN_AUTO )
             end
 
-            self.LockProgress = self.LockProgress + self.Lockrate
+            self:SetLockProgress(self:GetLockProgress() + self.Lockrate)
 
-            if not self:GetLaunchAuth() and self.LockProgress > 1 then
+            if not self:GetLaunchAuth() and self:GetLockProgress() > 1 then
                 owner:StopSound( "acf_extra/airfx/radar_track.wav" )
                 owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 105, 0.3, CHAN_AUTO )
             end
 
-            if self.LockProgress > 1 then
+            if self:GetLockProgress() > 1 then
                 self:SetLaunchAuth(true)
             end
-        elseif self.LockProgress > 0 then
-            self.LockProgress = 0
+        elseif self:GetLockProgress() > 0 then
+            self:SetLockProgress(0)
             owner:StopSound( "acf_extra/airfx/radar_track.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
             self:SetLaunchAuth(false)
@@ -464,7 +464,7 @@ function SWEP:Holster()
 
     local owner = self:GetOwner()
 
-    self.LockProgress = 0
+    self:SetLockProgress(0)
     owner:StopSound( "acf_extra/airfx/caution2.wav" )
     owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
     self:SetLaunchAuth(false)
