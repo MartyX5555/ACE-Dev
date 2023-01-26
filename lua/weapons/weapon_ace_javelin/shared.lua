@@ -362,7 +362,7 @@ function SWEP:AcquireLock()
 
     --Table definition
     local Owners            = {}
-    local Positions         = {}
+    --local Positions         = {}
     --local Temperatures      = {}
     --local posTable          = {}
 
@@ -439,7 +439,7 @@ function SWEP:AcquireLock()
             end
 
 
-            debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
+            --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
 
         end
 
@@ -479,7 +479,7 @@ function SWEP:Think()
                 self.LaunchAuth = true
                 owner:SendLua(string.format("LaunchAuth = true"))
             end
-        else
+        elseif self.LockProgress > 0 then
             self.LockProgress = 0
             owner:StopSound( "acf_extra/airfx/caution2.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )

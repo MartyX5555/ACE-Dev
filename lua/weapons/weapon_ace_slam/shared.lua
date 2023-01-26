@@ -46,7 +46,7 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.AimOffset = Vector(0,0,0)
+SWEP.AimOffset = Vector(0, 0, 0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire = CurTime()
 
@@ -56,7 +56,7 @@ SWEP.InaccuracyDecayRate = 1
 
 SWEP.IronSights = true
 SWEP.IronSightsPos = Vector(-2, -15, 2.98)
-SWEP.ZoomPos = Vector(2,-2,2)
+SWEP.ZoomPos = Vector(2, -2, 2)
 SWEP.IronSightsAng = Angle(0.45, 0, 0)
 SWEP.CarrySpeedMul = 0.6 --WalkSpeedMult when carrying the weapon
 
@@ -150,7 +150,7 @@ function SWEP:PrimaryAttack()
 	if CLIENT then
 		local trace = self:GetOwner():GetEyeTrace()
 		local tracepos = trace.HitPos
-		local distcheck = (self:GetOwner():GetShootPos()-tracepos):Length()
+		local distcheck = (self:GetOwner():GetShootPos() - tracepos):Length()
 
 		if distcheck < 100 then
 			self:EmitSound(Sound(self.Primary.Sound), 100, 100, 1, CHAN_WEAPON )
@@ -158,19 +158,17 @@ function SWEP:PrimaryAttack()
 
 		return
 	end
+
 	self.BulletData.Owner = self:GetOwner()
 	self.BulletData.Gun = self
-	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate * (CurTime() - self.lastFire), 1, self.MaxInaccuracyMult)
 
-
-	local Forward = self:GetOwner():EyeAngles():Forward()
 	if not self:GetOwner():HasGodMode() then
 
 		local trace = self:GetOwner():GetEyeTrace()
 		local traceEnt = trace.Entity
 		local hitNormal = trace.HitNormal
 		local tracepos = trace.HitPos
-		local distcheck = (self:GetOwner():GetShootPos()-tracepos):Length()
+		local distcheck = (self:GetOwner():GetShootPos() - tracepos):Length()
 
 		if distcheck < 100 then
 			local ent = ents.Create( "ace_slammine" )
@@ -178,7 +176,7 @@ function SWEP:PrimaryAttack()
 			if ( IsValid( ent ) ) then
 
 				ent:SetPos( tracepos + hitNormal * 2 )
-				ent:SetAngles( (self:GetOwner():GetShootPos() - tracepos):Angle() + Angle(90,0,0) )
+				ent:SetAngles( (self:GetOwner():GetShootPos() - tracepos):Angle() + Angle(90, 0, 0) )
 				--ent:SetAngles(hitNormal:Angle() + Angle(90, 0, 0))
 				ent:Spawn()
 				ent:SetOwner( self:GetOwner() )
@@ -208,30 +206,12 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: "..self.InaccuracyAccumulation)
-
---	self:TakePrimaryAmmo(1)
-
 end
 
 function SWEP:SecondaryAttack()
 end
 
 function SWEP:Think()
-
-	local mins = Vector( -5, -5, -5 )
-	local maxs = Vector(  5,  5,  5 )
-	local startpos = self:GetOwner():GetShootPos()
-	local dir = self:GetOwner():EyeAngles():Forward()
-	local len = 300
-
-	local tr = util.TraceHull( {
-		start = startpos,
-		endpos = startpos + dir * len,
-		maxs = maxs,
-		mins = mins,
-		filter = ent
-	} )
 end
 
 function SWEP:Deploy()
@@ -239,16 +219,8 @@ function SWEP:Deploy()
 end
 
 function SWEP:Reload()
-
-	--if self:Clip1() < self.Primary.ClipSize and self:Ammo1() > 0 and self.ReloadSoundEnabled == 1 then
---	self:EmitSound(Sound(self.ReloadSound))
-	--end
 	self:DefaultReload(ACT_VM_RELOAD)
-
---player.GetByID( 1 ):GiveAmmo( 30-self:Clip1(), "AR2", true )
 	self:Think()
+
 	return true
 end
-
-
-

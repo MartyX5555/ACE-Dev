@@ -313,7 +313,7 @@ function SWEP:AcquireLock()
 
     --Table definition
     local Owners            = {}
-    local Positions         = {}
+    --local Positions         = {}
 
     self.ClosestToBeam = -1
     local besterr           = math.huge --Hugh mungus number
@@ -387,7 +387,7 @@ function SWEP:AcquireLock()
             end
 
 
-            debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
+            --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
 
         end
 
@@ -424,10 +424,10 @@ function SWEP:Think()
             end
 
             if self.LockProgress > 1 then
-            self.LaunchAuth = true
-            owner:SendLua(string.format("LaunchAuth = true"))
+                self.LaunchAuth = true
+                owner:SendLua(string.format("LaunchAuth = true"))
             end
-        else
+        elseif self.LockProgress > 0 then
             self.LockProgress = 0
             owner:StopSound( "acf_extra/airfx/radar_track.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
@@ -436,10 +436,10 @@ function SWEP:Think()
         end
 
         if ( IsValid( self.TarEnt ) ) then
-        local TarPos = self.TarEnt:GetPos()
-        owner:SendLua(string.format("TarPosx =" .. TarPos.x))
-        owner:SendLua(string.format("TarPosy =" .. TarPos.y))
-        owner:SendLua(string.format("TarPosz =" .. TarPos.z))
+            local TarPos = self.TarEnt:GetPos()
+            owner:SendLua(string.format("TarPosx =" .. TarPos.x))
+            owner:SendLua(string.format("TarPosy =" .. TarPos.y))
+            owner:SendLua(string.format("TarPosz =" .. TarPos.z))
         end
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )
