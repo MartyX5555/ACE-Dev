@@ -88,7 +88,7 @@ function SWEP:InitBulletData()
     self.BulletData.Type = "HE"
     self.BulletData.Id = 2
     self.BulletData.Caliber = 11
-    self.BulletData.PropLength = 7.75 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.PropLength = 7.75 --Volume of the case as a cylinder * Powder density converted from g to kg
     self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
     self.BulletData.Data5 = 16000 --He Filler or Flechette count
     self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
@@ -115,7 +115,7 @@ function SWEP:InitBulletData()
     local Rad = math.rad(self.BulletData.Data6 / 2)
     self.BulletData.SlugCaliber = self.BulletData.Caliber - self.BulletData.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
     self.BulletData.SlugMV = (self.BulletData.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + self.BulletData.Data6) / 2) / self.BulletData.SlugMass) ^ ACF.HEATMVScale
-    --		print("SlugMV: "..self.BulletData.SlugMV)
+    --        print("SlugMV: "..self.BulletData.SlugMV)
     local SlugFrArea = 3.1416 * (self.BulletData.SlugCaliber / 2) ^ 2
     self.BulletData.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
     self.BulletData.SlugDragCoef = ((SlugFrArea / 10000) / self.BulletData.SlugMass) * 1000
@@ -123,7 +123,7 @@ function SWEP:InitBulletData()
     self.BulletData.CasingMass = self.BulletData.ProjMass - self.BulletData.FillerMass - ConeVol * 7.9 / 1000
     self.BulletData.Fragments = math.max(math.floor((self.BulletData.BoomFillerMass / self.BulletData.CasingMass) * ACF.HEFrag), 2)
     self.BulletData.FragMass = self.BulletData.CasingMass / self.BulletData.Fragments
-    --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
+    --        self.BulletData.DragCoef  = 0 --Alternatively manually set it
     self.BulletData.DragCoef = ((self.BulletData.FrArea / 10000) / self.BulletData.ProjMass)
 --    print(self.BulletData.SlugDragCoef)
     --Don't touch below here
@@ -136,10 +136,10 @@ function SWEP:InitBulletData()
     self.BulletData.Ricochet = 999
     self.BulletData.Flight = Vector(0, 0, 0)
     self.BulletData.BoomPower = self.BulletData.PropMass + self.BulletData.FillerMass
-    --		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
+    --        local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
     local SlugEnergy = ACF_Kinetic(self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37, self.BulletData.SlugMass, 999999)
     self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenArea) * ACF.KEtoRHA
-    --		print("SlugPen: "..self.BulletData.MaxPen)
+    --        print("SlugPen: "..self.BulletData.MaxPen)
     --For Fake Crate
     self.BoomFillerMass = self.BulletData.BoomFillerMass
     self.Type = self.BulletData.Type
@@ -157,8 +157,6 @@ end
 
 function SWEP:GetViewModelPosition( EyePos, EyeAng )
     local Mul = 1
-
-    local Zoom = self:GetNWBool("Zoomed")
 
     local Offset = self.IronSightsPos
     local AngOffset = self.IronSightsAng
@@ -186,49 +184,53 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 end
 
 function SWEP:PrimaryAttack()
-	if self:Clip1() == 0 and self:Ammo1() > 0 then
-		self:Reload()
+    if self:Clip1() == 0 and self:Ammo1() > 0 then
+        self:Reload()
 
-		return
-	end
+        return
+    end
 
-	if not self:CanPrimaryAttack() then return end
+    if not self:CanPrimaryAttack() then return end
 
-	if IsFirstTimePredicted() or game.SinglePlayer() then
-		self:GetOwner():ViewPunch(Angle(-1, 0, 0))
-	end
+    if IsFirstTimePredicted() or game.SinglePlayer() then
+        self:GetOwner():ViewPunch(Angle(-1, 0, 0))
+    end
 
-	self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
-	if SERVER then
+    if SERVER then
         if ( IsValid( self.TarEnt ) and self.LaunchAuth  ) then
             local ent = ents.Create( "ace_missile_swep_guided" )
-            
+
             local owner = self:GetOwner()
 
             if ( IsValid( ent ) ) then
-                ent:SetPos( owner:GetShootPos() + owner:GetAimVector()*100 )
-                ent:SetAngles( owner:GetAimVector():Angle() + Angle(0,0,0) )
+                ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 100)
+                ent:SetAngles(owner:GetAimVector():Angle() + Angle(0, 0, 0))
                 ent:Spawn()
-                ent:SetOwner( Gun )
-                ent:SetModel( "models/missiles/fim_92.mdl" )
-                timer.Simple(0.1,function() ParticleEffectAttach("Rocket Motor",4, ent,1)  end)
+                ent:SetOwner(Gun)
+                ent:SetModel("models/missiles/fim_92.mdl")
+
+                timer.Simple(0.1, function()
+                    ParticleEffectAttach("Rocket Motor", 4, ent, 1)
+                end)
+
                 ent.MissileThrust = 8000
                 ent.MissileAgilityMul = 50
                 ent.MissileBurnTime = 0.5
                 ent.tarent = self.TarEnt
                 ent.Bulletdata = self.BulletData
-    --			ent:SetPos( ent.tarent:GetPos() + Vector(0,0,500) )
+    --            ent:SetPos( ent.tarent:GetPos() + Vector(0,0,500) )
                 if CPPI then
                     ent:CPPISetOwner(owner)
                 end
 
-                local phys = ent:GetPhysicsObject()
+                --local phys = ent:GetPhysicsObject()
 --                phys:SetVelocity( ent:GetForward() * 500)
 
 
                 local inertia = ent.phys:GetInertia()
-                ent.phys:ApplyTorqueCenter( Vector(-5,0,0) * Vector(inertia.x,inertia.y,inertia.z) )             
+                ent.phys:ApplyTorqueCenter(Vector(-5, 0, 0) * Vector(inertia.x, inertia.y, inertia.z))
             end
             self:EmitSound(self.Primary.Sound)
             self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
@@ -243,15 +245,9 @@ function SWEP:PrimaryAttack()
             self:EmitSound("npc/roller/mine/rmine_blip3.wav")
         end
 
-	end
+    end
 
 end
-
-
-
-
-
-
 
 function SWEP:GetWhitelistedEntsInCone()
     local owner = self:GetOwner()
@@ -272,40 +268,35 @@ function SWEP:GetWhitelistedEntsInCone()
     local MinimumDistance = 1   *  39.37
     local MaximumDistance = 2400  *  39.37
 
-    for k, scanEnt in ipairs(ScanArray) do
+    for _, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
-        if not IsValid(scanEnt) then goto cont end 
+        if IsValid(scanEnt) then
 
-        entpos  = scanEnt:GetPos()
-        difpos  = entpos - IRSTPos
-        dist    = difpos:Length()
+            entpos  = scanEnt:GetPos()
+            difpos  = entpos - IRSTPos
+            dist    = difpos:Length()
 
-        -- skip any ent outside of minimun distance
-        if dist < MinimumDistance then goto cont end 
-        
-        -- skip any ent far than maximum distance
-        if dist > MaximumDistance then goto cont end
+            if dist > MinimumDistance and dist < MaximumDistance then
+                LOSdata.start           = IRSTPos
+                LOSdata.endpos          = entpos
+                LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
+                LOSdata.filter          = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+                LOSdata.mins            = vector_origin
+                LOSdata.maxs            = LOSdata.mins
 
-        LOSdata.start           = IRSTPos
-        LOSdata.endpos          = entpos
-        LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
-        LOSdata.filter          = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
-        LOSdata.mins            = vector_origin
-        LOSdata.maxs            = LOSdata.mins
+                LOStr = util.TraceHull( LOSdata )
 
-        LOStr = util.TraceHull( LOSdata )
-    
-        --Trace did not hit world   
-        if not LOStr.Hit then 
-            table.insert(WhitelistEnts, scanEnt)
-        end     
-        
-        ::cont::
+                --Trace did not hit world
+                if not LOStr.Hit then
+                    table.insert(WhitelistEnts, scanEnt)
+                end
+            end
+        end
     end
-    
+
     return WhitelistEnts
-    
+
 end
 
 
@@ -318,13 +309,11 @@ function SWEP:AcquireLock()
     local found             = self:GetWhitelistedEntsInCone()
 
     local IRSTPos           = owner:GetShootPos()
-    local inac              = 1
+    --local inac              = 1
 
     --Table definition
     local Owners            = {}
     local Positions         = {}
-    local Temperatures      = {}
-    local posTable          = {}
 
     self.ClosestToBeam = -1
     local besterr           = math.huge --Hugh mungus number
@@ -334,7 +323,6 @@ function SWEP:AcquireLock()
     local nonlocang         = Angle()
     local ang               = Angle()
     local absang            = Angle()
-    local errorFromAng      = 0
     local dist              = 0
 
     local physEnt           = NULL
@@ -343,66 +331,64 @@ function SWEP:AcquireLock()
 
     local LockCone = 5
 
-    for k, scanEnt in ipairs(found) do
+    for _, scanEnt in ipairs(found) do
 
-        local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-        local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
+        --local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
+        --local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
         entpos      = scanEnt:WorldSpaceCenter()
         difpos      = (entpos - IRSTPos)
 
         nonlocang   = difpos:Angle()
         ang         = self:WorldToLocalAngles(nonlocang)      --Used for testing if inrange
-        absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
+        absang      = Angle(math.abs(ang.p), math.abs(ang.y), 0)  --Since I like ABS so much
 
         --Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-        errorFromAng = 0.01*(absang.y/90)^2+0.01*(absang.y/90)^2+0.01*(absang.p/90)^2 
+        errorFromAng = 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.p / 90) ^ 2
 
         if absang.p < LockCone and absang.y < LockCone then --Entity is within seeker cone
 
             --if the target is a Heat Emitter, track its heat
             if scanEnt.Heat then
-                
-                Heat =     self.SeekSensitivity * scanEnt.Heat 
-            
-            --if is not a Heat Emitter, track the friction's heat           
+
+                Heat =     self.SeekSensitivity * scanEnt.Heat
+
+            --if is not a Heat Emitter, track the friction's heat
             else
 
                 physEnt = scanEnt:GetPhysicsObject()
-        
+
                 --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-                if physEnt:IsValid() then   
+                if physEnt:IsValid() and not physEnt:IsMoveable() then
                 --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-                    if not physEnt:IsMoveable() then goto cont end
+                    goto cont
                 end
 
-                dist = difpos:Length()              
+                dist = difpos:Length()
                 Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
-            
+
             end
-            
+
             --Skip if not Hotter than AmbientTemp in deg C.
-            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end 
+            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end
 
             --Could do pythagorean stuff but meh, works 98% of time
-            local err = absang.p + absang.y 
+            local err = absang.p + absang.y
 
             if self.TarEnt == scanEnt then
-                err = err/8
+                err = err / 8
             end
 
             --Sorts targets as closest to being directly in front of radar
-            if err < besterr then 
-                self.ClosestToBeam =  table.getn( Owners ) + 1
+            if err < besterr then
+                self.ClosestToBeam =  #Owners + 1
                 besterr = err
                 bestEnt = scanEnt
             end
 
 
-            debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255,255,0), true)
+            debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
 
-        else
---            print("NewBest")
         end
 
         ::cont::
@@ -420,25 +406,25 @@ function SWEP:Think()
     local Zoom = self:GetZoomState()
 
     self:NextThink(CurTime() + 0.5)
-	if SERVER then
+    if SERVER then
         local owner = self:GetOwner()
         local lasttarget = self.TarEnt
         self.TarEnt = self:AcquireLock()
 
-        if lasttarget==self.TarEnt and ( IsValid( self.TarEnt ) ) and Zoom  then
+        if lasttarget == self.TarEnt and ( IsValid( self.TarEnt ) ) and Zoom  then
             if self.LockProgress == 0 then
                 owner:EmitSound( "acf_extra/airfx/radar_track.wav", 75, 105, 1, CHAN_AUTO )
             end
 
             self.LockProgress = self.LockProgress + self.Lockrate
-            
-            if not self.LaunchAuth and self.LockProgress> 1 then
+
+            if not self.LaunchAuth and self.LockProgress > 1 then
                 owner:StopSound( "acf_extra/airfx/radar_track.wav" )
                 owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 105, 0.3, CHAN_AUTO )
             end
 
             if self.LockProgress > 1 then
-            self.LaunchAuth = true 
+            self.LaunchAuth = true
             owner:SendLua(string.format("LaunchAuth = true"))
             end
         else
@@ -451,9 +437,9 @@ function SWEP:Think()
 
         if ( IsValid( self.TarEnt ) ) then
         local TarPos = self.TarEnt:GetPos()
-        owner:SendLua(string.format("TarPosx ="..TarPos.x))
-        owner:SendLua(string.format("TarPosy ="..TarPos.y))
-        owner:SendLua(string.format("TarPosz ="..TarPos.z))
+        owner:SendLua(string.format("TarPosx =" .. TarPos.x))
+        owner:SendLua(string.format("TarPosy =" .. TarPos.y))
+        owner:SendLua(string.format("TarPosz =" .. TarPos.z))
         end
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )
@@ -461,54 +447,6 @@ function SWEP:Think()
     end
 
 end
-
-
-
-
-
-
-function SWEP:DoDrawCrosshair(x, y)
-    local Zoom = self:GetZoomState()
-
-    self:DrawScope(Zoom)
-
-    local owner = self:GetOwner()
-    local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
-    inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
-
-    if Zoom then
-
-    local ReticleSize = 15
-
-    --    surface.DrawCircle( x, y, 215, Color( 255, 120, 0 ) )
-    local tempcolor =Color(255, 0, 0)
-    local thiccness = 2
-    surface.SetDrawColor(255, 120, 0, 255)
-
-    if (LaunchAuth or false) == true then
-        tempcolor = Color(0,150,0)
-        surface.SetDrawColor(0, 255, 0, 255)
-        thiccness = 5
-        end
-
-    surface.DrawOutlinedRect( x-215, y-215, 215*2, 215*2, thiccness , Color( 255, 120, 0 ))
-    --Draw basic crosshair that increases in size with Inaccuracy Accumulation
-    local tarpos2d = Vector(TarPosx or 0, TarPosy or 0, TarPosz or 0):ToScreen()
-	tarpos2d = Vector(math.floor(tarpos2d.x + 0.5), math.floor(tarpos2d.y + 0.5), 0)
-
-
-    surface.DrawCircle( x+math.Clamp(tarpos2d.x-x,-215,215), y+math.Clamp(tarpos2d.y-y,-215,215), 50, tempcolor ) 
-
---    surface.DrawLine(x + ReticleSize + 3, y, x + ReticleSize + 20, y)
---    surface.DrawLine(x - ReticleSize - 3, y, x - ReticleSize - 20, y)
---    surface.DrawLine(x, y + ReticleSize + 3, x, y + ReticleSize + 20)
---    surface.DrawLine(x, y - ReticleSize - 3, x, y - ReticleSize - 20)
-    end
-
-    return true
-end
-
-
 
 function SWEP:Holster()
     if SERVER then

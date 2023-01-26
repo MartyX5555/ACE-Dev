@@ -115,13 +115,13 @@ function SWEP:SecondaryAttack()
     local owner = self:GetOwner()
 
     self.Primary.Automatic = not self.Primary.Automatic
- 
+
     if CLIENT then return end
 
     if self.Primary.Automatic then
     owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "///AUTOMATIC FIRE////"))
     else
-    owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "<<Semi Auto>>"))   
+    owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "<<Semi Auto>>"))
     end
 
 end
