@@ -131,3 +131,11 @@ ACF_defineGun("170mmC", {
 	}
 } )
 	
+--- MODEL DATA
+
+ACE_DefineModelData("models/tankgun/tankgun_100mm.mdl",{
+
+    Model = "models/tankgun/tankgun_100mm.mdl",
+    DefaultSize = 100,
+
+})

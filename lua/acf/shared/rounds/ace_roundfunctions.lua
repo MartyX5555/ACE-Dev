@@ -119,78 +119,114 @@ do
 		return (Vel*0.0254), Pen
 	end
 
-	--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
-	--TODO: Use this same function for Existent crates? Weird to have this same code in both places.
-	function ACE_AmmoCapacity( Data )
+	do
 
-		local GunId 	  = acfmenupanel.AmmoData.Data.id
-		local AmmoGunData = ACF.Weapons.Guns[GunId]
-		local GunClass    = AmmoGunData.gunclass
-		local ClassData   = ACF.Classes.GunClass[GunClass] 
-
-		local ProjLenght = Data.ProjLength
-		local PropLenght = Data.PropLength
-		local Caliber    = Data.Caliber
-
-		local width, shellLength
-
-		if ClassData.type == "missile" then
-            width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
-            shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
-		else
-	    	width 		= (Caliber)/ACF.AmmoWidthMul/1.6
-			shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/3
+		local function VerifyScale( Scale )
+			if not isvector( Scale ) then return end
+	
+			Scale.x = math.Clamp(Scale.x,10,1000)
+			Scale.y = math.Clamp(Scale.y,10,1000)
+			Scale.z = math.Clamp(Scale.z,10,1000)
+	
+			return Scale
 		end
-
-		local Id 		 = acfmenupanel.AmmoData.Id
-		local AmmoData   = ACF.Weapons.Ammo[Id]
-	    local CrateVol   = AmmoData.volume
-		local Dimensions = Vector(AmmoData.Lenght,AmmoData.Width,AmmoData.Height)
-
-	    local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
-	    local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width) 
-	    local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width) 
-
-	    --Split the shell in 2, leave the other piece next to it.
-	    local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
-	    local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
-	    local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
-
-	    local Cap       = MaxValue(cap1,cap2,cap3)
-	    local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
-
-	    local TwoPiece = false
-
-	    --Why would you need the 2 piece for rounds below 50mm? Unless you want legos there....
-	    if Data.Caliber >= 5 then 
-		    if FpieceCap > Cap and Data.TwoPiece > 0 then  --only if the 2 piece system is allowed to be used
-		        Cap 	 = FpieceCap
-		        TwoPiece = true
-		    end
+	
+		local function VerifyVector( vecstring )
+	
+			if isvector( vecstring ) then return vecstring end
+			if not isstring(vecstring) then return end
+	
+			
+	
+			local VecTbl = string.Explode( ":", vecstring ) 
+			local Scale = Vector(VecTbl[1],VecTbl[2],VecTbl[3])
+	
+			return Scale
 		end
-
-		local RoFNerf = TwoPiece and 30 or nil
-
-	    return Cap, RoFNerf, TwoPiece
-	end
-
-	--General Ammo Capacity diplay shown on ammo config
-	function ACE_AmmoCapacityDisplay(Data)
-
-		local Cap, RoFNerf, TwoPiece = ACE_AmmoCapacity( Data )
-
-		local plur = ""..Cap..' round'
+	
+		local function CreateRealScale( Scale )
 		
-		if Cap > 1 then
-		    plur = ""..Cap..' rounds'
+			Scale = VerifyVector( Scale )
+			Scale = VerifyScale( Scale )
+	
+			return Scale
 		end
-		
-		local bonustxt = "Storage: "..plur
-		
-		if TwoPiece then	
-			bonustxt = bonustxt..". Uses 2 piece ammo. -"..RoFNerf.."% RoF"
+
+		--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
+		--TODO: Use this same function for Existent crates? Weird to have this same code in both places.
+		function ACE_AmmoCapacity( Data )
+
+			local GunId 	  = acfmenupanel.AmmoData.Data.id
+			local AmmoGunData = ACF.Weapons.Guns[GunId]
+			local GunClass    = AmmoGunData.gunclass
+			local ClassData   = ACF.Classes.GunClass[GunClass] 
+
+			local ProjLenght = Data.ProjLength
+			local PropLenght = Data.PropLength
+			local Caliber    = Data.Caliber
+
+			local width, shellLength
+
+			if ClassData.type == "missile" then
+				width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
+				shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
+			else
+				width 		= (Caliber)/ACF.AmmoWidthMul/1.6
+				shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/2.54
+			end
+
+			local Id 		 = acfmenupanel.AmmoData.Id
+			local Dimensions = vector_origin
+			
+			if not ACE_CheckAmmo( Id ) then
+				Dimensions = CreateRealScale(Id)
+			else
+				local AmmoData   = ACF.Weapons.Ammo[Id]
+				Dimensions = Vector(AmmoData.Lenght,AmmoData.Width,AmmoData.Height)
+			end
+
+			local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
+			local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width) 
+			local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width) 
+
+			--Split the shell in 2, leave the other piece next to it.
+			local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
+			local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+			local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+
+			local Cap       = MaxValue(cap1,cap2,cap3)
+			local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
+
+			local TwoPiece = false
+
+			--Why would you need the 2 piece for rounds below 50mm? Unless you want legos there....
+			if Data.Caliber >= 5 and ClassData.type ~= "missile" then 
+				if FpieceCap > Cap and Data.TwoPiece > 0 then  --only if the 2 piece system is allowed to be used
+					Cap 	 = FpieceCap
+					TwoPiece = true
+				end
+			end
+
+			local RoFNerf = TwoPiece and 30 or nil
+
+			return Cap, RoFNerf, TwoPiece
 		end
-		acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+
+		--General Ammo Capacity diplay shown on ammo config
+		function ACE_AmmoCapacityDisplay(Data)
+
+			local Cap, RoFNerf, TwoPiece = ACE_AmmoCapacity( Data )
+
+			local plur = ""..Cap..(Cap > 1 and ' rounds' or ' round')
+			
+			local bonustxt = "Storage: "..plur
+			
+			if TwoPiece then	
+				bonustxt = bonustxt..". Uses 2 piece ammo. -"..RoFNerf.."% RoF"
+			end
+			acfmenupanel:CPanelText("BonusDisplay", bonustxt )
+		end
+
 	end
 
 	function ACE_AmmoRangeStats( MuzzleVel, DragCoef, ProjMass, PenArea, LimitVel )
@@ -218,7 +254,7 @@ do
 
 	function ACE_AmmoStats(RoundLenght, MaxTotalLenght, MuzzleVel, MaxPen)
 	   acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
-	   acfmenupanel:CPanelText("AmmoStats", "Round Length: "..RoundLenght.."/"..MaxTotalLenght.." cms\nMuzzle Velocity: "..MuzzleVel.." m\\s\nMax penetration: "..MaxPen.." mm RHA") --Total round length (Name, Desc)
+	   acfmenupanel:CPanelText("AmmoStats", "Round Length: "..RoundLenght.."/"..MaxTotalLenght.." cms ("..math.Round(RoundLenght/2.54, 2).." inches)\nMuzzle Velocity: "..MuzzleVel.." m\\s\nMax penetration: "..MaxPen.." mm RHA") --Total round length (Name, Desc)
 	   
 	end
 
@@ -246,7 +282,7 @@ do
 		end
 
 
-		local TPtip = "Attempts to increase the ammo capacity by dividing the round in 2 pieces, at the cost of more reload time.\n\nWorks with rounds above 50mm and does nothing when the cap cannot be increased."
+		local TPtip = "Attempts to increase the ammo capacity by dividing the round in 2 pieces, at the cost of more reload time.\n\nWorks with rounds above 50mm and does nothing for missiles/bombs or when the cap cannot be increased."
 		local Trtip = "Adds a trail to the shell, which will be seen during the flight. \nUseful for cases when you want to correct trayectories.\n\nProTip: Apply a color to the crate to change the tracer color."
 
 		function ACE_CommonDataDisplay( Data )

@@ -7,7 +7,7 @@ TOOL.Command		= nil
 TOOL.ConfigName		= ""
 
 TOOL.ClientConVar[ "type" ] = "gun"
-TOOL.ClientConVar[ "id" ] = "7.62mmMG"
+TOOL.ClientConVar[ "id" ] = "7.62mmMG" --Used by guns and crates (as example)
 
 TOOL.ClientConVar[ "data1" ] = "7.62mmMG"
 TOOL.ClientConVar[ "data2" ] = "AP"
@@ -67,12 +67,19 @@ function TOOL:LeftClick( trace )
 	local ply 	= self:GetOwner()
 	local Type 	= self:GetClientInfo( "type" )
 	local Id 	= self:GetClientInfo( "id" )
-	
-	local TypeId = ACF.Weapons[Type][Id]
-	if not TypeId then return false end
-	
-	local DupeClass = duplicator.FindEntityClass( TypeId["ent"] ) 
-	
+	local entClass
+	local TypeId = ACF.Weapons[Type][Id]	
+
+	if not TypeId then
+		if Type == "Ammo" then
+			entClass = "acf_ammo"
+		end
+	else
+		entClass = TypeId["ent"]
+	end
+
+	local DupeClass = duplicator.FindEntityClass( entClass ) 
+
 	if DupeClass then
 
 		local ArgTable = {}
@@ -85,11 +92,11 @@ function TOOL:LeftClick( trace )
 		local ArgList = list.Get("ACFCvars")
 		
 		-- Reading the list packaged with the ent to see what client CVar it needs
-		for Number, Key in pairs( ArgList[ACF.Weapons[Type][Id]["ent"]] ) do
+		for Number, Key in pairs( ArgList[entClass] ) do
 			ArgTable[ Number+2 ] = self:GetClientInfo( Key )
 		end
 		
-		if trace.Entity:GetClass() == ACF.Weapons[Type][Id]["ent"] and trace.Entity.CanUpdate then
+		if trace.Entity:GetClass() == entClass and trace.Entity.CanUpdate then
 			table.insert( ArgTable, 1, ply )
 			local success, msg = trace.Entity:Update( ArgTable )
 			ACF_SendNotify( ply, success, msg )
@@ -105,7 +112,7 @@ function TOOL:LeftClick( trace )
 			Ent:DropToFloor()
 			Ent:GetPhysicsObject():EnableMotion( false )
 
-			undo.Create( ACF.Weapons[Type][Id]["ent"] )
+			undo.Create( entClass )
 				undo.AddEntity( Ent )
 				undo.SetPlayer( ply )
 			undo.Finish()

@@ -647,3 +647,25 @@ local Shell170mm = {}
 AmmoTable["Shell170mm"] = Shell170mm
 	
 list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing
+
+--WOW
+ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
+
+    Model = "models/holograms/rcube_thin.mdl",
+    DefaultSize = 12,
+    CustomMesh = { --Its a box anyways
+        {
+            Vector(6, 6, 6),
+            Vector(6, -6, 6),
+            Vector(-6, 6, 6),
+            Vector(-6, -6, 6),
+            Vector(6, 6, -6),
+            Vector(6, -6, -6),
+            Vector(-6, 6, -6),
+            Vector(-6, -6, -6)
+        },
+    }
+
+})
+
+

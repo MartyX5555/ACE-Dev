@@ -864,147 +864,302 @@ end
 -----Ammo & Gun selection content
 --===========================================================================================
 
-function PANEL:AmmoSelect( Blacklist )
-   
-   if not acfmenupanel.CustomDisplay then return end
-   if not Blacklist then Blacklist = {} end
-   
-   if not acfmenupanel.AmmoData then
+do
 
-      acfmenupanel.AmmoData = {}
-      acfmenupanel.AmmoData["Id"]        = "Ammo2x4x4"  --default Ammo dimension on list
-      acfmenupanel.AmmoData["Type"]      = "Ammo"
-      acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass["MG"]["name"]
-      acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass["MG"]["id"]
-      acfmenupanel.AmmoData["Data"]      = acfmenupanel.WeaponData["Guns"]["12.7mmMG"]["round"]
+   local function CreateIdForCrate( self )
 
-   end
---===========================================================================================
------Creating the ammo crate selection
---===========================================================================================
+      if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
 
-   acfmenupanel.CData.CrateSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )   --Every display and slider is placed in the Round table so it gets trashed when selecting a new round type  
-   acfmenupanel.CData.CrateSelect:SetSize(100, 30)
-   
-   for Key, Value in pairs( acfmenupanel.WeaponDisplay["Ammo"] ) do
-      
-      acfmenupanel.CData.CrateSelect:AddChoice( Value.id , Key ) --Creates the list
-         
-   end
+         local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Lenght"], 1 )
+         local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
+         local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
-   acfmenupanel.CData.CrateSelect.OnSelect = function( index , value , data )   -- calls the ID of the list
+         local Id = X..":"..Y..":"..Z
 
-      RunConsoleCommand( "acfmenu_id", data )
-      acfmenupanel.AmmoData["Id"] = data
-            
-      if acfmenupanel.CData.CrateDisplay then
-
-         local cratemodel = ACFEnts.Ammo[acfmenupanel.AmmoData["Id"]].model
-         acfmenupanel.CData.CrateDisplay:SetModel(cratemodel)
-         acfmenupanel:CPanelText("CrateDesc", ACFEnts.Ammo[acfmenupanel.AmmoData["Id"]].desc)
+         acfmenupanel.AmmoData["Id"] = Id
+         RunConsoleCommand( "acfmenu_id", Id )
 
       end
 
       self:UpdateAttribs()
 
    end
+
+   function PANEL:AmmoSelect( Blacklist )
       
-   acfmenupanel.CData.CrateSelect:SetText(acfmenupanel.AmmoData["Id"])
-   RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+      if not acfmenupanel.CustomDisplay then return end
+      if not Blacklist then Blacklist = {} end
       
-   acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CrateSelect )
+      if not acfmenupanel.AmmoData then
 
---===========================================================================================
------Creating the gun Class display
---===========================================================================================
-
-   acfmenupanel.CData.ClassSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay)
-   acfmenupanel.CData.ClassSelect:SetSize(100, 30)
-
-   local DComboList = {}
-
-   for Key, GunTable in pairs( acfmenupanel.Classes.GunClass ) do
-
-      if not table.HasValue( Blacklist, GunTable.id ) then
-         acfmenupanel.CData.ClassSelect:AddChoice( GunTable.name , GunTable.id )
-         DComboList[GunTable.id] = true
+         acfmenupanel.AmmoData = {}
+         acfmenupanel.AmmoData["Id"]            = "10:10:10"  --default Ammo dimension on list
+         acfmenupanel.AmmoData["IdLegacy"]      = "Ammo2x4x4"
+         acfmenupanel.AmmoData["Type"]          = "Ammo"
+         acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass["MG"]["name"]
+         acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass["MG"]["id"]
+         acfmenupanel.AmmoData["Data"]      = acfmenupanel.WeaponData["Guns"]["12.7mmMG"]["round"]
 
       end
-   end  
 
-   acfmenupanel.CData.ClassSelect:SetText( acfmenupanel.AmmoData["Classname"] .. (not DComboList[acfmenupanel.AmmoData["ClassData"]] and " - update caliber!" or "" ))
-   acfmenupanel.CData.ClassSelect:SetColor( (not DComboList[acfmenupanel.AmmoData["ClassData"]] and Color(255,0,0) or Color(0,0,0) ) )
+      if not acfmenupanel.AmmoPanelConfig then
 
-   acfmenupanel.CData.ClassSelect.OnSelect = function( value , index , data )
+         acfmenupanel.AmmoPanelConfig = {}
+         acfmenupanel.AmmoPanelConfig["ExpandedCatNew"] = true
+         acfmenupanel.AmmoPanelConfig["ExpandedCatOld"] = false
+         acfmenupanel.AmmoPanelConfig["LegacyAmmos"]   = false
+         acfmenupanel.AmmoPanelConfig["Crate_Lenght"]  = 10
+         acfmenupanel.AmmoPanelConfig["Crate_Width"]   = 10
+         acfmenupanel.AmmoPanelConfig["Crate_Height"]  = 10
 
-      data = acfmenupanel.CData.ClassSelect:GetOptionData(index) -- Why?
+      end
 
-      acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass[data]["name"]
-      acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass[data]["id"]
+      local MainPanel = self
+      local CrateNewCat = vgui.Create( "DCollapsibleCategory" )	-- Create a collapsible category
+      acfmenupanel.CustomDisplay:AddItem(CrateNewCat)
+      CrateNewCat:SetLabel( "Crate Config" )						-- Set the name ( label )
+      CrateNewCat:SetPos( 25, 50 )		-- Set position
+      CrateNewCat:SetSize( 250, 100 )	-- Set size
+      CrateNewCat:SetExpanded( acfmenupanel.AmmoPanelConfig["ExpandedCatNew"] )
 
-      acfmenupanel.CData.ClassSelect:SetColor( Color(0,0,0) )
+      function CrateNewCat:OnToggle( bool )
+         acfmenupanel.AmmoPanelConfig["ExpandedCatNew"] = bool
+      end
 
-      acfmenupanel.CData.CaliberSelect:Clear()
+      local CrateNewPanel = vgui.Create( "DPanelList" )
+      CrateNewPanel:SetSpacing( 10 )					
+      CrateNewPanel:EnableHorizontal( false )		
+      CrateNewPanel:EnableVerticalScrollbar( true )			
+      CrateNewPanel:SetDrawBackground( false )
+      CrateNewCat:SetContents( CrateNewPanel )	
+
+      local CrateOldCat = vgui.Create( "DCollapsibleCategory" )
+      acfmenupanel.CustomDisplay:AddItem(CrateOldCat)
+      CrateOldCat:SetLabel( "Crate Config (legacy)" )						
+      CrateOldCat:SetPos( 25, 50 )		
+      CrateOldCat:SetSize( 250, 100 )	
+      CrateOldCat:SetExpanded( acfmenupanel.AmmoPanelConfig["ExpandedCatOld"] )
+
+      function CrateOldCat:OnToggle( bool )
+         acfmenupanel.AmmoPanelConfig["ExpandedCatOld"] = bool
+      end
+
+      local CrateOldPanel = vgui.Create( "DPanelList" ) 
+      CrateOldPanel:SetSpacing( 10 )							
+      CrateOldPanel:EnableHorizontal( false )					
+      CrateOldPanel:EnableVerticalScrollbar( true )			
+      CrateOldPanel:SetDrawBackground( false )
+      CrateOldCat:SetContents( CrateOldPanel )	
+
+   --===========================================================================================
+   -----Creating the ammo crate selection
+   --===========================================================================================
+
+      --------------- NEW CONFIG ---------------
+      do
+
+         local MaxCrateSize = ACF.CrateMaximumSize
+
+         acfmenupanel:CPanelText("Crate_desc_new", "\nAdjust the dimensions for your crate. In inches.", nil, CrateNewPanel)
+
+         local LenghtSlider = vgui.Create( "DNumSlider" )
+         LenghtSlider:SetText( "Lenght" )
+         LenghtSlider:SetDark( true )
+         LenghtSlider:SetMin( 10 )
+         LenghtSlider:SetMax( MaxCrateSize )
+         LenghtSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Lenght"] or 10 )
+         LenghtSlider:SetDecimals( 1 )
+
+         function LenghtSlider:OnValueChanged( value )
+            acfmenupanel.AmmoPanelConfig["Crate_Lenght"] = value
+            CreateIdForCrate( MainPanel )
+         end
+         CrateNewPanel:AddItem(LenghtSlider)
+
+         local WidthSlider = vgui.Create( "DNumSlider" )
+         WidthSlider:SetText( "Width" )
+         WidthSlider:SetDark( true )
+         WidthSlider:SetMin( 10 )
+         WidthSlider:SetMax( MaxCrateSize )
+         WidthSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Width"] or 10 )
+         WidthSlider:SetDecimals( 1 )
+
+         function WidthSlider:OnValueChanged( value )
+            acfmenupanel.AmmoPanelConfig["Crate_Width"] = value
+            CreateIdForCrate( MainPanel )
+         end
+         CrateNewPanel:AddItem(WidthSlider)
+
+         local HeightSlider = vgui.Create( "DNumSlider" )
+         HeightSlider:SetText( "Height" )
+         HeightSlider:SetDark( true )
+         HeightSlider:SetMin( 10 )
+         HeightSlider:SetMax( MaxCrateSize )
+         HeightSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Height"] or 10 )
+         HeightSlider:SetDecimals( 1 )
+
+         function HeightSlider:OnValueChanged( value )
+            acfmenupanel.AmmoPanelConfig["Crate_Height"] = value
+            CreateIdForCrate( MainPanel )
+         end
+         CrateNewPanel:AddItem(HeightSlider)
+
+      end
+
+      --------------- OLD CONFIG ---------------
+      do
+
+         acfmenupanel:CPanelText("Crate_desc_legacy", "\nChoose a crate in the legacy way. Remember to enable the checkbox below to do so.", nil, CrateOldPanel)
+
+         local LegacyCheck = vgui.Create( "DCheckBoxLabel" ) -- Create the checkbox
+         LegacyCheck:SetPos( 25, 50 )						      -- Set the position
+         LegacyCheck:SetText("Use Legacy Mode")					   -- Set the text next to the box
+         LegacyCheck:SetDark( true )
+         LegacyCheck:SetChecked( acfmenupanel.AmmoPanelConfig["LegacyAmmos"] or false )						   -- Initial value
+         LegacyCheck:SizeToContents()						      -- Make its size the same as the contents
+
+         function LegacyCheck:OnChange( val )
+            acfmenupanel.AmmoPanelConfig["LegacyAmmos"] = val 
+            if val then
+               acfmenupanel.AmmoData["Id"] =  acfmenupanel.AmmoData["IdLegacy"]
+               RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+            else
+               CreateIdForCrate( MainPanel )
+            end
+            
+         end
+
+         CrateOldPanel:AddItem(LegacyCheck)
+
+         local AmmoComboBox = vgui.Create( "DComboBox", CrateOldPanel )   --Every display and slider is placed in the Round table so it gets trashed when selecting a new round type  
+         AmmoComboBox:SetSize(acfmenupanel.CustomDisplay:GetWide(), 30)
+         
+         for Key, Value in pairs( acfmenupanel.WeaponDisplay["Ammo"] ) do
+            
+            AmmoComboBox:AddChoice( Value.id , Key ) --Creates the list
+               
+         end
+
+         AmmoComboBox.OnSelect = function( index , value , data )   -- calls the ID of the list
+            if acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
+               RunConsoleCommand( "acfmenu_id", data )
+               acfmenupanel.AmmoData["Id"] = data
+            end
+
+            acfmenupanel.AmmoData["IdLegacy"] = data
+
+            if acfmenupanel.CData.CrateDisplay then
+
+               local cratemodel = ACFEnts.Ammo[acfmenupanel.AmmoData["IdLegacy"]].model
+               acfmenupanel.CData.CrateDisplay:SetModel(cratemodel)
+               acfmenupanel:CPanelText("CrateDesc", ACFEnts.Ammo[acfmenupanel.AmmoData["IdLegacy"]].desc, nil, CrateOldPanel)
+
+            end
+
+            MainPanel:UpdateAttribs()
+
+         end
+            
+         AmmoComboBox:SetText(acfmenupanel.AmmoData["IdLegacy"])
+         RunConsoleCommand( "acfmenu_id", acfmenupanel.AmmoData["Id"] )
+
+         CrateOldPanel:AddItem(AmmoComboBox)
+ 
+      --===========================================================================================
+      -----Creating the Model display
+      --=========================================================================================== 
+
+         --Used to create the general model display
+         if not acfmenupanel.CData.CrateDisplay then
+         
+            acfmenupanel:CPanelText("CrateDesc", ACFEnts.Ammo[acfmenupanel.AmmoData["IdLegacy"]].desc, nil, CrateOldPanel)
+            
+            acfmenupanel.CData.CrateDisplay = vgui.Create( "DModelPanel", CrateOldPanel )
+            acfmenupanel.CData.CrateDisplay:SetSize(acfmenupanel.CustomDisplay:GetWide(),acfmenupanel.CustomDisplay:GetWide()/2)  
+            acfmenupanel.CData.CrateDisplay:SetCamPos( Vector( 250, 500, 250 ) )
+            acfmenupanel.CData.CrateDisplay:SetLookAt( Vector( 0, 0, 0 ) )
+            acfmenupanel.CData.CrateDisplay:SetFOV( 10 ) 
+            acfmenupanel.CData.CrateDisplay:SetModel(ACFEnts.Ammo[acfmenupanel.AmmoData["IdLegacy"]].model)   
+            acfmenupanel.CData.CrateDisplay.LayoutEntity = function( entity ) end
+         
+            CrateOldPanel:AddItem(acfmenupanel.CData.CrateDisplay)
+
+         end
+
+      end
+
+   --===========================================================================================
+   -----Creating the gun Class display
+   --===========================================================================================
+
+      acfmenupanel.CData.ClassSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay)
+      acfmenupanel.CData.ClassSelect:SetSize(100, 30)
+
+      local DComboList = {}
+
+      for Key, GunTable in pairs( acfmenupanel.Classes.GunClass ) do
+
+         if not table.HasValue( Blacklist, GunTable.id ) then
+            acfmenupanel.CData.ClassSelect:AddChoice( GunTable.name , GunTable.id )
+            DComboList[GunTable.id] = true
+
+         end
+      end  
+
+      acfmenupanel.CData.ClassSelect:SetText( acfmenupanel.AmmoData["Classname"] .. (not DComboList[acfmenupanel.AmmoData["ClassData"]] and " - update caliber!" or "" ))
+      acfmenupanel.CData.ClassSelect:SetColor( (not DComboList[acfmenupanel.AmmoData["ClassData"]] and Color(255,0,0) or Color(0,0,0) ) )
+
+      acfmenupanel.CData.ClassSelect.OnSelect = function( value , index , data )
+
+         data = acfmenupanel.CData.ClassSelect:GetOptionData(index) -- Why?
+
+         acfmenupanel.AmmoData["Classname"] = acfmenupanel.Classes.GunClass[data]["name"]
+         acfmenupanel.AmmoData["ClassData"] = acfmenupanel.Classes.GunClass[data]["id"]
+
+         acfmenupanel.CData.ClassSelect:SetColor( Color(0,0,0) )
+
+         acfmenupanel.CData.CaliberSelect:Clear()
+
+         for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
+
+            if acfmenupanel.AmmoData["ClassData"] == Value.gunclass then
+               acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
+            end
+            
+         end      
+
+         MainPanel:UpdateAttribs()
+         MainPanel:UpdateAttribs() --Note : this is intentional
+      end
+
+      acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.ClassSelect )
+
+   --===========================================================================================
+   -----Creating the caliber selection display
+   --===========================================================================================
+
+      acfmenupanel.CData.CaliberSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )  
+      acfmenupanel.CData.CaliberSelect:SetSize(100, 30)
+      
+      acfmenupanel.CData.CaliberSelect:SetText(acfmenupanel.AmmoData["Data"]["id"]  )
 
       for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
 
          if acfmenupanel.AmmoData["ClassData"] == Value.gunclass then
             acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
          end
-         
-      end      
+            
+      end 
 
-      self:UpdateAttribs()
-      self:UpdateAttribs() --Note : this is intentional
-   end
+      acfmenupanel.CData.CaliberSelect.OnSelect = function( index , value , data )
+         acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
+         MainPanel:UpdateAttribs()
+         MainPanel:UpdateAttribs() --Note : this is intentional
 
-   acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.ClassSelect )
-
---===========================================================================================
------Creating the caliber selection display
---===========================================================================================
-
-   acfmenupanel.CData.CaliberSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )  
-   acfmenupanel.CData.CaliberSelect:SetSize(100, 30)
-   
-   acfmenupanel.CData.CaliberSelect:SetText(acfmenupanel.AmmoData["Data"]["id"]  )
-
-   for Key, Value in pairs( acfmenupanel.WeaponDisplay["Guns"] ) do
-
-      if acfmenupanel.AmmoData["ClassData"] == Value.gunclass then
-         acfmenupanel.CData.CaliberSelect:AddChoice( Value.id , Key )
       end
-         
-   end 
 
-   acfmenupanel.CData.CaliberSelect.OnSelect = function( index , value , data )
-      acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
-      self:UpdateAttribs()
-      self:UpdateAttribs() --Note : this is intentional
+      acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CaliberSelect )
 
-   end
-
-   acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CaliberSelect )
-
---===========================================================================================
------Creating the Model display
---=========================================================================================== 
-
-   --Used to create the general model display
-   if not acfmenupanel.CData.CrateDisplay then
-   
-      acfmenupanel:CPanelText("CrateDesc", ACFEnts.Ammo[acfmenupanel.AmmoData["Id"]].desc)
-      
-      acfmenupanel.CData.CrateDisplay = vgui.Create( "DModelPanel" , acfmenupanel.CustomDisplay )
-      acfmenupanel.CData.CrateDisplay:SetSize(200,200)  
-      acfmenupanel.CData.CrateDisplay:SetCamPos( Vector( 250, 500, 250 ) )
-      acfmenupanel.CData.CrateDisplay:SetLookAt( Vector( 0, 0, 0 ) )
-      acfmenupanel.CData.CrateDisplay:SetFOV( 20 ) 
-      acfmenupanel.CData.CrateDisplay:SetModel(ACFEnts.Ammo[acfmenupanel.AmmoData["Id"]].model)   
-      acfmenupanel.CData.CrateDisplay.LayoutEntity = function( entity ) end
-      
-      acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.CrateDisplay )
-   
    end
 end
 
@@ -1119,8 +1274,9 @@ end
    1-Name: Identifier of this text
    2-Desc: The content of this text
    3-Font: The Font to be used in this text. Leave it empty or nil to use the default one
+   4-
 ]]---------------------------------------
-function PANEL:CPanelText(Name, Desc, Font)
+function PANEL:CPanelText(Name, Desc, Font, Panel)
 
    if not acfmenupanel["CData"][Name.."_text"] then
 
@@ -1134,8 +1290,13 @@ function PANEL:CPanelText(Name, Desc, Font)
       acfmenupanel["CData"][Name.."_text"]:SetWrap(true)
       acfmenupanel["CData"][Name.."_text"]:SetAutoStretchVertical( true )
 
-      acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
-
+      if IsValid(Panel) then
+         if Panel.AddItem then
+            Panel:AddItem( acfmenupanel["CData"][Name.."_text"] )
+         end
+      else
+         acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
+      end
    end
 
    acfmenupanel["CData"][Name.."_text"]:SetText( Desc )

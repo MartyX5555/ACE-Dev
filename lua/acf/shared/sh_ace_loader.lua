@@ -20,6 +20,7 @@ local FuelTankSizeTable = {}
 local MobilityTable = {}
 
 local GSoundData    = {}
+local ModelData     = {}
 
 -- setup base classes
 local gun_base = {
@@ -203,6 +204,11 @@ function ACE_DefineGunFireSound( id, data )
     GSoundData[id] = data
 end
 
+function ACE_DefineModelData( id, data )
+    data.id = id
+    ModelData[id] = data
+end
+
 -- Getters for guidance names, for use in missile definitions.
 local function GetAllInTableExcept(tbl, list)
 
@@ -306,3 +312,4 @@ ACF.IdRounds    = list.Get("ACFIdRounds")   --Lookup tables so i can get rounds 
 
 ACE.Armors      = list.Get("ACE_MaterialTypes")
 ACE.GSounds     = list.Get("ACESounds")
+ACE.ModelData   = ModelData

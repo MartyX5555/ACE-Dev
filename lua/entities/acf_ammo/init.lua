@@ -176,51 +176,138 @@ do
 
 end
 
+do
 
-function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+    local function VerifyVector( vecstring )
 
-    if not Owner:CheckLimit("_acf_ammo") then return false end
+        if isvector( vecstring ) then return vecstring end
+        if not isstring(vecstring) then return end
+
+        
+
+        local VecTbl = string.Explode( ":", vecstring ) 
+        local Scale = Vector(VecTbl[1],VecTbl[2],VecTbl[3])
+
+        return Scale
+    end
+
+    local function VerifyScale( Scale )
+        if not isvector( Scale ) then return end
+
+        local MaxSize = ACF.CrateMaximumSize
+
+        Scale.x = math.Clamp( math.Round(Scale.x, 1) ,10,MaxSize)
+        Scale.y = math.Clamp( math.Round(Scale.y, 1) ,10,MaxSize)
+        Scale.z = math.Clamp( math.Round(Scale.z, 1) ,10,MaxSize)
+
+        return Scale 
+    end
+
+    local function CreateRealScale( Scale )
     
-    local Ammo = ents.Create("acf_ammo")
+        Scale = VerifyVector( Scale )
+        Scale = VerifyScale( Scale )
 
-    if IsValid(Ammo) then
+        return Scale
+    end
 
-        if not ACE_CheckAmmo( Id ) then
-            Id = "Ammo2x4x4"
+    function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+
+        if not Owner:CheckLimit("_acf_ammo") then return false end
+        
+        local Ammo = ents.Create("acf_ammo")
+
+        if IsValid(Ammo) then
+
+            local Model
+            local Weight
+            local Dimensions 
+
+            Ammo:SetAngles(Angle)
+            Ammo:SetPos(Pos)
+            Ammo:Spawn()
+            Ammo:SetPlayer(Owner)
+
+            --Look for scalable Id
+            if not ACE_CheckAmmo( Id ) then
+
+                --Verify if its a valid scale ID. Skips this test if its a vector
+                if isstring(Id) then
+                    Review = string.find( Id, "[%a]")
+                end
+
+                if not Review then
+
+                    Ammo.IsScalable = true
+
+                    local Scale = CreateRealScale(Id)
+
+                    Id          = Scale
+                    Model       = "models/holograms/rcube_thin.mdl"
+                    Weight      = (Scale.x * Scale.y * Scale.z)/200    
+                    Dimensions  = Scale
+
+                    local ModelData = ACE.ModelData[Model]
+                    local DefaultSize   = ModelData.DefaultSize
+                    local Mesh          = ModelData.CustomMesh
+                    local EntityScale = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize) 
+
+                    Ammo.ScaleData = {
+                        Mesh = Mesh,
+                        Scale = EntityScale,
+                        Size = DefaultSize
+                    }
+        
+                    Ammo:SetMaterial("models/props_canal/metalwall005b")
+                    Ammo:SetModel( Model ) --Sending the model to client
+                    Ammo:PhysicsInit( SOLID_VPHYSICS )          
+                    Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
+                    Ammo:SetSolid( SOLID_VPHYSICS )
+
+                    Ammo:ACE_SetScale( Ammo.ScaleData )
+
+                else
+                    Id = "Ammo2x4x4"  
+                end
+            end
+
+            if ACE_CheckAmmo( Id ) then
+
+                local AmmoData = AmmoTable[Id]
+
+                Model = AmmoData.model
+                Weight = AmmoData.weight
+                Dimensions = Vector( AmmoData.Lenght, AmmoData.Width, AmmoData.Height )
+
+                Ammo:SetModel( Model ) 
+                Ammo:PhysicsInit( SOLID_VPHYSICS )          
+                Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
+                Ammo:SetSolid( SOLID_VPHYSICS )
+
+            end
+
+            Ammo.Id = Id
+            Ammo.Owner = Owner
+            Ammo.Model = Model
+            Ammo.Dimensions = Dimensions
+
+            Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+
+            Ammo.Ammo       = Ammo.Capacity
+            Ammo.EmptyMass  = Weight or 1
+
+            Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
+
+            Ammo.LastMass   = 1
+            Ammo:UpdateMass()
+
+            Owner:AddCount( "_acf_ammo", Ammo )
+            Owner:AddCleanup( "acfmenu", Ammo )
+            
+            table.insert(ACF.AmmoCrates, Ammo)
+            
+            return Ammo
         end
-
-        local AmmoData = AmmoTable[Id]
-
-        Ammo:SetAngles(Angle)
-        Ammo:SetPos(Pos)
-        Ammo:Spawn()
-        Ammo:SetPlayer(Owner)
-        Ammo.Owner = Owner
-        
-        Ammo.Model = AmmoData.model 
-        Ammo:SetModel( Ammo.Model ) 
-        
-        Ammo:PhysicsInit( SOLID_VPHYSICS )          
-        Ammo:SetMoveType( MOVETYPE_VPHYSICS )       
-        Ammo:SetSolid( SOLID_VPHYSICS )
-
-        Ammo.Id = Id
-        Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
-
-        Ammo.Ammo       = Ammo.Capacity
-        Ammo.EmptyMass  = AmmoData.weight or 1
-
-        Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
-
-        Ammo.LastMass   = 1
-        Ammo:UpdateMass()
-
-        Owner:AddCount( "_acf_ammo", Ammo )
-        Owner:AddCleanup( "acfmenu", Ammo )
-        
-        table.insert(ACF.AmmoCrates, Ammo)
-        
-        return Ammo
     end
 end
 
@@ -301,6 +388,15 @@ function ENT:UpdateOverlayText()
     
         if RoundData and RoundData.cratetxt then
             text = text .. "\n" .. RoundData.cratetxt( self.BulletData, self )
+        end
+
+        if self.IsScalable then
+            local x = math.Round(self.Dimensions.x, 1)/10
+            local y = math.Round(self.Dimensions.y, 1)/10
+            local z = math.Round(self.Dimensions.z, 1)/10
+
+            local dims = x .. "x" .. y .. "x" .. z
+            text = text .. "\n\n Size: " .. dims
         end
 
         if self.IsTwoPiece then
@@ -413,9 +509,7 @@ do
             self.IsTwoPiece = false
 
             --Getting entity's dimensions
-            local Data = AmmoTable[self.Id]
-
-            local Dimensions = Vector( Data.Lenght, Data.Width, Data.Height )
+            local Dimensions = self.Dimensions
 
             local GunId = AmmoGunData.gunclass 
             local WeaponType = GunClasses[GunId].type
@@ -429,7 +523,7 @@ do
             else
 
                 width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/1.6
-                shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/3                
+                shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/2.54          
             end
 
             local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
@@ -445,7 +539,8 @@ do
             local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
 
             --Why would you need the 2 piece for rounds below 50mm? Unless you want legos there....
-            if AmmoGunData.caliber >= 5 then
+            --Missiles & bombs are excluded from using this method...
+            if AmmoGunData.caliber >= 5 and WeaponType ~= "missile" then
                 if FpieceCap > FCap and self.BulletData.TwoPiece > 0 then
                     FCap = FpieceCap
                     self.IsTwoPiece = true

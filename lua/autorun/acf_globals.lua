@@ -183,6 +183,8 @@ ACF.GunInaccuracyBias   = 2                         -- Higher numbers make shots
 
 ACF.EnableKillicons     = true                      -- Enable killicons overwriting.
 
+ACF.CrateMaximumSize    = 200
+
 if ACF.AllowCSLua > 0 then
     AddCSLuaFile("autorun/translation/ace_translationpacks.lua")
     RunConsoleCommand( "sv_allowcslua", 1 )

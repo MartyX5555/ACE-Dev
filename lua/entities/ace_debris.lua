@@ -5,6 +5,8 @@ DEFINE_BASECLASS( "base_anim" )
 
 ENT.PrintName = "Debris"
 
+cleanup.Register( "Debris" )
+
 if CLIENT then return end
 
 function ENT:Initialize()
