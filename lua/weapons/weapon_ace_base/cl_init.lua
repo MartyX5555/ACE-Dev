@@ -1,5 +1,7 @@
 include("shared.lua")
 
+-- ICON BACKGROUND: sprops/textures/sprops_metal5
+
 SWEP.CSMuzzleFlashes = true
 SWEP.ViewModelFlip = true
 

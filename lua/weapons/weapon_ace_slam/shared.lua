@@ -1,6 +1,8 @@
 AddCSLuaFile("shared.lua")
 SWEP.Base = "weapon_ace_base"
 
+DEFINE_BASECLASS("weapon_ace_base")
+
 if CLIENT then
 	SWEP.PrintName		= "Mine-S.L.A.M."
 	SWEP.Slot			= 4
@@ -66,9 +68,17 @@ SWEP.ZoomRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 SWEP.CrouchAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 
---
+function SWEP:SetupDataTables()
+	self:NetworkVar("Float", 1, "ExplosionDelay")
 
+	if CLIENT then
+		self:NetworkVarNotify("ExplosionDelay", function(_, _, _, delay)
+			notification.AddLegacy("Explosion Delay: " .. delay .. " seconds", NOTIFY_GENERIC, 5)
+		end)
+	end
 
+	BaseClass.SetupDataTables(self)
+end
 
 function SWEP:InitBulletData()
 	self.BulletData = {}
@@ -76,10 +86,10 @@ function SWEP:InitBulletData()
 	self.BulletData.Type = "HEAT"
 	self.BulletData.Id = 2
 	self.BulletData.Caliber = 8.4
-	self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg
-	self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-	self.BulletData.Data5 = 5300 --He Filler or Flechette count
-	self.BulletData.Data6 = 57 --HEAT ConeAng or Flechette Spread
+	self.BulletData.PropLength = 6 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.ProjLength = 20 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
+	self.BulletData.Data5 = 2000 --He Filler or Flechette count
+	self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
 	self.BulletData.Data7 = 0
 	self.BulletData.Data8 = 0
 	self.BulletData.Data9 = 0
@@ -139,9 +149,10 @@ function SWEP:InitBulletData()
 	self.DragCoef = self.BulletData.DragCoef
 	self.Colour = self.BulletData.Colour
 	self.DetonatorAngle = 80
+
+	self.BulletData.FuseLength = 0.1
 end
 
-;
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
@@ -190,6 +201,8 @@ function SWEP:PrimaryAttack()
 				if IsValid(traceEnt) then
 					ent:SetParent(traceEnt)
 				end
+
+				ent.ExplosionDelay = self:GetExplosionDelay()
 			end
 
 			self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
@@ -209,6 +222,9 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+	if SERVER then
+		self:SetExplosionDelay((self:GetExplosionDelay() + 0.25) % 1.25)
+	end
 end
 
 function SWEP:Think()

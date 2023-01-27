@@ -23,5 +23,9 @@ function ENT:Draw()
 		filter = ent
 	} )
 
-	render.DrawLine( startpos, tr.HitPos, Color( 130, 0, 0, 25), true )
+	render.SetMaterial(Material("cable/redlaser"))
+	render.DrawBeam(startpos, tr.HitPos, 1, 0, 1)
+end
+
+function ENT:Think()
 end
