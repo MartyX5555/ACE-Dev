@@ -387,8 +387,6 @@ function SWEP:AcquireLock()
     --local errorFromAng      = 0
     local dist              = 0
 
-    local physEnt           = NULL
-
     local bestEnt           = NULL
 
     local LockCone = 2.5
@@ -408,60 +406,41 @@ function SWEP:AcquireLock()
         --Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
         errorFromAng = 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.p / 90) ^ 2
 
-        if absang.p < LockCone and absang.y < LockCone then --Entity is within seeker cone
+        local physEnt = scanEnt:GetPhysicsObject()
 
+        if absang.p < LockCone and absang.y < LockCone and physEnt:IsValid() and physEnt:IsMoveable() then --Entity is within seeker cone
             --if the target is a Heat Emitter, track its heat
             if scanEnt.Heat then
-
-                Heat =     self.SeekSensitivity * scanEnt.Heat
-
-            --if is not a Heat Emitter, track the friction's heat
-            else
-
-                physEnt = scanEnt:GetPhysicsObject()
-
-                --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-                if physEnt:IsValid() and not physEnt:IsMoveable() then
-                --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-                    goto cont
-                end
-
+                Heat = self.SeekSensitivity * scanEnt.Heat
+            else --if is not a Heat Emitter, track the friction's heat
                 dist = difpos:Length()
-                Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
-
+                Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
             end
 
             --Skip if not Hotter than AmbientTemp in deg C.
-            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end
+            if Heat > ACE.AmbientTemp + self.HeatAboveAmbient then
 
-            --Could do pythagorean stuff but meh, works 98% of time
-            local err = absang.p + absang.y
+                --Could do pythagorean stuff but meh, works 98% of time
+                local err = absang.p + absang.y
 
-            if self.TarEnt == scanEnt then
-                err = err / 8
+                if self.TarEnt == scanEnt then
+                    err = err / 8
+                end
+
+                --Sorts targets as closest to being directly in front of radar
+                if err < besterr then
+                    self.ClosestToBeam = #Owners + 1
+                    besterr = err
+                    bestEnt = scanEnt
+                end
+
+                --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
             end
-
-            --Sorts targets as closest to being directly in front of radar
-            if err < besterr then
-                self.ClosestToBeam =  #Owners + 1
-                besterr = err
-                bestEnt = scanEnt
-            end
-
-
-            --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
-
         end
-
-        ::cont::
     end
 
     return bestEnt or NULL
-
 end
-
-
-
 
 function SWEP:Think()
 
