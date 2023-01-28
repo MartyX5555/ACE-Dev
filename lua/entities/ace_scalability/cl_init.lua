@@ -53,38 +53,41 @@ net.Receive("ACE_Scalable_Network", function()
 	local z = net.ReadFloat() 
 
 	local entity = net.ReadEntity()
-	local Scale = Vector(x,y,z)
 
-	BuildFakePhysics( entity )
+	if IsValid(entity) then 
 
-	local mat = Matrix()
-	mat:Scale(Scale)
+		BuildFakePhysics( entity )
 
-	entity:EnableMatrix("RenderMultiply", mat)
-
-	local Mesh = ACE.ModelData[entity:GetModel()].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
-
-	Mesh = entity:ConvertMeshToScale(Mesh,Scale)
-
-	entity:PhysicsInitMultiConvex(Mesh)
-	entity:EnableCustomCollisions(true)
-	entity:SetRenderBounds(entity:GetCollisionBounds())
-	entity:DrawShadow(false)
-
-	local PhysObj = entity:GetPhysicsObject()
-
-	if IsValid(PhysObj) then
-		entity.PhysicsObj = PhysObj
-		PhysObj:EnableMotion(false)
-		PhysObj:Sleep()
+		local Scale = Vector(x,y,z)
+		entity.Matrix = Matrix()
+		entity.Matrix:Scale(Scale)
+	
+		entity:EnableMatrix("RenderMultiply", entity.Matrix)
+	
+		local Mesh = ACE.ModelData[entity:GetModel()].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
+	
+		Mesh = entity:ConvertMeshToScale(Mesh,Scale)
+	
+		entity:PhysicsInitMultiConvex(Mesh)
+		entity:EnableCustomCollisions(true)
+		entity:SetRenderBounds(entity:GetCollisionBounds())
+		entity:DrawShadow(false)
+	
+		local PhysObj = entity:GetPhysicsObject()
+	
+		if IsValid(PhysObj) then
+			entity.PhysicsObj = PhysObj
+			PhysObj:EnableMotion(false)
+			PhysObj:Sleep()
+		end
 	end
-
 end)
 
 do -- Dealing with visual clip's bullshit
 	local EntMeta = FindMetaTable("Entity")
 
 	function ENT:EnableMatrix(Type, Value, ...)
+
 		if Type == "RenderMultiply" and self.Matrix then
 			local Current = self.Matrix:GetScale()
 			local Scale   = Value:GetScale()
