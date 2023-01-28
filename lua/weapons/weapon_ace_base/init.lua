@@ -110,8 +110,6 @@ function SWEP:Equip()
 
     local owner = self:GetOwner()
 
-    self:DoAmmoStatDisplay()
-
     self.BulletData.Filter = {owner}
 end
 
@@ -164,4 +162,6 @@ function SWEP:Deploy()
     if self.Zoomed then
         self:SetZoom(false)
     end
+
+    self:SendWeaponAnim(ACT_VM_DRAW)
 end

@@ -47,6 +47,8 @@ function SWEP:Deploy()
 	self.JustDeployed = true --No abusing weapon switching to spam throw grenades
 	self:SendWeaponAnim(ACT_VM_DRAW)
 
+	self:DoAmmoStatDisplay()
+
 	return true
 end
 

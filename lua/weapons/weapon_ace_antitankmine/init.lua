@@ -15,6 +15,5 @@ function SWEP:DoAmmoStatDisplay()
 end
 
 function SWEP:Equip()
-	self:DoAmmoStatDisplay()
 	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 end

@@ -59,7 +59,7 @@ SWEP.ViewModelFlip = true
 SWEP.ViewModel = "models/weapons/v_pist_glock18.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
 SWEP.HoldType = "pistol"
-SWEP.DeployDelay = 0 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 
 

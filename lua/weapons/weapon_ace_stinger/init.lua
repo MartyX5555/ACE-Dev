@@ -6,8 +6,6 @@ include("shared.lua")
 function SWEP:Equip()
     if not self.BulletData then return end
 
-    self:DoAmmoStatDisplay()
-
     self.BulletData.Filter = {self:GetOwner()}
 end
 
