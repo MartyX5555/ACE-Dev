@@ -138,15 +138,6 @@ function SWEP:Initialize()
     self:UpdateFakeCrate()
 end
 
-function SWEP:Holster()
-    if not IsFirstTimePredicted() then return end
-
-    self:GetOwner():SetWalkSpeed(self.NormalPlayerWalkSpeed)
-    self:GetOwner():SetRunSpeed(self.NormalPlayerRunSpeed)
-
-    return true
-end
-
 function SWEP:Deploy()
     local owner = self:GetOwner()
 

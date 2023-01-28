@@ -82,16 +82,20 @@ function SWEP:SetupDataTables()
         self:NetworkVarNotify("ZoomState", function(_, _, lastZoom, zoom)
             if zoom == lastZoom then return end
 
-            self:GetOwner():SetCanZoom(not zoom) --Block HL2 suit zoom
+            local owner = self:GetOwner()
+
+            if not IsValid(owner) then return end
+
+            owner:SetCanZoom(not zoom) --Block HL2 suit zoom
 
             timer.Simple(0, function() --If player is in a vehicle you need to delay by 1 tick because ???
-                self:GetOwner():SetFOV(zoom and self.ZoomFOV or 0, 0.25)
+                owner:SetFOV(zoom and self.ZoomFOV or 0, 0.25)
             end)
 
             if self.HasScope then
-                self:GetOwner():EmitSound("weapons/awp/zoom.wav")
+                owner:EmitSound("weapons/awp/zoom.wav")
             else
-                self:GetOwner():EmitSound("items/pickup_quiet_03.wav")
+                owner:EmitSound("items/pickup_quiet_03.wav")
             end
         end)
     end
@@ -302,6 +306,9 @@ function SWEP:Holster()
     if SERVER then
         self:SetZoomState(false)
         self:SetOwnerZoomSpeed(false)
+
+        self:GetOwner():SetWalkSpeed(self.NormalPlayerWalkSpeed)
+        self:GetOwner():SetRunSpeed(self.NormalPlayerRunSpeed)
     end
 
     if self.ShotgunReload then

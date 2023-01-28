@@ -69,32 +69,7 @@ SWEP.NormalPlayerWalkSpeed      = 200 --Default walk and sprint speed in case al
 SWEP.NormalPlayerRunSpeed       = 400
 
 SWEP.SwayScale = 0.3
-SWEP.BobScale =0.4
-
-
-
-function SWEP:SetupDataTables()
-    self:NetworkVar("Bool", 0, "ZoomState")
-    self:NetworkVar("Int", 0, "RandomSeed")
-
-    if SERVER then
-        self:NetworkVarNotify("ZoomState", function(_, _, lastZoom, zoom)
-            if zoom == lastZoom then return end
-
-            self:GetOwner():SetCanZoom(not zoom) --Block HL2 suit zoom
-
-            timer.Simple(0, function() --If player is in a vehicle you need to delay by 1 tick because ???
-                self:GetOwner():SetFOV(zoom and self.ZoomFOV or 0, 0.25)
-            end)
-
-            if self.HasScope then
-                self:GetOwner():EmitSound("weapons/awp/zoom.wav")
-            else
-                self:GetOwner():EmitSound("items/pickup_quiet_03.wav")
-            end
-        end)
-    end
-end
+SWEP.BobScale = 0.4
 
 function SWEP:InitBulletData()
     self.BulletData = {}
