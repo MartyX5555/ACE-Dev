@@ -330,10 +330,10 @@ do
         if SpallMul > 0 and Caliber*10 > UsedArmor and Caliber > 3 then
 
             -- Normal spalling core
-            local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 150 * 10
-            local Spall         = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.5)*ACF.SpallMult,64)
+            local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 150
+            local Spall         = math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33)*ACF.SpallMult,24)
             local SpallWeight   = TotalWeight/Spall*SpallMul
-            local SpallVel      = (KE*16/SpallWeight)^0.5/Spall*SpallMul * 300
+            local SpallVel      = (KE*16/SpallWeight)^0.5/Spall*SpallMul
             local SpallArea     = (SpallWeight/7.8)^0.33 
             local SpallEnergy   = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
@@ -349,7 +349,7 @@ do
 
                 ACE.Spall[Index] = {}
                 ACE.Spall[Index].start  = HitPos
-                ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/3):GetNormalized()*SpallVel*1000 --I got bored of spall not going across the tank
+                ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/3):GetNormalized()*math.max( SpallVel*10, math.random(450,600) ) --I got bored of spall not going across the tank
                 ACE.Spall[Index].filter = table.Copy(Filter)
                 ACE.Spall[Index].mins   = Vector(0,0,0)
                 ACE.Spall[Index].maxs   = Vector(0,0,0)
@@ -556,10 +556,10 @@ do
             if MatData.IsExplosive then Filter[1].ACF.ERAexploding = true return end
 
             -- HESH spalling core
-            local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 2500 * 10
-            local Spall         = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),64) --24
+            local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 2500
+            local Spall         = math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24) --24
             local SpallWeight   = TotalWeight/Spall*SpallMul
-            local SpallVel      = (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul*200
+            local SpallVel      = (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul
             local SpallArea     = (SpallWeight/7.8)^0.33 
             local SpallEnergy   = ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
@@ -575,7 +575,7 @@ do
 
                 ACE.Spall[Index]            = {}
                 ACE.Spall[Index].start      = spallPos
-                ACE.Spall[Index].endpos     = spallPos + ((fNormal*2500+HitVec):GetNormalized()+VectorRand()/3):GetNormalized()*SpallVel*10 --I got bored of spall not going across the tank
+                ACE.Spall[Index].endpos     = spallPos + ((fNormal*2500+HitVec):GetNormalized()+VectorRand()/3):GetNormalized()*math.max(SpallVel*10,math.random(450,600)) --I got bored of spall not going across the tank
                 ACE.Spall[Index].filter     = table.Copy(PEnts)
 
                 ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor )
@@ -803,6 +803,16 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
     return HitRes
 end
 
+--helper function to replace ENT:ApplyForceOffset()
+--Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
+local m_insq = 1/(39.37)^2
+local function ACF_ApplyForceOffset(Phys, Force, Pos)
+    Phys:ApplyForceCenter(Force)
+    local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
+    local angf = off:Cross(Force)*m_insq*360/(2*3.1416)
+    Phys:ApplyTorqueCenter(angf)
+end
+
 --Handles ACE forces (HE Push, Recoil, etc)
 function ACF_KEShove(Target, Pos, Vec, KE )
 
@@ -823,25 +833,19 @@ function ACF_KEShove(Target, Pos, Vec, KE )
     if not Target.acfphystotal then return end 
 
     local physratio = Target.acfphystotal / Target.acftotal
-    
-    if isvector(Pos) then
         
-        local Scaling = 1
+    local Scaling = 1
 
-        --Scale down the offset relative to chassis if the gun is parented
-        if Target:EntIndex() ~= parent:EntIndex() then
-            Scaling = 87.5
-        end
-
-        local Local     = parent:WorldToLocal(Pos) / Scaling
-        local Res       = Local + phys:GetMassCenter()
-        Pos             = parent:LocalToWorld(Res)
-
-        phys:ApplyForceOffset( Vec:GetNormalized() * KE * physratio, Pos )
-
-    else
-        phys:ApplyForceCenter( Vec:GetNormalized() * KE * physratio )
+    --Scale down the offset relative to chassis if the gun is parented
+    if Target:EntIndex() ~= parent:EntIndex() then
+        Scaling = 87.5
     end
+
+    local Local     = parent:WorldToLocal(Pos) / Scaling
+    local Res       = Local + phys:GetMassCenter()
+    Pos             = parent:LocalToWorld(Res)
+
+    ACF_ApplyForceOffset(phys, Vec:GetNormalized() * KE * physratio, Pos )
 end
 
 -- helper function to process children of an acf-destroyed prop
@@ -1026,7 +1030,7 @@ end
 
 do
     -- Config
-    local AmmoExplosionScale = 0.25
+    local AmmoExplosionScale = 0.5
     local FuelExplosionScale = 0.005
 
     --converts what would be multiple simultaneous cache detonations into one large explosion
