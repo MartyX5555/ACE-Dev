@@ -6,7 +6,7 @@ include("shared.lua")
 SWEP.AutoSwitchFrom = false
 SWEP.AutoSwitchTo = false
 
-function SWEP:UpdateFakeCrate(realcrate)
+function SWEP:UpdateFakeCrate()
     if not IsValid(self.FakeCrate) then
         self.FakeCrate = ents.Create("acf_fakecrate2")
     end
@@ -108,20 +108,27 @@ end
 function SWEP:Equip()
     if not self.BulletData then return end
 
-    self:DoAmmoStatDisplay()
+    local owner = self:GetOwner()
 
-    self.BulletData.Filter = {self:GetOwner()}
+    self.BulletData.Filter = {owner}
 end
 
 function SWEP:OnRemove()
     if not IsValid(self.FakeCrate) then return end
     local crate = self.FakeCrate
+    local owner = self:GetOwner()
 
     timer.Simple(15, function()
         if IsValid(crate) then
             crate:Remove()
         end
     end)
+
+    if IsValid(owner) then
+        owner:SetWalkSpeed( self.NormalPlayerWalkSpeed)
+        owner:SetRunSpeed( self.NormalPlayerRunSpeed)
+    end
+
 end
 
 function SWEP:Initialize()
@@ -129,4 +136,23 @@ function SWEP:Initialize()
 
     self:InitBulletData()
     self:UpdateFakeCrate()
+end
+
+function SWEP:Deploy()
+    local owner = self:GetOwner()
+
+    self.NormalPlayerWalkSpeed = owner:GetWalkSpeed()
+    self.NormalPlayerRunSpeed = owner:GetRunSpeed()
+
+    owner:SetWalkSpeed( self.NormalPlayerWalkSpeed * self.CarrySpeedMul )
+    owner:SetRunSpeed( self.NormalPlayerRunSpeed * self.CarrySpeedMul * 0.8)
+    self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
+    self:Think()
+    self:DoAmmoStatDisplay()
+
+    if self.Zoomed then
+        self:SetZoom(false)
+    end
+
+    self:SendWeaponAnim(ACT_VM_DRAW)
 end

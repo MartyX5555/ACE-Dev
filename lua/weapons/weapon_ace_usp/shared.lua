@@ -23,16 +23,43 @@ SWEP.Primary.Automatic = false
 
 SWEP.ReloadSound = "Weapon_Pistol.Reload"
 
-SWEP.HasScope = false
-SWEP.ZoomFOV = 60
 
-SWEP.ViewPunchAmount = 0.5
-SWEP.HeatPerShot = 4
-SWEP.HeatMax = 16
-SWEP.HeatReductionRate = 75
-SWEP.BaseSpread = 0.07
-SWEP.MaxSpread = 3.5
-SWEP.RecoilSideBias = -0.1
+SWEP.ZoomFOV = 60
+SWEP.HasScope = false --True if the weapon has a sniper-style scope
+
+
+--Recoil (crosshair movement) settings--
+--"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
+SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
+--SWEP.HeatReductionDelay = 0.3 --Delay after firing before beginning to reduce heat
+SWEP.HeatPerShot = 4 --Heat generated per shot
+SWEP.HeatMax = 16 --Maximum heat - determines max rate at which recoil is applied to eye angles
+                --Also determines point at which random spread is at its highest intensity
+                --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
+
+SWEP.RecoilSideBias = -0.1 --How much the recoil is biased to one side proportional to vertical recoil
+                        --Positive numbers bias to the right, negative to the left
+
+SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
+SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
+SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+
+
+--Spread (aimcone) settings--
+SWEP.BaseSpread = 0.07 --First-shot random spread, in degrees
+SWEP.MaxSpread = 3.5 --Maximum added random spread from heat value, in degrees
+                    --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
+SWEP.MovementSpread = 1 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
+
+
+--Model settings--
+SWEP.ViewModelFlip = true
+SWEP.ViewModel = "models/weapons/v_pist_usp.mdl"
+SWEP.WorldModel = "models/weapons/w_pist_usp.mdl"
+SWEP.HoldType = "pistol"
+SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.CSMuzzleFlashes = true
 
 function SWEP:InitBulletData()
     self.BulletData = {}

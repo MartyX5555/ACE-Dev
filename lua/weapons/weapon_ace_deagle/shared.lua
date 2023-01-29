@@ -34,7 +34,7 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 --SWEP.HeatReductionRate = 75 --Heat loss per second when not firing
 --SWEP.HeatReductionDelay = 0.3 --Delay after firing before beginning to reduce heat
 SWEP.HeatPerShot = 10 --Heat generated per shot
-SWEP.HeatMax = 20 --Maximum heat - determines max rate at which recoil is applied to eye angles
+SWEP.HeatMax = 40 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
                 --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
@@ -47,11 +47,11 @@ SWEP.ViewPunchAmount = 5 --Degrees to punch the view upwards each shot - does no
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0 --First-shot random spread, in degrees
-SWEP.MaxSpread = 2.5 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.01 --First-shot random spread, in degrees
+SWEP.MaxSpread = 4 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 5 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 2 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--

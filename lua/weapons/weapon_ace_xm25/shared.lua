@@ -33,8 +33,8 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
 SWEP.HeatReductionRate = 11 --Heat loss per second when not firing
 SWEP.HeatReductionDelay = 0.1
-SWEP.HeatPerShot = 5 --Heat generated per shot
-SWEP.HeatMax = 5 --Maximum heat - determines max rate at which recoil is applied to eye angles
+SWEP.HeatPerShot = 8 --Heat generated per shot
+SWEP.HeatMax = 8 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
                 --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
@@ -43,15 +43,15 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 1 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.5 --First-shot random spread, in degrees
-SWEP.MaxSpread = 5 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 0.1 --First-shot random spread, in degrees
+SWEP.MaxSpread = 1.5 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 7 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -59,10 +59,13 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/weapons/v_xm25.mdl"
 SWEP.WorldModel = "models/weapons/w_xm25.mdl"
 SWEP.HoldType = "ar2"
-SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+SWEP.DeployDelay = 4 --Time before you can fire after deploying the weapon
 SWEP.CSMuzzleFlashes = true
 
 SWEP.FuseDelay = 0
+
+SWEP.CarrySpeedMul              = 0.6
+
 
 function SWEP:OnPrimaryAttack()
     self.BulletData.Owner = self:GetOwner()
@@ -79,12 +82,12 @@ function SWEP:SecondaryAttack()
     local RangeTrace = util.QuickTrace(owner:GetShootPos(), owner:GetAimVector() * 50000, {owner})
 
     if RangeTrace.Hit then
-        local time = ((owner:GetShootPos() - RangeTrace.HitPos):Length() / 39.37 + 2.5) / 91
+        local time = ((owner:GetShootPos() - RangeTrace.HitPos):Length() / 39.37 + 2.5) / 110
 
         self.FuseDelay = time > 0.07 and time or 0
     end
 
-    owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 91) .. " m") or "None")))
+    owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None")))
 
     return
 end
@@ -96,9 +99,9 @@ function SWEP:InitBulletData()
     self.BulletData.Type = "HEAT"
     self.BulletData.Id = 2
     self.BulletData.Caliber = 2.5
-    self.BulletData.PropLength = 11 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg		
     self.BulletData.ProjLength = 560 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
-    self.BulletData.Data5 = 150 --He Filler or Flechette count
+    self.BulletData.Data5 = 200 --He Filler or Flechette count
     self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
     self.BulletData.Data7 = 0
     self.BulletData.Data8 = 0
@@ -115,7 +118,7 @@ function SWEP:InitBulletData()
     self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
     self.BulletData.FillerVol = self.BulletData.Data5
     self.BulletData.FillerMass = self.BulletData.FillerVol * ACF.HEDensity / 1000
-    self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 3.5
+    self.BulletData.BoomFillerMass = self.BulletData.FillerMass / 2.75
     local ConeArea = 3.1416 * self.BulletData.Caliber / 2 * ((self.BulletData.Caliber / 2) ^ 2 + self.BulletData.ProjLength ^ 2) ^ 0.5
     local ConeThick = self.BulletData.Caliber / 50
     local ConeVol = ConeArea * ConeThick
