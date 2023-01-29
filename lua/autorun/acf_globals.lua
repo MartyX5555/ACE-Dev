@@ -3,7 +3,7 @@ ACF = {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 479           -- ACE current version
+ACF.Version = 476           -- ACE current version
 ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
@@ -113,7 +113,7 @@ ACF.SpallMult           = 1
 ACF.GunfireEnabled      = true
 ACF.MeshCalcEnabled     = false
 
-ACF.BoomMult            = 1.5                       -- How much more do ammocrates blow up, useful since crates detonate all at once now.
+ACF.BoomMult            = 6                       -- How much more do ammocrates blow up, useful since crates detonate all at once now.
 
 --ACF Damage Multipler.
 

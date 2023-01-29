@@ -4,15 +4,15 @@ local Material          = {}
 Material.id             = "Texto"
 Material.name           = "Textolite"
 Material.sname          = "Textolite"
-Material.desc           = "As known as fiberglass, this chemical material provides a fairly protection agaisnt both kinetic and chemical rounds, including agaisnt explosive rounds, although its mediocre at all."
+Material.desc           = "A type of fiberglass composite, this material provides appreciable protection agaisnt both kinetic and chemical rounds especially. It is vulnerable to shattering from explosives. It is well rounded."
 Material.year           = 1955
 
 Material.massMod        = 0.35
 Material.curve          = 0.94
 
-Material.effectiveness      = 0.5
-Material.HEATeffectiveness  = 1.2
-Material.HEeffectiveness    = 0.9
+Material.effectiveness      = 0.23
+Material.HEATeffectiveness  = 0.55
+Material.HEeffectiveness    = 1.3
 Material.resiliance         = 0.005
 Material.HEATresiliance     = 2
 Material.HEresiliance       = 1.3
