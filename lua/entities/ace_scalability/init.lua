@@ -112,13 +112,11 @@ do
             Phys:SetMass(1000)
         end 
 
-       --NetworkNewScale( self, Scale )
+        NetworkNewScale( self, ScaleData.Scale )
 
     end
 
     net.Receive("ACE_Scalable_Network", function()
-
-        print("Sending Size to client...")
 
         local Ent = net.ReadEntity()
 
@@ -132,5 +130,3 @@ do
     end)
 
 end
-
-

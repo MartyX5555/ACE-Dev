@@ -30,6 +30,7 @@ function ENT:CalcAbsolutePosition() -- Faking sync
 	return Position, Angles
 end
 
+--Creates a temporal physic object for the real build.
 local function BuildFakePhysics( entity )
 
 	entity:PhysicsInit(SOLID_VPHYSICS)
@@ -43,7 +44,31 @@ local function BuildFakePhysics( entity )
 		PhysObj:EnableMotion(false)
 		PhysObj:Sleep()
 	end
+end
 
+--Creates the real physic object for the scalable.
+local function BuildRealPhysics( entity, Scale )
+
+	local Model 	= entity:GetModel()
+	local ModelData = ACE.ModelData
+	local Mesh 		= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
+
+	if entity.ConvertMeshToScale then
+		Mesh = entity:ConvertMeshToScale(Mesh, Scale)
+	end
+
+	entity:PhysicsInitMultiConvex(Mesh)
+	entity:EnableCustomCollisions(true)
+	entity:SetRenderBounds(entity:GetCollisionBounds())
+	entity:DrawShadow(false)
+
+	local PhysObj = entity:GetPhysicsObject()
+
+	if IsValid(PhysObj) then
+		entity.PhysicsObj = PhysObj
+		PhysObj:EnableMotion(false)
+		PhysObj:Sleep()
+	end
 end
 
 net.Receive("ACE_Scalable_Network", function()
@@ -61,25 +86,10 @@ net.Receive("ACE_Scalable_Network", function()
 		local Scale = Vector(x,y,z)
 		entity.Matrix = Matrix()
 		entity.Matrix:Scale(Scale)
-	
 		entity:EnableMatrix("RenderMultiply", entity.Matrix)
 	
-		local Mesh = ACE.ModelData[entity:GetModel()].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
-	
-		Mesh = entity:ConvertMeshToScale(Mesh,Scale)
-	
-		entity:PhysicsInitMultiConvex(Mesh)
-		entity:EnableCustomCollisions(true)
-		entity:SetRenderBounds(entity:GetCollisionBounds())
-		entity:DrawShadow(false)
-	
-		local PhysObj = entity:GetPhysicsObject()
-	
-		if IsValid(PhysObj) then
-			entity.PhysicsObj = PhysObj
-			PhysObj:EnableMotion(false)
-			PhysObj:Sleep()
-		end
+		BuildRealPhysics( entity, Scale )
+
 	end
 end)
 
