@@ -56,15 +56,10 @@ function SWEP:DoDrawCrosshair(x, y)
             surface.DrawRect(x - 1000, y - width / 2 + 1, 2000, width)
             surface.DrawRect(x - width / 2 + 1, y - 1000, width, 2000)
 
-            surface.SetDrawColor(Color(0, 0, 0, 255))
-
-            surface.DrawRect(x - 1000, y, 2000, 2)
-            surface.DrawRect(x, y - 1000, 2, 2000)
-
             return true
         end
 
-        if self:GetClass() == "weapon_ace_awp" or self:GetClass() == "weapon_ace_scout" then return true end
+        if self:GetClass() ~= "weapon_ace_aug" and self:GetClass() ~= "weapon_ace_sg552" then return true end
     end
 
     local ReticleSize = (self.Heat + inaccuracy * 15) / (3 / (owner:Crouching() and self.CrouchRecoilBonus or 1))

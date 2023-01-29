@@ -33,25 +33,25 @@ SWEP.HasScope = false --True if the weapon has a sniper-style scope
 --"Heat" is a number that represents how long you've been firing, affecting how quickly your crosshair moves upwards
 --SWEP.HeatReductionRate = 125 --Heat loss per second when not firing
 --SWEP.HeatReductionDelay = 0.3 --Delay after firing before beginning to reduce heat
-SWEP.HeatPerShot = 8 --Heat generated per shot
-SWEP.HeatMax = 40 --Maximum heat - determines max rate at which recoil is applied to eye angles
+SWEP.HeatPerShot = 5 --Heat generated per shot
+SWEP.HeatMax = 25 --Maximum heat - determines max rate at which recoil is applied to eye angles
                 --Also determines point at which random spread is at its highest intensity
                 --HeatMax divided by HeatPerShot gives you how many shots until you reach MaxSpread
 
 SWEP.RecoilSideBias = -0.2 --How much the recoil is biased to one side proportional to vertical recoil
                         --Positive numbers bias to the right, negative to the left
 
-SWEP.ZoomRecoilBonus = 0.7 --Reduce recoil by this amount when zoomed or scoped
+SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 0.5 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
 SWEP.BaseSpread = 0 --First-shot random spread, in degrees
 SWEP.MaxSpread = 2 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 1 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 2 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1.5 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -86,7 +86,7 @@ function SWEP:InitBulletData()
     self.BulletData.FrArea = 3.1416 * (self.BulletData.Caliber / 2) ^ 2
     self.BulletData.ProjMass = self.BulletData.FrArea * (self.BulletData.ProjLength * 7.9 / 1000)
     self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
-    self.BulletData.DragCoef = 0.0075 --Alternatively manually set it
+    self.BulletData.DragCoef = 0.02 --Alternatively manually set it
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2

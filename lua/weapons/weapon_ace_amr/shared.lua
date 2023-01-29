@@ -12,7 +12,11 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 1 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
+<<<<<<< HEAD
 SWEP.Primary.DefaultClip = 4
+=======
+SWEP.Primary.DefaultClip = 8
+>>>>>>> parent of 550e039... Initial RDC changes
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "XBowBolt"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/amr_multi.mp3"
@@ -50,10 +54,8 @@ SWEP.ViewPunchAmount = 5 --Degrees to punch the view upwards each shot - does no
 SWEP.BaseSpread = 0 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 0.75 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
-
-SWEP.CarrySpeedMul              = 0.7
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--

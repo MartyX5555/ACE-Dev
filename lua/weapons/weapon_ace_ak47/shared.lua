@@ -6,6 +6,7 @@ SWEP.Purpose = "Slavic bullet thrower"
 SWEP.Spawnable = true
 
 SWEP.Slot = 2
+<<<<<<< HEAD
 SWEP.SlotPos = 1
 
 --Main settings--
@@ -119,3 +120,6 @@ function SWEP:InitBulletData()
     self.DragCoef = self.BulletData.DragCoef
     self.Colour = self.BulletData.Colour
 end
+=======
+SWEP.SlotPos = 1
+>>>>>>> parent of 550e039... Initial RDC changes

@@ -9,7 +9,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 
 
 --Main settings--
-SWEP.FireRate = 20 --Rounds per second
+SWEP.FireRate = 10 --Rounds per second
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 90
@@ -43,15 +43,15 @@ SWEP.RecoilSideBias = 0.1 --How much the recoil is biased to one side proportion
 
 SWEP.ZoomRecoilBonus = 0.5 --Reduce recoil by this amount when zoomed or scoped
 SWEP.CrouchRecoilBonus = 0.5 --Reduce recoil by this amount when crouching
-SWEP.ViewPunchAmount = 0.2 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
+SWEP.ViewPunchAmount = 1 --Degrees to punch the view upwards each shot - does not actually move crosshair, just a visual effect
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.5 --First-shot random spread, in degrees
-SWEP.MaxSpread = 5 --Maximum added random spread from heat value, in degrees
+SWEP.BaseSpread = 1 --First-shot random spread, in degrees
+SWEP.MaxSpread = 7.5 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 6 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 5 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -60,7 +60,11 @@ SWEP.ViewModel = "models/weapons/v_pist_elite.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_elite.mdl"
 SWEP.HoldType = "duel"
 SWEP.DeployDelay = 1 --Time before you can fire after deploying the weapon
+<<<<<<< HEAD
 SWEP.CSMuzzleFlashes = false
+=======
+SWEP.CSMuzzleFlashes = true
+>>>>>>> parent of 550e039... Initial RDC changes
 
 
 function SWEP:InitBulletData()

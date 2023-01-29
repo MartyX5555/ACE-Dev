@@ -2,7 +2,7 @@ SWEP.PrintName = "Benelli M3"
 SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Shotguns"
-SWEP.Purpose = "Breach AND Clear. Buckshot style."
+SWEP.Purpose = "Buckshot Shotgun"
 SWEP.Spawnable = true
 SWEP.Slot = 3 --Which inventory column the weapon appears in
 SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at the top
@@ -47,13 +47,11 @@ SWEP.ViewPunchAmount = 2 --Degrees to punch the view upwards each shot - does no
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.75 --First-shot random spread, in degrees
+SWEP.BaseSpread = 3 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
-SWEP.MovementSpread = 0 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 1.25 --Spread, in degrees, when unscoped with a scoped weapon
-
-SWEP.CarrySpeedMul              = 0.8
+SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
 
 --Model settings--
@@ -91,7 +89,7 @@ function SWEP:InitBulletData()
     self.BulletData.PropMass = self.BulletData.FrArea * (self.BulletData.PropLength * ACF.PDensity / 1000) --Volume of the case as a cylinder * Powder density converted from g to kg
     --		self.BulletData.DragCoef  = 0 --Alternatively manually set it
     --		self.BulletData.DragCoef  = ((self.BulletData.FrArea/10000)/self.BulletData.ProjMass)	
-    self.BulletData.DragCoef = 0.0075 --Alternatively manually set it
+    self.BulletData.DragCoef = 0.015 --Alternatively manually set it
     --Don't touch below here
     self.BulletData.MuzzleVel = ACF_MuzzleVelocity(self.BulletData.PropMass, self.BulletData.ProjMass, self.BulletData.Caliber)
     self.BulletData.ShovePower = 0.2

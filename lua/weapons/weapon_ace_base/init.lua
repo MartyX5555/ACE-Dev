@@ -6,7 +6,7 @@ include("shared.lua")
 SWEP.AutoSwitchFrom = false
 SWEP.AutoSwitchTo = false
 
-function SWEP:UpdateFakeCrate()
+function SWEP:UpdateFakeCrate(realcrate)
     if not IsValid(self.FakeCrate) then
         self.FakeCrate = ents.Create("acf_fakecrate2")
     end
@@ -108,27 +108,26 @@ end
 function SWEP:Equip()
     if not self.BulletData then return end
 
+<<<<<<< HEAD
     local owner = self:GetOwner()
 
     self.BulletData.Filter = {owner}
+=======
+    self:DoAmmoStatDisplay()
+
+    self.BulletData.Filter = {self:GetOwner()}
+>>>>>>> parent of 550e039... Initial RDC changes
 end
 
 function SWEP:OnRemove()
     if not IsValid(self.FakeCrate) then return end
     local crate = self.FakeCrate
-    local owner = self:GetOwner()
 
     timer.Simple(15, function()
         if IsValid(crate) then
             crate:Remove()
         end
     end)
-
-    if IsValid(owner) then
-        owner:SetWalkSpeed( self.NormalPlayerWalkSpeed)
-        owner:SetRunSpeed( self.NormalPlayerRunSpeed)
-    end
-
 end
 
 function SWEP:Initialize()
@@ -136,6 +135,7 @@ function SWEP:Initialize()
 
     self:InitBulletData()
     self:UpdateFakeCrate()
+<<<<<<< HEAD
 end
 
 function SWEP:Deploy()
@@ -155,4 +155,6 @@ function SWEP:Deploy()
     end
 
     self:SendWeaponAnim(ACT_VM_DRAW)
+=======
+>>>>>>> parent of 550e039... Initial RDC changes
 end

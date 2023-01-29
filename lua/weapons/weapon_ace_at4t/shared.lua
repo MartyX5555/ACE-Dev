@@ -47,13 +47,12 @@ SWEP.ViewPunchAmount = 10 --Degrees to punch the view upwards each shot - does n
 
 
 --Spread (aimcone) settings--
-SWEP.BaseSpread = 0.75 --First-shot random spread, in degrees
+SWEP.BaseSpread = 0.6 --First-shot random spread, in degrees
 SWEP.MaxSpread = 0 --Maximum added random spread from heat value, in degrees
                     --If HeatMax is 0 this will be ignored and only BaseSpread will be taken into account (AT4 for example)
 SWEP.MovementSpread = 10 --Increase aimcone to this many degrees when sprinting at full speed
-SWEP.UnscopedSpread = 8 --Spread, in degrees, when unscoped with a scoped weapon
+SWEP.UnscopedSpread = 1 --Spread, in degrees, when unscoped with a scoped weapon
 
-SWEP.CarrySpeedMul              = 0.5
 
 --Model settings--
 SWEP.ViewModelFlip = false

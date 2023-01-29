@@ -40,6 +40,7 @@ SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 
 SWEP.JustDeployed = true
+--
 
 function SWEP:Deploy()
 	if CLIENT then return end
@@ -52,7 +53,7 @@ function SWEP:Deploy()
 	return true
 end
 
-function SWEP:ThrowNade(power, heightoffset)
+function SWEP:ThrowNade(power)
 	local owner = self:GetOwner()
 
 	timer.Simple(1, function()
@@ -82,10 +83,10 @@ function SWEP:ThrowNade(power, heightoffset)
 			power = 0
 		end
 
-		local aim = owner:GetAimVector() + Vector(0, 0, 0.1)
+		local aim = owner:GetAimVector()
 
 		local ent = ents.Create("ace_smokegrenade")
-		ent:SetPos(owner:GetShootPos() + Vector(0, 0, heightoffset))
+		ent:SetPos(owner:GetShootPos())
 		ent:SetAngles(owner:EyeAngles())
 		ent:Spawn()
 		ent:GetPhysicsObject():ApplyForceCenter(aim * power + owner:GetVelocity() * ent:GetPhysicsObject():GetMass())
@@ -108,8 +109,9 @@ function SWEP:PrimaryAttack()
 
 	self:SendWeaponAnim(ACT_VM_PULLPIN)
 
-	self:ThrowNade(4000, -7)
+	self:ThrowNade(4000)
 end
+
 
 function SWEP:SecondaryAttack()
 	if not self:CanPrimaryAttack() then return end
@@ -131,7 +133,7 @@ function SWEP:SecondaryAttack()
 	self:SendWeaponAnim( ACT_VM_PULLPIN  )
 	owner:SetAnimation( PLAYER_ATTACK1 )
 
-	self:ThrowNade(1000, -10)
+	self:ThrowNade(1000)
 end
 
 function SWEP:Think()
