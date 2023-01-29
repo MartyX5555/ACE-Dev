@@ -4,7 +4,7 @@ local Material          = {}
 Material.id             = "Rub"
 Material.name           = "Rubber"
 Material.sname          = "Rubber"
-Material.desc           = "Elastic material that might as well be useless against kinetic, it excels at catching shaped charges and small fragments like spall."
+Material.desc           = "Another Material, that while its totally useless agaisnt kinetic rounds, excels agaisnt shaped charges like HEAT"
 Material.year           = 1955
 
 Material.massMod        = 0.2
@@ -20,7 +20,7 @@ Material.HEresiliance   = 0.3
 Material.Catchresiliance = 0.25
 
 Material.spallarmor     = 2
-Material.spallresist    = 2.5
+Material.spallresist    = 3.5
 
 Material.spallmult      = 0.01
 Material.ArmorMul       = 0.01

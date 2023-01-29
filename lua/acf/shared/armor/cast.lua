@@ -4,14 +4,14 @@ local Material          = {}
 Material.id             = "CHA"
 Material.name           = "Cast homogeneous Armor"
 Material.sname          = "CHA"
-Material.desc           = "A material that despite being heavier than RHA provides more resiliance agaisnt damage than its rolled counterpart. Highly vulnerable to spalling."
+Material.desc           = "A material that depiste of being heavier than RHA, provides more resiliance agaisnt the damage than its rolled version. Highly vulnerable to spalling."
 Material.year           = 1930
 
-Material.massMod        = 2
-Material.curve          = 0.97
+Material.massMod        = 1.25
+Material.curve          = 1
 
-Material.effectiveness  = 0.94
-Material.resiliance     = 18
+Material.effectiveness  = 0.98
+Material.resiliance     = 2.25
 
 Material.spallarmor     = 1
 Material.spallresist    = 0.5

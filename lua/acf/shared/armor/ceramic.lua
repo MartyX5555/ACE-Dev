@@ -4,14 +4,14 @@ local Material          = {}
 Material.id             = "Cer"
 Material.name           = "Ceramic"
 Material.sname          = "Ceramic"
-Material.desc           = "Ceramic is mostly used to stop shells and penetrations in general, but is fragile and tends to break easily when penetrated."
+Material.desc           = "The ceramic is mostly used to stop shells and penetrations in general, but its too fragil and tends to break easily."
 Material.year           = 1955
 
 Material.massMod        = 0.8
 Material.curve          = 0.95
 
 Material.effectiveness  = 2.4
-Material.resiliance     = 0.02
+Material.resiliance     = 0.01
 
 Material.spallarmor     = 1
 Material.spallresist    = 1
@@ -33,7 +33,6 @@ if SERVER then
         losArmor = losArmor^curve
                 
         local slopeDmg = ( losArmor / armor ) --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
-        local CeramicPierceDamage = 5 --Damage multiplier with penetrating shots
             
         if Type == 'HE' or Type == 'HESH' then
             slopeDmg = slopeDmg * 5 
@@ -50,7 +49,7 @@ if SERVER then
         -- Breach chance roll
         if breachProb > math.random() and maxPenetration > armor then               
             
-            HitRes.Damage   = FrArea / resiliance * damageMult * dmul * CeramicPierceDamage   -- Inflicted Damage
+            HitRes.Damage   = FrArea / resiliance * damageMult * dmul   -- Inflicted Damage
             HitRes.Overkill = maxPenetration - armor                                                -- Remaining penetration
             HitRes.Loss     = armor / maxPenetration                                                -- Energy loss in percents
 
@@ -61,7 +60,7 @@ if SERVER then
             
             local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
-            HitRes.Damage   = ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult * dmul  * CeramicPierceDamage
+            HitRes.Damage   = ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult * dmul  
             HitRes.Overkill = ( maxPenetration - Penetration )
             HitRes.Loss     = Penetration / maxPenetration
             
