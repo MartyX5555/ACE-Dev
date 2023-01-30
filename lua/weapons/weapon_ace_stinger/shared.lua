@@ -355,11 +355,16 @@ function SWEP:AcquireLock()
 
         local physEnt = scanEnt:GetPhysicsObject()
 
-        if absang.p < LockCone and absang.y < LockCone and physEnt:IsValid() and physEnt:IsMoveable() then --Entity is within seeker cone
+        if absang.p < LockCone and absang.y < LockCone then --Entity is within seeker cone
             --if the target is a Heat Emitter, track its heat
             if scanEnt.Heat then
                 Heat = self.SeekSensitivity * scanEnt.Heat
             else --if is not a Heat Emitter, track the friction's heat
+
+                if IsValid(physEnt) then
+                    if not physEnt:IsMoveable() then goto cont end
+                end 
+
                 dist = difpos:Length()
                 Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
             end
@@ -384,6 +389,8 @@ function SWEP:AcquireLock()
                 --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
             end
         end
+
+        ::cont::
     end
 
     return bestEnt or NULL
