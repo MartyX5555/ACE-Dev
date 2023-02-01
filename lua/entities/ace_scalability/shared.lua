@@ -2,7 +2,6 @@ DEFINE_BASECLASS( "base_wire_entity" )
 
 ENT.PrintName 		= "Scalable Entity"
 ENT.WireDebugName 	= "Scalable Entity"
-ENT.Spawnable  = true
 
 cleanup.Register("scalable entity")
 
