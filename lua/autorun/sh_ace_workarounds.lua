@@ -80,9 +80,6 @@ elseif SERVER then
 
 		local function SendGodStatus( bool, ply )
 
-			print("God Update")
-			print(bool)
-
 			net.Start("ACE_HasGodMode")
 				net.WriteBool(bool)
 
