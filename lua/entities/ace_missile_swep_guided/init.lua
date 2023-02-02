@@ -132,7 +132,7 @@ function ENT:Think()
 		local TTime = dist / self:GetVelocity():Length()
 		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * TTime * (self.LeadMul or 1))
 		local d = (TPos + Vector(0, 0, self.MissileClimbRatio * dist)) - self:GetPos()
-		if dist / self.StartDist < 0.5 then
+		if dist / (self.StartDist or 0) < 0.5 then
 			self.MissileClimbRatio = 0
 		end
 		if self.RadioDist and d:Length() < self.RadioDist then
