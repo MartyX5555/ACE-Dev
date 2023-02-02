@@ -26,7 +26,7 @@ function ENT:Initialize()
 
 	self.Gravity = 0
 	self.TTime = 50000000
-	self.MissileClimbRatio = 0
+	self.MissileClimbRatio = self.MissileClimbRatio or 0
 
 	self.FuseTime = 10
 	self.phys = phys
@@ -44,6 +44,51 @@ function ENT:Initialize()
 
 end
 
+local function GetRootVelocity(ent)
+	local parent = ent:GetParent()
+
+	if IsValid(parent) then
+		return GetRootVelocity(parent)
+	else
+		return ent:GetVelocity()
+	end
+end
+
+function ENT:Detonate()
+	self.FuseTime = -1
+	self:Remove()
+
+	local HEWeight = 4
+	local Radius = HEWeight ^ 0.33 * 8 * 39.37
+
+--		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+
+	self.FakeCrate = ents.Create("acf_fakecrate2")
+	self.FakeCrate:RegisterTo(self.Bulletdata)
+	self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
+	self:DeleteOnRemove(self.FakeCrate)
+
+	self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
+
+	self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
+
+	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
+	self:CreateShell( self.Bulletdata )
+
+
+	local Flash = EffectData()
+	Flash:SetOrigin(self:GetPos() + Vector(0, 0, 8))
+	Flash:SetNormal(Vector(0, 0, -1))
+	Flash:SetRadius(math.max(Radius, 1))
+	util.Effect( "ACF_Scaled_Explosion", Flash )
+end
+
+function ENT:PhysicsCollide()
+	if self.FuseTime < 0 then return end
+
+	self:Detonate()
+end
+
 function ENT:Think()
 
 
@@ -53,12 +98,15 @@ function ENT:Think()
 	self.FuseTime = self.FuseTime - DelTime
 	self.MissileBurnTime = self.MissileBurnTime - DelTime
 	self.LastTime = curtime
-
-
+	if not self.LastPos then
+		self.LastPos = self:GetPos()
+	end
 
 	local tr = util.QuickTrace(self:GetPos() + self:GetForward() * -30, self:GetVelocity() * DelTime * 1.25, {self})
 
 	if tr.Hit then
+		debugoverlay.Cross(tr.StartPos, 10, 10, Color(255, 0, 0))
+		debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
 --		self:Detonate()
 		self:SetPos(tr.HitPos + self:GetForward() * -18)
 		self.FuseTime = -1
@@ -73,14 +121,24 @@ function ENT:Think()
 			self.Gravity = 9.8 * 39.37 * DelTime
 		end
 		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust + Vector(0, 0, -self.Gravity)))
+		debugoverlay.Line(self.LastPos, self:GetPos(), 10, Color(0, 0, 255))
+		self.LastPos = self:GetPos()
 	end
 
 
 	if ( IsValid( self.tarent ) )  then
 
-		d = self.tarent:GetPos() - self:GetPos()
+		local dist = (self.tarent:GetPos() - self:GetPos()):Length()
+		local TTime = dist / self:GetVelocity():Length()
+		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * TTime * (self.LeadMul or 1))
+		local d = (TPos + Vector(0, 0, self.MissileClimbRatio * dist)) - self:GetPos()
+		if dist / self.StartDist < 0.5 then
+			self.MissileClimbRatio = 0
+		end
+		if self.RadioDist and d:Length() < self.RadioDist then
+			self.FuseTime = -1
+		end
 		local dadjust = Vector(d.x, d.y, 0)
-		local TTime = d:Length() / self:GetVelocity():Length()
 		local Range = dadjust:Length()
 		if Range < 4000 then
 			Range = 0
@@ -88,7 +146,7 @@ function ENT:Think()
 		local DTTime = self.TTime - TTime
 		self.TTime = TTime
 	if DTTime > 0 then
-		local AngAdjust = self:WorldToLocalAngles((d + self.tarent:GetVelocity() * TTime + Vector(0, 0, Range * self.MissileClimbRatio + self.Gravity)):Angle())
+		local AngAdjust = self:WorldToLocalAngles((d):Angle())
 		local adjustedrate = self.MaxTurnRate * DelTime
 		AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
 
@@ -112,31 +170,6 @@ function ENT:Think()
 
 
 	if self.FuseTime < 0 then
-
-		self:Remove()
-
-		local HEWeight = 4
-		local Radius = HEWeight ^ 0.33 * 8 * 39.37
-
---		ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
-
-		self.FakeCrate = ents.Create("acf_fakecrate2")
-		self.FakeCrate:RegisterTo(self.Bulletdata)
-		self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
-		self:DeleteOnRemove(self.FakeCrate)
-
-		self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
-
-		self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
-
-		self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
-		self:CreateShell( self.Bulletdata )
-
-
-		local Flash = EffectData()
-		Flash:SetOrigin(self:GetPos() + Vector(0, 0, 8))
-		Flash:SetNormal(Vector(0, 0, -1))
-		Flash:SetRadius(math.max(Radius, 1))
-		util.Effect( "ACF_Scaled_Explosion", Flash )
+		self:Detonate()
 	end
 end

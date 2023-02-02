@@ -2,6 +2,7 @@ include('shared.lua')
 
 function SWEP:DoDrawCrosshair(x, y)
     local Zoom = self:GetZoomState()
+    local LaunchAuth = self:GetLaunchAuth()
 
     self:DrawScope(Zoom)
 
@@ -16,7 +17,7 @@ function SWEP:DoDrawCrosshair(x, y)
         local thiccness = 2
         surface.SetDrawColor(255, 120, 0, 255)
 
-        if (LaunchAuth or false) == true then
+        if LaunchAuth then
             tempcolor = Color(0, 150, 0)
             surface.SetDrawColor(0, 255, 0, 255)
             thiccness = 5
