@@ -54,7 +54,6 @@ SWEP.MaxSpread = 1.5 --Maximum added random spread from heat value, in degrees
 SWEP.MovementSpread = 7 --Increase aimcone to this many degrees when sprinting at full speed
 SWEP.UnscopedSpread = 0 --Spread, in degrees, when unscoped with a scoped weapon
 
-
 --Model settings--
 SWEP.ViewModelFlip = false
 SWEP.ViewModel = "models/mac/Javelin.mdl"
@@ -77,7 +76,7 @@ SWEP.IronSightsAng = Vector( 0, 0, 0 )
 
 SWEP.SeekSensitivity = 1
 
-SWEP.Lockrate = 0.002 --Lock rate per second
+SWEP.Lockrate = 0.014 --Lock rate per second
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 1, "LaunchAuth")
@@ -194,6 +193,7 @@ function SWEP:InitBulletData()
     self.DragCoef = self.BulletData.DragCoef
     self.Colour = self.BulletData.Colour
     self.DetonatorAngle = 80
+    self.BulletData.FuseLength = 0.1
 end
 
 
@@ -249,22 +249,19 @@ function SWEP:PrimaryAttack()
                 local d = self.TarEnt:GetPos() - owner:GetPos()
                 local range = d:Length()
 
-                if range < 125 * 39.37 or d.z > 400 then
-                    ent.MissileClimbRatio = 0
-                    ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 0))
-                    ent:SetAngles(owner:GetAimVector():Angle() + Angle(-15, 0, 0))
-                else
-                    ent.MissileClimbRatio = 0.75
-                    ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 5))
-                    ent:SetAngles(owner:GetAimVector():Angle() + Angle(-25, 0, 0))
-                end
+                ent.MissileClimbRatio = (math.abs(d.z) > 400 or ((range / 39.37) < 200)) and 0 or (math.Clamp(range / 39.37 / 400, 0, 1) * 0.2)
+
+                ent.StartDist = range
+
+                ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 0))
+                ent:SetAngles(owner:GetAimVector():Angle() + Angle(-5, 0, 0))
 
                 ent:Spawn()
                 ent:SetOwner(Gun)
                 ent:SetModel("models/mcace/Jevelinemissile.mdl")
 
                 timer.Simple(0.1, function()
-                    ParticleEffectAttach("Rocket Motor", 4, ent, 1)
+                    ParticleEffectAttach("Rocket Motor ATGM", 4, ent, 1)
                 end)
 
                 ent.MissileThrust = 4000
@@ -274,9 +271,11 @@ function SWEP:PrimaryAttack()
                 ent.FuseTime = 25
                 ent.tarent = self.TarEnt
                 ent.Bulletdata = self.BulletData
+                ent.LeadMul = 1
+                ent:SetOwner(self:GetOwner())
     --            ent:SetPos( ent.tarent:GetPos() + Vector(0,0,500) )
                 if CPPI then
-                    ent:CPPISetOwner(owner)
+                    ent:CPPISetOwner(Entity(0))
                 end
 
                 --local phys = ent:GetPhysicsObject()
@@ -449,32 +448,35 @@ function SWEP:AcquireLock()
     return bestEnt or NULL
 end
 
+SWEP.NextThinkTime = 0
+SWEP.ThinkDelay = 0.1
+
 function SWEP:Think()
+    if CurTime() < self.NextThinkTime then return end
+    if not SERVER then return end
 
-    local Zoom = self:GetZoomState()
+    local owner = self:GetOwner()
+    local lasttarget
 
-    self:NextThink(CurTime() + 0.5)
-    if SERVER then
-        local owner = self:GetOwner()
-        local lasttarget = self.TarEnt
+    if self:GetZoomState() then
         self.TarEnt = self:AcquireLock()
 
-        if lasttarget == self.TarEnt and ( IsValid( self.TarEnt ) ) and Zoom  then
+        if IsValid(self.TarEnt) and (not lasttarget) or (self.TarEnt == lasttarget) then
             if self:GetLockProgress() == 0 then
-                owner:EmitSound( "acf_extra/airfx/caution2.wav", 75, 45, 1, CHAN_AUTO )
+                owner:EmitSound( "acf_extra/airfx/caution2.wav", 65, 45, 1, CHAN_AUTO )
             end
 
             self:SetLockProgress(self:GetLockProgress() + self.Lockrate)
 
             if not self:GetLaunchAuth() and self:GetLockProgress() > 1 then
                 owner:StopSound( "acf_extra/airfx/caution2.wav" )
-                owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 87, 0.3, CHAN_AUTO )
+                owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 65, 87, 0.3, CHAN_AUTO )
             end
 
             if self:GetLockProgress() > 1 then
                 self:SetLaunchAuth(true)
             end
-        elseif self:GetLockProgress() > 0 then
+        else
             self:SetLockProgress(0)
             owner:StopSound( "acf_extra/airfx/caution2.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
@@ -488,11 +490,19 @@ function SWEP:Think()
             self:SetTarPosY(TarPos.y)
             self:SetTarPosZ(TarPos.z)
         end
+
+        lasttarget = self.TarEnt
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )
 --        end
+    else
+        self:SetLockProgress(0)
+        owner:StopSound( "acf_extra/airfx/caution2.wav" )
+        owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
+        self:SetLaunchAuth(false)
     end
 
+    self.NextThinkTime = CurTime() + self.ThinkDelay
 end
 
 function SWEP:Holster()

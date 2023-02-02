@@ -73,6 +73,8 @@ function SWEP:SetupDataTables()
 
 	if CLIENT then
 		self:NetworkVarNotify("ExplosionDelay", function(_, _, _, delay)
+			if LocalPlayer() ~= self:GetOwner() then return end
+
 			notification.AddLegacy("Explosion Delay: " .. delay .. " seconds", NOTIFY_GENERIC, 5)
 		end)
 	end

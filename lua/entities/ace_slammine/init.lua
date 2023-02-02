@@ -33,6 +33,40 @@ function ENT:Initialize()
 	self.Triggered = false
 end
 
+function ENT:Boom()
+	local HEWeight = 0.25
+	local Radius = HEWeight ^ 0.33 * 8 * 39.37
+
+	ACF_HE(self:GetPos(), Vector(0, 0, 1), HEWeight, HEWeight * 0.5, self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+
+	local Flash = EffectData()
+		Flash:SetOrigin( self:GetPos() )
+		Flash:SetNormal( Vector(0, 0, -1) )
+		Flash:SetRadius( Radius )
+	util.Effect( "ACF_Scaled_Explosion", Flash )
+
+
+	self.FakeCrate = ents.Create("acf_fakecrate2")
+	self.FakeCrate:RegisterTo(self.Bulletdata)
+	self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
+	self:DeleteOnRemove(self.FakeCrate)
+
+	self.Bulletdata["Flight"] = self:GetUp():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
+
+	self.Bulletdata.Pos = self:GetPos() + self:GetUp() * 2
+
+	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
+	self:CreateShell( self.Bulletdata )
+end
+
+function ENT:OnRemove()
+	if CLIENT then return end
+
+	if self.Triggered then
+		self:Boom()
+	end
+end
+
 function ENT:Think()
 	if CurTime() - self.SpawnTime < 2.5 then
 		return
@@ -66,31 +100,10 @@ function ENT:Think()
 		self.Triggered = true
 
 		timer.Simple(self.ExplosionDelay, function()
+			if not IsValid(self) then return end
+
 			self:Remove()
-
-			local HEWeight = 0.25
-			local Radius = HEWeight ^ 0.33 * 8 * 39.37
-
-			ACF_HE(self:GetPos(), Vector(0, 0, 1), HEWeight, HEWeight * 0.5, self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
-
-			local Flash = EffectData()
-				Flash:SetOrigin( self:GetPos() )
-				Flash:SetNormal( Vector(0, 0, -1) )
-				Flash:SetRadius( Radius )
-			util.Effect( "ACF_Scaled_Explosion", Flash )
-
-
-			self.FakeCrate = ents.Create("acf_fakecrate2")
-			self.FakeCrate:RegisterTo(self.Bulletdata)
-			self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
-			self:DeleteOnRemove(self.FakeCrate)
-
-			self.Bulletdata["Flight"] = self:GetUp():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
-
-			self.Bulletdata.Pos = self:GetPos() + self:GetUp() * 2
-
-			self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
-			self:CreateShell( self.Bulletdata )
+			self:Boom()
 		end)
 	end
 end

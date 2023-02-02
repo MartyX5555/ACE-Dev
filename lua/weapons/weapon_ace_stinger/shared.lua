@@ -77,7 +77,7 @@ SWEP.IronSightsAng = Vector( 0, 0, 0 )
 
 SWEP.SeekSensitivity = 2
 
-SWEP.Lockrate = 0.005 --Lock rate per second
+SWEP.Lockrate = 0.034 --Lock rate per second
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 1, "LaunchAuth")
@@ -221,12 +221,15 @@ function SWEP:PrimaryAttack()
                 ent:SetModel("models/missiles/fim_92.mdl")
 
                 timer.Simple(0.1, function()
-                    ParticleEffectAttach("Rocket Motor", 4, ent, 1)
+                    ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
                 end)
 
-                ent.MissileThrust = 8000
+                ent.MissileThrust = 5000
                 ent.MissileAgilityMul = 50
-                ent.MissileBurnTime = 0.5
+                ent.MissileBurnTime = 2
+                ent.MaxTurnRate = 50
+                ent.LeadMul = 2
+                ent.RadioDist = 400
                 ent.tarent = self.TarEnt
                 ent.Bulletdata = self.BulletData
     --            ent:SetPos( ent.tarent:GetPos() + Vector(0,0,500) )
@@ -398,34 +401,35 @@ function SWEP:AcquireLock()
 end
 
 
-
+SWEP.NextThinkTime = 0
+SWEP.ThinkDelay = 0.1
 
 function SWEP:Think()
+    if CurTime() < self.NextThinkTime then return end
+    if not SERVER then return end
 
-    local Zoom = self:GetZoomState()
+    local owner = self:GetOwner()
+    local lasttarget
 
-    self:NextThink(CurTime() + 0.5)
-    if SERVER then
-        local owner = self:GetOwner()
-        local lasttarget = self.TarEnt
+    if self:GetZoomState() then
         self.TarEnt = self:AcquireLock()
 
-        if lasttarget == self.TarEnt and ( IsValid( self.TarEnt ) ) and Zoom  then
+        if IsValid(self.TarEnt) and (not lasttarget) or (self.TarEnt == lasttarget) then
             if self:GetLockProgress() == 0 then
-                owner:EmitSound( "acf_extra/airfx/radar_track.wav", 75, 105, 1, CHAN_AUTO )
+                owner:EmitSound( "acf_extra/airfx/radar_track.wav", 65, 105, 1, CHAN_AUTO )
             end
 
             self:SetLockProgress(self:GetLockProgress() + self.Lockrate)
 
             if not self:GetLaunchAuth() and self:GetLockProgress() > 1 then
                 owner:StopSound( "acf_extra/airfx/radar_track.wav" )
-                owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 105, 0.3, CHAN_AUTO )
+                owner:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 65, 105, 0.3, CHAN_AUTO )
             end
 
             if self:GetLockProgress() > 1 then
                 self:SetLaunchAuth(true)
             end
-        elseif self:GetLockProgress() > 0 then
+        else
             self:SetLockProgress(0)
             owner:StopSound( "acf_extra/airfx/radar_track.wav" )
             owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
@@ -439,11 +443,19 @@ function SWEP:Think()
             self:SetTarPosY(TarPos.y)
             self:SetTarPosZ(TarPos.z)
         end
+
+        lasttarget = self.TarEnt
 --        if ( IsValid( self.TarEnt ) ) then
 --        self:EmitSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav", 75, 100, 1, CHAN_AUTO )
 --        end
+    else
+        self:SetLockProgress(0)
+        owner:StopSound( "acf_extra/airfx/radar_track.wav" )
+        owner:StopSound( "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav" )
+        self:SetLaunchAuth(false)
     end
 
+    self.NextThinkTime = CurTime() + self.ThinkDelay
 end
 
 function SWEP:Holster()
