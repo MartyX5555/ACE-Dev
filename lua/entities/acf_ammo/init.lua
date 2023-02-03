@@ -231,12 +231,14 @@ do
             --Look for scalable Id
             if not ACE_CheckAmmo( Id ) then
 
+                local Review
+
                 --Verify if its a valid scale ID. Skips this test if its a vector
                 if isstring(Id) then
                     Review = string.find( Id, "[%a]")
                 end
 
-                if not Review then
+                if Id and not Review then
 
                     Ammo.IsScalable = true
 
@@ -270,7 +272,7 @@ do
                     Id = "Ammo2x4x4"  
                 end
             end
-
+            
             if ACE_CheckAmmo( Id ) then
 
                 local AmmoData = AmmoTable[Id]
