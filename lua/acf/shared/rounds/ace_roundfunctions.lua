@@ -154,6 +154,9 @@ do
 
 		--This function is a direct copy from acf_ammo code. So its expected that the result matches with the ammo count
 		--TODO: Use this same function for Existent crates? Weird to have this same code in both places.
+
+		local toInche = 2.54        --Number used for cm -> inche conversion
+
 		function ACE_AmmoCapacity( Data )
 
 			local GunId 	  = acfmenupanel.AmmoData.Data.id
@@ -169,10 +172,10 @@ do
 
 			if ClassData.type == "missile" then
 				width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
-				shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
+				shellLength = AmmoGunData.length/ACF.AmmoLengthMul/toInche
 			else
 				width 		= (Caliber)/ACF.AmmoWidthMul/1.6
-				shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/2.54
+				shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/toInche
 			end
 
 			local Id 		 = acfmenupanel.AmmoData.Id
