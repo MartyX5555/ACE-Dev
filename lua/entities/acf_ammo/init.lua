@@ -268,6 +268,12 @@ do
 
                     Ammo:ACE_SetScale( Ammo.ScaleData )
 
+                    local PhysicObj = Ammo:GetPhysicsObject()
+                    if IsValid(PhysicObj) then
+
+                        PhysicObj:SetMaterial( "metal" )
+                    end
+
                 else
                     Id = "Ammo2x4x4"  
                 end
