@@ -25,7 +25,7 @@ ACF_defineGun("Type 63 RA", {                               -- id
     gunclass    = "ARTY",
     rack        = "1xRK_small",                             -- Which rack to spawn this missile on?
     weight      = 80,
-    length      = 66 * 2,
+    length      = 126,
     year        = 1960,
     rofmod      = 0.3,
     roundclass  = "Rocket",
@@ -81,7 +81,7 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     gunclass    = "ARTY",
     rack        = "1xRK",                                   -- Which rack to spawn this missile on?
     weight      = 160,
-    length      = 114 * 2, --320
+    length      = 219, --320
     year        = 1980,
     rofmod      = 0.25,
     roundclass  = "Rocket",
@@ -137,7 +137,7 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     gunclass    = "ARTY",
     rack        = "1xRK",                                   -- Which rack to spawn this missile on?
     weight      = 320,
-    length      = 214 * 2,
+    length      = 383,
     year        = 1983,
     rofmod      = 0.2,
     roundclass  = "Rocket",
@@ -192,7 +192,7 @@ ACF_defineGun("RW61 RA", {                                  -- id
     gunclass    = "ARTY",
     rack        = "380mmRW61",                              -- Which rack to spawn this missile on?
     weight      = 1800,
-    length      = 95 * 2,
+    length      = 161,
     year        = 1944,
     rofmod      = 0.25,
     roundclass  = "Rocket",

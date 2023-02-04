@@ -22,7 +22,7 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
     rack        = "1x BGM-71E",                                 -- Which rack to spawn this missile on?
-    length      = 73 * 2,                                           -- Used for the physics calculations
+    length      = 123,                                        -- Used for the physics calculations
     caliber     = 13,
     weight      = 76.4,                                         -- Don't scale down the weight though!
     year        = 1970,
@@ -71,7 +71,7 @@ ACF_defineGun("9M133 ASM", {                                    -- id
     effect          = "Rocket Motor ATGM",
     gunclass        = "ATGM",
     rack            = "1x Kornet",                              -- Which rack to spawn this missile on?
-    length          = 74 * 2,
+    length          = 130,
     caliber         = 15.2,
     weight          = 29,                                       -- Don't scale down the weight though!                                
     year            = 1994,
@@ -123,7 +123,7 @@ ACF_defineGun("AT-3 ASM", { --id
     effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xAT3RK",                                    -- Which rack to spawn this missile on?
-    length      = 42 * 2,                                           -- Used for the physics calculations
+    length      = 84,                                           -- Used for the physics calculations
     caliber     = 13,
     weight      = 12.5,                                           -- Don't scale down the weight though!
     year        = 1969,
@@ -176,7 +176,7 @@ ACF_defineGun("Ataka ASM", { --id
     effect          = "Rocket Motor ATGM",
     gunclass        = "ATGM",
     rack            = "1x Ataka",                               -- Which rack to spawn this missile on?
-    length          = 92 * 2,
+    length          = 174,
     caliber         = 13,
     weight          = 198,                                      -- Don't scale down the weight though!
     year            = 1984,
@@ -229,7 +229,7 @@ ACF_defineGun("AT-2 ASM", { --id
     effect      = "Rocket Motor FFAR",
     gunclass    = "ATGM",
     rack        = "1xRK",                                       -- Which rack to spawn this missile on?
-    length      = 62 * 2,                                           -- Used for the physics calculations
+    length      = 115,                                           -- Used for the physics calculations
     caliber     = 16, 
     weight      = 27,                                          -- Don't scale down the weight though!
     year        = 1969,
@@ -281,7 +281,7 @@ ACF_defineGun("FGM-148 ASM", {
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
     rack        = "1x Javelin",                                 -- Which rack to spawn this missile on?
-    length      = 51 * 2,                                          -- Used for the physics calculations
+    length      = 98,                                          -- Used for the physics calculations
     caliber     = 12.7,                                         -- caliber
     weight      = 11.8,                                         -- Don't scale down the weight though!  --was 97.2
     year        = 1989,                                         -- year

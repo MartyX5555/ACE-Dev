@@ -23,7 +23,7 @@ ACF_defineGun("50kgBOMB", {                         -- id
     model           = "models/bombs/fab50.mdl",
     gunclass        = "BOMB",
     rack            = "3xRK",                       -- Which rack to spawn this missile on?
-    length          = 47 * 2,
+    length          = 90,
     caliber         = 5.0,
     weight          = 50,                           -- Don't scale down the weight though!
     year            = 1915,
@@ -68,7 +68,7 @@ ACF_defineGun("100kgBOMB", {                        -- id
     model           = "models/bombs/fab100.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 68 * 2,
+    length          = 106,
     caliber         = 10.0,
     weight          = 100,                          -- Don't scale down the weight though!
     year            = 1939,
@@ -112,7 +112,7 @@ ACF_defineGun("250kgBOMB", {                        -- id
     model           = "models/bombs/fab250.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 120 * 2,
+    length          = 207,
     caliber         = 12.5,
     weight          = 250,                          -- Don't scale down the weight though!
     year            = 1941,
@@ -156,7 +156,7 @@ ACF_defineGun("500kgBOMB", {                        -- id
     model           = "models/bombs/fab500.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 120 * 2, --i know. Real one is too big for the largest of the ammocrates
+    length          = 210, --i know. Real one is too big for the largest of the ammocrates
     caliber         = 30,
     weight          = 500,                          -- Don't scale down the weight though!
     year            = 1943,
@@ -197,7 +197,7 @@ ACF_defineGun("1000kgBOMB", {                       -- id
     model           = "models/bombs/an_m66.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 120 * 2, --i know. Real one is too big for the largest of the ammocrates
+    length          = 227, --i know. Real one is too big for the largest of the ammocrates
     caliber         = 30,
     weight          = 1000,                         -- Don't scale down the weight though! 
     year            = 1945,
@@ -238,7 +238,7 @@ ACF_defineGun("100kgGBOMB", {                       -- id
     model           = "models/missiles/micro.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 68 * 2, 
+    length          = 121, 
     caliber         = 10.0,
     weight          = 150,                          -- Don't scale down the weight though!
     year            = 1939,
@@ -283,7 +283,7 @@ ACF_defineGun("250kgGBOMB", {                       -- id
     model           = "models/missiles/fab250.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 108 * 2,
+    length          = 165,
     caliber         = 12.5,
     weight          = 375,                          -- Don't scale down the weight though!
     year            = 1941,

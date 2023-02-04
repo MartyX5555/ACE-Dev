@@ -27,7 +27,7 @@ ACF_defineGun("RS82 ASR", { --id
     gunclass    = "UAR",
     rack        = "1xRK_small",  -- Which rack to spawn this missile on?
     weight      = 6.8,
-    length      = 32.5 * 2.25,
+    length      = 62,
     year        = 1933,
     rofmod      = 0.07,
     roundclass  = "Rocket",
@@ -74,7 +74,7 @@ ACF_defineGun("HVAR ASR", { --id
     gunclass    = "UAR",
     rack        = "1xRK",  -- Which rack to spawn this missile on?
     weight      = 63,
-    length      = 91 * 2.25,
+    length      = 174,
     year        = 1933,
     rofmod      = 0.5,
     roundclass  = "Rocket",
@@ -119,7 +119,7 @@ ACF_defineGun("SPG-9 ASR", { --id
     gunclass    = "UAR",
     rack        = "1x SPG9",  -- Which rack to spawn this missile on?
     weight      = 47,
-    length      = 22.5 * 2.25,
+    length      = 63,
     year        = 1962,
     rofmod      = 0.4,
     roundclass  = "Rocket",
@@ -165,7 +165,7 @@ ACF_defineGun("S-24 ASR", { --id
     gunclass    = "UAR",
     rack        = "1xRK",  -- Which rack to spawn this missile on?
     weight      = 235,
-    length      = 117 * 2 , -- Note: intentional. When scalable system becomes true. I could fix this.
+    length      = 223 , -- Note: intentional. When scalable system becomes true. I could fix this.
     year        = 1960,
     rofmod      = 0.4,
     roundclass  = "Rocket",
@@ -211,7 +211,7 @@ ACF_defineGun("Zuni ASR", { --id
     gunclass    = "UAR",
     rack        = "127mm4xPOD",
     weight      = 36.1,
-    length      = 156 * 2.25,
+    length      = 298,
     year        = 1957,
     rofmod      = 0.5,
     roundclass  = "Rocket",

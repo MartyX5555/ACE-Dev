@@ -27,7 +27,7 @@ ACF_defineGun("40mmFFAR", { --id
     gunclass    = "FFAR",
     rack        = "40mm7xPOD",  -- Which rack to spawn this missile on?
     weight      = 6,
-    length      = 38 * 2, -- Length affects inertia calculations
+    length      = 65, -- Length affects inertia calculations
     rofmod      = 0.1,
     year        = 1960,
     modeldiameter   = 2,
@@ -71,7 +71,7 @@ ACF_defineGun("70mmFFAR", { --id
     gunclass    = "FFAR",
     rack        = "70mm7xPOD",  -- Which rack to spawn this missile on?
     weight      = 12,
-    length      = 64 * 2,
+    length      = 115,
     year        = 1960,
     rofmod      = 0.06,
     roundclass  = "Rocket",

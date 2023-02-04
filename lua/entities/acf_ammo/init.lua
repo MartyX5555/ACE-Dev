@@ -489,6 +489,7 @@ do
 
     local Floor = math.floor
     local MaxValue = math.max
+    local toInche = 2.54        --Number used for cm -> inche conversion
 
     function ENT:BuildAmmoCapacity()
 
@@ -518,14 +519,14 @@ do
 
             local width, shellLength
 
-            if WeaponType == "missile" then
+            if WeaponType == "missile" then          
 
                 width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
-                shellLength = AmmoGunData.length/ACF.AmmoLengthMul/3
+                shellLength = AmmoGunData.length/ACF.AmmoLengthMul/toInche
             else
 
                 width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/1.6
-                shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/2.54          
+                shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/toInche         
             end
 
             local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)

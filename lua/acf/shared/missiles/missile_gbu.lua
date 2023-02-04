@@ -27,7 +27,7 @@ ACF_defineGun("WalleyeGBU", { 						-- id
 	model 			= "models/bombs/gbu/agm62.mdl",
 	gunclass 		= "GBU",
     rack 			= "1xRK",  						-- Which rack to spawn this missile on?
-	length 			= 210 * 2,
+	length 			= 346,
 	caliber 		= 31.8, 						-- fat fucker, real diameter is 0.318m
 	weight 			= 1000,    						-- 510kg
 	year 			= 1967,
@@ -73,7 +73,7 @@ ACF_defineGun("227kgGBU", { 						-- id
 	model 			= "models/bombs/gbu/gbu12.mdl",
 	gunclass 		= "GBU",
     rack 			= "1xRK",  						-- Which rack to spawn this missile on?
-	length 			= 140 * 2,
+	length 			= 225,
 	caliber 		= 10.5,
 	weight 			= 227,    						-- Don't scale down the weight though!
 	year 			= 1976,
@@ -118,7 +118,7 @@ ACF_defineGun("454kgGBU", { 						-- id
 	model 			= "models/bombs/gbu/gbu16.mdl",
 	gunclass 		= "GBU",
     rack 			= "1xRK",  						-- Which rack to spawn this missile on?
-	length 			= 170 * 2,
+	length 			= 264,
 	caliber 		= 17.0,
 	weight 			= 454,    						-- Don't scale down the weight though!
 	year 			= 1976,
@@ -163,7 +163,7 @@ ACF_defineGun("909kgGBU", { 						-- id
 	model 			= "models/bombs/gbu/gbu10.mdl",
 	gunclass 		= "GBU",
     rack 			= "1xRK",  						-- Which rack to spawn this missile on?
-	length 			= 200 * 2,
+	length 			= 320,
 	caliber 		= 20.0,
 	weight 			= 909,    						-- Don't scale down the weight though! 
 	year 			= 1976,

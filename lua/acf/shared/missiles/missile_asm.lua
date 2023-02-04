@@ -25,7 +25,7 @@ ACF_defineGun("AGM-114 ASM", {                          --id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "2x AGM-114",                     -- Which rack to spawn this missile on?
-    length          = 86 * 2,
+    length          = 163,
     caliber         = 16,
     weight          = 45,                              -- Don't scale down the weight though!
     modeldiameter   = 3 * 2.54,                      -- in cm
@@ -74,7 +74,7 @@ ACF_defineGun("AGM-45 ASM", {                           -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "1xRK",                           -- Which rack to spawn this missile on?
-    length          = 370, 
+    length          = 383, 
     caliber         = 20.3,
     weight          = 177,                              -- Don't scale down the weight though!
     modeldiameter   = 4 * 2.54,                       -- in cm
@@ -126,7 +126,7 @@ ACF_defineGun("AGM-122 ASM", {                          -- id
     effect      = "Rocket Motor Missile1",
     gunclass    = "ASM",
     rack        = "1xRK",                               -- Which rack to spawn this missile on?
-    length      = 302 * 0.8,
+    length      = 215,
     caliber     = 12.7,                                 -- Aim-9 is listed as 9 as of 6/30/2017, why?  Wiki lists it as a 5" rocket!
     weight      = 88,                                  -- Don't scale down the weight though!
     rofmod      = 0.3,
@@ -180,7 +180,7 @@ ACF_defineGun("AGM-65 ASM", {                           -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "1xRK",                           -- Which rack to spawn this missile on?
-    length          = 396 * 0.6,
+    length          = 352,
     caliber         = 30.5,
     weight          = 300,                              -- Don't scale down the weight though!
     year            = 1974,

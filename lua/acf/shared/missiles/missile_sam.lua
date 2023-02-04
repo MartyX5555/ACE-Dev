@@ -22,7 +22,7 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
     effect          = "Rocket Motor FFAR",                      --Tiny motor for tiny rocket
     gunclass        = "SAM",
     rack            = "1x FIM-92",                              -- Which rack to spawn this missile on?
-    length          = 90 * 2,
+    length          = 150,
     caliber         = 11,
     weight          = 20,                                       -- 15.1,    -- Don't scale down the weight though!
     modeldiameter   = 3,                                      -- in cm
@@ -74,7 +74,7 @@ ACF_defineGun("Mistral SAM", {                                -- id
     effect          = "Rocket Motor FFAR",                      -- Tiny motor for tiny rocket
     gunclass        = "SAM",
     rack            = "2x FIM-92",                              -- Which rack to spawn this missile on?
-    length          = 90 * 2,
+    length          = 150,
     caliber         = 11,
     weight          = 19.7,                                      -- 15.1,    -- Don't scale down the weight though!
     modeldiameter   = 3,                                      -- in cm
@@ -123,7 +123,7 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
     effect          = "Rocket Motor",
     gunclass        = "SAM",
     rack            = "1x Strela-1",                            -- Which rack to spawn this missile on?
-    length          = 114 * 2,
+    length          = 219,
     caliber         = 12,
     weight          = 72,                                      -- 15.1,    -- Don't scale down the weight though!
     year            = 1960,
@@ -175,7 +175,7 @@ ACF_defineGun("9M311 SAM", {                                        -- id
     effect      = "Rocket Motor",
     gunclass    = "SAM",
     rack        = "1x 9m311",                                   -- Which rack to spawn this missile on?
-    length      = 302 * 0.8,                                          -- Used for the physics calculations
+    length      = 215,                                          -- Used for the physics calculations
     caliber     = 12,
     weight      = 71,                                           -- Don't scale down the weight though!
     year        = 1982,
