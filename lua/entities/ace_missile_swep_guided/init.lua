@@ -68,8 +68,8 @@ function ENT:Detonate()
 	self:DeleteOnRemove(self.FakeCrate)
 
 	self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
-
 	self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
+	self.Bulletdata.Owner = self:GetOwner()
 
 	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
 	self:CreateShell( self.Bulletdata )
