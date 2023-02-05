@@ -140,6 +140,7 @@ do -- AdvDupe2 duped parented ammo workaround
 	-- Only applies for Advanced Duplicator 2
 
 	function ENT:OnDuplicated(EntTable)
+        if not self.IsScalable then return end
 		local DupeInfo = EntTable.BuildDupeInfo
 
 		if DupeInfo and DupeInfo.DupeParentID then
@@ -150,6 +151,7 @@ do -- AdvDupe2 duped parented ammo workaround
 	end
 
 	function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
+        if not self.IsScalable then return end
 		if self.ParentIndex then
 			self.ParentEnt = CreatedEntities[self.ParentIndex]
 			self.ParentIndex = nil
