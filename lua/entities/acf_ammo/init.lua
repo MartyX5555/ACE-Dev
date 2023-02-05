@@ -531,10 +531,6 @@ do
                 width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/toInche
                 shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/toInche         
 
-                print(width)
-                print(shellLength)
-                print(Dimensions)
-
             end
 
             local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
