@@ -28,6 +28,7 @@ ACE.CritEnts = {
     acf_fueltank                = true,
     acf_rack                    = true,
     acf_missile                 = true,
+    ace_missile_swep_guided     = true,
     prop_vehicle_prisoner_pod   = true,
     gmod_wire_gate              = true
 }
@@ -696,7 +697,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
     local ricoProb  = 1
 
     --Missiles are special. This should be dealt with guns only
-    if (IsValid(Bullet["Gun"]) and Bullet["Gun"]:GetClass() ~= "acf_missile") or not IsValid(Bullet["Gun"]) then
+    if (IsValid(Bullet["Gun"]) and Bullet["Gun"]:GetClass() ~= "acf_missile" and Bullet["Gun"]:GetClass() ~= "ace_missile_swep_guided") or not IsValid(Bullet["Gun"]) then
 
         local sigmoidCenter = Bullet.DetonatorAngle or ( (Bullet.Ricochet or 55) - math.max(Speed / 39.37 - (Bullet.LimitVel or 800),0) / 100 ) --Changed the abs to a min. Now having a bullet slower than normal won't increase chance to richochet.
 

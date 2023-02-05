@@ -785,8 +785,13 @@ do
     end
 end
 
-hook.Add("CanDrive", "acf_missile_CanDrive", function(ply, ent)
-    if ent:GetClass() == "acf_missile" then return false end
+local dontDrive = {
+    acf_missile = true,
+    ace_missile_swep_guided = true
+}
+
+hook.Add("CanDrive", "acf_missile_CanDrive", function(_, ent)
+    if dontDrive[ent:GetClass()] then return false end
 end)
 
 function ENT:OnRemove()
