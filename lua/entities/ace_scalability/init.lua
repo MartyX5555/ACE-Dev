@@ -132,7 +132,7 @@ do
     end)
 
 end
-
+--[[
 --Brought from the ACF3
 do -- AdvDupe2 duped parented ammo workaround
 	-- Duped parented scalable entities were uncapable of spawning on the correct position
@@ -141,6 +141,7 @@ do -- AdvDupe2 duped parented ammo workaround
 
 	function ENT:OnDuplicated(EntTable)
         if not self.IsScalable then return end
+
 		local DupeInfo = EntTable.BuildDupeInfo
 
 		if DupeInfo and DupeInfo.DupeParentID then
@@ -175,3 +176,4 @@ do -- AdvDupe2 duped parented ammo workaround
 		end
 	end)
 end
+]]
