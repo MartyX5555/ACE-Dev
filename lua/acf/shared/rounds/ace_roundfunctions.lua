@@ -171,10 +171,10 @@ do
 			local width, shellLength
 
 			if ClassData.type == "missile" then
-				width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
+				width       = AmmoGunData.modeldiameter or (AmmoGunData.caliber/ACF.AmmoLengthMul/toInche)
 				shellLength = AmmoGunData.length/ACF.AmmoLengthMul/toInche
 			else
-				width 		= (Caliber)/ACF.AmmoWidthMul/1.6
+				width 		= (Caliber)/ACF.AmmoWidthMul/toInche
 				shellLength = ((PropLenght or 0) + (ProjLenght or 0))/ACF.AmmoLengthMul/toInche
 			end
 

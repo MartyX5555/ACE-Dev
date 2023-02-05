@@ -252,12 +252,14 @@ do
                     local ModelData = ACE.ModelData[Model]
                     local DefaultSize   = ModelData.DefaultSize
                     local Mesh          = ModelData.CustomMesh
+                    local PhysMaterial  = ModelData.physMaterial
                     local EntityScale = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize) 
 
                     Ammo.ScaleData = {
                         Mesh = Mesh,
                         Scale = EntityScale,
-                        Size = DefaultSize
+                        Size = DefaultSize,
+                        Material = PhysMaterial,
                     }
         
                     Ammo:SetMaterial("models/props_canal/metalwall005b")
@@ -267,12 +269,6 @@ do
                     Ammo:SetSolid( SOLID_VPHYSICS )
 
                     Ammo:ACE_SetScale( Ammo.ScaleData )
-
-                    local PhysicObj = Ammo:GetPhysicsObject()
-                    if IsValid(PhysicObj) then
-
-                        PhysicObj:SetMaterial( "metal" )
-                    end
 
                 else
                     Id = "Ammo2x4x4"  
@@ -527,12 +523,18 @@ do
 
             if WeaponType == "missile" then          
 
-                width       = AmmoGunData.modeldiameter or AmmoGunData.caliber
+                width       = AmmoGunData.modeldiameter or (AmmoGunData.caliber/ACF.AmmoLengthMul/toInche)
                 shellLength = AmmoGunData.length/ACF.AmmoLengthMul/toInche
+
             else
 
-                width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/1.6
+                width = (AmmoGunData.caliber)/ACF.AmmoWidthMul/toInche
                 shellLength = ((self.BulletData.PropLength or 0) + (self.BulletData.ProjLength or 0))/ACF.AmmoLengthMul/toInche         
+
+                print(width)
+                print(shellLength)
+                print(Dimensions)
+
             end
 
             local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)

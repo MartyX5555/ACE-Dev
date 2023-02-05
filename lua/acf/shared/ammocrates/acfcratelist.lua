@@ -570,9 +570,9 @@ local Shell75mm = {}
 	Shell75mm.desc = "A single 75mm Shell. As an alternative to the bulky ammocrates.\n"
 	Shell75mm.model = "models/munitions/round_75mm.mdl"
 	Shell75mm.weight = 5
-	Shell75mm.Lenght = 5.551221 
-	Shell75mm.Width = 5.551221        
-	Shell75mm.Height = 32.549999  
+	Shell75mm.Lenght = 3
+	Shell75mm.Width = 3      
+	Shell75mm.Height = 31 
 	Shell75mm.volume = 613.313
 AmmoTable["Shell75mm"] = Shell75mm
 
@@ -584,9 +584,9 @@ local Shell100mm = {}
 	Shell100mm.desc = "A single 100mm Shell. As an alternative to the bulky ammocrates.\n"
 	Shell100mm.model = "models/munitions/round_100mm.mdl"
 	Shell100mm.weight = 10
-	Shell100mm.Lenght = 7.234962 
-	Shell100mm.Width = 7.234962      
-	Shell100mm.Height = 43.233334  
+	Shell100mm.Lenght = 4
+	Shell100mm.Width = 4  
+	Shell100mm.Height = 36.7 
 	Shell100mm.volume = 1453.780
 AmmoTable["Shell100mm"] = Shell100mm
 
@@ -598,9 +598,9 @@ local Shell120mm = {}
 	Shell120mm.desc = "A single 120mm Shell. As an alternative to the bulky ammocrates.\n"
 	Shell120mm.model = "models/munitions/round_120mm.mdl"
 	Shell120mm.weight = 15
-	Shell120mm.Lenght = 8.581955  
-	Shell120mm.Width = 8.581955      
-	Shell120mm.Height = 51.780003   
+	Shell120mm.Lenght = 4.73
+	Shell120mm.Width = 4.73    
+	Shell120mm.Height = 44
 	Shell120mm.volume = 2512.131
 AmmoTable["Shell120mm"] = Shell120mm
 
@@ -612,9 +612,9 @@ local Shell120mmAP = {}
 	Shell120mmAP.desc = "A single 120mm AP Shell. As an alternative to the bulky ammocrates.\n"
 	Shell120mmAP.model = "models/munitions/round_120mm_ap.mdl"
 	Shell120mmAP.weight = 15
-	Shell120mmAP.Lenght = 8.581955  
-	Shell120mmAP.Width = 8.581955      
-	Shell120mmAP.Height = 51.780003   
+	Shell120mmAP.Lenght = 4.73  
+	Shell120mmAP.Width = 4.73   
+	Shell120mmAP.Height = 44   
 	Shell120mmAP.volume = 2512.131
 AmmoTable["Shell120mmAP"] = Shell120mmAP
 
@@ -626,9 +626,9 @@ local Shell140mm = {}
 	Shell140mm.desc = "A single 140mm Shell. As an alternative to the bulky ammocrates.\n"
 	Shell140mm.model = "models/munitions/round_130mm.mdl"
 	Shell140mm.weight = 35
-	Shell140mm.Lenght = 11.444312 
-	Shell140mm.Width = 11.444312       
-	Shell140mm.Height = 69.941666  
+	Shell140mm.Lenght = 5.52 
+	Shell140mm.Width = 5.52     
+	Shell140mm.Height = 50
 	Shell140mm.volume = 6238.189
 AmmoTable["Shell140mm"] = Shell140mm
 
@@ -640,9 +640,9 @@ local Shell170mm = {}
 	Shell170mm.desc = "A single 170mm Shell. As an alternative to the bulky ammocrates.\n"
 	Shell170mm.model = "models/munitions/round_200mm.mdl"
 	Shell170mm.weight = 65
-	Shell170mm.Lenght = 13.969924 
-	Shell170mm.Width = 13.969924       
-	Shell170mm.Height = 85.966667  
+	Shell170mm.Lenght = 6.7
+	Shell170mm.Width = 6.7    
+	Shell170mm.Height = 60.7
 	Shell170mm.volume = 11630.235
 AmmoTable["Shell170mm"] = Shell170mm
 	
@@ -652,6 +652,7 @@ list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing
 ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
 
     Model = "models/holograms/rcube_thin.mdl",
+	physMaterial = "metal",
     DefaultSize = 12,
     CustomMesh = { --Its a box anyways
         {

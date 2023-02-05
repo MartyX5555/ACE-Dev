@@ -95,6 +95,7 @@ do
         local MeshData = ScaleData.Mesh
         local Scale = ScaleData.Scale
         local Size = ScaleData.Size
+        local PhysMaterial = ScaleData.Material
 
         MeshData = self:ConvertMeshToScale( MeshData, Scale )
 
@@ -110,6 +111,7 @@ do
         if IsValid(Phys) then
             Phys:Wake()
             Phys:SetMass(1000)
+            Phys:SetMaterial( PhysMaterial )
         end 
 
         NetworkNewScale( self, ScaleData.Scale )
