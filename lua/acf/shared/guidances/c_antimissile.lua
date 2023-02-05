@@ -39,6 +39,7 @@ this.MinimumDistance = 196.85	--a scant 5m
 this.DefaultFilter = 
 {
 	acf_missile					= true,
+	ace_missile_swep_guided		= true,
 	acf_glatgm					= true
 }
 

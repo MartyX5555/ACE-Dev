@@ -19,12 +19,18 @@ function ENT:Initialize()
 	self.EnergyRetention = 0.95
 	self.MaxTurnRate = 30
 
+	self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
+	self.SpecialDamage  = true  --If true, use the ACF_OnDamage function defined by this ent
+
 	self.Gravity = 0
 	self.lastTravelTime = 50000000
 
 	self.FuseTime = 10
 	self.LastTime = CurTime()
 	self.HeightOffset = Vector()
+
+	self.LastVel = Vector()
+	self.CurPos = self:GetPos()
 
 	local phys = self:GetPhysicsObject()
 	self.phys = phys
@@ -38,9 +44,12 @@ function ENT:Initialize()
 		phys:SetDamping( 0, 0 )
 		phys:SetMaterial( "grenade" )
 		phys:EnableGravity(false)
+		phys:SetInertia(Vector(100))
 	end
 
 	self:EmitSound( "acf_extra/airfx/tow2.wav", 100, 100, 2, CHAN_AUTO )
+
+	ACF_ActiveMissiles[self] = true
 end
 
 local function GetRootVelocity(ent)
@@ -54,6 +63,7 @@ local function GetRootVelocity(ent)
 end
 
 function ENT:Detonate()
+	ACF_ActiveMissiles[self] = nil
 	self.FuseTime = -1
 	self:Remove()
 
@@ -82,6 +92,10 @@ function ENT:Detonate()
 	util.Effect( "ACF_Scaled_Explosion", Flash )
 end
 
+function ENT:OnRemove()
+	ACF_ActiveMissiles[self] = nil
+end
+
 function ENT:PhysicsCollide()
 	if self.FuseTime < 0 then return end
 
@@ -97,6 +111,10 @@ function ENT:Think()
 	self.FuseTime = self.FuseTime - DelTime
 	self.MissileBurnTime = self.MissileBurnTime - DelTime
 	self.LastTime = curtime
+
+	-- These are needed for missile radars to work
+	self.LastVel = self:GetVelocity()
+	self.CurPos = pos
 
 	if self.IsJavelin and not self.StartDist and IsValid(self.tarent) then
 		local posDiff = (self.tarent:GetPos() - pos)
@@ -175,4 +193,72 @@ function ENT:Think()
 	if self.FuseTime < 0 then
 		self:Detonate()
 	end
+end
+
+--===========================================================================================
+----- OnDamage functions
+--===========================================================================================
+function ENT:ACF_Activate( Recalc )
+
+	local EmptyMass = self.RoundWeight or self.Mass or 10
+
+	self.ACF = self.ACF or {}
+
+	local PhysObj = self.phys
+	if not self.ACF.Area then
+		self.ACF.Area = PhysObj:GetSurfaceArea() * 6.45
+	end
+
+
+	if not self.ACF.Volume then
+		self.ACF.Volume = PhysObj:GetVolume() * 16.38
+	end
+
+	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
+
+	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)   --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Health = self.ACF.Volume / ACF.Threshold							--Setting the threshold of the prop Area gone
+	local Percent = 1
+
+	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
+		Percent = self.ACF.Health / self.ACF.MaxHealth
+	end
+
+	self.ACF.Health	 = Health * Percent
+	self.ACF.MaxHealth  = Health
+	self.ACF.Armour	 = Armour * (0.5 + Percent / 2)
+	self.ACF.MaxArmour  = Armour
+	self.ACF.Type	   = nil
+	self.ACF.Mass	   = self.Mass
+	self.ACF.Density	= (PhysObj:GetMass() * 1000) / self.ACF.Volume
+	self.ACF.Type	   = "Prop"
+
+	self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+
+end
+
+local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
+
+function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )   --This function needs to return HitRes
+
+	if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
+
+	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Ang , Inflictor )   --Calling the standard damage prop function
+
+	-- Detonate if the shot penetrates the casing.
+	HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0
+
+	if HitRes.Kill then
+
+		local CanDo = hook.Run("ACF_AmmoExplode", self, self.BulletData )
+		if CanDo == false then return HitRes end
+
+		self:Detonate()
+
+		if IsValid(Inflictor) and Inflictor:IsPlayer() then
+			self.Inflictor = Inflictor
+		end
+
+	end
+	return HitRes
 end

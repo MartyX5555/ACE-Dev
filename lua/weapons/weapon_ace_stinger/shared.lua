@@ -382,9 +382,6 @@ function SWEP:PrimaryAttack()
             if CPPI then
                 ent:CPPISetOwner(owner)
             end
-
-            local inertia = ent.phys:GetInertia()
-            ent.phys:ApplyTorqueCenter(Vector(-5, 0, 0) * inertia)
         end
         self:EmitSound(self.Primary.Sound)
         self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
