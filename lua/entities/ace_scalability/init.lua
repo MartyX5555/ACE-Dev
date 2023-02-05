@@ -132,3 +132,44 @@ do
     end)
 
 end
+
+--Brought from the ACF3
+do -- AdvDupe2 duped parented ammo workaround
+	-- Duped parented scalable entities were uncapable of spawning on the correct position
+	-- That's why they're parented AFTER the dupe is done pasting
+	-- Only applies for Advanced Duplicator 2
+
+	function ENT:OnDuplicated(EntTable)
+		local DupeInfo = EntTable.BuildDupeInfo
+
+		if DupeInfo and DupeInfo.DupeParentID then
+			self.ParentIndex = DupeInfo.DupeParentID
+
+			DupeInfo.DupeParentID = nil
+		end
+	end
+
+	function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
+		if self.ParentIndex then
+			self.ParentEnt = CreatedEntities[self.ParentIndex]
+			self.ParentIndex = nil
+		end
+	end
+
+	hook.Add("AdvDupe_FinishPasting", "ACF Parented Scalable Ent Fix", function(DupeInfo)
+		local Dupe      = unpack(DupeInfo, 1, 1)
+		local Player    = Dupe.Player
+		local CanParent = not IsValid(Player) or tobool(Player:GetInfo("advdupe2_paste_parents"))
+
+		if not CanParent then return end
+
+		for _, Entity in pairs(Dupe.CreatedEntities) do
+			if not Entity.IsScalable then continue end
+			if not Entity.ParentEnt then continue end
+
+			Entity:SetParent(Entity.ParentEnt)
+
+			Entity.ParentEnt = nil
+		end
+	end)
+end
