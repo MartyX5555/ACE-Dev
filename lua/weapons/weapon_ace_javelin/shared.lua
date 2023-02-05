@@ -10,7 +10,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 DEFINE_BASECLASS("weapon_ace_base")
 
 --Main settings--
-SWEP.Primary.Delay = 10--Reload in seconds
+SWEP.Primary.Delay = 10 --Reload in seconds
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 1
@@ -19,6 +19,9 @@ SWEP.Primary.Ammo = "RPG_Round"
 SWEP.Primary.Sound = "acf_extra/airfx/javelin_fire.wav"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
+
+SWEP.TrackSound = "acf_extra/airfx/caution2.wav"
+SWEP.LockSound = "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav"
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -279,13 +282,8 @@ function SWEP:AcquireLock()
     local found             = self:GetWhitelistedEntsInCone()
 
     local IRSTPos           = owner:GetShootPos()
-    --local inac              = 1
 
-    --Table definition
     local Owners            = {}
-    --local Positions         = {}
-    --local Temperatures      = {}
-    --local posTable          = {}
 
     self.ClosestToBeam = -1
     local besterr           = math.huge --Hugh mungus number
@@ -295,7 +293,6 @@ function SWEP:AcquireLock()
     local nonlocang         = Angle()
     local ang               = Angle()
     local absang            = Angle()
-    --local errorFromAng      = 0
     local dist              = 0
 
     local bestEnt           = NULL
@@ -303,10 +300,6 @@ function SWEP:AcquireLock()
     local LockCone = 2.5
 
     for _, scanEnt in ipairs(found) do
-
-        --local randanginac       = math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-        --local randposinac       = Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
-
         entpos      = scanEnt:WorldSpaceCenter()
         difpos      = (entpos - IRSTPos)
 
@@ -325,9 +318,9 @@ function SWEP:AcquireLock()
                 Heat = self.SeekSensitivity * scanEnt.Heat
             else --if is not a Heat Emitter, track the friction's heat
 
-                if IsValid(physEnt) then
-                    if not physEnt:IsMoveable() then goto cont end
-                end 
+                if IsValid(physEnt) and not physEnt:IsMoveable() then
+                    continue
+                end
 
                 dist = difpos:Length()
                 Heat = ACE_InfraredHeatFromProp(self, scanEnt, dist)
@@ -353,200 +346,178 @@ function SWEP:AcquireLock()
                 --debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255, 255, 0), true)
             end
         end
-
-        ::cont::
     end
 
     return bestEnt or NULL
 end
 
-do
+local function BreakLock( self, owner )
+    self:SetLockProgress(0)
+    owner:StopSound( self.TrackSound )
+    owner:StopSound( self.LockSound )
+    self:SetLaunchAuth(false)
+end
 
-    local TrackSound = "acf_extra/airfx/caution2.wav"
-    local LockSound = "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav"
+local function HasLockOnProgress( self )
+    return self:GetLockProgress() > 0
+end
 
-    local function BreakLock( self, owner )
-        self:SetLockProgress(0)
-        owner:StopSound( TrackSound )
-        owner:StopSound( LockSound )
-        self:SetLaunchAuth(false)
+local function InLockOn( self )
+    return self:GetLockProgress() > 1
+end
+
+
+function SWEP:PrimaryAttack()
+    if not self:GetLaunchAuth() then return end
+
+    if self:Clip1() == 0 and self:Ammo1() > 0 then
+        self:Reload()
+
+        return
     end
 
-    local function HasLockOnProgress( self )
-        return self:GetLockProgress() > 0
+    local owner = self:GetOwner()
+
+    if not self:CanPrimaryAttack() then return end
+
+    if IsFirstTimePredicted() or game.SinglePlayer() then
+        owner:ViewPunch(Angle(-1, 0, 0))
     end
 
-    local function InLockOn( self )
-        return self:GetLockProgress() > 1
-    end
+    self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 
+    if SERVER and IsValid( self.TarEnt ) and self:GetLaunchAuth() then
+        local ent = ents.Create( "ace_missile_swep_guided" )
 
-    function SWEP:PrimaryAttack()
-        if not self:GetLaunchAuth() then return end
+        if ( IsValid( ent ) ) then
+            ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 0))
+            ent:SetAngles(owner:GetAimVector():Angle() + Angle(-5, 0, 0))
 
-        if self:Clip1() == 0 and self:Ammo1() > 0 then
-            self:Reload()
+            ent:Spawn()
+            ent:SetOwner(Gun)
+            ent:SetModel("models/mcace/Jevelinemissile.mdl")
 
-            return
+            timer.Simple(0.1, function()
+                ParticleEffectAttach("Rocket Motor ATGM", 4, ent, 1)
+            end)
+
+            ent.MissileThrust = 4000
+            ent.MissileAgilityMul = 50
+            ent.MissileBurnTime = 15
+            ent.FuseTime = 25
+            ent.tarent = self.TarEnt
+            ent.Bulletdata = self.BulletData
+            ent.LeadMul = 2
+            ent.IsJavelin = true
+
+            ent:SetOwner(owner)
+
+            if CPPI then
+                ent:CPPISetOwner(Entity(0))
+            end
         end
-        local owner = self:GetOwner()
-        if not self:CanPrimaryAttack() then return end
 
-        if IsFirstTimePredicted() or game.SinglePlayer() then
-            owner:ViewPunch(Angle(-1, 0, 0))
+        self:EmitSound(self.Primary.Sound)
+        self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+        self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+
+        BreakLock( self, owner )
+
+        if self:Ammo1() > 0 then
+            self:GetOwner():RemoveAmmo( 1, "RPG_Round")
+        else
+            self:TakePrimaryAmmo(1)
         end
 
-        self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    end
+end
 
-        if SERVER then
-            if ( IsValid( self.TarEnt ) and self:GetLaunchAuth()  ) then
-                local ent = ents.Create( "ace_missile_swep_guided" )
+SWEP.NextThinkTime = 0
+SWEP.ThinkDelay = 0.1
 
-                if ( IsValid( ent ) ) then
-                    local d = self.TarEnt:GetPos() - owner:GetPos()
-                    local range = d:Length()
+function SWEP:Think()
+    if CurTime() < self.NextThinkTime then return end
+    if not SERVER then return end
 
-                    ent.MissileClimbRatio = (math.abs(d.z) > 400 or ((range / 39.37) < 200)) and 0 or (math.Clamp(range / 39.37 / 400, 0, 1) * 0.2)
+    local owner = self:GetOwner()
 
-                    ent.StartDist = range
+    if self:GetZoomState() then
+        local lasttarget = self.TarEnt
+        self.TarEnt = self:AcquireLock()
+        local CurTarget = self.TarEnt
+        local DontBreak = false
 
-                    ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 0))
-                    ent:SetAngles(owner:GetAimVector():Angle() + Angle(-5, 0, 0))
+        if IsValid(lasttarget) then
 
-                    ent:Spawn()
-                    ent:SetOwner(Gun)
-                    ent:SetModel("models/mcace/Jevelinemissile.mdl")
+            local RootCTarget    = ACF_GetPhysicalParent( CurTarget )
+            local RootLastTarget = ACF_GetPhysicalParent( lasttarget ) --looking for the physical entity of the last target.
 
-                    timer.Simple(0.1, function()
-                        ParticleEffectAttach("Rocket Motor ATGM", 4, ent, 1)
-                    end)
+            if IsValid(RootCTarget) and IsValid(RootLastTarget) then
 
-                    ent.MissileThrust = 4000
-                    ent.MissileAgilityMul = 50
-                    ent.MissileBurnTime = 15
-                    ent.Gravity = 0
-                    ent.FuseTime = 25
-                    ent.tarent = self.TarEnt
-                    ent.Bulletdata = self.BulletData
-                    ent.LeadMul = 1
-                    ent:SetOwner(self:GetOwner())
+                -- Press F to pay respects to the server
+                local PhysContraptionEnts = constraint.GetAllConstrainedEntities( RootCTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
 
-                    if CPPI then
-                        ent:CPPISetOwner(Entity(0))
+                for _, physEnt in pairs(PhysContraptionEnts) do
+
+                    if not IsValid(physEnt) then
+                        continue
                     end
 
-                    local inertia = ent.phys:GetInertia()
-                    ent.phys:ApplyTorqueCenter(Vector(-5, 0, 0) * Vector(inertia.x, inertia.y, inertia.z))
+                    if physEnt:EntIndex() == RootLastTarget:EntIndex() then
+                        DontBreak = true
+
+                        break
+                    end
                 end
-
-                self:EmitSound(self.Primary.Sound)
-                self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-                self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-
-                BreakLock( self, owner )
-
-                if self:Ammo1() > 0 then
-                    self:GetOwner():RemoveAmmo( 1, "RPG_Round")
-                else
-                    self:TakePrimaryAmmo(1)
-                end
-
-            else
-                self:EmitSound("npc/roller/mine/rmine_blip3.wav")
             end
-
         end
 
-        --if CLIENT or not self.LaunchAuth then return end
-    end
+        if IsValid(CurTarget) and (not lasttarget) or DontBreak then
 
-    SWEP.NextThinkTime = 0
-    SWEP.ThinkDelay = 0.1
-
-    function SWEP:Think()
-        if CurTime() < self.NextThinkTime then return end
-        if not SERVER then return end
-
-        local owner = self:GetOwner()
-
-        if self:GetZoomState() then
-            local lasttarget = self.TarEnt
-            self.TarEnt = self:AcquireLock()
-            local CurTarget = self.TarEnt
-            local DontBreak = false
-
-            if IsValid(lasttarget) then
-
-                local RootCTarget    = ACF_GetPhysicalParent( CurTarget )
-                local RootLastTarget = ACF_GetPhysicalParent( lasttarget ) --looking for the physical entity of the last target.
-
-                if IsValid(RootCTarget) and IsValid(RootLastTarget) then
-
-                    -- Press F to pay respects to the server
-                    local PhysContraptionEnts = constraint.GetAllConstrainedEntities( RootCTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
-
-                    for k, physEnt in pairs(PhysContraptionEnts) do
-                    
-                        if not IsValid(physEnt) then goto cont end
-
-                        if physEnt:EntIndex() == RootLastTarget:EntIndex() then
-                            DontBreak = true
-                            break
-                        end
-
-                        ::cont::
-                    end  
-                end
+            if not HasLockOnProgress( self ) then
+                owner:EmitSound( self.TrackSound, 65, 45, 1, CHAN_AUTO )
             end
 
-            if IsValid(CurTarget) and (not lasttarget) or DontBreak then
+            self:SetLockProgress(self:GetLockProgress() + self.Lockrate)
 
-                if not HasLockOnProgress( self ) then
-                    owner:EmitSound( TrackSound, 65, 45, 1, CHAN_AUTO )
-                end
-
-                self:SetLockProgress(self:GetLockProgress() + self.Lockrate)
-
-                if not self:GetLaunchAuth() and InLockOn( self ) then
-                    owner:StopSound( TrackSound )
-                    owner:EmitSound( LockSound, 65, 87, 0.3, CHAN_AUTO )
-                end
-
-                if InLockOn( self ) then
-                    self:SetLaunchAuth(true)
-                end
-            else
-                BreakLock( self, owner )
+            if not self:GetLaunchAuth() and InLockOn( self ) then
+                owner:StopSound( self.TrackSound )
+                owner:EmitSound( self.LockSound, 65, 87, 0.3, CHAN_AUTO )
             end
 
-            if ( IsValid( CurTarget ) ) then
-                local TarPos = CurTarget:GetPos()
-
-                self:SetTarPosX(TarPos.x)
-                self:SetTarPosY(TarPos.y)
-                self:SetTarPosZ(TarPos.z)
+            if InLockOn( self ) then
+                self:SetLaunchAuth(true)
             end
-            
         else
             BreakLock( self, owner )
         end
 
-        self.NextThinkTime = CurTime() + self.ThinkDelay
-    end
+        if ( IsValid( CurTarget ) ) then
+            local TarPos = CurTarget:GetPos()
 
-    function SWEP:Holster()
-        if SERVER then
-            self:SetZoomState(false)
-            self:SetOwnerZoomSpeed(false)
+            self:SetTarPosX(TarPos.x)
+            self:SetTarPosY(TarPos.y)
+            self:SetTarPosZ(TarPos.z)
         end
 
-        local owner = self:GetOwner()
+    else
         BreakLock( self, owner )
-        FLIR.stop( owner )
-
-        BaseClass.Holster(self)
-
-        return true
     end
 
+    self.NextThinkTime = CurTime() + self.ThinkDelay
+end
+
+function SWEP:Holster()
+    if SERVER then
+        self:SetZoomState(false)
+        self:SetOwnerZoomSpeed(false)
+    end
+
+    local owner = self:GetOwner()
+    BreakLock( self, owner )
+    FLIR.stop( owner )
+
+    BaseClass.Holster(self)
+
+    return true
 end
