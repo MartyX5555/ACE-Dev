@@ -1,3 +1,5 @@
+DEFINE_BASECLASS("base_wire_entity") -- Required to get the local BaseClass
+
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
@@ -132,7 +134,7 @@ do
     end)
 
 end
---[[
+
 --Brought from the ACF3
 do -- AdvDupe2 duped parented ammo workaround
 	-- Duped parented scalable entities were uncapable of spawning on the correct position
@@ -140,23 +142,28 @@ do -- AdvDupe2 duped parented ammo workaround
 	-- Only applies for Advanced Duplicator 2
 
 	function ENT:OnDuplicated(EntTable)
-        if not self.IsScalable then return end
+        if self.IsScalable then 
+            local DupeInfo = EntTable.BuildDupeInfo
 
-		local DupeInfo = EntTable.BuildDupeInfo
+            if DupeInfo and DupeInfo.DupeParentID then
+                self.ParentIndex = DupeInfo.DupeParentID
+    
+                DupeInfo.DupeParentID = nil
+            end
+        end
 
-		if DupeInfo and DupeInfo.DupeParentID then
-			self.ParentIndex = DupeInfo.DupeParentID
-
-			DupeInfo.DupeParentID = nil
-		end
+		BaseClass.OnDuplicated(self, EntTable)
 	end
 
 	function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
-        if not self.IsScalable then return end
-		if self.ParentIndex then
-			self.ParentEnt = CreatedEntities[self.ParentIndex]
-			self.ParentIndex = nil
-		end
+        if self.IsScalable then
+            if self.ParentIndex then
+                self.ParentEnt = CreatedEntities[self.ParentIndex]
+                self.ParentIndex = nil
+            end
+        end
+
+		BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities)
 	end
 
 	hook.Add("AdvDupe_FinishPasting", "ACF Parented Scalable Ent Fix", function(DupeInfo)
@@ -176,4 +183,3 @@ do -- AdvDupe2 duped parented ammo workaround
 		end
 	end)
 end
-]]
