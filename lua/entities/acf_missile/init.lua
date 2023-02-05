@@ -315,7 +315,7 @@ function ENT:CalcFlight()
 
                         for k, physEnt in pairs(self.physentities) do
                             
-                            if not IsValid(physEnt) then goto cont end
+                            if not IsValid(physEnt) then continue end
 
                             if physEnt:EntIndex() == RootLauncher:EntIndex() then
 
@@ -326,7 +326,7 @@ function ENT:CalcFlight()
                                 break
                             end
 
-                            ::cont::
+                            
                         end
 
                     end
@@ -686,17 +686,17 @@ function ENT:UpdateBodygroups()
         if string.lower(group.name) == "guidance" and self.Guidance then
 
             self:ApplyBodySubgroup(group, self.Guidance.Name)
-            goto cont
-            ::cont::
+            continue
+            
         end
 
         if string.lower(group.name) == "warhead" and self.BulletData then
 
             self:ApplyBodySubgroup(group, self.BulletData.Type)
-            goto cont
+            continue
         end
 
-        ::cont::
+        
     end
 end
 

@@ -38,7 +38,7 @@ function ACE_EngineGUI_Create( Table )
 
         for Key, EngineList in pairs( ACF.Weapons.Mobility ) do
 
-            if not EngineList.enginetype then goto cont end
+            if not EngineList.enginetype then continue end
 
             local fueltype = EngineList.fuel
 
@@ -48,7 +48,7 @@ function ACE_EngineGUI_Create( Table )
                 filtered[fueltype] = true
             end
 
-            ::cont::
+            
         end
 
         EngineFuelBox.OnSelect = function( value , index , data )
@@ -59,7 +59,7 @@ function ACE_EngineGUI_Create( Table )
 
             for Key, EngineList in pairs( ACF.Weapons.Mobility ) do
 
-                if not EngineList.enginetype then goto cont end
+                if not EngineList.enginetype then continue end
 
                 local cat = EngineList.category
                 local fueltype = EngineList.fuel
@@ -70,7 +70,7 @@ function ACE_EngineGUI_Create( Table )
                     filtered[cat] = true
                 end
 
-                ::cont::
+                
             end
         end
         acfmenupanel.CustomDisplay:AddItem( EngineFuelBox )
@@ -90,7 +90,7 @@ function ACE_EngineGUI_Create( Table )
 
             for Key, EngineList in pairs( ACF.Weapons.Mobility ) do
 
-                if not EngineList.enginetype then goto cont end
+                if not EngineList.enginetype then continue end
 
                 local cat   = EngineList.category
                 local name  = EngineList.name
@@ -102,7 +102,7 @@ function ACE_EngineGUI_Create( Table )
                     acfmenupanel.CData.EngineIdBox:AddChoice( name, id  )
                 end
 
-                ::cont::
+                
             end
 
         end

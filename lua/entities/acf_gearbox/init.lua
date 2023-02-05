@@ -455,7 +455,7 @@ function ENT:CheckRopes()
         local Ent = Link.Ent
         
         --skips any invalid entity and remove from list
-        if not IsValid(Ent) then print('[ACE | WARN]- We found invalid ents linked to a gear, removing it. . .') table.remove(self.WheelLink, Key) goto cont end
+        if not IsValid(Ent) then print('[ACE | WARN]- We found invalid ents linked to a gear, removing it. . .') table.remove(self.WheelLink, Key) continue end
         
         local OutPos = self:LocalToWorld( Link.Output )
         local InPos = Ent:GetPos()
@@ -474,7 +474,7 @@ function ENT:CheckRopes()
             self:Unlink( Ent )
         end
         
-        ::cont::
+        
     end
 
 end
@@ -539,8 +539,8 @@ function ENT:Calc( InputRPM, InputInertia )
     
     for Key, Link in pairs( self.WheelLink ) do
 
-        if not IsValid( Link.Ent ) then table.remove( self.WheelLink, Key ) goto cont end
-        if Link.Notvalid then goto cont end
+        if not IsValid( Link.Ent ) then table.remove( self.WheelLink, Key ) continue end
+        if Link.Notvalid then continue end
 
         local Clutch = 0
         if Link.Side == 0 then
@@ -581,7 +581,7 @@ function ENT:Calc( InputRPM, InputInertia )
         end
         self.TotalReqTq = self.TotalReqTq + math.abs( Link.ReqTq )
 
-        ::cont::
+        
     end
     
     --I would need to learn more about this, disabled atm
@@ -625,7 +625,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
     
     for Key, Link in pairs( self.WheelLink ) do
         
-        if Link.Notvalid then goto cont end
+        if Link.Notvalid then continue end
 
         local Brake = 0
         if Link.Side == 0 then
@@ -641,7 +641,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
             ReactTq = ReactTq + Link.ReqTq * AvailTq
         end
         
-        ::cont::
+        
     end
     
     local BoxPhys

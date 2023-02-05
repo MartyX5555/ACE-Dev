@@ -192,13 +192,13 @@ function ENT:Think()
                 if scanEnt:IsValid() then
 
                     --skip any flare from vision
-                    if scanEnt:GetClass() == 'ace_flare' then goto cont end
+                    if scanEnt:GetClass() == 'ace_flare' then continue end
 
                     --skip the tracking itself
-                    if scanEnt:EntIndex() == self:EntIndex() then goto cont end
+                    if scanEnt:EntIndex() == self:EntIndex() then continue end
 
                     --skip any parented entity
-                    if scanEnt:GetParent():IsValid() then goto cont end
+                    if scanEnt:GetParent():IsValid() then continue end
 
                     local entvel    = scanEnt:GetVelocity()
                     local velLength = entvel:Length()
@@ -301,7 +301,7 @@ function ENT:Think()
                     end
                 end
 
-                ::cont::
+                
             end
 
             --self.Outputs = WireLib.CreateOutputs( self, {"Detected", "Owner [ARRAY]", "Position [ARRAY]", "Velocity [ARRAY]", "ClosestToBeam"} )

@@ -120,17 +120,17 @@ function this:GetWhitelistedEntsInCone(missile)
 	for k, scanEnt in pairs(ScanArray) do
 
 		-- skip any invalid entity
-		if not scanEnt:IsValid() then goto cont end 
+		if not scanEnt:IsValid() then continue end 
 
 		-- skip any flare from vision
-		if scanEnt:GetClass() == 'ace_flare' then goto cont end
+		if scanEnt:GetClass() == 'ace_flare' then continue end
 		
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
 		local dist = difpos:Length()
 
 		-- skip any ent outside of minimun distance
-		if dist < self.MinimumDistance then goto cont end 
+		if dist < self.MinimumDistance then continue end 
 
 			local LOSdata = {}
 			LOSdata.start 			= missilePos
@@ -171,7 +171,7 @@ function this:GetWhitelistedEntsInCone(missile)
 			
 			end
 
-        ::cont::
+        
 	end
     
     return foundAnim

@@ -121,7 +121,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
         for i = 1, #ACE.contraptionEnts do
         
             --check if it's valid       
-            if not IsValid(ACE.contraptionEnts[i]) or not IsValid(Ent) then goto cont end
+            if not IsValid(ACE.contraptionEnts[i]) or not IsValid(Ent) then continue end
 
             local MEnt = ACE.contraptionEnts[i]
             
@@ -204,18 +204,18 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
                 return                                            --code has ended its work, return
             end 
 
-            ::cont::                        
+                                    
         end
 
     elseif Ent:GetClass() == 'ace_debris' then
         for i = 1, #ACE.Debris do
-            if not IsValid(ACE.Debris[i]) then goto cont end
+            if not IsValid(ACE.Debris[i]) then continue end
 
             if ACE.Debris[i]:EntIndex() == Ent:EntIndex() then
                 table.remove( ACE.Debris, i ) --print('Removing - Count: '..#ACE.Debris)
                 return
             end
-            ::cont::
+            
         end
     end
 end
@@ -232,12 +232,12 @@ function ACE_refreshdata( Data )
         local ContrId = math.random(1, 10000)
 
         for i, ent in pairs(Entities) do
-            if not IsValid(ent) then goto cont end
+            if not IsValid(ent) then continue end
 
             ent.ACF = ent.ACF or {}
             ent.ACF.ContraptionId = ContrId --Id is always changing.
 
-            ::cont::
+            
         end
     end
 
@@ -245,7 +245,7 @@ function ACE_refreshdata( Data )
     for index, Ent in ipairs(ACE.contraptionEnts) do 
 
         -- check if the entity is valid
-        if not IsValid(Ent) then goto cont end 
+        if not IsValid(Ent) then continue end 
 
         -- check if it has parent
         if Ent:GetParent():IsValid() then   
@@ -257,11 +257,11 @@ function ACE_refreshdata( Data )
                 --print('[ACE | INFO]- Parented prop! removing. . .')
                 table.remove( ACE.contraptionEnts , index )   
             
-                goto cont
+                continue
             end
         end
 
-        ::cont::
+        
     end
     
     --print('[ACE | INFO]- Finished refreshing!')

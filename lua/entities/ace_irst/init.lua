@@ -147,20 +147,20 @@ function ENT:GetWhitelistedEntsInCone()
     for k, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
-        if not IsValid(scanEnt) then goto cont end 
+        if not IsValid(scanEnt) then continue end 
 
         --Why IRST should track itself?
-        if scanEnt:EntIndex() == self:EntIndex() then goto cont end
+        if scanEnt:EntIndex() == self:EntIndex() then continue end
 
         entpos  = scanEnt:GetPos()
         difpos  = entpos - IRSTPos
         dist    = difpos:Length()
 
         -- skip any ent outside of minimun distance
-        if dist < self.MinimumDistance then goto cont end 
+        if dist < self.MinimumDistance then continue end 
         
         -- skip any ent far than maximum distance
-        if dist > self.MaximumDistance then goto cont end
+        if dist > self.MaximumDistance then continue end
 
         LOSdata.start           = IRSTPos
         LOSdata.endpos          = entpos
@@ -176,7 +176,7 @@ function ENT:GetWhitelistedEntsInCone()
             table.insert(WhitelistEnts, scanEnt)
         end     
         
-        ::cont::
+        
     end
     
     return WhitelistEnts
@@ -240,7 +240,7 @@ function ENT:AcquireLock()
                 --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
                 if physEnt:IsValid() then   
                 --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-                    if not physEnt:IsMoveable() then goto cont end
+                    if not physEnt:IsMoveable() then continue end
                 end
 
                 dist = difpos:Length()              
@@ -249,7 +249,7 @@ function ENT:AcquireLock()
             end
             
             --Skip if not Hotter than AmbientTemp in deg C.
-            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end 
+            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end 
 
             --Could do pythagorean stuff but meh, works 98% of time
             local err = absang.p + absang.y 
@@ -274,7 +274,7 @@ function ENT:AcquireLock()
 
         end
 
-        ::cont::
+        
     end
 
     if self.ClosestToBeam ~= -1 then --Some entity passed the test to be valid

@@ -131,17 +131,17 @@ function this:GetWhitelistedEntsInCone(missile)
     for k, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
-        if not IsValid(scanEnt) then goto cont end 
+        if not IsValid(scanEnt) then continue end 
             
         entpos  = scanEnt:GetPos()
         difpos  = entpos - missilePos
         dist    = difpos:Length()
 
         -- skip any ent outside of minimun distance
-        if dist < self.MinimumDistance then goto cont end 
+        if dist < self.MinimumDistance then continue end 
         
         -- skip any ent far than maximum distance
-        if dist > self.MaximumDistance then goto cont end
+        if dist > self.MaximumDistance then continue end
 
         LOSdata.start           = missilePos
         LOSdata.endpos          = entpos
@@ -157,7 +157,7 @@ function this:GetWhitelistedEntsInCone(missile)
             table.insert(WhitelistEnts, scanEnt)
         end     
         
-        ::cont::
+        
     end
     
     return WhitelistEnts
@@ -217,7 +217,7 @@ function this:AcquireLock(missile)
             if IsValid(physEnt) then
 
                 --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-                if not physEnt:IsMoveable() then goto cont end
+                if not physEnt:IsMoveable() then continue end
             end
                 
             Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
@@ -225,7 +225,7 @@ function this:AcquireLock(missile)
         end
         
         --Skip if not Hotter than AmbientTemp in deg C.
-        if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then goto cont end  
+        if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end  
                
         ang       = missile:WorldToLocalAngles((entpos - missilePos):Angle())   --Used for testing if inrange
         absang    = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
@@ -244,7 +244,7 @@ function this:AcquireLock(missile)
 
         end
                 
-        ::cont::
+        
     end
 
     return bestent

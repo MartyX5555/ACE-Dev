@@ -55,7 +55,7 @@ function ENT:Initialize()
     if not table.IsEmpty( ACE.Opticals ) then
         for k, Optical in pairs( ACE.Opticals ) do 
 
-            if not IsValid(Optical) then goto cont end
+            if not IsValid(Optical) then continue end
 
             --Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
             if Optical:GetPos():DistToSqr(self:GetPos()) < 250^2 and Optical:CPPIGetOwner() == self.Owner then
@@ -68,7 +68,7 @@ function ENT:Initialize()
 
             end
 
-            ::cont::
+            
         end
     end
 

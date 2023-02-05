@@ -302,7 +302,7 @@ do
         for i, Result in ipairs(Dupes) do
 
             local Id = string.Explode("_", Result)
-            if Id[1] ~= fileIndex then goto cont end
+            if Id[1] ~= fileIndex then continue end
 
             file_name = table.concat( Id, " ", 3) 
             file_name = string.Replace( file_name, ".txt", "" )
@@ -336,7 +336,7 @@ do
                 end
 
             end
-            ::cont::
+            
         end
 
     end

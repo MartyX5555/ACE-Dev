@@ -503,11 +503,11 @@ function ENT:GetMaxFuel()
     local TFuel = 0
 
     for _, Tank in pairs(self.FuelLink) do
-        if not IsValid(Tank) then goto cont end
-        if not Tank.Active then goto cont end
+        if not IsValid(Tank) then continue end
+        if not Tank.Active then continue end
 
         TFuel = TFuel + Tank.Fuel
-        ::cont::
+        
     end
 
     return TFuel

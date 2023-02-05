@@ -38,11 +38,11 @@ function ACF_HEFind( Hitpos, Radius )
     local Table = {}
     for i, ent in pairs( ents.FindInSphere( Hitpos, Radius ) ) do
         --skip any undesired ent
-        if ACF.HEFilter[ent:GetClass()] then goto cont end
-        if not ent:IsSolid() then goto cont end
+        if ACF.HEFilter[ent:GetClass()] then continue end
+        if not ent:IsSolid() then continue end
 
         table.insert( Table, ent )
-        ::cont::
+        
     end
 
     return Table
@@ -93,7 +93,7 @@ do
 
             for i,Tar in ipairs(Targets) do
 
-                if not Tar:IsValid() then goto cont end
+                if not Tar:IsValid() then continue end
 
                 if Power > 0 and not Tar.Exploding then
 
@@ -185,7 +185,7 @@ do
                         table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
                     end 
                 end
-                ::cont::
+                
 
             end
 
@@ -199,7 +199,7 @@ do
                 local AreaAdjusted  = (Tar.ACF.Area / ACF.Threshold) * Feathering
 
                 --HE tends to pick some props where simply will not apply damage. So lets ignore it.
-                if AreaAdjusted <= 0 then goto cont end
+                if AreaAdjusted <= 0 then continue end
 
                 local BlastRes
                 local Blast = {
@@ -295,7 +295,7 @@ do
 
                 PowerSpent = PowerSpent + PowerFraction*BlastRes.Loss/2--Removing the energy spent killing props
 
-                ::cont::
+                
             end
 
             Power = math.max(Power - PowerSpent,0)  
@@ -865,7 +865,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
         for k, ent in pairs( children ) do --print('table children: '..table.Count( children ))
 
             --Removes the first impacted entity. This should avoid debris being duplicated there.
-            if Entity:EntIndex() == ent:EntIndex() then children[ent] = nil goto cont end           
+            if Entity:EntIndex() == ent:EntIndex() then children[ent] = nil continue end           
 
             -- mark that it's already processed
             ent.ACF_Killed = true
@@ -874,7 +874,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
             -- exclude any entity that is not part of debris ents whitelist
             if not ACF.Debris[class] then --print('removing not valid class')
-                children[ent] = nil goto cont
+                children[ent] = nil continue
             else
 
                 -- remove this ent from children table and move it to the explosive table
@@ -883,7 +883,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
                     table.insert( boom , ent ) 
                     children[ent] = nil
 
-                    goto cont
+                    continue
                 else
                     -- can't use #table or :count() because of ent indexing...
                     count = count + 1  
@@ -891,7 +891,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
             end
 
-            ::cont::
+            
         end
 
 
@@ -903,19 +903,19 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
             for k, child in pairs( children ) do --print('table children#2: '..table.Count( children ))
 
                 --Skip any invalid entity
-                if not IsValid(child) then goto cont end
+                if not IsValid(child) then continue end
 
                 local rand = math.random(0,100)/100 --print(rand) print(ACF.DebrisChance)
 
                 -- ignore some of the debris props to save lag
-                if rand > ACF.DebrisChance then goto cont end
+                if rand > ACF.DebrisChance then continue end
 
                 ACF_HEKill( child, (child:GetPos() - BlastPos):GetNormalized(), power )
 
                 constraint.RemoveAll( child )
                 child:Remove()
 
-                ::cont::
+                
             end
         end
 
@@ -925,12 +925,12 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 
             for _, child in pairs( boom ) do
 
-                if not IsValid(child) or child.Exploding then goto cont end
+                if not IsValid(child) or child.Exploding then continue end
 
                 child.Exploding = true
                 ACF_ScaledExplosion( child ) -- explode any crates that are getting removed
 
-                ::cont::
+                
             end
         end
     end 
@@ -1083,15 +1083,15 @@ do
             for i,Found in ipairs( CExplosives ) do
 
                 if #Filter > MaxGroup or HEWeight > MaxHE then break end
-                if not IsValid(Found) then goto cont end
-                if Found:GetPos():DistToSqr(Pos) > Radius^2 then goto cont end
+                if not IsValid(Found) then continue end
+                if Found:GetPos():DistToSqr(Pos) > Radius^2 then continue end
 
                 if not Found.Exploding then 
 
                     local EOwner = CPPI and Found:CPPIGetOwner() or NULL
 
                     --Don't detonate explosives which we are not allowed to.
-                    if Owner ~= EOwner then goto cont end
+                    if Owner ~= EOwner then continue end
 
                     local Hitat = Found:NearestPoint( Pos )
 
@@ -1125,7 +1125,7 @@ do
                             FoundHEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
                         else
 
-                            if Found.RoundType == "Refill" then Found:Remove() goto cont end
+                            if Found.RoundType == "Refill" then Found:Remove() continue end
                             
                             local HE      = Found.BulletData.FillerMass    or 0
                             local Propel  = Found.BulletData.PropMass      or 0
@@ -1160,7 +1160,7 @@ do
                     end         
                 end
 
-                ::cont::
+                
             end 
             
             if HEWeight > LastHE then

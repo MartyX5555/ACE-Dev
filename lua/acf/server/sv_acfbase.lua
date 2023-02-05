@@ -448,7 +448,7 @@ function ACF_GetLinkedWheels( MobilityEnt )
                         v.Notvalid = true 
                     end
 
-                    ::cont::
+                    
                 end
             else
                 Wheels[Ent] = Ent -- indexing it same as ACF_GetAllPhysicalConstraints, for easy merge.  whoever indexed by entity in that function, uuuuuuggghhhhh
