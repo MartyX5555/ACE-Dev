@@ -14,9 +14,8 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE)
 
 	self.MissileThrust = 1000
-	self.MissileAgilityMul = 1
 	self.MissileBurnTime = 15
-	self.EnergyRetention = 0.95
+	self.EnergyRetention = 0.98
 	self.MaxTurnRate = 30
 
 	self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
@@ -63,6 +62,9 @@ local function GetRootVelocity(ent)
 end
 
 function ENT:Detonate()
+	if self.Exploded then return end
+
+	self.Exploded = true
 	ACF_ActiveMissiles[self] = nil
 	self.FuseTime = -1
 	self:Remove()
@@ -132,7 +134,7 @@ function ENT:Think()
 		debugoverlay.Cross(tr.HitPos, 10, 10, Color(0, 255, 0))
 
 		self:SetPos(tr.HitPos + self:GetForward() * -18)
-		self.FuseTime = -1
+		self:Detonate()
 	else
 		if self.MissileBurnTime < 0 then
 			if self.MissileBurnTime > -1 then
@@ -159,10 +161,11 @@ function ENT:Think()
 		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime * (self.LeadMul or 1))
 
 		if self.IsJavelin then
-			-- 5000 = 125 meters or so
-			-- Increase attack angle with distance, or, if within 125 meters, direct attack
-			if self.StartDist > 5000 and math.deg(math.acos(distXY / dist)) < self.StartDist / 8000 then
-				self.HeightOffset = Vector(0, 0, self.StartDist)
+			-- Increase attack angle with distance, or, if within 125 meters (~5000 units), direct attack
+			-- If past 125 meters, increase attack angle by 1 degree every 800 units (~20 meters) up to a maximum of 30 degrees
+			-- Ends up being slightly more than 30 degrees at maximum range because the missile takes time to turn downwards to its descent
+			if self.StartDist > 5000 and math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - 5000) / 800, 0, 30) then
+				self.HeightOffset = Vector(0, 0, self.StartDist / 2)
 			else
 				self.HeightOffset = Vector()
 			end
@@ -171,23 +174,27 @@ function ENT:Think()
 		local d = (TPos + self.HeightOffset) - pos
 
 		if self.RadioDist and d:Length() < self.RadioDist then
-			self.FuseTime = -1
+			self:Detonate()
 		end
 
 		local deltaTravelTime = self.lastTravelTime - travelTime
 		self.lastTravelTime = travelTime
 
-		if deltaTravelTime > 0 then -- Missile is moving away from target
+		if deltaTravelTime > 0 then -- Missile is moving towards target
 			local AngAdjust = self:WorldToLocalAngles((d):Angle())
 			local adjustedrate = self.MaxTurnRate * DelTime
 			AngAdjust = self:LocalToWorldAngles(Angle(math.Clamp(AngAdjust.pitch, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.yaw, -adjustedrate, adjustedrate), math.Clamp(AngAdjust.roll, -adjustedrate, adjustedrate)))
 
 			self:SetAngles(AngAdjust)
 		else
-			self.FuseTime = self.FuseTime * 0.5
+			if not self.IsJavelin then
+				self:Detonate()
+			else
+				self.FuseTime = self.FuseTime * 0.5
+			end
 		end
 	else
-		self.FuseTime = -1
+		self:Detonate()
 	end
 
 	if self.FuseTime < 0 then
@@ -253,7 +260,7 @@ function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )   --This
 		local CanDo = hook.Run("ACF_AmmoExplode", self, self.BulletData )
 		if CanDo == false then return HitRes end
 
-		self:Detonate()
+		self:Remove()
 
 		if IsValid(Inflictor) and Inflictor:IsPlayer() then
 			self.Inflictor = Inflictor

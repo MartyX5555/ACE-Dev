@@ -368,14 +368,14 @@ function SWEP:PrimaryAttack()
                 ParticleEffectAttach("Rocket Motor FFAR", 4, ent, 1)
             end)
 
-            ent.MissileThrust = 5000
+            ent.MissileThrust = 6000
             ent.MissileAgilityMul = 50
-            ent.MissileBurnTime = 2
-            ent.MaxTurnRate = 50
-            ent.RadioDist = 400
+            ent.MissileBurnTime = 6
+            ent.MaxTurnRate = 75
+            ent.RadioDist = 500
             ent.tarent = self.TarEnt
             ent.Bulletdata = self.BulletData
-            ent.LeadMul = 1.25
+            ent.LeadMul = 2
 
             ent:SetOwner(owner)
 
