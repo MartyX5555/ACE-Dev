@@ -1,4 +1,4 @@
-include('shared.lua')
+include("shared.lua")
 
 function SWEP:DoDrawCrosshair(x, y)
     local Zoom = self:GetZoomState()

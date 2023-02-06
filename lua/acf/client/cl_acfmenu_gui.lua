@@ -49,18 +49,18 @@ function PANEL:Init( )
          --Table content for Guns folder
          if Class.type == 'Gun' then
 
-            --print('Gun detected!')
+            --print("Gun detected!")
             table.insert(self.GunClasses[ID], Class)
 
          --Table content for Missiles folder
          elseif Class.type == 'missile' then
 
-            --print('Missile detected!')
+            --print("Missile detected!")
             table.insert(self.MisClasses[ID], Class)
 
          else
 
-            --print('Modded Gun detected!')
+            --print("Modded Gun detected!")
             table.insert(self.ModClasses[ID], Class)
 
          end
@@ -554,7 +554,7 @@ function ACFHomeGUICreate( Table )
 
    acfmenupanel["CData"]["VersionText"] = vgui.Create( "DLabel" )
 
-   acfmenupanel["CData"]["VersionText"]:SetFont( 'Trebuchet18' )
+   acfmenupanel["CData"]["VersionText"]:SetFont("Trebuchet18")
    acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n")
    acfmenupanel["CData"]["VersionText"]:SetTextColor( Color( 0, 0, 0) )
    acfmenupanel["CData"]["VersionText"]:SizeToContents()
@@ -828,7 +828,7 @@ function ContactGUICreate( Table )
    acfmenupanel["CData"]["Contact"]:SizeToContents()
    acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"]["Contact"] )
 
-   acfmenupanel:CPanelText('desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about new stuff to be added, our discord is a good place.')
+   acfmenupanel:CPanelText("desc1','If you want to contribute to ACE by providing us feedback, report bugs or tell us suggestions about new stuff to be added, our discord is a good place.")
    acfmenupanel:CPanelText("desc2","Don't forget to check out our wiki, contains valuable information about how to use this addon. It's on WIP, but expect more content in future.")
 
    local Discord = vgui.Create("DButton")
@@ -836,7 +836,7 @@ function ContactGUICreate( Table )
    Discord:SetPos(0,0)
    Discord:SetSize(250,30)
    Discord.DoClick = function()
-       gui.OpenURL( 'https://discord.gg/Y8aEYU6' )
+       gui.OpenURL("https://discord.gg/Y8aEYU6")
    end
    acfmenupanel.CustomDisplay:AddItem( Discord )
 
@@ -845,7 +845,7 @@ function ContactGUICreate( Table )
    Wiki:SetPos(0,0)
    Wiki:SetSize(250,30)
    Wiki.DoClick = function()
-       gui.OpenURL( 'https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki' )
+       gui.OpenURL("https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/wiki")
    end
    acfmenupanel.CustomDisplay:AddItem( Wiki )
 
@@ -854,7 +854,7 @@ function ContactGUICreate( Table )
    Guide:SetPos(0,0)
    Guide:SetSize(250,30)
    Guide.DoClick = function()
-       gui.OpenURL( 'https://docs.google.com/document/d/1yaHq4Lfjad4KKa0Jg9s-5lCpPVjV7FE4HXoGaKpi4Fs/edit' )
+       gui.OpenURL("https://docs.google.com/document/d/1yaHq4Lfjad4KKa0Jg9s-5lCpPVjV7FE4HXoGaKpi4Fs/edit")
    end
    acfmenupanel.CustomDisplay:AddItem( Guide )
 

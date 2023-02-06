@@ -12,29 +12,29 @@ ACF = ACF or {}
 ACF.Legal = {}
 ACF.Legal.Ignore = {}
 
-ACF.Legal.IsActivated        = math.max(GetConVar('acf_legalcheck'):GetInt(), 0)
+ACF.Legal.IsActivated        = math.max(GetConVar("acf_legalcheck"):GetInt(), 0)
 
-ACF.Legal.Ignore.Solid       = math.max(GetConVar('acf_legal_ignore_solid'):GetInt(), 0)
-ACF.Legal.Ignore.Model       = math.max(GetConVar('acf_legal_ignore_model'):GetInt(), 0)
-ACF.Legal.Ignore.Mass        = math.max(GetConVar('acf_legal_ignore_mass'):GetInt(), 0)
-ACF.Legal.Ignore.Material    = math.max(GetConVar('acf_legal_ignore_material'):GetInt(), 0)
-ACF.Legal.Ignore.Inertia     = math.max(GetConVar('acf_legal_ignore_inertia'):GetInt(), 0)
-ACF.Legal.Ignore.makesphere  = math.max(GetConVar('acf_legal_ignore_makesphere'):GetInt(), 0)
-ACF.Legal.Ignore.visclip     = math.max(GetConVar('acf_legal_ignore_visclip'):GetInt(), 0)
-ACF.Legal.Ignore.Parent      = math.max(GetConVar('acf_legal_ignore_parent'):GetInt(), 0)
+ACF.Legal.Ignore.Solid       = math.max(GetConVar("acf_legal_ignore_solid"):GetInt(), 0)
+ACF.Legal.Ignore.Model       = math.max(GetConVar("acf_legal_ignore_model"):GetInt(), 0)
+ACF.Legal.Ignore.Mass        = math.max(GetConVar("acf_legal_ignore_mass"):GetInt(), 0)
+ACF.Legal.Ignore.Material    = math.max(GetConVar("acf_legal_ignore_material"):GetInt(), 0)
+ACF.Legal.Ignore.Inertia     = math.max(GetConVar("acf_legal_ignore_inertia"):GetInt(), 0)
+ACF.Legal.Ignore.makesphere  = math.max(GetConVar("acf_legal_ignore_makesphere"):GetInt(), 0)
+ACF.Legal.Ignore.visclip     = math.max(GetConVar("acf_legal_ignore_visclip"):GetInt(), 0)
+ACF.Legal.Ignore.Parent      = math.max(GetConVar("acf_legal_ignore_parent"):GetInt(), 0)
 
 function ACF_LegalityCallBack()
 
-   ACF.Legal.IsActivated        = math.max(GetConVar('acf_legalcheck'):GetInt(), 0)
+   ACF.Legal.IsActivated        = math.max(GetConVar("acf_legalcheck"):GetInt(), 0)
 
-   ACF.Legal.Ignore.Solid       = math.max(GetConVar('acf_legal_ignore_solid'):GetInt(), 0)
-   ACF.Legal.Ignore.Model       = math.max(GetConVar('acf_legal_ignore_model'):GetInt(), 0)
-   ACF.Legal.Ignore.Mass        = math.max(GetConVar('acf_legal_ignore_mass'):GetInt(), 0)
-   ACF.Legal.Ignore.Material    = math.max(GetConVar('acf_legal_ignore_material'):GetInt(), 0)
-   ACF.Legal.Ignore.Inertia     = math.max(GetConVar('acf_legal_ignore_inertia'):GetInt(), 0)
-   ACF.Legal.Ignore.makesphere  = math.max(GetConVar('acf_legal_ignore_makesphere'):GetInt(), 0)
-   ACF.Legal.Ignore.visclip     = math.max(GetConVar('acf_legal_ignore_visclip'):GetInt(), 0)
-   ACF.Legal.Ignore.Parent      = math.max(GetConVar('acf_legal_ignore_parent'):GetInt(), 0)
+   ACF.Legal.Ignore.Solid       = math.max(GetConVar("acf_legal_ignore_solid"):GetInt(), 0)
+   ACF.Legal.Ignore.Model       = math.max(GetConVar("acf_legal_ignore_model"):GetInt(), 0)
+   ACF.Legal.Ignore.Mass        = math.max(GetConVar("acf_legal_ignore_mass"):GetInt(), 0)
+   ACF.Legal.Ignore.Material    = math.max(GetConVar("acf_legal_ignore_material"):GetInt(), 0)
+   ACF.Legal.Ignore.Inertia     = math.max(GetConVar("acf_legal_ignore_inertia"):GetInt(), 0)
+   ACF.Legal.Ignore.makesphere  = math.max(GetConVar("acf_legal_ignore_makesphere"):GetInt(), 0)
+   ACF.Legal.Ignore.visclip     = math.max(GetConVar("acf_legal_ignore_visclip"):GetInt(), 0)
+   ACF.Legal.Ignore.Parent      = math.max(GetConVar("acf_legal_ignore_parent"):GetInt(), 0)
 
 end
 

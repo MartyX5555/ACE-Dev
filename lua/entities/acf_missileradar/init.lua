@@ -2,8 +2,8 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 
-include('shared.lua')
-include('radar_types_support.lua')
+include("shared.lua")
+include("radar_types_support.lua")
 
 CreateConVar('sbox_max_acf_missileradar', 6)
 

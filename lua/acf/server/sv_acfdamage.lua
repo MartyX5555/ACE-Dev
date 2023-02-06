@@ -451,7 +451,7 @@ do
                     local Hasvoid = false
                     local NotOverlap = false
 
-                    --print('DATA TABLE - DONT FUCKING DELETE')
+                    --print("DATA TABLE - DONT FUCKING DELETE")
                     --print('distToFront: '..distToFront)
                     --print('BackDists[iteration - 1]: '..BackDists[iteration - 1])
                     --print('DISTS DIFF: '..distToFront - BackDists[iteration - 1])
@@ -468,11 +468,11 @@ do
 
                     --check if we have spaced armor, spall liners ahead, if so, end here
                     if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACE.CritEnts[ tracefront.Entity:GetClass() ]) or MatData.Stopshock then
-                        --print('stopping')
+                        --print("stopping")
                         FindEnd     = false
                         finalpos    = HitBacks[iteration - 1] + HitVec:GetNormalized()*0.1
                         fNormal     = Normals[iteration - 1]
-                        --print('iteration #'..iteration..' / FINISHED!')
+                        --print("iteration #'..iteration..' / FINISHED!")
 
                         break
                     end
@@ -505,12 +505,12 @@ do
             --flag this iteration as lost
             if not tracefront.Hit then
 
-                --print('[ACE|WARN]- TRACE HAS BROKEN!')
+                --print("[ACE|WARN]- TRACE HAS BROKEN!")
 
                 FindEnd     = false
                 finalpos    = HitBack + HitVec:GetNormalized()*0.1
                 fNormal     = Normals[iteration]
-                --print('iteration #'..iteration..' / FINISHED')
+                --print("iteration #'..iteration..' / FINISHED")
 
                 break
             end
@@ -753,7 +753,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
     local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4
 
-    --print('Max Dig: '..MaxDig..'\nEnergy Pen: '..Energy.Penetration..'\n')
+    --print("Max Dig: '..MaxDig..'\nEnergy Pen: '..Energy.Penetration..'\n")
 
     local HitRes = {Penetrated = false, Ricochet = false}
     local TROffset = 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
@@ -874,7 +874,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
             local class = ent:GetClass()
 
             -- exclude any entity that is not part of debris ents whitelist
-            if not ACF.Debris[class] then --print('removing not valid class')
+            if not ACF.Debris[class] then --print("removing not valid class")
                 children[ent] = nil continue
             else
 

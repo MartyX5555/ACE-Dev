@@ -1,5 +1,5 @@
 --i'll leave almost everything ready so they can be exported to acf-3 in some near future
---print('[ACE | INFO]- Loading Contraption System. . .')
+--print("[ACE | INFO]- Loading Contraption System. . .")
 
 --ACE = ACE or {}
 
@@ -102,7 +102,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
         if not Ent:GetParent():IsValid() then
             table.insert( ACE.contraptionEnts , Ent)
 
-            --print('[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!')
+            --print("[ACE | INFO]- an entity '..Ent:GetClass()..' has been registered!")
             --print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
         end
 
@@ -135,7 +135,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
                         if ECM:EntIndex() == Ent:EntIndex() then
                             table.remove( ACE.ECMPods , i)
 
-                            --print('[ACE | INFO]- the ECM '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+                            --print("[ACE | INFO]- the ECM '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")
                             --print('ECM registered count: '..table.Count( ACE.ECMPods ))
                             break
                         end
@@ -152,7 +152,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
                         if TrRadar:EntIndex() == Ent:EntIndex() then
                             table.remove( ACE.radarEntities , i)
 
-                            --print('[ACE | INFO]- the TrRadar '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+                            --print("[ACE | INFO]- the TrRadar '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")
                             --print('Tracking radar registered count: '..table.Count( ACE.radarEntities ))
 
                             break
@@ -169,7 +169,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
                         if Optical:EntIndex() == Ent:EntIndex() then
                             table.remove( ACE.Opticals , i)
 
-                            --print('[ACE | INFO]- the Optical '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+                            --print("[ACE | INFO]- the Optical '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")
                             --print('GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))
 
                             break
@@ -185,7 +185,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
                         if Explosive:EntIndex() == Ent:EntIndex() then
                             table.remove( ACE.Explosives , i)
 
-                            --print('[ACE | INFO]- the Explosive '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+                            --print("[ACE | INFO]- the Explosive '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")
                             --print('[ACE | INFO]- Explosive registered count: '..table.Count( ACE.Explosives ))
 
                             break
@@ -198,7 +198,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
             if MEnt:EntIndex() == Ent:EntIndex() then   --check if we are taking same ent
                 table.remove( ACE.contraptionEnts , i)                     --if same, remove it
 
-                --print('[ACE | INFO]- the entity '..Ent:GetClass()..' ( '..Ent:GetModel()..' ) has been removed!')
+                --print("[ACE | INFO]- the entity '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")
                 --print('Total Ents registered count: '..#ACE.contraptionEnts)
 
                 return                                            --code has ended its work, return
@@ -241,7 +241,7 @@ function ACE_refreshdata( Data )
         end
     end
 
-    --print('[ACE | INFO]- Starting Refreshing. . .')
+    --print("[ACE | INFO]- Starting Refreshing. . .")
     for index, Ent in ipairs(ACE.contraptionEnts) do
 
         -- check if the entity is valid
@@ -254,7 +254,7 @@ function ACE_refreshdata( Data )
             if not Ent.Heat then
 
                 -- if not, remove it. Removing most of parented props will decrease cost of guidances
-                --print('[ACE | INFO]- Parented prop! removing. . .')
+                --print("[ACE | INFO]- Parented prop! removing. . .")
                 table.remove( ACE.contraptionEnts , index )
 
                 continue
@@ -264,7 +264,7 @@ function ACE_refreshdata( Data )
 
     end
 
-    --print('[ACE | INFO]- Finished refreshing!')
+    --print("[ACE | INFO]- Finished refreshing!")
     --print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
 
 end
