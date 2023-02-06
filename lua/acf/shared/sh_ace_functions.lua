@@ -84,9 +84,9 @@ end
 
 -- changes here will be automatically reflected in the armor properties tool
 function ACF_CalcArmor( Area, Ductility, Mass )
-    
+
     return ( Mass * 1000 / Area / 0.78 ) / ( 1 + Ductility ) ^ 0.5 * ACF.ArmorMod
-    
+
 end
 
 function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
@@ -99,14 +99,14 @@ function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
 end
 
 function ACF_Kinetic( Speed , Mass, LimitVel )
-    
+
     LimitVel = LimitVel or 99999
     Speed = Speed/39.37
-    
+
     local Energy = {}
         Energy.Kinetic = ((Mass) * ((Speed)^2))/2000 --Energy in KiloJoules
         Energy.Momentum = (Speed * Mass)
-        
+
         local KE = (Mass * (Speed^ACF.KinFudgeFactor))/2000 + Energy.Momentum
         Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0)^2)/(LimitVel*5) * (KE/200)^0.95 , KE*0.1 )
 
@@ -139,20 +139,20 @@ do
 
         -- find the physical parent highest up the chain
         local Parent = ACF_GetPhysicalParent(obj)
-    
+
         -- get the shit that is physically attached to the vehicle
         local PhysEnts = ACF_GetAllPhysicalConstraints( Parent )
-    
+
         -- add any parented but not constrained props you sneaky bastards
         local AllEnts = table.Copy( PhysEnts )
         for k, v in pairs( AllEnts ) do
-        
+
             table.Merge( AllEnts, ACF_GetAllChildren( v ) )
-    
+
         end
-    
+
         for k, v in pairs( AllEnts ) do
-        
+
             if IsValid( v ) then
 
                 if v:GetClass() == "acf_engine" then
@@ -161,16 +161,16 @@ do
                 elseif v:GetClass() == "acf_fueltank" then
                     fuel = math.max(fuel,1)
                 end
-            
+
                 local phys = v:GetPhysicsObject()
-                if IsValid( phys ) then     
-            
+                if IsValid( phys ) then
+
                     Mass = Mass + phys:GetMass() --print("total mass of contraption: "..Mass)
-                
+
                     if PhysEnts[ v ] then
                         PhysMass = PhysMass + phys:GetMass()
                     end
-                
+
                 end
 
                 if pwr then
@@ -200,8 +200,8 @@ do
         for k, v in pairs( AllEnts ) do
             v.acfphystotal      = PhysMass
             v.acftotal          = Mass
-            v.acflastupdatemass = ACF.CurTime   
-        end 
+            v.acflastupdatemass = ACF.CurTime
+        end
 
         if pwr then
             --Get mass Material composition here
@@ -211,9 +211,9 @@ do
 
                 for i,mass in pairs(tablemass) do
 
-                    MatSums[material] = MatSums[material] + mass 
+                    MatSums[material] = MatSums[material] + mass
 
-                end 
+                end
 
                 --Gets the actual material percent of the contraption
                 PercentMat[material] = ( MatSums[material] / obj.acftotal ) or 0
@@ -227,33 +227,33 @@ end
 
 --Checks if theres new versions for ACE
 function ACF_UpdateChecking( )
-    http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size) 
+    http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)
 
         --maybe not the best way to get git but well......
-        str = tostring("String:"..contents)    
+        str = tostring("String:"..contents)
         i,k = string.find(str,'ACF.Version =')
-                
+
         local rev = tonumber(string.sub(str,k+2,k+4)) or 0
-        
+
         if rev and ACF.Version == rev  and rev ~= 0 then
-            
+
             print("[ACE | INFO]- You have the latest version! Current version: "..rev)
-        
+
         elseif rev and ACF.Version > rev and rev ~= 0 then
 
             print("[ACE | INFO]- You have an experimental version! Your version: "..ACF.Version..". Main version: "..rev)
         elseif rev == 0 then
-        
+
             print("[ACE | ERROR]- Unable to find the latest version! Failed to connect to GitHub.")
-            
+
         else
-        
+
             print("[ACE | INFO]- A new version of ACE is available! Your version: "..ACF.Version..". New version: "..rev)
             if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
-            
+
         end
         ACF.CurrentVersion = rev
-        
+
     end, function()
         print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
 
@@ -269,11 +269,11 @@ end
 
     acedupe_[folder name]_[your dupe name].txt
 
-    Note: 
+    Note:
     - folder name must be ONE word (acecool, myaddon, tankpack, etc). It cannot have spaces!!!
     - you dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
 
-    Correct way examples: 
+    Correct way examples:
 
     - acedupe_tanks_bmp2.txt
     - acedupe_cars_my_cool_car.txt
@@ -304,7 +304,7 @@ do
             local Id = string.Explode("_", Result)
             if Id[1] ~= fileIndex then continue end
 
-            file_name = table.concat( Id, " ", 3) 
+            file_name = table.concat( Id, " ", 3)
             file_name = string.Replace( file_name, ".txt", "" )
 
             dupefiles[i] = Result --Catching desired files
@@ -320,7 +320,7 @@ do
                 file.CreateDir(file_directory)
                 file.Write(file_directory.."/"..file_name..".txt", file_content)
 
-                
+
             else
                 --Idea: bring the analyzer from the internet instead of locally?
 
@@ -336,7 +336,7 @@ do
                 end
 
             end
-            
+
         end
 
     end

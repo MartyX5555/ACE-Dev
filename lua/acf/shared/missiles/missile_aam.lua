@@ -52,11 +52,11 @@ ACF_defineGun("AIM-9 AAM", {                                -- id
     fuses           = {"Contact", "Radio"},
 
     racks           = {                                     -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
-                        ["1xRK"] = true,  
-                        ["2xRK"] = true, 
-                        ["3xRK"] = true, 
+                        ["1xRK"] = true,
+                        ["2xRK"] = true,
+                        ["3xRK"] = true,
                         ["1xRK_small"] = true
-                    },   
+                    },
 
     seekcone        = 10,                                   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 25
     viewcone        = 50,                                   -- getting outside this cone will break the lock.  Divided by 2.        --was 30
@@ -105,9 +105,9 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     fuses           = {"Contact", "Radio"},
 
     racks           = {                                     -- a whitelist for racks that this missile can load into.
-                        ["1xRK"] = true, 
+                        ["1xRK"] = true,
                         ["2xRK"] = true
-                    },   
+                    },
 
     seekcone        = 10,                                   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 20
     viewcone        = 50,                                   -- getting outside this cone will break the lock.  Divided by 2.    --was 25
@@ -119,7 +119,7 @@ ACF_defineGun("AIM-120 AAM", {                              -- id
     SeekSensitivity = 2.5
 } )
 
---AIM-54 phoenix. Being faster and bigger than AIM-120, can deliver a single big blast against the target, however, this 300kgs piece of aerial destruction has a serious trouble 
+--AIM-54 phoenix. Being faster and bigger than AIM-120, can deliver a single big blast against the target, however, this 300kgs piece of aerial destruction has a serious trouble
 --with its seek cone and is suggested to AIM before launching.
 ACF_defineGun("AIM-54 AAM", {                               -- id
     name            = "AIM-54 Missile",

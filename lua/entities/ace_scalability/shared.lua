@@ -10,7 +10,7 @@ function ENT:ConvertMeshToScale(MeshData, Scale)
     local NewMesh = table.Copy(MeshData)
 
     for i, vertexgroup in pairs(NewMesh) do
-    
+
         for k, vertex in pairs(vertexgroup) do
             vertexgroup[k] = (istable(vertex) and vertex.pos or vertex) * Scale
         end

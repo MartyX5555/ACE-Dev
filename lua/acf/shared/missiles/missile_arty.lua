@@ -1,4 +1,4 @@
-    
+
 --define the class
 ACF_defineGunClass("ARTY", {
     type            = "missile",
@@ -55,11 +55,11 @@ ACF_defineGun("Type 63 RA", {                               -- id
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
 
     racks       = {                                         -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true, 
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
-                    ["4xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
+                    ["4xRK"] = true,
                     ["6xUARRK"] = true
                 },
 
@@ -99,10 +99,10 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
         thrust          = 1300,                             -- average thrust - kg*in/s^2
         burnrate        = 150,                              -- cm^3/s at average chamber pressure
         starterpct      = 0.1,
-        minspeed        = 300,                              -- minimum speed beyond which the fins work at 100% efficiency 
+        minspeed        = 300,                              -- minimum speed beyond which the fins work at 100% efficiency
         dragcoef        = 0.006,                            -- drag coefficient while falling
         dragcoefflight  = 0.009,                            -- drag coefficient during flight
-        finmul          = 0.5,                             -- fin multiplier (mostly used for unpropelled guidance)  
+        finmul          = 0.5,                             -- fin multiplier (mostly used for unpropelled guidance)
         penmul          = math.sqrt(0.2)                    --  139 HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
 
@@ -111,13 +111,13 @@ ACF_defineGun("SAKR-10 RA", {                               -- id
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
 
     racks       = {                                         -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
-                    ["4xRK"] = true, 
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
+                    ["4xRK"] = true,
                     ["6xUARRK"] = true
-                },   
-    
+                },
+
     agility     = 0.07,
     viewcone    = 180,
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
@@ -167,15 +167,15 @@ ACF_defineGun("SS-40 RA", {                                 -- id
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
 
     racks       = {                                         -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
-                    ["4xRK"] = true, 
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
+                    ["4xRK"] = true,
                     ["6xUARRK"] = true
-                },    
-    
+                },
+
     agility     = 0.03,
-    viewcone    = 180, 
+    viewcone    = 180,
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                      -- minimum fuse arming delay
@@ -223,7 +223,7 @@ ACF_defineGun("RW61 RA", {                                  -- id
 
     racks       = {                                         -- a whitelist for racks that this missile can load into.
                     ["380mmRW61"] = true
-                },                  
+                },
 
     seekcone    = 35,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 55,                                       -- getting outside this cone will break the lock.  Divided by 2.

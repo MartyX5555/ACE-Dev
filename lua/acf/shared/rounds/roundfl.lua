@@ -12,7 +12,7 @@ Round.desc  = ACFTranslation.ShellFL[2]
 Round.netid = 8                                     -- Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
-    
+
     --setup flechettes
     local FlechetteData = {}
     FlechetteData["Caliber"]        = math.Round( BulletData["FlechetteRadius"]*0.2 ,2)
@@ -34,9 +34,9 @@ function Round.create( Gun, BulletData )
 
     local I=1
     local MuzzleVec
-    
+
     --if ammo is cooking off, shoot in random direction
-    if Gun:GetClass() == "acf_ammo" then 
+    if Gun:GetClass() == "acf_ammo" then
         local Inaccuracy
         MuzzleVec = VectorRand()
 
@@ -59,7 +59,7 @@ function Round.create( Gun, BulletData )
             ACF_CreateBullet( FlechetteData )
         end
     end
-    
+
 end
 
 -- Function to convert the player's slider data into the complete round data
@@ -72,7 +72,7 @@ function Round.convert( Crate, PlayerData )
     Data["LengthAdj"] = 0.5
 
     PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
     PlayerData.Tracer       =  PlayerData.Tracer        or 0
     PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
     PlayerData["Data5"]         = PlayerData["Data5"]       or 0    -- flechette count
@@ -97,11 +97,11 @@ function Round.convert( Crate, PlayerData )
 
     Data["MinFlechettes"]   = 2
     Data["Flechettes"]      = math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
-    
+
     Data["MinSpread"]       = 0.25
     Data["MaxSpread"]       = 30
     Data["FlechetteSpread"] = math.Clamp(tonumber(PlayerData["Data6"]), Data["MinSpread"], Data["MaxSpread"])
-    
+
     local PenAdj                = 0.8                            -- higher means lower pen, but more structure (hp) damage (old: 2.35, 2.85)
     local RadiusAdj             = 1.0                            -- lower means less structure (hp) damage, but higher pen (old: 1.0, 0.8)
     local PackRatio             = 0.0025*Data["Flechettes"]+0.69 -- how efficiently flechettes are packed into shell
@@ -161,32 +161,32 @@ function Round.network( Crate, BulletData )
 
     --For propper bullet model
     Crate:SetNWFloat( "BulletModel", Round.model )
-    
+
 end
 
 function Round.cratetxt( BulletData )
 
     local DData = Round.getDisplayData(BulletData)
-    
+
     local inaccuracy = 0
     local Gun = list.Get("ACFEnts").Guns[BulletData.Id]
-    
+
     if Gun then
         local Classes = list.Get("ACFClasses")
         inaccuracy = (Classes.GunClass[Gun.gunclass] or {spread = 0}).spread
     end
-    
+
     local coneAng = inaccuracy * ACF.GunInaccuracyScale
-    
-    local str = 
+
+    local str =
     {
         "Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
         "Max Penetration: ", math.floor(DData.MaxPen), " mm\n",
         "Max Spread: ", math.ceil((BulletData.FlechetteSpread + coneAng) * 10) / 10, " deg"
     }
-    
+
     return table.concat(str)
-    
+
 end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
@@ -213,11 +213,11 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
     else
         table.insert( Bullet["Filter"] , Target )
     return "Penetrated" end
-    
+
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
-    
+
     local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, Bullet.LimitVel )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
@@ -234,14 +234,14 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos )
-    
+
     ACF_RemoveBullet( Index )
-    
+
 end
 
 -- Bullet stops here
 function Round.endeffect( Effect, Bullet )
-    
+
     local Spall = EffectData()
         Spall:SetEntity( Bullet.Crate )
         Spall:SetOrigin( Bullet.SimPos )
@@ -275,13 +275,13 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
     util.Effect( "ACF_AP_Ricochet", Spall )
-    
+
 end
 
 function Round.guicreate( Panel, Table )
 
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist["FL"] )
-    
+
     ACE_UpperCommonDataDisplay()
 
     acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
@@ -328,6 +328,6 @@ function Round.guiupdate( Panel, Table )
     ACE_CommonDataDisplay( Data )
 end
 
-list.Set( "SPECSRoundTypes", "FL", Round ) 
+list.Set( "SPECSRoundTypes", "FL", Round )
 list.Set( "ACFRoundTypes", "FL", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid , "FL" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above

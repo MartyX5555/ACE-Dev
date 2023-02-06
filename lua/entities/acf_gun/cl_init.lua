@@ -4,9 +4,9 @@ include("shared.lua")
 local ACF_GunInfoWhileSeated = CreateClientConVar("ACF_GunInfoWhileSeated", 0, true, false)
 
 function ENT:Initialize()
-    
+
     self.BaseClass.Initialize( self )
-    
+
     self.LastFire   = 0
     self.Reload     = 1
     self.CloseTime  = 1
@@ -22,21 +22,21 @@ function ENT:Draw()
 
     local lply = LocalPlayer()
     local hideBubble = not ACF_GunInfoWhileSeated:GetBool() and IsValid(lply) and lply:InVehicle()
-    
+
     self.BaseClass.DoNormalDraw(self, false, hideBubble)
     Wire_Render(self)
-    
-    if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
+
+    if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then
         -- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
-        Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
+        Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false )
     end
-    
+
 end
 
 function ENT:Think()
-    
+
     self.BaseClass.Think( self )
-    
+
     local SinceFire = CurTime() - self.LastFire
     self:SetCycle( SinceFire * self.Rate / self.RateScale )
     if CurTime() > self.LastFire + self.CloseTime and self.CloseAnim then
@@ -45,18 +45,18 @@ function ENT:Think()
         self.Rate = 1 / ( self.Reload - self.CloseTime ) -- Base anim time is 1s, rate is in 1/10 of a second
         self:SetPlaybackRate( self.Rate )
     end
-    
+
 end
 
 function ENT:Animate( Class, ReloadTime, LoadOnly )
-    
+
     if self.CloseAnim and self.CloseAnim > 0 then
         self.CloseTime = math.max(ReloadTime-0.75,ReloadTime*0.75)
     else
         self.CloseTime = ReloadTime
         self.CloseAnim = nil
     end
-    
+
     self:ResetSequence( self.FireAnim )
     self:SetCycle( 0 )
     self.RateScale = self:SequenceDuration()
@@ -68,13 +68,13 @@ function ENT:Animate( Class, ReloadTime, LoadOnly )
     self:SetPlaybackRate( self.Rate )
     self.LastFire = CurTime()
     self.Reload = ReloadTime
-    
+
 end
 
 function ACFGunGUICreate( Table )
-        
+
     acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
-    
+
     local GunDisplay = acfmenupanel.CData.DisplayModel
 
     GunDisplay = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
@@ -87,17 +87,17 @@ function ACFGunGUICreate( Table )
     acfmenupanel.CustomDisplay:AddItem( GunDisplay )
 
     local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
-    acfmenupanel:CPanelText("ClassDesc", GunClass.desc) 
+    acfmenupanel:CPanelText("ClassDesc", GunClass.desc)
     acfmenupanel:CPanelText("GunDesc", Table.desc)
     acfmenupanel:CPanelText("Caliber", "Caliber : "..(Table.caliber*10).."mm")
     acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
     acfmenupanel:CPanelText("Year", "Year : "..Table.year)
-    
+
     if Table.rack then
         if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
         if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
 
-        if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : "..Table.guidelay.." seconds") 
+        if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : "..Table.guidelay.." seconds")
         else acfmenupanel:CPanelText("GuiDelay", "With a guidance, this ordnance will start to do maneuvers with no delays") end
 
 
@@ -135,7 +135,7 @@ function ACFGunGUICreate( Table )
 
         --acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
     end
-    
+
     acfmenupanel.CustomDisplay:PerformLayout()
-    
+
 end

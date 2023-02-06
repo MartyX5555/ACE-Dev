@@ -2,7 +2,7 @@
 function ACF_CanEmitLight(lightSize)
 
 	local minLightSize = GetConVar("ACFM_MissileLights"):GetFloat()
-	
+
 	if minLightSize == 0 then return false end
 	if lightSize == 0 then return false end
 
@@ -12,11 +12,11 @@ end
 function ACF_RenderLight(idx, lightSize, colour, pos, duration)
 
 	if not ACF_CanEmitLight(lightSize) then return end
-	
+
 	local dlight = DynamicLight( idx )
 
 	if dlight then
-		
+
 		local size 			= lightSize
 		local c 			= colour or Color(255, 128, 48)
 		local Brightness 	= size * 0.00018

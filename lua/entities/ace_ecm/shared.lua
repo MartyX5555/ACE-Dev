@@ -7,6 +7,6 @@ ENT.Category = "ACE - SpecialEntities"
 ENT.WireDebugName = "ACE - ECM"
 ENT.Purpose		 	= "Jams the target radar."
 ENT.Instructions 	= "Activate and feed radar id."
-ENT.AutomaticFrameAdvance = true 
+ENT.AutomaticFrameAdvance = true
 ENT.Spawnable = true
 ENT.AdminSpawnable = true

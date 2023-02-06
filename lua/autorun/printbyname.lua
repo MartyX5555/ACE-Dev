@@ -1,12 +1,12 @@
 local function mixedcompare(a, b)
 	if type(a) == type(b) then return (a < b) end
-	
+
 	local ca = tonumber(a)
 	if not ca then return tostring(a) < tostring(b) end
-	
+
 	local cb = tonumber(b)
 	if not cb then return tostring(a) < tostring(b) end
-	
+
 	return ca < cb
 end
 
@@ -37,7 +37,7 @@ function printByName(tbl)
 		Msg(tostring(k), "\t", "\t", tostring(v), "\n")
 	end
 	plst = tbl -- reference!
-    
+
     if pbnTrace then debug.Trace() end
 end
 
@@ -52,9 +52,9 @@ function printByNameTable(tbl, name)
 	for k, v in pairsByKeys(tbl) do
 		typ = type(k)
 		typ2 = type(v)
-		
+
 		vstr = typ2 == "string" and "\"" .. v .. "\"" or tostring(v)
-		
+
 		if typ == "string" then
 			Msg(name, "[\"", tostring(k), "\"]\t\t\t= ", vstr, "\n")
 		elseif typ == "number" then

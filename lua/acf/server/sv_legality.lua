@@ -82,7 +82,7 @@ do
 
       local problems = {} --problems table definition
       if ACF.Legal.IsActivated == 0 then return (#problems == 0), table.concat(problems, ", ") end
-   
+
       -- check it exists
       if not ACF_Check( Ent ) then return { Legal=false, Problems ={"Invalid Ent"} } end
 
@@ -90,7 +90,7 @@ do
 
       -- check if physics is valid
       if not IsValid(physobj) then return { Legal=false, Problems ={"Invalid Physics"} } end
-   
+
 
       -- make sure traces can hit it (fade door, propnotsolid)
       if ACF.Legal.Ignore.Solid <= 0  and not Ent:IsSolid() then
@@ -110,7 +110,7 @@ do
          --Lets assume that input minmass is also rounded like here.
          local CMass = math.Round(physobj:GetMass(),2)
 
-         if MinMass != nil and CMass < MinMass then             
+         if MinMass != nil and CMass < MinMass then
             table.insert(problems,"Under min mass")
          end
 
@@ -144,7 +144,7 @@ do
       if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
          table.insert(problems,"Has visclip")
       end
-   
+
       -- check for bad collision groups
       if ACF.Legal.Ignore.Solid <= 0 and not ValidCollisionGroups[Ent:GetCollisionGroup()] then
          table.insert(problems, "Bad collision group")
@@ -152,6 +152,6 @@ do
 
       -- legal if number of problems is 0
       return (#problems == 0), table.concat(problems, ", ")
-   
+
    end
 end

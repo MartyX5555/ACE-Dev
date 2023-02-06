@@ -18,7 +18,7 @@ if CLIENT then
 	language.Add( "Tool.acfcopy.0", ACFTranslation.CopyToolText[4] );
 
 	function TOOL.BuildCPanel( CPanel )
-	
+
 	end
 
 end
@@ -30,7 +30,7 @@ function TOOL:LeftClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then 
+	if !IsValid( ent ) then
 		return false;
 	end
 
@@ -63,7 +63,7 @@ function TOOL:RightClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then 
+	if !IsValid( ent ) then
 		return false;
 	end
 
@@ -131,5 +131,5 @@ function TOOL:RightClick( trace )
 	end
 
 	return true;
-	
+
 end

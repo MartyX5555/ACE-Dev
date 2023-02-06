@@ -32,11 +32,11 @@ configs[#configs + 1] = {
 
     DisplayName = "Distance (in inches)",                   -- name displayed to the user
     CommandName = "Ds",                         -- shorthand name used in console commands
-    
+
     Type        = "number",                     -- lua type of the configurable variable
     Min         = 1,                            -- number specific: minimum value
     Max         = 10000                         -- number specific: maximum value
-    
+
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
@@ -46,11 +46,11 @@ configs[#configs + 1] = {
 
     DisplayName = "Detonation delay (in seconds)",           -- name displayed to the user
     CommandName = "Dd",                         -- shorthand name used in console commands
-    
+
     Type        = "number",                     -- lua type of the configurable variable
     Min         = 0,                         -- number specific: minimum value
     Max         = 2                             -- number specific: maximum value
-    
+
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
@@ -58,9 +58,9 @@ configs[#configs + 1] = {
 function this:GetDetonate(missile, guidance)
 
     if not self:IsArmed() then return false end
-    
+
     local missilePos = missile:GetPos()
-    
+
     local tracedata = {
         start   = missilePos,
         endpos  = missilePos + missile:GetUp() * -self.Distance,
@@ -104,7 +104,7 @@ function this:PerformDetonation( missile, bdata, phys, pos )
     table.insert( bdata.Filter, missile )
 
     bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
-    bdata.ProjMass  = bdata.ProjMass or bdata.RoundMass 
+    bdata.ProjMass  = bdata.ProjMass or bdata.RoundMass
 
     bdata.HandlesOwnIteration = nil
 
@@ -119,7 +119,7 @@ function this:PerformDetonation( missile, bdata, phys, pos )
 end
 
 function this:GetDisplayConfig()
-	return 
+	return
 	{
 		["Arming delay"]      = math.Round(self.Primer, 3) .. " s",
 		["Distance"]          = math.Round(self.Distance / 39.37, 1) .. " m",

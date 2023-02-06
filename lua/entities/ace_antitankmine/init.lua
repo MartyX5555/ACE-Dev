@@ -53,8 +53,8 @@ function ENT:Think()
 				endpos = self:GetPos() + Vector(0,0,-50),
 				collisiongroup = COLLISION_GROUP_WORLD,
 				filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
-			} )	
-					
+			} )
+
 			if groundRanger.Hit and groundRanger.HitWorld then
 				self:SetPos(groundRanger.HitPos+Vector(0,0,-2.5))
 				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
@@ -62,7 +62,7 @@ function ENT:Think()
 				self.phys:EnableMotion(false)
 			end
 			--print(groundRanger.Hit)
-					
+
 		elseif self.MineState == 1 then --Mine activated and searching for enemy
 
 			local triggerRanger = util.TraceHull( {
@@ -76,17 +76,17 @@ function ENT:Think()
 
 			if triggerRanger.Hit and not triggerRanger.Entity:IsPlayer() then
 
-				local HEWeight=250	
+				local HEWeight=250
 				local Radius = (HEWeight)^0.33*8*39.37
-								
+
 				ACF_HE( self:GetPos() + self:GetUp() * 3, Vector(0,0,-1) , HEWeight , HEWeight*0.2 , self:GetOwner(), self, self) --0.5 is standard antipersonal mine
-						
+
 				local Flash = EffectData()
 					Flash:SetOrigin( self:GetPos() + self:GetUp() * 3 )
 					Flash:SetNormal( Vector(0,0,-1) )
 					Flash:SetRadius( math.max( Radius, 1 ) )
 				util.Effect( "ACF_Scaled_Explosion", Flash )
-				
+
 				self:Remove()
 			end
 		end

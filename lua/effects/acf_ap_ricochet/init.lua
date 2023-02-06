@@ -1,13 +1,13 @@
 
-   
- /*--------------------------------------------------------- 
-    Initializes the effect. The data is a table of data  
-    which was passed from the server. 
- ---------------------------------------------------------*/ 
- function EFFECT:Init( data ) 
-   
+
+ /*---------------------------------------------------------
+    Initializes the effect. The data is a table of data
+    which was passed from the server.
+ ---------------------------------------------------------*/
+ function EFFECT:Init( data )
+
    self.Origin       = data:GetOrigin()
-   self.DirVec       = data:GetNormal() 
+   self.DirVec       = data:GetNormal()
    self.Velocity     = data:GetScale()             -- Velocity of the projectile in gmod units
    self.Mass         = data:GetMagnitude()         -- Mass of the projectile in kg
    self.Emitter      = ParticleEmitter( self.Origin )
@@ -38,7 +38,7 @@
       HVAP     = true
    }
 
-   --the dust is for non-explosive rounds, so lets skip this. 
+   --the dust is for non-explosive rounds, so lets skip this.
    --Note that APHE variants are not listed here but they still require it in case of rico vs ground.
    local TypeIgnore = {
       HE       = true,
@@ -59,18 +59,18 @@
       local SmokeColor = Color(100,100,100,150)
 
       -- Dirt
-      if Mat == 68 or Mat == 79 or Mat == 85 then 
+      if Mat == 68 or Mat == 79 or Mat == 85 then
          SmokeColor = Color(117,101,70,150)
 
       -- Sand
-      elseif Mat == 78 then 
+      elseif Mat == 78 then
          SmokeColor = Color(200,180,116,150)
- 
+
       -- Glass
       elseif Mat == 89 then
          SmokeColor = Color(255,255,255,50)
       end
-   
+
       if Mat ~= 77 and Mat ~= 86 and Mat ~= 80 then
          self:Dust( SmokeColor )
       else
@@ -86,11 +86,11 @@
       BulletEffect.Spread  = Vector(0,0,0)
       BulletEffect.Tracer  = 0
       BulletEffect.Force   = 0
-      BulletEffect.Damage  = 0    
-   LocalPlayer():FireBullets(BulletEffect) 
+      BulletEffect.Damage  = 0
+   LocalPlayer():FireBullets(BulletEffect)
 
    if IsValid(self.Emitter) then self.Emitter:Finish() end
-end   
+end
 
 function EFFECT:Dust( SmokeColor )
 
@@ -120,11 +120,11 @@ function EFFECT:Dust( SmokeColor )
          Dust:SetStartSize( 5*Energy )
          Dust:SetEndSize( 60*Energy )
          Dust:SetRoll( math.Rand(150, 360) )
-         Dust:SetRollDelta( math.Rand(-0.2, 0.2) )       
-         Dust:SetAirResistance( 350 )         
+         Dust:SetRollDelta( math.Rand(-0.2, 0.2) )
+         Dust:SetAirResistance( 350 )
          Dust:SetGravity( Vector( math.random(-5,5)*Energy, math.random(-5,5)*Energy, -70 ) )
 
-         Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )     
+         Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )
       end
    end
 
@@ -155,4 +155,4 @@ end
 function EFFECT:Render()
 end
 
- 
+

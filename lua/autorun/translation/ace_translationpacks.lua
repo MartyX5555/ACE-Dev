@@ -7,7 +7,7 @@ ACFTranslation.ArmorPropertiesText = {
 	"Sets the weight of a prop by desired armor thickness, ductility, and material.",--Description 1 (2)
 	"Left click to apply settings.  Right click to copy settings.  Reload to get the total mass of an object and all constrained objects.",--Description 2 (3)
 
-	--/////////Menu Panel/////////--	
+	--/////////Menu Panel/////////--
 
 	--*IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
 
@@ -18,13 +18,13 @@ ACFTranslation.ArmorPropertiesText = {
 	"Material",--Armor Material Slider Name (8)
 	"Not for the faint of heart. If your a beginner leave this at 0.\n\nSets the material of a prop to the following:\n(0)RHA\nRolled Steel that does not have any special traits, your standard ACF armor\n(1)Cast\nHeavier and softer than RHA but takes less damage\n(2)Ceramic\nLight plate that is lighter and more resiliant to penetration but is very brittle and hates being penetrated\n(3)Rubber\nRubber is effective vs heat jets and spall but does almost nothing to kinetic rounds\n(4)ERA\nERA is heavier than RHA,when penetrated it explodes damaging nearby props and the shell that hit it\n(5)Aluminum\nLighter than steel but very vulnerable to HEAT and spalling\n(6)Textolite\nFiberglass like material that isn't effective vs kinetic but is good vs HEAT and HE\n\nThe value is rounded so there are no mixed values. Remember 9 million mm of rubber is not equivalent to 9 million mm of steel.\n", --Armor Material Description (9)
 
-	--/////////Reload Information/////////--	
+	--/////////Reload Information/////////--
 	"with fuel", --Hp with fuel text (10)
 	"Total mass is ", --Total mass text (11)
 	"physical", --The word physical (12)
 	"parented", --The word parented (13)
 
-	--/////////Armor Update Display Text/////////--	
+	--/////////Armor Update Display Text/////////--
 
 	--*IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
 
@@ -35,10 +35,10 @@ ACFTranslation.ArmorPropertiesText = {
 
 	"\nAfter:\nMass: ", --After Mass Display (18)
 
-	--/////////Toolgun Display Text/////////--	
+	--/////////Toolgun Display Text/////////--
 
 	"ACE Stats", --ACF Stats (19)
-	"Armour", --Armor (20)	
+	"Armour", --Armor (20)
 	"Health" --Hitpoints (21)
 
 }
@@ -75,7 +75,7 @@ ACFTranslation.SoundToolText = {
 }
 
 ACFTranslation.ACFMenuTool = {
-	
+
 	"ACE Menu", -- Tool Name (1)
 	"Armored Combat Extended", -- ACE Modification Text (2)
 	"Spawn the Armored Combat Extended weapons and ammo", -- Description 1 (3)

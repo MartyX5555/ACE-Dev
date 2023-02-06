@@ -38,22 +38,22 @@ function ENT:Initialize()
     self.Filter              = {self,self.Entity,self.Guidance}
     self.velocity            = 5000                         -- self.velocity of the missile per second
     self.secondsOffset       = 0.5                          -- seconds of forward flight to aim towards, to affect the beam-riding simulation
-    
+
     --This only affects caliber below 100mm (10cms)
-    self.Sub = self.BulletData.Caliber<10 
-    if self.Sub then 
+    self.Sub = self.BulletData.Caliber<10
+    if self.Sub then
         self.velocity = 2500
         self.secondsOffset = 0.25
         self.SpiralAm = (10-self.BulletData.Caliber)*0.25 -- amount of artifical spiraling for <100 shells, caliber in acf is in cm
     end
-    
+
     -- how far off the forward offset is for the targeting position
-    self.offsetLength = self.velocity * self.secondsOffset  
+    self.offsetLength = self.velocity * self.secondsOffset
 
     --Gets the Closest computer to spawned missile to override gun´s guidance
     --Dont bother at using this if the table is empty
     if not table.IsEmpty( ACE.Opticals ) then
-        for k, Optical in pairs( ACE.Opticals ) do 
+        for k, Optical in pairs( ACE.Opticals ) do
 
             if not IsValid(Optical) then continue end
 
@@ -68,7 +68,7 @@ function ENT:Initialize()
 
             end
 
-            
+
         end
     end
 
@@ -117,8 +117,8 @@ function ENT:Think()
         local Inacc = math.random(-1,1)*Dist
         self:SetAngles(self:LocalToWorldAngles(dir+Angle(Inacc,-Inacc,5)))
         self:SetPos(self:LocalToWorld(Vector((self.velocity)*(TimeNew - self.Time),Spiral,0)))
-        local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter) 
-            
+        local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter)
+
         self.Time = TimeNew
 
         --Break glatgms in contact with water. Assuming they are fast.
@@ -137,7 +137,7 @@ function ENT:Think()
 end
 
 function ENT:Detonate()
-    
+
     if IsValid(self) and not self.Detonated then
 
         ACF_ActiveMissiles[self] = nil
@@ -146,7 +146,7 @@ function ENT:Detonate()
         self:Remove()
 
         btdat = {}
-        btdat["Type"]           = "HEAT" 
+        btdat["Type"]           = "HEAT"
         btdat["Accel"]          = self.BulletData.Accel
         btdat["BoomPower"]      = self.BulletData.BoomPower
         btdat["Caliber"]        = self.BulletData.Caliber
@@ -175,7 +175,7 @@ function ENT:Detonate()
         btdat["RoundVolume"]    = self.BulletData.RoundVolume
         btdat["ShovePower"]     = self.BulletData.ShovePower
         btdat["Tracer"]         = self.BulletData.Tracer
-    
+
         btdat["SlugMass"]       = self.BulletData.SlugMass
         btdat["SlugCaliber"]    = self.BulletData.SlugCaliber
         btdat["SlugDragCoef"]   = self.BulletData.SlugDragCoef
@@ -190,15 +190,15 @@ function ENT:Detonate()
         self.FakeCrate = ents.Create("acf_fakecrate2")
         self.FakeCrate:RegisterTo(btdat)
         btdat["Crate"] = self.FakeCrate:EntIndex()
-        self:DeleteOnRemove(self.FakeCrate) 
-    
+        self:DeleteOnRemove(self.FakeCrate)
+
         btdat["Flight"] = self:GetForward():GetNormalized() * btdat["MuzzleVel"] * 39.37
-    
+
         btdat.Pos = self:GetPos() + self:GetForward() * 2
 
         self.CreateShell = ACF.RoundTypes[btdat.Type].create
         self:CreateShell( btdat )
-        
+
         local Flash = EffectData()
             Flash:SetOrigin( self:GetPos() )
             Flash:SetNormal( self:GetForward() )

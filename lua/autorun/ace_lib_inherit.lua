@@ -21,15 +21,15 @@ function this.doInherit( child, baseClass )
 		newinst:Init()
         return newinst
     end
-	
+
 	class_mt.__call = new_class.__new
 
-	
+
 	function new_class:Init()
-        
+
     end
-	
-	
+
+
     if nil ~= baseClass then
         setmetatable( new_class, { __index = baseClass, __call = new_class.__new } )
 	else
@@ -41,18 +41,18 @@ function this.doInherit( child, baseClass )
         return new_class
     end
 
-	
+
     function new_class:super()
         return baseClass
     end
-	
-	
+
+
 	function new_class:instanceof(class)
 		if new_class == class then return true end
 		if baseClass == nil then return false end
 		return baseClass:instanceof(class)
 	end
-	
+
 	/*
 	function new_class:printITree()
 		print(new_class)

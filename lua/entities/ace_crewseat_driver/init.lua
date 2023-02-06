@@ -37,9 +37,9 @@ end
 
 function ENT:Think()
 	self:GetPhysicsObject():SetMass(65) --62 kilo people plus 3 kg seat, hooray
-    
+
 	if self.ACF.Health < self.ACF.MaxHealth*0.989 then
-		ACF_HEKill( self, VectorRand() , 0)	
+		ACF_HEKill( self, VectorRand() , 0)
 		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
 	end
 
@@ -47,13 +47,13 @@ end
 
 
 function ENT:OnRemove()
-	
+
 	for Key,Value in pairs(self.Master) do
 		if self.Master[Key] and self.Master[Key]:IsValid() then
 			self.Master[Key]:Unlink( self )
 		end
 	end
-	
+
 end
 
 

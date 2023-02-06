@@ -28,7 +28,7 @@ ACF_defineGun("20mmAC", { --id
 		propweight = 0.13
 	}
 } )
-	
+
 ACF_defineGun("30mmAC", {
 	name = "30mm Autocannon",
 	desc = "The 30mm AC can fire shells with sufficient space for a small payload, and has modest anti-armor capability",
@@ -45,7 +45,7 @@ ACF_defineGun("30mmAC", {
 		propweight = 0.350
 	}
 } )
-	
+
 ACF_defineGun("40mmAC", {
 	name = "40mm Autocannon",
 	desc = "The 40mm AC can fire shells with sufficient space for a useful payload, and can get decent penetration with proper rounds.",
@@ -62,7 +62,7 @@ ACF_defineGun("40mmAC", {
 		propweight = 0.9
 	}
 } )
-	
+
 ACF_defineGun("50mmAC", {
 	name = "50mm Autocannon",
 	desc = "The 50mm AC fires shells comparable with the 50mm Cannon, making it capable of destroying light armour quite quickly.",
@@ -96,7 +96,7 @@ ACF_defineGun("20mmHAC", { --id
         propweight = 0.13
     }
 } )
-   
+
 ACF_defineGun("30mmHAC", {
     name = "30mm Heavy Autocannon",
     desc = "The watercooled 30mm HAC fires decently heavy shells at a rapid rate that are great for chewing through light armor",
@@ -113,7 +113,7 @@ ACF_defineGun("30mmHAC", {
         propweight = 0.350
     }
 } )
-   
+
 ACF_defineGun("40mmHAC", {
     name = "40mm Heavy Autocannon",
     desc = "The watercooled 40mm HAC is a long range grinder created in secrecy by light vehicles with very little patience",
@@ -130,4 +130,4 @@ ACF_defineGun("40mmHAC", {
         propweight = 0.9
     }
 } )
-	
+

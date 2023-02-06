@@ -2,8 +2,8 @@
 ACF.BulletEffect = {}
 
 function ACF_ManageBulletEffects()
-	
-	if ACF.BulletEffect then 
+
+	if ACF.BulletEffect then
 		for Index,Bullet in pairs(ACF.BulletEffect) do
 			ACF_SimBulletFlight( Bullet, Index )			--This is the bullet entry in the table, the omnipresent Index var refers to this
 		end
@@ -16,7 +16,7 @@ function ACF_SimBulletFlight( Bullet, Index )
 	if not Bullet or not Index then return end
 
 	local DeltaTime = CurTime() - Bullet.LastThink --intentionally not using cached curtime value
-	
+
 	local Drag = Bullet.SimFlight:GetNormalized() * ( Bullet.DragCoef * Bullet.SimFlight:LengthSqr() )/ACF.DragDiv
 
 	Bullet.SimPosLast 	= Bullet.SimPos
@@ -30,5 +30,5 @@ function ACF_SimBulletFlight( Bullet, Index )
 		Bullet.Effect:ApplyMovement( Bullet )
 	end
 	Bullet.LastThink = CurTime() --ACF.CurTime --intentionally not using cached curtime value
-	
+
 end

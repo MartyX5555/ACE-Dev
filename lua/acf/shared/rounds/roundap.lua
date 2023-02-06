@@ -15,25 +15,25 @@ Round.netid = 1                                         -- Unique ID for this am
 Round.Type  = "AP"
 
 function Round.create( Gun, BulletData )
-    
+
     ACF_CreateBullet( BulletData )
-    
+
 end
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )
-    
+
     local Data          = {}
     local ServerData    = {}
     local GUIData       = {}
-    
+
     PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
     PlayerData.Tracer       =  PlayerData.Tracer        or 0
     PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
 
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
-    
+
     Data.ProjMass       = Data.FrArea * (Data.ProjLength*7.9/1000)  -- Volume of the projectile as a cylinder * density of steel
     Data.ShovePower     = 0.2
     Data.PenArea        = Data.FrArea^ACF.PenAreaMod
@@ -49,12 +49,12 @@ function Round.convert( Crate, PlayerData )
         ServerData.Type     = PlayerData.Type
         return table.Merge(Data,ServerData)
     end
-    
+
     if CLIENT then --Only tthe GUI needs this part
         GUIData = table.Merge(GUIData, Round.getDisplayData(Data))
         return table.Merge(Data,GUIData)
     end
-    
+
 end
 
 function Round.getDisplayData(Data)
@@ -65,7 +65,7 @@ function Round.getDisplayData(Data)
 end
 
 function Round.network( Crate, BulletData )
-    
+
     Crate:SetNWString( "AmmoType", Round.Type )
     Crate:SetNWString( "AmmoID", BulletData.Id )
     Crate:SetNWFloat( "Caliber", BulletData.Caliber )
@@ -77,31 +77,31 @@ function Round.network( Crate, BulletData )
 
     -- For propper bullet model
     Crate:SetNWFloat( "BulletModel", Round.model )
-    
+
 end
 
 function Round.cratetxt( BulletData )
-    
+
     local DData = Round.getDisplayData(BulletData)
-    
-    local str = 
+
+    local str =
     {
         "Muzzle Velocity: ", math.floor(BulletData.MuzzleVel, 1), " m/s\n",
         "Max Penetration: ", math.floor(DData.MaxPen), " mm"
     }
-    
+
     return table.concat(str)
-    
+
 end
 
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
     if ACF_Check( Target ) then
-    
+
         local Speed     = Bullet.Flight:Length() / ACF.VelScale
         local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, Bullet.LimitVel )
         local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-        
+
         if HitRes.Overkill > 0 then
 
             table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
@@ -116,15 +116,15 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
         else
             return false
         end
-    else 
+    else
         table.insert( Bullet.Filter , Target )
-        return "Penetrated" 
+        return "Penetrated"
     end
-        
+
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
-    
+
     local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, Bullet.LimitVel )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
@@ -141,14 +141,14 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
 end
 
 function Round.endflight( Index, Bullet, HitPos )
-    
+
     ACF_RemoveBullet( Index )
-    
+
 end
 
 -- Bullet stops here
 function Round.endeffect( Effect, Bullet )
-    
+
     local Spall = EffectData()
         Spall:SetEntity( Bullet.Crate )
         Spall:SetOrigin( Bullet.SimPos )
@@ -182,7 +182,7 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
     util.Effect( "acf_ap_ricochet", Spall )
-    
+
 end
 
 function Round.guicreate( Panel, Table )
@@ -195,13 +195,13 @@ function Round.guicreate( Panel, Table )
     acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
     ACE_CommonDataDisplay()
-    
+
     Round.guiupdate( Panel, Table )
 
 end
 
 function Round.guiupdate( Panel, Table )
-    
+
     local PlayerData = {}
         PlayerData.Id           = acfmenupanel.AmmoData.Data.id                     -- AmmoSelect GUI
         PlayerData.Type         = Round.Type                                        -- Hardcoded, match ACFRoundTypes table index
@@ -209,7 +209,7 @@ function Round.guiupdate( Panel, Table )
         PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength                  -- ProjLength slider
         PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
         PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
-    
+
     local Data = Round.convert( Panel, PlayerData )
 
     RunConsoleCommand( "acfmenu_data1", acfmenupanel.AmmoData.Data.id )
@@ -218,7 +218,7 @@ function Round.guiupdate( Panel, Table )
     RunConsoleCommand( "acfmenu_data4", Data.ProjLength )                           --And Data4 total round mass
     RunConsoleCommand( "acfmenu_data10", Data.Tracer )
     RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
-    
+
     acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
     acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 

@@ -22,16 +22,16 @@ this.desc = "This guidance package reads a target-position from the launcher and
 
 
 function this:Init()
-	
+
 end
 
 
 
 
 function this:Configure(missile)
-    
+
     self:super().Configure(self, missile)
-    
+
     self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
     self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 
@@ -45,7 +45,7 @@ function this:GetGuidance(missile)
     local posVec = self:GetWireTarget()
 
     if not posVec or type(posVec) != "Vector" or posVec == Vector() then
-        return {TargetPos = nil} 
+        return {TargetPos = nil}
     end
 
 	if posVec then
@@ -57,7 +57,7 @@ function this:GetGuidance(missile)
         	return {TargetPos = nil}
 		end
 
-		local traceArgs = 
+		local traceArgs =
 		{
 			start = missile:GetPos(),
 			endpos = posVec,
@@ -66,19 +66,19 @@ function this:GetGuidance(missile)
         	mins = Vector(0,0,0),
         	maxs = Vector(0,0,0)
 		}
-		
+
 		local res = util.TraceHull(traceArgs)
-		
+
 		local dist = res.StartPos:Distance(res.HitPos)
 		if res.Hit and dist < 80 then
 			return {}
 		end
-		
+
 	end
-	
+
     self.TargetPos = posVec
 	return {TargetPos = posVec, ViewCone = self.ViewCone}
-	
+
 end
 
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
@@ -86,7 +86,7 @@ function this:GetDisplayConfig(Type)
 
 	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
 
-	return 
+	return
 	{
 		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}

@@ -53,7 +53,7 @@ ACF_defineGun("AGM-114 ASM", {                          --id
 
     racks       = {                                     -- a whitelist for racks that this missile can load into.
                     ["1xRK"] = true,
-                    ["2x AGM-114"] = true, 
+                    ["2x AGM-114"] = true,
                     ["4x AGM-114"] = true,
 
                 },
@@ -74,7 +74,7 @@ ACF_defineGun("AGM-45 ASM", {                           -- id
     effect          = "Rocket Motor Missile1",
     gunclass        = "ASM",
     rack            = "1xRK",                           -- Which rack to spawn this missile on?
-    length          = 383, 
+    length          = 383,
     caliber         = 20.3,
     weight          = 177,                              -- Don't scale down the weight though!
     modeldiameter   = 4 * 2.54,                       -- in cm
@@ -99,19 +99,19 @@ ACF_defineGun("AGM-45 ASM", {                           -- id
 
     ent         = "acf_missile_to_rack",                -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Radar", "Laser", "Infrared"},
-    fuses       = {"Contact", "Timed"}, 
+    fuses       = {"Contact", "Timed"},
 
     racks       = {                                     -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
-                    ["4xRK"] = true, 
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
+                    ["4xRK"] = true,
                     ["6xUARRK"] = true
-                },    
+                },
 
     seekcone    = 5,                                    -- why do you need a big seeker cone if yuo're firing vs a SAM site?
     viewcone    = 10,                                   -- I don't think a fucking SAM site should have to dodge much >_>
-    
+
     agility     = 0.03,                                 -- multiplier for missile turn-rate.  --was 0.08
     ghosttime   = 0.2,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
@@ -156,12 +156,12 @@ ACF_defineGun("AGM-122 ASM", {                          -- id
     fuses       = {"Contact", "Optical"},
 
     racks       = {                                     -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true,  
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
-                    ["4xRK"] = true, 
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
+                    ["4xRK"] = true,
                     ["1xRK_small"] = true
-                },   
+                },
 
     seekcone    = 7.5,                                  -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 25
     viewcone    = 14,                                   -- getting outside this cone will break the lock.  Divided by 2.
@@ -209,7 +209,7 @@ ACF_defineGun("AGM-65 ASM", {                           -- id
 
     racks       = {                                     -- a whitelist for racks that this missile can load into.
                     ["1xRK"] = true
-                },   
+                },
 
     seekcone    = 10,                                   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
     viewcone    = 60,                                   -- getting outside this cone will break the lock.  Divided by 2.

@@ -31,13 +31,13 @@ local DefaultPermission = false
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ]]
 local function modepermission(owner, attacker, ent)
-	
+
 	if not (owner.SteamID or attacker.SteamID) then
 		--print("ACF ERROR: owner or attacker is not a player!", tostring(owner), tostring(attacker), "\n", debug.traceback())
 		if DefaultPermission then return
 		else return DefaultPermission end
-	end	
-	
+	end
+
 	local ownerid 		= owner:SteamID()
 	local attackerid 	= attacker:SteamID()
 	local ownerperms 	= perms.GetDamagePermissions(ownerid)
@@ -52,7 +52,7 @@ local function modepermission(owner, attacker, ent)
 	elseif ownerperms[attackerid] and not (godOwner or godInflictor) then
 		return
 	end
-	
+
 	-- return false if to deny the damage
 	return false
 end

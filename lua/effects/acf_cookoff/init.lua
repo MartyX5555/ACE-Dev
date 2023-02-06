@@ -1,9 +1,9 @@
 
-   
- /*--------------------------------------------------------- 
-    Initializes the effect. The data is a table of data  
-    which was passed from the server. 
- ---------------------------------------------------------*/ 
+
+ /*---------------------------------------------------------
+    Initializes the effect. The data is a table of data
+    which was passed from the server.
+ ---------------------------------------------------------*/
 function EFFECT:Init( data )
 
 	self.Scale = data:GetScale()*5
@@ -15,10 +15,10 @@ function EFFECT:Init( data )
 	self.Entity:SetColor( Color(0,0,0,0 ))
 	self.Entity:SetRenderMode(RENDERMODE_TRANSALPHA)
 	--Msg("Effect Spawned/n")
-	
+
 	self.LifeTime = RealTime() + math.random(1, 2)
 	self.Emitter = ParticleEmitter( self.Entity:GetPos())
-	
+
 	local phys = self.Entity:GetPhysicsObject()
 	if( phys && phys:IsValid() )then
 		phys:Wake()
@@ -26,7 +26,7 @@ function EFFECT:Init( data )
 	else
 		--Msg("Phys invalid/n")
 	end
-	
+
 end
 
 function EFFECT:Think()
@@ -41,12 +41,12 @@ function EFFECT:Think()
 		Smoke:SetStartSize( 4*self.Scale/2 )
 		Smoke:SetEndSize( 8*self.Scale/2 )
 		Smoke:SetRoll( math.Rand(0, 360) )
-		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-		Smoke:SetAirResistance( 50 ) 			 
-		Smoke:SetGravity( Vector( math.Rand(0, 0)*self.Scale, math.Rand(0, 0)*self.Scale, 0 ) ) 			
+		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+		Smoke:SetAirResistance( 50 )
+		Smoke:SetGravity( Vector( math.Rand(0, 0)*self.Scale, math.Rand(0, 0)*self.Scale, 0 ) )
 		Smoke:SetColor( 90,90,90 )
 	end
-	
+
 	local Fire = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Entity:GetPos())
 	if (Fire) then
 		Fire:SetVelocity( VectorRand() * math.Rand(50,100) )
@@ -57,16 +57,16 @@ function EFFECT:Think()
 		Fire:SetStartSize( 1*self.Scale/2 )
 		Fire:SetEndSize( 2*self.Scale/2 )
 		Fire:SetRoll( math.Rand(0, 360) )
-		Fire:SetRollDelta( math.Rand(-0.2, 0.2) )			
-		Fire:SetAirResistance( 100 ) 			 
-		Fire:SetGravity( VectorRand()*self.Scale ) 			
+		Fire:SetRollDelta( math.Rand(-0.2, 0.2) )
+		Fire:SetAirResistance( 100 )
+		Fire:SetGravity( VectorRand()*self.Scale )
 		Fire:SetColor( 255,255,255 )
 	end
-	
+
 	return self.LifeTime > RealTime()
 end
 
 function EFFECT:Render()
 	self.Entity:DrawModel()
 end
- 
+

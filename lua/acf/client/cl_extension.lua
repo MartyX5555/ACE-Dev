@@ -2,11 +2,11 @@
 --Featuring functions which manage the current built in ace sound extension system
 --TODO: Refactor all this, making ONE function for every sound event. Using tables here fit better than this
 
---NOTE: i would like to have a way of having realtime volume/pitch depending if approaching/going away, 
+--NOTE: i would like to have a way of having realtime volume/pitch depending if approaching/going away,
 --as having a way to switch sounds between indoor & outdoor zones. They will sound fine, issue it would be when you pass from an area to another when the sound is being played
 
---NOTE: For proper doppler effect where pitch/volume is dynamically changed, we need something like soundcreate() instead of ply:emitsound. 
---Downside of this, that due to gmod limits, one scripted sound per entity can be used at once. Which idk if it would be good for us. 
+--NOTE: For proper doppler effect where pitch/volume is dynamically changed, we need something like soundcreate() instead of ply:emitsound.
+--Downside of this, that due to gmod limits, one scripted sound per entity can be used at once. Which idk if it would be good for us.
 --We'll have more than one dynamic sound at once :/ weird
 
 ACE = ACE or {}
@@ -38,7 +38,7 @@ ACE.Sounds.LOSWhitelist = {
 
 --Gets the player's point of view if he's using a camera
 function ACE_SGetPOV( ply )
-    
+
     if not IsValid(ply) then return false, ply end
     local ent = ply
 
@@ -90,7 +90,7 @@ function ACE_SHasLOS( EventPos )
     local ply = LocalPlayer()
 
     local plyPos    = ply.aceposoverride or ply:GetPos()
-    local headPos   = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) ) 
+    local headPos   = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
 
     local LOSTr     = {}
     LOSTr.start     = EventPos + Vector(0,0,10)
@@ -146,12 +146,12 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
         if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-        local plyPos    = entply.aceposoverride or  entply:GetPos() 
-        local Dist      = math.abs((plyPos - HitPos):Length())  
-        local Volume    = ( 1/(Dist/500)*Radius*0.2 )           
-        local Pitch     =  math.Clamp(1000/Radius,25,130)       
+        local plyPos    = entply.aceposoverride or  entply:GetPos()
+        local Dist      = math.abs((plyPos - HitPos):Length())
+        local Volume    = ( 1/(Dist/500)*Radius*0.2 )
+        local Pitch     =  math.Clamp(1000/Radius,25,130)
         local Delay     = ( Dist/1500 ) * ACE.DelayMultipler
-        
+
         if count > Delay then
 
             --if its not already emitted
@@ -169,14 +169,14 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                     local CloseDist = Radius * 275 * ACE.DistanceMultipler
 
                     --Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-                    local MediumDist = CloseDist*4.25 
+                    local MediumDist = CloseDist*4.25
 
                     --this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
                     local VolFix
                     local PitchFix
 
                     --Required radius to be considered a small explosion. Less than this the explosion will be considered tiny
-                    local SmallEx   = 5 
+                    local SmallEx   = 5
 
                     --Required radius to be considered a medium explosion
                     local MediumEx  = 10
@@ -245,7 +245,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                             end
                         end
 
-                    --Far distance              
+                    --Far distance
                     elseif Dist >= MediumDist then
 
                         VolFix = 17
@@ -295,7 +295,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
                         VolFix = VolFix*0.05
                     end
 
-                    
+
 
                     entply:EmitSound( Sound or "", 75, Pitch * PitchFix, Volume * VolFix )
 
@@ -365,7 +365,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
             end
 
             timer.Stop( ide )
-            timer.Remove( ide ) 
+            timer.Remove( ide )
         end
     end )
 end
@@ -427,7 +427,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
                     if Caliber <=2 then
                         Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
                         VolFix = 1.25
-    
+
                     end
                 end
 
@@ -443,7 +443,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
             end
 
             timer.Stop( ide )
-            timer.Remove( ide ) 
+            timer.Remove( ide )
         end
     end )
 end
@@ -464,7 +464,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
     local ide       = 'ACEFire#'..math.random(1,100000)
 
     local Pos       = Gun:GetPos()
-    local GunId     = Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report. 
+    local GunId     = Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report.
 
     --Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
     if timer.Exists( ide ) then return end
@@ -502,13 +502,13 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 
                 local SoundData     = ACE.GSounds["GunFire"][Sound]
 
-                if SoundData then 
-                    
+                if SoundData then
+
                     local State = "main"
-                    if Dist >= CloseDist and Dist < MediumDist then 
+                    if Dist >= CloseDist and Dist < MediumDist then
 
                         State   = "mid"
-                    elseif Dist >= MediumDist then 
+                    elseif Dist >= MediumDist then
 
                         State   = "far"
                     end
@@ -520,12 +520,12 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 
                         --print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
 
-                        Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]] 
+                        Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]]
 
                         VolFix  = SoundData[State]["Volume"]
                         Pitch   = SoundData[State]["Pitch"]
                     end
-                    
+
                 end
 
                 --If a wall is in front of the player and is indoor, reduces its vol at 50%
@@ -539,7 +539,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
             end
 
             timer.Stop( ide )
-            timer.Remove( ide ) 
+            timer.Remove( ide )
         end
     end )
 end
@@ -613,7 +613,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
             end
             timer.Stop( ide )
-            timer.Remove( ide ) 
+            timer.Remove( ide )
         end
     end )
 end

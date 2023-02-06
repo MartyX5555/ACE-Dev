@@ -12,9 +12,9 @@ function ENT:Initialize()
 
     self:SetActive(false)
 
-    self.Heat                   = 21      -- Heat              
+    self.Heat                   = 21      -- Heat
     self.HeatAboveAmbient       = 5       -- How many degrees above Ambient Temperature this irst will start to track?
-    
+
     self.NextLegalCheck         = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
     self.Legal                  = true
     self.LegalIssues            = ""
@@ -35,18 +35,18 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
     Id = Id or "Small-IRST"
 
     local radar = ACF.Weapons.Radars[Id]
-    
+
     if not radar then return false end
-    
+
     local IRST = ents.Create("ace_irst")
     if not IsValid(IRST) then return false end
 
     IRST:SetAngles(Angle)
     IRST:SetPos(Pos)
-    
+
     IRST.Model                 = radar.model
     IRST.Weight                = radar.weight
-    IRST.ACFName               = radar.name        
+    IRST.ACFName               = radar.name
     IRST.ICone                 = radar.viewcone    --Note: intentional. --Recorded initial cone
     IRST.Cone                  = IRST.ICone
 
@@ -58,11 +58,11 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 
     IRST.Id                    = Id
     IRST.Class                 = radar.class
-    
+
     IRST:Spawn()
-    
+
     IRST.Owner = CPPI and IRST:CPPISetOwner(Owner) or IRST:SetPlayer(Owner)
-    
+
     IRST:SetNWNetwork()
     IRST:SetModelEasy(radar.model)
     IRST:UpdateOverlayText()
@@ -83,19 +83,19 @@ end
 function ENT:SetModelEasy(mdl)
 
     local Rack = self
-    
-    Rack:SetModel( mdl )    
+
+    Rack:SetModel( mdl )
     Rack.Model = mdl
-    
-    Rack:PhysicsInit( SOLID_VPHYSICS )          
-    Rack:SetMoveType( MOVETYPE_VPHYSICS )       
+
+    Rack:PhysicsInit( SOLID_VPHYSICS )
+    Rack:SetMoveType( MOVETYPE_VPHYSICS )
     Rack:SetSolid( SOLID_VPHYSICS )
-    
-    local phys = Rack:GetPhysicsObject()    
-    if (phys:IsValid()) then 
+
+    local phys = Rack:GetPhysicsObject()
+    if (phys:IsValid()) then
         phys:SetMass(Rack.Weight)
-    end     
-    
+    end
+
 end
 
 function ENT:TriggerInput( inp, value )
@@ -107,7 +107,7 @@ end
 function ENT:SetActive(active)
 
     self.Active = active
-    
+
     if active  then
         local sequence = self:LookupSequence("active") or 0
         self:ResetSequence(sequence)
@@ -123,7 +123,7 @@ function ENT:SetActive(active)
         WireLib.TriggerOutput( self, "Position"     , {} )
         WireLib.TriggerOutput( self, "Angle"        , {} )
         WireLib.TriggerOutput( self, "EffHeat"      , {} )
-        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )  
+        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
         self.Heat = 21
     end
 
@@ -147,7 +147,7 @@ function ENT:GetWhitelistedEntsInCone()
     for k, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
-        if not IsValid(scanEnt) then continue end 
+        if not IsValid(scanEnt) then continue end
 
         --Why IRST should track itself?
         if scanEnt:EntIndex() == self:EntIndex() then continue end
@@ -157,8 +157,8 @@ function ENT:GetWhitelistedEntsInCone()
         dist    = difpos:Length()
 
         -- skip any ent outside of minimun distance
-        if dist < self.MinimumDistance then continue end 
-        
+        if dist < self.MinimumDistance then continue end
+
         -- skip any ent far than maximum distance
         if dist > self.MaximumDistance then continue end
 
@@ -170,17 +170,17 @@ function ENT:GetWhitelistedEntsInCone()
         LOSdata.maxs            = LOSdata.mins
 
         LOStr = util.TraceHull( LOSdata )
-    
-        --Trace did not hit world   
-        if not LOStr.Hit then 
+
+        --Trace did not hit world
+        if not LOStr.Hit then
             table.insert(WhitelistEnts, scanEnt)
-        end     
-        
-        
+        end
+
+
     end
-    
+
     return WhitelistEnts
-    
+
 end
 
 function ENT:AcquireLock()
@@ -223,39 +223,39 @@ function ENT:AcquireLock()
         absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
         --Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-        errorFromAng = 0.01*(absang.y/90)^2+0.01*(absang.y/90)^2+0.01*(absang.p/90)^2 
+        errorFromAng = 0.01*(absang.y/90)^2+0.01*(absang.y/90)^2+0.01*(absang.p/90)^2
 
         if absang.p < self.Cone and absang.y < self.Cone then --Entity is within seeker cone
 
             --if the target is a Heat Emitter, track its heat
             if scanEnt.Heat then
-                
-                Heat = self.SeekSensitivity * scanEnt.Heat 
-            
-            --if is not a Heat Emitter, track the friction's heat           
+
+                Heat = self.SeekSensitivity * scanEnt.Heat
+
+            --if is not a Heat Emitter, track the friction's heat
             else
 
                 physEnt = scanEnt:GetPhysicsObject()
-        
+
                 --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-                if physEnt:IsValid() then   
+                if physEnt:IsValid() then
                 --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
                     if not physEnt:IsMoveable() then continue end
                 end
 
-                dist = difpos:Length()              
+                dist = difpos:Length()
                 Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
-            
+
             end
-            
+
             --Skip if not Hotter than AmbientTemp in deg C.
-            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end 
+            if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
 
             --Could do pythagorean stuff but meh, works 98% of time
-            local err = absang.p + absang.y 
+            local err = absang.p + absang.y
 
             --Sorts targets as closest to being directly in front of radar
-            if err < besterr then 
+            if err < besterr then
                 self.ClosestToBeam =  table.getn( Owners ) + 1
                 besterr = err
             end
@@ -274,7 +274,7 @@ function ENT:AcquireLock()
 
         end
 
-        
+
     end
 
     if self.ClosestToBeam ~= -1 then --Some entity passed the test to be valid
@@ -284,7 +284,7 @@ function ENT:AcquireLock()
         WireLib.TriggerOutput( self, "Position"     , Positions )
         WireLib.TriggerOutput( self, "Angle"        , posTable )
         WireLib.TriggerOutput( self, "EffHeat"      , Temperatures )
-        WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )       
+        WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
     else --Nothing detected
 
         WireLib.TriggerOutput( self, "Detected"     , 0 )
@@ -292,7 +292,7 @@ function ENT:AcquireLock()
         WireLib.TriggerOutput( self, "Position"     , {} )
         WireLib.TriggerOutput( self, "Angle"        , {} )
         WireLib.TriggerOutput( self, "EffHeat"      , {} )
-        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )  
+        WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
     end
 
 
@@ -301,7 +301,7 @@ end
 
 function ENT:Think()
 
-    local curTime = CurTime()   
+    local curTime = CurTime()
     self:NextThink(curTime + self.ThinkDelay)
 
     if ACF.CurTime > self.NextLegalCheck then
@@ -313,7 +313,7 @@ function ENT:Think()
             self.Active = false
             self:SetActive(false)
         end
-        
+
     end
 
     if self.Active and self.Legal then

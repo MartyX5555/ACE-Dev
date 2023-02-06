@@ -1,17 +1,17 @@
 
-   
- --[[------------------------------------------------------- 
-    Initializes the effect. The data is a table of data  
-    which was passed from the server. 
+
+ --[[-------------------------------------------------------
+    Initializes the effect. The data is a table of data
+    which was passed from the server.
  ---------------------------------------------------------]]
-function EFFECT:Init( data ) 
+function EFFECT:Init( data )
 
 	self.Origin 		= data:GetOrigin()
 	self.DirVec 		= data:GetNormal()
 	self.Radius 		= math.max( data:GetRadius()  / 50 ,1)
 	self.Emitter 		= ParticleEmitter( self.Origin )
 	self.ParticleMul 	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
-	
+
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius
 		GroundTr.endpos = self.Origin - Vector(0,0,1)*self.Radius*10
@@ -38,7 +38,7 @@ function EFFECT:Init( data )
 
 	self.HitWater = false
 	self.UnderWater = false
-	self.Normal = Ground.HitNormal			
+	self.Normal = Ground.HitNormal
 
 	--print('Radius: '..self.Radius)
 	-- Material Enum
@@ -81,26 +81,26 @@ function EFFECT:Init( data )
 			self:Airburst( SmokeColor )
 
 		-- Dirt
-		elseif Mat == 68 or Mat == 79 or Mat == 85 then 
+		elseif Mat == 68 or Mat == 79 or Mat == 85 then
 
 			SmokeColor = Vector(117,101,70)
-			self:Dirt( SmokeColor )	
+			self:Dirt( SmokeColor )
 
 		-- Sand
-		elseif Mat == 78 then 
+		elseif Mat == 78 then
 
 			SmokeColor = Vector(200,180,116)
 			self:Sand( SmokeColor )
 
 		-- Nonspecific
-		else 
+		else
 
 			SmokeColor = Vector(100,100,100)
 			self:Concrete( SmokeColor )
 
 		end
 	end
-	
+
 	if Ground.HitWorld then
 		if self.HitWater and not self.UnderWater then
 			self:Water( Water )
@@ -119,7 +119,7 @@ function EFFECT:Init( data )
 	ACEE_SBlast( self.Origin, self.Radius, self.HitWater, Ground.HitWorld )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
-end   
+end
 
 
 function EFFECT:Core( HitWater )
@@ -133,7 +133,7 @@ function EFFECT:Core( HitWater )
 	local NumRand, Texture, TScale
 
 	for i=0, 3*Radius*PMul do --Flying Debris
-	
+
 		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( VectorRand() * math.random(50*Radius,100*Radius) )
@@ -144,9 +144,9 @@ function EFFECT:Core( HitWater )
 			Debris:SetStartSize( math.random(0.1*Radius , 1*Radius) )
 			Debris:SetEndSize( 0.5*Radius )
 			Debris:SetRoll( math.Rand(0, 360) )
-			Debris:SetRollDelta( math.Rand(-3, 3) )			
-			Debris:SetAirResistance( 25 ) 			 
-			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
+			Debris:SetRollDelta( math.Rand(-3, 3) )
+			Debris:SetAirResistance( 25 )
+			Debris:SetGravity( Vector( 0, 0, -650 ) )
 			Debris:SetColor( 120,120,120 )
 
 			RandColor = 80-math.random( 0 , 50 )
@@ -166,8 +166,8 @@ function EFFECT:Core( HitWater )
 			Whisp:SetStartSize( 10*Radius )
 			Whisp:SetEndSize( 80*Radius)
 			Whisp:SetRoll( math.Rand(150, 360) )
-			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Whisp:SetAirResistance( 100 ) 			 
+			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Whisp:SetAirResistance( 100 )
 			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -140 ) )
 
 			RandColor = 100-math.random( 0 , 45 )
@@ -177,7 +177,7 @@ function EFFECT:Core( HitWater )
 				Whisp:SetColor( WaterColor.r-RandColor, WaterColor.g-RandColor, WaterColor.b-RandColor, 255 )
 			else
 				Whisp:SetColor( RandColor, RandColor, RandColor )
-			end		
+			end
 		end
 	end
 
@@ -189,12 +189,12 @@ function EFFECT:Core( HitWater )
 			Glow:SetStartAlpha( math.Rand( 25, 50 ) )
 			Glow:SetEndAlpha( 0 )
 			Glow:SetStartSize( 200*Radius )
-			Glow:SetEndSize( 1*Radius )		
+			Glow:SetEndSize( 1*Radius )
 			Glow:SetColor( 255, 255, 255 )
 	end
 
 	for i=0, Radius*PMul * 3 do --Explosion Core
-	 
+
 		local Flame = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin)
 		if (Flame) then
 			Flame:SetVelocity( VectorRand() * math.random(50,150*Radius) )
@@ -205,12 +205,12 @@ function EFFECT:Core( HitWater )
 			Flame:SetStartSize( 10*Radius )
 			Flame:SetEndSize( 15*Radius )
 			Flame:SetRoll( math.random(120, 360) )
-			Flame:SetRollDelta( math.Rand(-1, 1) )			
-			Flame:SetAirResistance( 350 ) 			 
-			Flame:SetGravity( Vector( 0, 0, 4 ) ) 			
+			Flame:SetRollDelta( math.Rand(-1, 1) )
+			Flame:SetAirResistance( 350 )
+			Flame:SetGravity( Vector( 0, 0, 4 ) )
 			Flame:SetColor( 255,255,255 )
 		end
-	
+
 	end
 
 
@@ -238,14 +238,14 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 			Smoke:SetStartSize( 10*Radius )
 			Smoke:SetEndSize( 16*Radius )
 			Smoke:SetRoll( math.Rand(0, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 200 ) 			 
-			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( 25 , 100 ) ) )	
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 200 )
+			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( 25 , 100 ) ) )
 
 			local SMKColor = math.random( 0 , 50 )
 			Smoke:SetColor( SmokeColor.x-SMKColor,SmokeColor.y-SMKColor,SmokeColor.z-SMKColor )
-		end	
-	
+		end
+
 	end
 
 end
@@ -285,13 +285,13 @@ function EFFECT:Water( Water )
 			Smoke:SetStartSize( 10*Radius )
 			Smoke:SetEndSize( 16*Radius )
 			Smoke:SetRoll( math.Rand(0, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 100 ) 			 
-			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( -25 , -150 ) ) )	
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 100 )
+			Smoke:SetGravity( Vector( math.Rand( -20 , 20 ), math.Rand( -20 , 20 ), math.Rand( -25 , -150 ) ) )
 
 			local SMKColor = math.random( 0 , 50 )
 			Smoke:SetColor( WaterColor.r-SMKColor,WaterColor.g-SMKColor,WaterColor.b-SMKColor )
-		end	
+		end
 	end
 
 	for i=0, 2*Radius*PMul do
@@ -315,9 +315,9 @@ function EFFECT:Water( Water )
 			Whisp:SetStartSize( 10*Radius )
 			Whisp:SetEndSize( 80*Radius )
 			Whisp:SetRoll( math.Rand(150, 360) )
-			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Whisp:SetAirResistance( 100 ) 			 
-			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -400 ) ) 	
+			Whisp:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Whisp:SetAirResistance( 100 )
+			Whisp:SetGravity( Vector( math.random(-5,5)*Radius, math.random(-5,5)*Radius, -400 ) )
 
 			local SMKColor = math.random( 0 , 50 )
 			Whisp:SetColor( WaterColor.r-SMKColor,WaterColor.g-SMKColor,WaterColor.b-SMKColor )
@@ -329,7 +329,7 @@ end
 function EFFECT:Concrete( SmokeColor )
 
 	for i=0, 5*self.Radius*self.ParticleMul do --Flying Debris
-	
+
 		local Fragments = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Fragments) then
 			Fragments:SetVelocity ( VectorRand() * math.random(50*self.Radius,150*self.Radius) )
@@ -340,9 +340,9 @@ function EFFECT:Concrete( SmokeColor )
 			Fragments:SetStartSize( 0.25*self.Radius )
 			Fragments:SetEndSize( 0.25*self.Radius )
 			Fragments:SetRoll( math.Rand(0, 360) )
-			Fragments:SetRollDelta( math.Rand(-3, 3) )			
-			Fragments:SetAirResistance( 5 ) 			 
-			Fragments:SetGravity( Vector( 0, 0, -650 ) ) 			
+			Fragments:SetRollDelta( math.Rand(-3, 3) )
+			Fragments:SetAirResistance( 5 )
+			Fragments:SetGravity( Vector( 0, 0, -650 ) )
 
 			RandColor = 80-math.random( 0 , 50 )
 
@@ -352,7 +352,7 @@ function EFFECT:Concrete( SmokeColor )
 	end
 
 	for i=0, 3*self.Radius*self.ParticleMul do
-	
+
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 50,80*self.Radius) + VectorRand() * math.random( 30,60*self.Radius) )
@@ -363,15 +363,15 @@ function EFFECT:Concrete( SmokeColor )
 			Smoke:SetStartSize( 5*self.Radius )
 			Smoke:SetEndSize( 30*self.Radius )
 			Smoke:SetRoll( math.Rand(150, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 50 ) 			 
-			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -250 ) ) 			
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 50 )
+			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -250 ) )
 
 			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
-	
+
 	end
-	
+
 end
 
 function EFFECT:Dirt( SmokeColor )
@@ -397,9 +397,9 @@ function EFFECT:Dirt( SmokeColor )
 			Smoke:SetStartSize( 15*self.Radius * TScale )
 			Smoke:SetEndSize( 30*self.Radius * TScale )
 			Smoke:SetRoll( math.Rand(150, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 100 ) 			 
-			Smoke:SetGravity( Vector( math.random(-2,2)*self.Radius, math.random(-2,2)*self.Radius, -300 ) ) 		
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 100 )
+			Smoke:SetGravity( Vector( math.random(-2,2)*self.Radius, math.random(-2,2)*self.Radius, -300 ) )
 
 			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 
@@ -430,9 +430,9 @@ function EFFECT:Sand( SmokeColor )
 			Smoke:SetStartSize( 15*self.Radius * TScale )
 			Smoke:SetEndSize( 30*self.Radius * TScale )
 			Smoke:SetRoll( math.Rand(150, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 100 ) 			 
-			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -275 ) ) 		
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 100 )
+			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -275 ) )
 
 			Smoke:SetColor(  SmokeColor.x,SmokeColor.y,SmokeColor.z  )
 		end
@@ -443,7 +443,7 @@ function EFFECT:Airburst( SmokeColor )
 
 	local Radius = self.Radius
 	for i=0, 0.5*Radius*self.ParticleMul do --Flying Debris
-	
+
 		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( VectorRand() * math.random(150*Radius,450*Radius) )
@@ -454,9 +454,9 @@ function EFFECT:Airburst( SmokeColor )
 			Debris:SetStartSize( 0.5*Radius )
 			Debris:SetEndSize( 0.5*Radius )
 			Debris:SetRoll( math.Rand(0, 360) )
-			Debris:SetRollDelta( math.Rand(-3, 3) )			
-			Debris:SetAirResistance( 5 ) 			 
-			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
+			Debris:SetRollDelta( math.Rand(-3, 3) )
+			Debris:SetAirResistance( 5 )
+			Debris:SetGravity( Vector( 0, 0, -650 ) )
 			Debris:SetColor( 120,120,120 )
 
 			RandColor = 50-math.random( 0 , 50 )
@@ -464,12 +464,12 @@ function EFFECT:Airburst( SmokeColor )
 		end
 	end
 end
-   
+
 /*---------------------------------------------------------
    THINK
 ---------------------------------------------------------*/
 function EFFECT:Think( )
-		
+
 end
 
 /*---------------------------------------------------------
@@ -478,4 +478,4 @@ end
 function EFFECT:Render()
 end
 
- 
+

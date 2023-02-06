@@ -33,7 +33,7 @@ if CLIENT then
 			start = view.origin,
 			endpos = TargetOrigin,
 			mask = CONTENTS_SOLID,
-			filter = function( e ) 
+			filter = function( e )
 				return false
 			end,
 			mins = Vector( -WallOffset, -WallOffset, -WallOffset ),
@@ -63,7 +63,7 @@ if CLIENT then
 
 			local ply = LocalPlayer()
 			local Bool = net.ReadBool()
-			
+
 			ply.ACE_HasGodMode = Bool
 
 		end)
@@ -95,7 +95,7 @@ elseif SERVER then
 
 		--To make sure we dont fuck up something else.
 		PLAYER.DefaultGodEnable  = PLAYER.DefaultGodEnable  or PLAYER.GodEnable
-		PLAYER.DefaultGodDisable = PLAYER.DefaultGodDisable or PLAYER.GodDisable		
+		PLAYER.DefaultGodDisable = PLAYER.DefaultGodDisable or PLAYER.GodDisable
 
 		function PLAYER:GodEnable()
 

@@ -14,7 +14,7 @@ function ENT:Initialize()
     self.PhysObj = self.Entity:GetPhysicsObject()
 
     if not IsValid(self.PhysObj) then self:Remove() return end --Prevent duping missiles (to stop errors)
-    
+
     self.BaseClass.Initialize(self)
 
     if not IsValid(self.Entity.Owner) then
@@ -47,7 +47,7 @@ end
 
 --===========================================================================================
 ----- BulletData functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:SetBulletData(bdata) -- Called before to Initialize()
 
     self.BaseClass.SetBulletData(self, bdata)
@@ -91,7 +91,7 @@ end
 
 --===========================================================================================
 ----- Physics functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:CalcFlight()
 
     if self.MissileDetonated then return end
@@ -201,12 +201,12 @@ function ENT:CalcFlight()
             local AngVelDiff    = Torque / self.Inertia * DeltaTime
             local DiffAxis      = AimDiff:Cross(Dir):GetNormalized()
 
-            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff 
+            self.RotAxis        = self.RotAxis + DiffAxis * AngVelDiff
         end
 
         self.RotAxis = self.RotAxis * 0.99
 
-        DirAng:RotateAroundAxis(self.RotAxis, self.RotAxis:Length()) 
+        DirAng:RotateAroundAxis(self.RotAxis, self.RotAxis:Length())
         Dir = DirAng:Forward()
 
         self.LastLOS = nil
@@ -226,9 +226,9 @@ function ENT:CalcFlight()
     else
         DragCoef = self.DragCoefFlight
     end
-    
+
     -- Inertia/Motor thrust calculation
-    
+
     local Vel           = LastVel + (Dir * self.Motor - Vector(0,0,self.Gravity )) * ACF.VelScale * DeltaTime ^ 2
     local Up            = Dir:Cross(Vel):Cross(Dir):GetNormalized()
     local Speed         = Vel:Length()
@@ -294,7 +294,7 @@ function ENT:CalcFlight()
 
                     if conTarget == conLauncher then -- Not required to do anything else.
 
-                        local mi, ma = HitTarget:GetCollisionBounds() 
+                        local mi, ma = HitTarget:GetCollisionBounds()
                         debugoverlay.BoxAngles(HitTarget:GetPos(), mi, ma, HitTarget:GetAngles(), 5, Color(0,255,0,100))
 
                         IsPart = true
@@ -314,19 +314,19 @@ function ENT:CalcFlight()
                         self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
 
                         for k, physEnt in pairs(self.physentities) do
-                            
+
                             if not IsValid(physEnt) then continue end
 
                             if physEnt:EntIndex() == RootLauncher:EntIndex() then
 
-                                local mi, ma = physEnt:GetCollisionBounds() 
+                                local mi, ma = physEnt:GetCollisionBounds()
                                 debugoverlay.BoxAngles(physEnt:GetPos(), mi, ma, physEnt:GetAngles(), 5, Color(0,255,0,100))
 
                                 IsPart = true
                                 break
                             end
 
-                            
+
                         end
 
                     end
@@ -382,7 +382,7 @@ end
 
 --===========================================================================================
 ----- Launch function
---=========================================================================================== 
+--===========================================================================================
 function ENT:Launch()
 
     if not IsValid(self.PhysObj) then self.PhysObj = self.Entity:GetPhysicsObject() end
@@ -437,7 +437,7 @@ do
             timer.Simple( 0.5, function()
                 if not IsValid(self) then return end
                 if self.MissileDetonated then return end
-                if self:WaterLevel() > 0 and self.NotDrownable then return end 
+                if self:WaterLevel() > 0 and self.NotDrownable then return end
 
                 local Time = CurTime()
 
@@ -471,7 +471,7 @@ do
                 self.MissileIgnited = true
                 self.CacheParticleEffect = CurTime() + 0.1
                 self:SetNWFloat("LightSize", BulletData.Caliber*3)
-                self.CutoutTime     = Time + self.MotorLength 
+                self.CutoutTime     = Time + self.MotorLength
             end
 
             self:LaunchEffect()
@@ -494,7 +494,7 @@ function ENT:ConfigureFlight()
     local Round         = GunData.round
 
     self:MotorStart( GunData, Round, BulletData )
-    
+
     self.FlightTime     = 0
     self.Gravity        = GetConVar("sv_gravity"):GetFloat()
     self.DragCoef       = Round.dragcoef
@@ -530,7 +530,7 @@ end
 
 --===========================================================================================
 ----- Guidance and Fuse functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:SetGuidance(guidance)
 
     self.Guidance = guidance
@@ -551,11 +551,11 @@ end
 
 --===========================================================================================
 ----- Think
---=========================================================================================== 
+--===========================================================================================
 function ENT:Think()
 
     if self.Launched and not self.MissileDetonated then
-        
+
         local Time = CurTime()
 
         if self.FirstThink == true then
@@ -582,13 +582,13 @@ function ENT:Think()
         end
 
     end
-    
+
     return self.BaseClass.Think(self)
 end
 
 --===========================================================================================
 ----- Detonation functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:Detonate()
 
     self.Entity:StopParticles()
@@ -601,7 +601,7 @@ function ENT:Detonate()
         return
     end
 
-    self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10) 
+    self.BulletData.Flight = self:GetForward() * (self.BulletData.MuzzleVel or 10)
     self:ForceDetonate()
 
 end
@@ -609,11 +609,11 @@ end
 function ENT:ForceDetonate()
 
     -- careful not to conflict with base class's self.Detonated
-    self.MissileDetonated = true    
+    self.MissileDetonated = true
 
     ACF_ActiveMissiles[self] = nil
 
-    self.DetonateOffset = self.LastVel and self.LastVel:GetNormalized() * -1 
+    self.DetonateOffset = self.LastVel and self.LastVel:GetNormalized() * -1
     self.BaseClass.Detonate(self, self.BulletData)
 
 end
@@ -639,17 +639,17 @@ function ENT:Dud()
         local VelMul    = (0.8 + Dot * 0.7) * Vel:Length()
         Vel = NewDir * VelMul
     end
-    
+
     if Vel then   --making check
         Phys:SetVelocity(Vel)
     end
-    
+
     timer.Simple(30, function() if IsValid(self) then self:Remove() end end)
 end
 
 --===========================================================================================
 ----- Skin/Bodygroup/effect/Sound functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:LaunchEffect()
 
     local class = GunTable[self.BulletData.Id]
@@ -687,7 +687,7 @@ function ENT:UpdateBodygroups()
 
             self:ApplyBodySubgroup(group, self.Guidance.Name)
             continue
-            
+
         end
 
         if string.lower(group.name) == "warhead" and self.BulletData then
@@ -696,7 +696,7 @@ function ENT:UpdateBodygroups()
             continue
         end
 
-        
+
     end
 end
 
@@ -714,7 +714,7 @@ end
 
 --===========================================================================================
 ----- OnDamage functions
---=========================================================================================== 
+--===========================================================================================
 function ENT:ACF_Activate( Recalc )
 
     local EmptyMass = self.RoundWeight or self.Mass or 10
@@ -725,8 +725,8 @@ function ENT:ACF_Activate( Recalc )
     if not self.ACF.Area then
         self.ACF.Area = PhysObj:GetSurfaceArea() * 6.45
     end
-    
-    
+
+
     if not self.ACF.Volume then
         self.ACF.Volume = PhysObj:GetVolume() * 16.38
     end
@@ -749,7 +749,7 @@ function ENT:ACF_Activate( Recalc )
     self.ACF.Mass       = self.Mass
     self.ACF.Density    = (self.PhysObj:GetMass()*1000) / self.ACF.Volume
     self.ACF.Type       = "Prop"
-   
+
     self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
 
 end
@@ -765,7 +765,7 @@ do
         local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )   --Calling the standard damage prop function
 
         -- Detonate if the shot penetrates the casing.
-        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0 
+        HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0
 
         if HitRes.Kill then
 

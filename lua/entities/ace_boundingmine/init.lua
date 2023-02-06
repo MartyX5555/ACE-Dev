@@ -13,7 +13,7 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS);
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(4) --4.1 kg mine, round down.
-	
+
 	self.TimeVar = 1
 	self.MineState = 0
 	self.FuseTime = 0.5
@@ -21,7 +21,7 @@ function ENT:Initialize()
 	self.LastTime = 0
 	self:DrawShadow( false )
 	self:SetMaterial( "models/props_canal/canal_bridge_railing_01c" )
-	
+
 	if ( IsValid( phys ) ) then phys:Wake() end
 end
 
@@ -57,8 +57,8 @@ function ENT:Think()
 					endpos = self:GetPos() + Vector(0,0,-50),
 					collisiongroup = COLLISION_GROUP_WORLD,
 					filter = function( ent ) if ( ent:GetClass() == "prop_physics" ) then return true end end
-				} )	
-					
+				} )
+
 				if groundRanger.Hit and groundRanger.HitWorld then
 
 					self:SetPos(groundRanger.HitPos+Vector(0,0,7.1))
@@ -67,7 +67,7 @@ function ENT:Think()
 					self.phys:EnableMotion(false)
 				end
 					--print(groundRanger.Hit)
-					
+
 			elseif self.MineState == 1 then --Mine activated and searching for enemy
 
 				local triggerRanger = util.TraceHull( {
@@ -91,7 +91,7 @@ function ENT:Think()
 		end
 
 	else
-	
+
 		local curtime = CurTime()
 		self.FuseTime = self.FuseTime-(curtime-self.LastTime)
 		self.LastTime = CurTime()

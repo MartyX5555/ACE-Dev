@@ -52,10 +52,10 @@ ACF_defineGun("BGM-71E ASM", {                                  -- id
     fuses       = {"Contact", "Optical", "Plunging"},
 
     racks       = {                                             -- a whitelist for racks that this missile can load into.
-                    ["1x BGM-71E"] = true, 
-                    ["2x BGM-71E"] = true, 
+                    ["1x BGM-71E"] = true,
+                    ["2x BGM-71E"] = true,
                     ["4x BGM-71E"] = true
-                },    
+                },
 
     agility         = 0.14, --0.42                                    -- multiplier for missile turn-rate.
     guidanceInac    = 1, --50                                       -- How much inaccuracy this missile will have when its being guided. In units
@@ -73,7 +73,7 @@ ACF_defineGun("9M133 ASM", {                                    -- id
     rack            = "1x Kornet",                              -- Which rack to spawn this missile on?
     length          = 130,
     caliber         = 15.2,
-    weight          = 29,                                       -- Don't scale down the weight though!                                
+    weight          = 29,                                       -- Don't scale down the weight though!
     year            = 1994,
     rofmod          = 0.7,
     modeldiameter   = 3 * 2.54, -- in cm
@@ -104,12 +104,12 @@ ACF_defineGun("9M133 ASM", {                                    -- id
 
     racks       = {                                             -- a whitelist for racks that this missile can load into.
                     ["1x Kornet"] = true
-                },              
+                },
 
     viewcone    = 25,                                           -- getting outside this cone will break the lock.  Divided by 2.
 
     agility         = 0.05, --0.15                                    -- multiplier for missile turn-rate.
-    guidanceInac    = 1, --60                                       -- How much inaccuracy this missile will have when its being guided. In units    
+    guidanceInac    = 1, --60                                       -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                                          -- minimum fuse arming delay
@@ -153,18 +153,18 @@ ACF_defineGun("AT-3 ASM", { --id
     fuses       = {"Contact", "Optical"},
 
     racks       = {                                             -- a whitelist for racks that this missile can load into.
-                    ["1xAT3RKS"] = true, 
-                    ["1xAT3RK"] = true, 
-                    ["1xRK_small"] = true, 
+                    ["1xAT3RKS"] = true,
+                    ["1xAT3RK"] = true,
+                    ["1xRK_small"] = true,
                     ["3xRK"] = true
-                },    
+                },
 
     skinindex   = {HEAT = 0, HE = 1},
 
     agility         = 0.1, --0.3                                         -- multiplier for missile turn-rate.
     guidanceInac    = 1, --50                                      -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
-    
+
     armdelay        = 0.00                                          -- minimum fuse arming delay
 } )
 
@@ -205,12 +205,12 @@ ACF_defineGun("Ataka ASM", { --id
     guidance    = {"Dumb", "Laser", "Infrared"},
     fuses       = {"Contact", "Optical"},
 
-    racks       = {                                             -- a whitelist for racks that this missile can load into.   
-                    ["1x Ataka"] = true, 
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
+    racks       = {                                             -- a whitelist for racks that this missile can load into.
+                    ["1x Ataka"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
                     ["3xRK"] = true
-                },    
+                },
 
     seekcone    = 20,                                           -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 25
     viewcone    = 40,                                           -- getting outside this cone will break the lock.  Divided by 2.
@@ -218,7 +218,7 @@ ACF_defineGun("Ataka ASM", { --id
     agility     = 0.05,  --0.15                                   -- multiplier for missile turn-rate.
     guidanceInac    = 1, --50                                  -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime   = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
-    
+
     armdelay    = 0.00                                          -- minimum fuse arming delay
 } )
 
@@ -230,7 +230,7 @@ ACF_defineGun("AT-2 ASM", { --id
     gunclass    = "ATGM",
     rack        = "1xRK",                                       -- Which rack to spawn this missile on?
     length      = 115,                                           -- Used for the physics calculations
-    caliber     = 16, 
+    caliber     = 16,
     weight      = 27,                                          -- Don't scale down the weight though!
     year        = 1969,
     rofmod      = 0.4,
@@ -260,14 +260,14 @@ ACF_defineGun("AT-2 ASM", { --id
     fuses       = {"Contact", "Optical"},
     viewcone    = 90,                                           -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {                                             -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true, 
-                    ["3xRK"] = true, 
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true,
                     ["1xRK_small"] = true,
-                    ["2x AGM-114"] = true, 
+                    ["2x AGM-114"] = true,
                     ["4x AGM-114"] = true
-                },                                  
+                },
     agility         = 0.6, --1.8                                      -- multiplier for missile turn-rate.
     guidanceInac    = 1, --50                                     -- How much inaccuracy this missile will have when its being guided. In units
     ghosttime       = 0.3,                                      -- Time where this missile will be unable to hit surfaces, in seconds
@@ -276,7 +276,7 @@ ACF_defineGun("AT-2 ASM", { --id
 
 ACF_defineGun("FGM-148 ASM", {
     name        = "FGM-148 Javelin Missile",
-    desc        = "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.", 
+    desc        = "A powerful medium-range multi-purpose Missile, being extremely agile, its able to be used vs low altitude aircraft and for attacking top of tanks. But its somewhat slow.",
     model       = "models/mcace/Jevelinemissile.mdl",           -- model to spawn on menu
     effect      = "Rocket Motor ATGM",
     gunclass    = "ATGM",
@@ -310,12 +310,12 @@ ACF_defineGun("FGM-148 ASM", {
     guidance    = {"Dumb", "Infrared","Laser"},                 -- here you have Laser for those top attacks, feel free to build one.
 
     fuses       = {"Contact", "Optical"},
-    
+
     seekcone    = 40,                                           -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 25
     viewcone    = 80,                                           -- getting outside this cone will break the lock.  Divided by 2.
     racks       = {                                             -- a whitelist for racks that this missile can load into.
                     ["1x Javelin"] = true
-                },    
+                },
     agility         = 0.5,  --1.5                                    -- multiplier for missile turn-rate.
     armdelay        = 1,                                        -- minimum fuse arming delay
     guidanceInac    = 1, --15                                      -- How much inaccuracy this missile will have when its being guided. In units

@@ -25,16 +25,16 @@ this.Configurable = this:super() and table.Copy(this:super().Configurable) or {}
 
 
 local configs = this.Configurable
-configs[#configs + 1] = 
+configs[#configs + 1] =
 {
     Name = "Cluster",           -- name of the variable to change
     DisplayName = "Distance",   -- name displayed to the user
     CommandName = "Ds",         -- shorthand name used in console commands
-    
+
     Type = "number",            -- lua type of the configurable variable
     Min = 1,                    -- number specific: minimum value
     Max = 10000                 -- number specific: maximum value
-    
+
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
@@ -43,12 +43,12 @@ configs[#configs + 1] =
 
 -- Do nothing, projectiles auto-detonate on contact anyway.
 function this:GetDetonate(missile, guidance)
-	
+
     if not self:IsArmed() then return false end
-    
+
     local missilePos = missile:GetPos()
-    
-    local tracedata = 
+
+    local tracedata =
     {
         start = missilePos,
         endpos = missilePos + missile:GetForward() * self.Cluster,
@@ -61,7 +61,7 @@ function this:GetDetonate(missile, guidance)
     if IsValid(trace.Entity) and (trace.Entity:GetClass() == 'acf_missile' or trace.Entity:GetClass() == 'ace_missile_swep_guided') then return false end
 
 	return trace.Hit
-    
+
 end
 
 do
@@ -85,20 +85,20 @@ do
         if bdata.Type == "HEAT" then
             Bomblets = math.Clamp(Bomblets,3,25)
         end
-            
+
         missile.BulletData = {}
-        
+
         missile.BulletData["Accel"]            = Vector(0,0,-600)
         missile.BulletData["BoomPower"]        = bdata.BoomPower
         missile.BulletData["Caliber"]          = math.Clamp(bdata.Caliber/Bomblets*10,0.05,bdata.Caliber*0.8) --Controls visual size, does nothing else
         missile.BulletData["Crate"]            = bdata.Crate
         missile.BulletData["DragCoef"]         = bdata.DragCoef/Bomblets/2
         missile.BulletData["FillerMass"]       = bdata.FillerMass/Bomblets/2   --nan armor ocurrs when this value is > 1
-        
+
         --print(bdata.FillerMass)
         --print(Bomblets)
         --print(missile.BulletData["FillerMass"])
-        
+
         missile.BulletData["Filter"]           = missile
         missile.BulletData["Flight"]           = bdata.Flight
         missile.BulletData["FlightTime"]       = 0
@@ -117,9 +117,9 @@ do
         missile.BulletData["PropLength"]       = bdata.PropLength
         missile.BulletData["PropMass"]         = bdata.PropMass
         missile.BulletData["Ricochet"]         = 90--bdata.Ricochet
-        
+
         --print(bdata.Ricochet)
-        
+
         missile.BulletData["RoundVolume"]      = bdata.RoundVolume
         missile.BulletData["ShovePower"]       = bdata.ShovePower
         missile.BulletData["Tracer"]           = 0
@@ -149,20 +149,20 @@ do
 
         missile.FakeCrate:RegisterTo(missile.BulletData)
         missile.BulletData["Crate"] = missile.FakeCrate:EntIndex()
-        
+
         local MuzzleVec = missile:GetForward()
         for I=1,Bomblets do
-            
+
             timer.Simple(0.01*I,function()
                 if(IsValid(missile)) then
                     Spread = ((missile:GetUp() * (2 * math.random() - 1)) + (missile:GetRight() * (2 * math.random() - 1)))*(I-1)/45
                     missile.BulletData["Flight"] = (MuzzleVec+(Spread * 2)):GetNormalized() * missile.BulletData["MuzzleVel"] * 39.37 + bdata.Flight
-                    
+
                     local MuzzlePos = missile:LocalToWorld(Vector(100-(I*20),((Bomblets/2)-I)*2,0)*0.5)
                     missile.BulletData.Pos = MuzzlePos
                     missile.CreateShell = ACF.RoundTypes[missile.BulletData.Type].create
                     missile:CreateShell( missile.BulletData )
-                    
+
                 end
             end)
         end
@@ -186,7 +186,7 @@ do
 end
 
 function this:GetDisplayConfig()
-	return 
+	return
 	{
 		["Arming delay"] = math.Round(self.Primer, 3) .. " s",
 		["Distance"] = math.Round(self.Cluster / 39.37, 1) .. " m"

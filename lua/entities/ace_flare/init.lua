@@ -24,12 +24,12 @@ function ENT:Initialize()
 
 	self:SetGravity( 0.01 )
 
-	timer.Simple(0.1,function() 
+	timer.Simple(0.1,function()
 		if not IsValid(self) then return end
 
 		table.insert( ACE.contraptionEnts, self )
 
-		ParticleEffectAttach("ACFM_Flare",4, self,1)  
+		ParticleEffectAttach("ACFM_Flare",4, self,1)
 	end)
 
 	timer.Simple(self.Life, function()
@@ -42,7 +42,7 @@ function ENT:Initialize()
 
 end
 
-function ENT:Think() 
+function ENT:Think()
 
 	if self:WaterLevel() == 3 then
 		self.Heat = 0

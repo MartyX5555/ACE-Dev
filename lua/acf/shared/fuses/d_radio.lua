@@ -29,16 +29,16 @@ this.Configurable = table.Copy(this:super().Configurable)
 
 local configs = this.Configurable
 
-configs[#configs + 1] = 
+configs[#configs + 1] =
 {
     Name = "Distance",          -- name of the variable to change
     DisplayName = "Distance",   -- name displayed to the user
     CommandName = "Ds",         -- shorthand name used in console commands
-    
+
     Type = "number",            -- lua type of the configurable variable
     Min = 0,                    -- number specific: minimum value
     Max = 10000                 -- number specific: maximum value
-    
+
     -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
@@ -55,7 +55,7 @@ do
         [ "acf_missileradar" ]          = true,
         [ "acf_opticalcomputer" ]       = true,
         [ "gmod_wire_expression2" ]     = true,
-        [ "gmod_wire_gate" ]            = true,          
+        [ "gmod_wire_gate" ]            = true,
         [ "prop_physics" ]              = true,
         [ "ace_ecm" ]                   = true,
         [ "ace_trackingradar" ]         = true,
@@ -77,16 +77,16 @@ do
         local Class = ent:GetClass()
 
         --Skip ents like world entities
-        if whitelist[Class] then 
+        if whitelist[Class] then
             return true
-        end     
+        end
 
-        return false 
+        return false
     end
 
     --Question: Should radio fuze be limited to detect props in front of the missile only? Its weird it detonates by detecting something behind it.
     function this:GetDetonate(missile, guidance)
-        
+
         if not self:IsArmed() then return false end
 
         local MissilePos = missile:GetPos()
@@ -136,7 +136,7 @@ do
                 else
 
                     local HitId     = HitEnt.ACF.ContraptionId or 1
-                    local OwnId     = missile.ContrapId or 1        
+                    local OwnId     = missile.ContrapId or 1
 
                     --Trigger the fuze if our hit was caused to an ent which is not ours, in front of it.
                     if HitId ~= OwnId and tolocal.x > 0 then
@@ -150,7 +150,7 @@ do
                     debugoverlay.Box(MissilePos, trace.mins, trace.maxs, 1, Color(255,0,0,10))
 
                 end
-            end            
+            end
         end
 
         return false
@@ -159,7 +159,7 @@ end
 
 
 function this:GetDisplayConfig()
-    return 
+    return
     {
         ["Arming delay"] = math.Round(self.Primer, 3) .. " s",
         ["Distance"] = math.Round(self.Distance / 39.37, 1) .. " m"

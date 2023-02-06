@@ -15,15 +15,15 @@ function ENT:Initialize()
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_VPHYSICS )
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
-	
+
 	local phys = self:GetPhysicsObject()
-	
+
 	if IsValid( phys ) then
-	    
+
 		phys:Wake()
 	    phys:SetMaterial('jeeptire')
-		
-	end   
+
+	end
 
 	if ACF.DebrisLifeTime > 0 then
 		timer.Simple(ACF.DebrisLifeTime, function()

@@ -48,26 +48,26 @@ end
 function this:Configure(missile)
 
     self:super().Configure(self, missile)
-    
+
     self.ViewCone           = (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
     self.ViewConeCos        = (math.cos(math.rad(self.ViewCone)))*1.2
     self.SeekCone           = (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
     self.SeekSensitivity    = ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
-    
+
 end
 
 --TODO: still a bit messy, refactor this so we can check if a flare exits the viewcone too.
 function this:GetGuidance(missile)
 
     self:PreGuidance(missile)
-    
+
     local override = self:ApplyOverride(missile)
     if override then return override end
 
     self:CheckTarget(missile)
-    
-    if not IsValid(self.Target) then 
-        return {} 
+
+    if not IsValid(self.Target) then
+        return {}
     end
 
     local missilePos = missile:GetPos()
@@ -90,17 +90,17 @@ function this:GetGuidance(missile)
 end
 
 function this:ApplyOverride(missile)
-    
+
     if self.Override then
-        
+
         local ret = self.Override:GetGuidanceOverride(missile, self)
-        
-        if ret then     
+
+        if ret then
             ret.ViewCone = self.ViewCone
             ret.ViewConeRad = math.rad(self.ViewCone)
             return ret
         end
-        
+
     end
 
 end
@@ -109,7 +109,7 @@ function this:CheckTarget(missile)
 
     local target = self:AcquireLock(missile)
 
-    if IsValid(target) then 
+    if IsValid(target) then
         self.Target = target
     end
 end
@@ -131,15 +131,15 @@ function this:GetWhitelistedEntsInCone(missile)
     for k, scanEnt in ipairs(ScanArray) do
 
         -- skip any invalid entity
-        if not IsValid(scanEnt) then continue end 
-            
+        if not IsValid(scanEnt) then continue end
+
         entpos  = scanEnt:GetPos()
         difpos  = entpos - missilePos
         dist    = difpos:Length()
 
         -- skip any ent outside of minimun distance
-        if dist < self.MinimumDistance then continue end 
-        
+        if dist < self.MinimumDistance then continue end
+
         -- skip any ent far than maximum distance
         if dist > self.MaximumDistance then continue end
 
@@ -151,30 +151,30 @@ function this:GetWhitelistedEntsInCone(missile)
         LOSdata.maxs            = Vector(0,0,0)
 
         LOStr = util.TraceHull( LOSdata )
-    
-        --Trace did not hit world   
-        if not LOStr.Hit then 
+
+        --Trace did not hit world
+        if not LOStr.Hit then
             table.insert(WhitelistEnts, scanEnt)
-        end     
-        
-        
+        end
+
+
     end
-    
+
     return WhitelistEnts
-    
+
 end
 
 -- Return the first entity found within the seek-tolerance, or the entity within the seek-cone closest to the seek-tolerance.
 function this:AcquireLock(missile)
 
     local curTime = CurTime()
-    
+
     if self.LastSeek + self.SeekDelay > curTime then return nil end
     self.LastSeek = curTime
 
     --Part 1: get all ents in cone
     local found = self:GetWhitelistedEntsInCone(missile)
-        
+
     --Part 2: get a good seek target
     if table.IsEmpty(found) then return NULL end
 
@@ -203,48 +203,48 @@ function this:AcquireLock(missile)
         dist    = difpos:Length()
         entvel  = classifyent:GetVelocity()
 
-        --if the target is a Heat Emitter, track its heat       
-        if classifyent.Heat then 
-                
-            Heat = self.SeekSensitivity * classifyent.Heat 
-            
-        --if is not a Heat Emitter, track the friction's heat           
+        --if the target is a Heat Emitter, track its heat
+        if classifyent.Heat then
+
+            Heat = self.SeekSensitivity * classifyent.Heat
+
+        --if is not a Heat Emitter, track the friction's heat
         else
-            
+
             physEnt = classifyent:GetPhysicsObject()
-        
+
             --skip if it has not a valid physic object. It's amazing how gmod can break this. . .
             if IsValid(physEnt) then
 
                 --check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
                 if not physEnt:IsMoveable() then continue end
             end
-                
+
             Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
-            
+
         end
-        
+
         --Skip if not Hotter than AmbientTemp in deg C.
-        if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end  
-               
+        if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
+
         ang       = missile:WorldToLocalAngles((entpos - missilePos):Angle())   --Used for testing if inrange
         absang    = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
-                
+
         if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone
-                    
+
             testang = Heat + (360-(absang.p + absang.y)) --Could do pythagorean stuff but meh, works 98% of time
-                                  
-            --Sorts targets as closest to being directly in front of radar                        
-            if testang > bestAng then 
-                                    
+
+            --Sorts targets as closest to being directly in front of radar
+            if testang > bestAng then
+
                 bestAng = testang
                 bestent = classifyent
-                                        
+
             end
 
         end
-                
-        
+
+
     end
 
     return bestent
@@ -256,7 +256,7 @@ function this:GetDisplayConfig(Type)
     local seekCone =  (ACF.Weapons.Guns[Type].seekcone or 0 ) * 2
     local ViewCone = (ACF.Weapons.Guns[Type].viewcone or 0 ) * 2
 
-    return 
+    return
     {
         ["Seeking"] = math.Round(seekCone, 1) .. " deg",
         ["Tracking"] = math.Round(ViewCone, 1) .. " deg"

@@ -25,12 +25,12 @@ ACF.SoundToolSupport = {
 	acf_gun = {
 
 		GetSound = function(ent) return { Sound = ent.Sound } end,
-		
-		SetSound = function(ent, soundData) 
+
+		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
 			ent:SetNWString( "Sound", soundData.Sound )
 		end,
-		
+
 		ResetSound = function(ent)
 
 			local Class = ent.Class
@@ -39,29 +39,29 @@ ACF.SoundToolSupport = {
 			local sound = lookup.sound or GunClasses[Class]["sound"]
 
 			local soundData = { Sound = sound }
-			
+
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
 		end
 	},
-	
+
 	acf_engine = {
 
 		GetSound = function(ent) return { Sound = ent.SoundPath, Pitch = ent.SoundPitch } end,
-		
-		SetSound = function(ent, soundData) 
+
+		SetSound = function(ent, soundData)
 			ent.SoundPath = soundData.Sound
 			ent.SoundPitch = soundData.Pitch
 		end,
-		
+
 		ResetSound = function(ent)
 
 			local Id = ent.Id
 			local pitch = EngineTable[Id]["pitch"] or 1
 			local sound = EngineTable[Id]["sound"] or ""
-			
+
 			local soundData = { Sound = sound, Pitch = pitch }
-			
+
 			local setSound = ACF.SoundToolSupport["acf_engine"].SetSound
 			setSound( ent, soundData )
 		end
@@ -70,47 +70,47 @@ ACF.SoundToolSupport = {
 	acf_rack = {
 
 		GetSound = function(ent) return { Sound = ent.Sound } end,
-		
-		SetSound = function(ent, soundData) 
+
+		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
 			ent:SetNWString( "Sound", soundData.Sound )
 		end,
-		
+
 		ResetSound = function(ent)
-			
+
 			local Class = ent.Class
 			local sound = GunClasses[Class]["sound"] or ""
 
 			local soundData = { Sound = sound }
-			
+
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
 		end
 	},
-	
+
 	acf_missileradar = {
 
 		GetSound = function(ent) return { Sound = ent.Sound } end,
-		
-		SetSound = function(ent, soundData) 
+
+		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
 			ent:SetNWString( "Sound", soundData.Sound )
 		end,
-		
+
 		ResetSound = function(ent)
 			local soundData = {Sound = ACFM.DefaultRadarSound}
-			
+
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
 		end
-	} 
+	}
 }
 
 local function ReplaceSound( ply , Entity , data)
 	if not IsValid( Entity ) then return end
 	local sound = data[1]
 	local pitch = data[2] or 1
-	
+
 	timer.Simple(1, function()
 		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
 
@@ -118,10 +118,10 @@ local function ReplaceSound( ply , Entity , data)
 		local support = ACF.SoundToolSupport[class]
 
 		if not support then return end
-	
+
 		support.SetSound(Entity, {Sound = sound, Pitch = pitch})
 	end)
-			
+
 	duplicator.StoreEntityModifier( Entity, "acf_replacesound", {sound, pitch} )
 end
 
@@ -131,32 +131,32 @@ duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
 local function IsReallyValid(trace, ply)
 
 	local isValid = true
-	
+
 	if not trace.Entity:IsValid() then return false end
 	if trace.Entity:IsPlayer() then return false end
 	if SERVER and not trace.Entity:GetPhysicsObject():IsValid() then return false end
-	
-	
+
+
 	local class = trace.Entity:GetClass()
-	if not ACF.SoundToolSupport[class] then 
-	
+	if not ACF.SoundToolSupport[class] then
+
 		if string.StartWith(class, "acf_") then
 			ACF_SendNotify( ply, false, class .. ACFTranslation.SoundToolText[4] )
 		else
 			ACF_SendNotify( ply, false, ACFTranslation.SoundToolText[5] )
 		end
-		
+
 		return false
 	end
-	
+
 	return true
-	
+
 end
 
 function TOOL:LeftClick( trace )
 	if CLIENT then return true end
 	if not IsReallyValid( trace, self:GetOwner() ) then return false end
-	
+
 	local sound = self:GetOwner():GetInfo("wire_soundemitter_sound")
 	local pitch = self:GetOwner():GetInfo("acfsound_pitch")
 	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch} )
@@ -166,32 +166,32 @@ end
 function TOOL:RightClick( trace )
 	if CLIENT then return true end
 	if not IsReallyValid( trace, self:GetOwner() ) then return false end
-	
+
 	local class = trace.Entity:GetClass()
 	local support = ACF.SoundToolSupport[class]
 	if not support then return false end
-	
+
 	local soundData = support.GetSound(trace.Entity)
-	
+
 	self:GetOwner():ConCommand("wire_soundemitter_sound "..soundData.Sound);
-	
+
 	if soundData.Pitch then
 		self:GetOwner():ConCommand("acfsound_pitch "..soundData.Pitch);
 	end
-	
+
 	return true
 end
 
 function TOOL:Reload( trace )
 	if CLIENT then return true end
 	if not IsReallyValid( trace, self:GetOwner() ) then return false end
-	
+
 	local class = trace.Entity:GetClass()
 	local support = ACF.SoundToolSupport[class]
 	if not support then return false end
-	
+
 	support.ResetSound(trace.Entity)
-	
+
 	return true
 end
 
@@ -251,7 +251,7 @@ function TOOL.BuildCPanel(panel)
 		SoundPreStop:SetWide(SoundPreWide / 2)
 		SoundPreStop:SetPos(SoundPreWide / 2, 0)
 	end
-	
+
 	panel:AddControl("Slider", {
         Label = "Pitch:",
         Command = "acfsound_pitch",

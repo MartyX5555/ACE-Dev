@@ -38,7 +38,7 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.5,                                  -- motor mass - motor casing
         thrust          = 7000,                                 -- average thrust - kg*in/s^2           --was 120000
-        burnrate        = 1000,           --1000                       -- cm^3/s at average chamber pressure   
+        burnrate        = 1000,           --1000                       -- cm^3/s at average chamber pressure
         starterpct      = 0.1,                                  -- percentage of the propellant consumed in the starter motor.  --was 0.2
         minspeed        = 10000,                                 -- minimum speed beyond which the fins work at 100% efficiency  --was 15000
         dragcoef        = 0.005,                                -- drag coefficient while falling                           --was 0.001
@@ -51,10 +51,10 @@ ACF_defineGun("FIM-92 SAM", {                                   -- id
     fuses           = {"Contact", "Radio"},
 
     racks           = {                                         -- a whitelist for racks that this missile can load into.
-                        ["1x FIM-92"] = true,  
-                        ["2x FIM-92"] = true,  
+                        ["1x FIM-92"] = true,
+                        ["2x FIM-92"] = true,
                         ["4x FIM-92"] = true
-                    },  
+                    },
 
     seekcone        = 15,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 35
     viewcone        = 60,                                       -- getting outside this cone will break the lock.  Divided by 2.    --was 55
@@ -90,7 +90,7 @@ ACF_defineGun("Mistral SAM", {                                -- id
         armour          = 5,                                    -- effective armour thickness of casing, in mm
         propweight      = 1.5,                                  -- motor mass - motor casing
         thrust          = 9000,                                -- average thrust - kg*in/s^2           --was 120000
-        burnrate        = 850,     -- 850                             -- cm^3/s at average chamber pressure   
+        burnrate        = 850,     -- 850                             -- cm^3/s at average chamber pressure
         starterpct      = 0.1,                                  -- percentage of the propellant consumed in the starter motor.  --was 0.2
         minspeed        = 17000,                                -- minimum speed beyond which the fins work at 100% efficiency  --was 15000
         dragcoef        = 0.0035,                                 -- drag coefficient while falling
@@ -104,7 +104,7 @@ ACF_defineGun("Mistral SAM", {                                -- id
 
     racks       = {                                             -- a whitelist for racks that this missile can load into.
                     ["2x FIM-92"] = true
-                },   
+                },
 
     seekcone    = 15,                                           -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)    --was 35
     viewcone    = 60,                                           -- getting outside this cone will break the lock.  Divided by 2.    --was 55
@@ -138,11 +138,11 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
         casing          = 0.05,                                 -- thickness of missile casing, cm
         armour          = 10,                                   -- effective armour thickness of casing, in mm
         propweight      = 1,                                    -- motor mass - motor casing
-        thrust          = 4900,                                 -- average thrust - kg*in/s^2                                      --was 3800   
+        thrust          = 4900,                                 -- average thrust - kg*in/s^2                                      --was 3800
         burnrate        = 250,                                  -- cm^3/s at average chamber pressure                          --was 400
         starterpct      = 0.05,                                 -- percentage of the propellant consumed in the starter motor.
-        minspeed        = 10000,                                 -- minimum speed beyond which the fins work at 100% efficiency  
-        dragcoef        = 0.01,                                -- drag coefficient while falling   
+        minspeed        = 10000,                                 -- minimum speed beyond which the fins work at 100% efficiency
+        dragcoef        = 0.01,                                -- drag coefficient while falling
         dragcoefflight  = 0.01,                                -- drag coefficient during flight             --was 0
         finmul          = 0.15                                  -- fin multiplier (mostly used for unpropelled guidance)        --was 0.03
     },
@@ -152,16 +152,16 @@ ACF_defineGun("Strela-1 SAM", {                                 -- id
     fuses           = {"Contact", "Radio"},
 
     racks           = {                                         -- a whitelist for racks that this missile can load into.
-                        ["1x Strela-1"] = true,  
-                        ["2x Strela-1"] = true,  
+                        ["1x Strela-1"] = true,
+                        ["2x Strela-1"] = true,
                         ["4x Strela-1"] = true
-                    },   
+                    },
 
-    seekcone        = 15,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.) 
-    viewcone        = 60,                                       -- getting outside this cone will break the lock.  Divided by 2.    
+    seekcone        = 15,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+    viewcone        = 60,                                       -- getting outside this cone will break the lock.  Divided by 2.
 
     agility         = 1,                                        -- multiplier for missile turn-rate.    --was 1.5
-    armdelay        = 0.00,                                     -- minimum fuse arming delay    
+    armdelay        = 0.00,                                     -- minimum fuse arming delay
     guidelay        = 0.75,                                     -- Required time (in seconds) for missile to start guiding at target once launched
     ghosttime       = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     SeekSensitivity = 2
@@ -206,11 +206,11 @@ ACF_defineGun("9M311 SAM", {                                        -- id
 
     racks           = {                                         -- a whitelist for racks that this missile can load into.
                         ["1x 9m311"] = true
-                    },    
+                    },
 
-    seekcone        = 15,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.) 
-    viewcone        = 60,                                       -- getting outside this cone will break the lock.  Divided by 2.    
-    
+    seekcone        = 15,                                       -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
+    viewcone        = 60,                                       -- getting outside this cone will break the lock.  Divided by 2.
+
     agility         = 0.8,                                        -- multiplier for missile turn-rate.
     armdelay        = 0.00,                                     -- minimum fuse arming delay
     guidelay        = 0,                                     -- Required time (in seconds) for missile to start guiding at target once launched

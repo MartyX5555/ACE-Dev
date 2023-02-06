@@ -17,8 +17,8 @@ Material.resiliance         = 1
 Material.HEATresiliance     = 1
 
 -- Used when ERA fails to detonate. This will act like a RHA at its 25% from ERA thickness. Used by HE
-Material.NCurve             = 1     
-Material.Neffectiveness     = 0.25 
+Material.NCurve             = 1
+Material.Neffectiveness     = 0.25
 Material.Nresiliance        = 1
 
 Material.APSensorFactor     = 4     -- quotient used to determinate minimal pen for detonation for Kinetic shells
@@ -72,11 +72,11 @@ if SERVER then
         local effectiveness = Material.effectiveness
         local resiliance    = Material.resiliance
         local sensor        = Material.APSensorFactor
-        
+
         local blastArmor = effectiveness * losArmor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
 
-        --ERA is more effective vs HEAT than vs kinetic 
-        if Material.HEATList[Type] then    
+        --ERA is more effective vs HEAT than vs kinetic
+        if Material.HEATList[Type] then
 
             blastArmor  = Material.HEATeffectiveness * losArmor
             resiliance  = Material.HEATresiliance
@@ -89,14 +89,14 @@ if SERVER then
             sensor      = 1
 
         end
-        
+
         --ERA detonates and shell is completely stopped
-        if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated       
+        if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated
 
             --Importart to remove the ent before the explosions begin
             Entity:Remove()
 
-            HitRes.Damage   = 9999999999999 
+            HitRes.Damage   = 9999999999999
             HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)                       -- Remaining penetration.
             HitRes.Loss     = math.Clamp(blastArmor / maxPenetration,0,0.98)                    -- leaves 2% max penetration to pass
 
@@ -119,19 +119,19 @@ if SERVER then
             local EntPos    = Entity:GetPos()
 
             ACF_HE( EntPos , vector_up , HEWeight , HEWeight , Owner , Entity, Entity ) --ERABOOM
-            
+
             --util.Effect not working during MP workaround. Waiting a while fixes the issue.
             timer.Simple(0.001, function()
                 local Flash = EffectData()
                     Flash:SetOrigin( EntPos )
                     Flash:SetNormal( -vector_up )
                     Flash:SetRadius( math.max( Radius*0.25, 1 ) )
-                util.Effect( "ACF_Scaled_Explosion", Flash ) 
+                util.Effect( "ACF_Scaled_Explosion", Flash )
             end)
 
             return HitRes
-        else    
-            
+        else
+
             curve         = Material.NCurve
             effectiveness = Material.Neffectiveness
             resiliance    = Material.Nresiliance
@@ -140,12 +140,12 @@ if SERVER then
 
             armor       = armor^curve
             losArmor    = losArmor^curve
-        
+
             -- Breach probability
             local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
             -- Penetration probability
-            local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/ losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;   
+            local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/ losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
             -- Breach chance roll
             if breachProb > math.random() and maxPenetration > armor then
@@ -155,18 +155,18 @@ if SERVER then
                 HitRes.Loss     = armor / maxPenetration                    -- Energy loss in percents
 
                 return HitRes
-                            
-            -- Penetration chance roll  
-            elseif penProb > math.random() then                                 
-        
+
+            -- Penetration chance roll
+            elseif penProb > math.random() then
+
                 local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
                 HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
                 HitRes.Overkill = ( maxPenetration - Penetration )
                 HitRes.Loss     = Penetration / maxPenetration
-            
+
                 return HitRes
-                            
+
             end
 
             -- Projectile did not breach nor penetrate armor
@@ -175,13 +175,13 @@ if SERVER then
             HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
             HitRes.Overkill = 0
             HitRes.Loss     = 1
-        
+
             return HitRes
-                         
+
         end
-                
-    end 
+
+    end
 end
 
-list.Set( "ACE_MaterialTypes", Material.id, Material ) 
+list.Set( "ACE_MaterialTypes", Material.id, Material )
 ACE.Armors      = list.Get("ACE_MaterialTypes")

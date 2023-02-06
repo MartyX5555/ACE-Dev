@@ -8,9 +8,9 @@ function ENT:Initialize()
 
 	self.SpecialDamage = true
 	self.Owner = self:GetOwner()
-	
+
 	--print("hi from fakecrate")
-	
+
 end
 
 
@@ -27,7 +27,7 @@ end
 function ENT:UpdateTransmitState()
 
 	return TRANSMIT_ALWAYS
-	
+
 end
 
 
@@ -41,8 +41,8 @@ function ENT:RegisterTo(bullet)
 			self:SetOwner(bullet:GetOwner())
 --			bullet = bullet.BulletData
 		end
-	
-	
+
+
 	self:SetNWInt( "Caliber", bullet.Caliber or 10)
 	self:SetNWInt( "ProjMass", bullet.ProjMass or 10)
 	self:SetNWInt( "FillerMass", bullet.BoomFillerMass or bullet.FillerMass or 0)
@@ -50,12 +50,12 @@ function ENT:RegisterTo(bullet)
 	self:SetNWString( "AmmoType", bullet.Type or "AP")
 	self:SetNWInt( "Tracer" , bullet.Tracer or 1)
 --	self:SetNWInt( "Tracer" , 1)
-    
+
 	local col = bullet.Colour or self:GetColor()
 	self:SetNWVector( "Color" , Vector(col.r, col.g, col.b))
 	self:SetNWVector( "TracerColour" , Vector(col.r, col.g, col.b))
 	self:SetColor(col)
-	
+
 end
 
 

@@ -15,14 +15,14 @@ function EFFECT:Init( data )
     local Bullet = ACF.BulletEffect[self.Index]
 
     --Scale encodes the hit type, so if it's 0 it's a new bullet, else it's an update so we need to remove the effect
-    if (Hit > 0 and Bullet) then    
+    if (Hit > 0 and Bullet) then
 
         --print("Updating Bullet Effect")
         Bullet.SimFlight = data:GetStart()*10       --Updating old effect with new values
         Bullet.SimPos = data:GetOrigin()
 
         --Bullet has reached end of flight, remove old effect
-        if (Hit == 1) then      
+        if (Hit == 1) then
 
             Bullet.Impacted = true
 
@@ -33,18 +33,18 @@ function EFFECT:Init( data )
             if IsValid(Bullet.Tracer) then Bullet.Tracer:Finish() end
 
         --Bullet penetrated, don't remove old effect
-        elseif (Hit == 2) then      
+        elseif (Hit == 2) then
 
             self.HitPierce = ACF.RoundTypes[Bullet.AmmoType]["pierceeffect"]
             self:HitPierce( Bullet )
 
         --Bullet ricocheted, don't remove old effect
-        elseif (Hit == 3) then      
+        elseif (Hit == 3) then
 
             self.HitRicochet = ACF.RoundTypes[Bullet.AmmoType]["ricocheteffect"]
             self:HitRicochet( Bullet )
 
-        end     
+        end
 
         ACF_SimBulletFlight( Bullet, self.Index )
         self.Alive = false
@@ -81,19 +81,19 @@ function EFFECT:Init( data )
         BulletData.CrackCreated = false
         BulletData.InitialPos   = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
 
-        BulletData.BulletModel  = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )        
+        BulletData.BulletModel  = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )
 
         if BulletData.Crate:GetNWFloat( "Tracer" ) > 0 then
-            BulletData.Counter      = 0 
+            BulletData.Counter      = 0
             BulletData.Tracer       = ParticleEmitter( BulletData.SimPos )
             BulletData.TracerColour = BulletData.Crate:GetNWVector( "TracerColour", BulletData.Crate:GetColor() ) or Vector(255,255,255)
         end
 
         --Add all that data to the bullet table, overwriting if needed
-        ACF.BulletEffect[self.Index] = BulletData       
+        ACF.BulletEffect[self.Index] = BulletData
 
         --Moving the effect to the calculated position
-        self:SetPos( BulletData.SimPos )                                    
+        self:SetPos( BulletData.SimPos )
         self:SetAngles( BulletData.SimFlight:Angle() )
         self:SetModel( BulletData.BulletModel )
         self.Alive = true
@@ -127,7 +127,7 @@ function EFFECT:Think()
 
         --We require this so the tracer is not spawned in middle of the gun (when initially fired)
         if Bullet.Tracer and IsValid(Bullet.Tracer) and Bullet.Counter < 3 then Bullet.Counter = Bullet.Counter + 1 end
-        
+
         return true
     end
 
@@ -148,7 +148,7 @@ function EFFECT:ApplyMovement( Bullet )
         self:SetPos( setPos )--Moving the effect to the calculated position
         self:SetAngles( Bullet.SimFlight:Angle() )
 
-        local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length()) 
+        local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length())
 
         --sonic crack sound
         if not Bullet.CrackCreated and not Bullet.IsMissile then
@@ -157,7 +157,7 @@ function EFFECT:ApplyMovement( Bullet )
 
                     if not Bullet.Impacted then
 
-                        ACE_SBulletCrack(Bullet, Bullet.Caliber) 
+                        ACE_SBulletCrack(Bullet, Bullet.Caliber)
 
                     end
                 end
@@ -166,7 +166,7 @@ function EFFECT:ApplyMovement( Bullet )
     end
 
     if Bullet.Tracer and IsValid(Bullet.Tracer) then
-        
+
         local value = 2.5
 
         if Bullet.Counter <= 1 then value = 1.85 end
@@ -193,7 +193,7 @@ function EFFECT:ApplyMovement( Bullet )
             Light:SetStartLength( Length )
             Light:SetEndLength( 1 ) --Length
         end
-        
+
         if MaxSprites > 0 then
 
             for i=1, MaxSprites do

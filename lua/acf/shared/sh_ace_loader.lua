@@ -61,12 +61,12 @@ local irst_base = {
 if CLIENT then
     gun_base.guicreate          = function( Panel, Table ) ACFGunGUICreate( Table )         end or nil
     gun_base.guiupdate          = function() return end
-    
-    engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil 
+
+    engine_base.guicreate       = function( panel, tbl ) ACE_EngineGUI_Update( tbl )        end or nil
 
     gearbox_base.guicreate      = function( panel, tbl ) ACFGearboxGUICreate( tbl )         end or nil
     gearbox_base.guiupdate      = function() return end
-    
+
     fueltank_base.guicreate     = function( panel, tbl ) ACFFuelTankGUICreate( tbl )        end or nil
     fueltank_base.guiupdate     = function( panel, tbl ) ACFFuelTankGUIUpdate( tbl )        end or nil
 
@@ -218,7 +218,7 @@ local function GetAllInTableExcept(tbl, list)
     end
     local ret = {}
     for name, _ in pairs(tbl) do
-        if not list[name] then 
+        if not list[name] then
             ret[#ret+1] = name
         end
     end
@@ -245,7 +245,7 @@ function ACF_GetAllFuseNames()
     for name, _ in pairs(ACF.Fuse) do
         ret[#ret+1] = name
     end
-    return ret  
+    return ret
 end
 
 function ACF_GetAllFuseNamesExcept(list)
@@ -272,7 +272,7 @@ do
     }
 
     for k, folder in ipairs(folders) do
-    
+
         local folderData = file.Find( Gpath..folder.."/*.lua", "LUA" )
         for k, v in pairs( folderData ) do
             AddCSLuaFile( "acf/shared/"..folder.."/" .. v )
@@ -291,10 +291,10 @@ list.Set( "ACFClasses"  , "GunClass"    , GunClasses    )
 list.Set( "ACFClasses"  , "Rack"        , RackClasses   )
 list.Set( "ACFClasses"  , "Radar"       , RadarClasses  )
 
-list.Set( "ACFEnts"     , "Guns"        , GunTable      ) 
-list.Set( "ACFEnts"     , "Racks"       , RackTable     )      
+list.Set( "ACFEnts"     , "Guns"        , GunTable      )
+list.Set( "ACFEnts"     , "Racks"       , RackTable     )
 list.Set( "ACFEnts"     , "Engines"     , EngineTable   )
-list.Set( "ACFEnts"     , "Gearboxes"   , GearboxTable  )     
+list.Set( "ACFEnts"     , "Gearboxes"   , GearboxTable  )
 list.Set( "ACFEnts"     , "FuelTanks"   , FuelTankTable )
 list.Set( "ACFEnts"     , "FuelTanksSize", FuelTankSizeTable )
 list.Set( "ACFEnts"     , "Radars"      , Radars        )
@@ -303,7 +303,7 @@ list.Set( "ACESounds"   , "GunFire"     , GSoundData    )
 
 --Small remainder of Mobility table. Still being used in stuff like starfall/e2. This can change
 
-list.Set( "ACFEnts"     , "Mobility"        , MobilityTable ) 
+list.Set( "ACFEnts"     , "Mobility"        , MobilityTable )
 
 ACF.Weapons     = list.Get("ACFEnts")
 ACF.Classes     = list.Get("ACFClasses")

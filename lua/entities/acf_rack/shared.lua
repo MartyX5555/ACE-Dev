@@ -14,7 +14,7 @@ ENT.AdminSpawnable  = false
 function ENT:GetMunitionAngPos(missile, attach, attachname)
 
     local angpos
-    
+
     if attach ~= 0 then
         angpos = self:GetAttachment(attach)
     else
@@ -25,12 +25,12 @@ function ENT:GetMunitionAngPos(missile, attach, attachname)
     local gun       = guns[missile.BulletData.Id]
 
     if not gun then return angpos end
-    
+
     local offset    = (gun.modeldiameter or gun.caliber) / (2.54 * 2)
     local rack      = ACF.Weapons.Racks[self.Id]
 
     if not rack then return angpos end
-    
+
     mountpoint = rack.mountpoints[attachname] or {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0, 0, -1)}
     inverted = rack.inverted or false
 
@@ -51,7 +51,7 @@ function ENT:GetMuzzle(shot, missile)
     local attach            = self:LookupAttachment(attachname)
     local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
     if attach ~= 0 then return attach, inverted, angpos  end
-    
+
     attachname              = "missile1"
     local attach            = self:LookupAttachment(attachname)
     local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
@@ -61,6 +61,6 @@ function ENT:GetMuzzle(shot, missile)
     local attach            = self:LookupAttachment(attachname)
     local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
     if attach ~= 0 then return attach, inverted, angpos end
-    
+
     return 0, false, {Pos = self:GetPos(), Ang = self:GetAngles()}
 end

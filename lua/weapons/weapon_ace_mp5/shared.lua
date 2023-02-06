@@ -69,7 +69,7 @@ function SWEP:InitBulletData()
     self.BulletData.Type = "AP"
     self.BulletData.Id = 1
     self.BulletData.Caliber = 0.9
-    self.BulletData.PropLength = 2.4 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.PropLength = 2.4 --Volume of the case as a cylinder * Powder density converted from g to kg
     self.BulletData.ProjLength = 1.5 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
     self.BulletData.Data5 = 0 --He Filler or Flechette count
     self.BulletData.Data6 = 0 --HEAT ConeAng or Flechette Spread

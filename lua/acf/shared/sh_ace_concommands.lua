@@ -29,8 +29,8 @@ if SERVER then
         concommand.Add( "acf_smokewind", function(ply, _, args)
             local validply = IsValid(ply)
             local printmsg = msgToCaller
-            
-            if not args[1] then 
+
+            if not args[1] then
 
                 printmsg(ply, HUD_PRINTCONSOLE,
 
@@ -40,13 +40,13 @@ if SERVER then
 
                 return false
             end
-            
+
             if validply and not ply:IsAdmin() then
 
-                printmsg(ply, HUD_PRINTCONSOLE, 
+                printmsg(ply, HUD_PRINTCONSOLE,
                     "You can't use this because you are not an admin.")
                 return false
-                    
+
             else
                     local wind = tonumber(args[1])
 
@@ -54,15 +54,15 @@ if SERVER then
                             printmsg(ply, HUD_PRINTCONSOLE, "Command unsuccessful: that wind value could not be interpreted as a number!")
                             return false
                     end
-                    
+
                     ACF.SmokeWind = wind
-                    
+
                     net.Start("acf_smokewind")
                     net.WriteFloat(wind)
                     net.Broadcast()
-                    
+
                     printmsg(ply, HUD_PRINTCONSOLE, "Command SUCCESSFUL: set smoke-wind to " .. wind .. "!")
-                    return true        
+                    return true
             end
         end)
 

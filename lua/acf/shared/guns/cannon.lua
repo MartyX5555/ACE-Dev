@@ -41,7 +41,7 @@ ACF_defineGun("50mmC", {
 		propweight = 2.1
 	}
 } )
-	
+
 ACF_defineGun("75mmC", {
 	name = "75mm Cannon",
 	desc = "The 75mm is still rather respectable in rate of fire, but has only modest payload.  Often found on the Eastern Front, and on cold war light tanks.",
@@ -85,7 +85,7 @@ ACF_defineGun("100mmC", {
 		propweight = 9.5
 	}
 } )
-	
+
 ACF_defineGun("120mmC", {
 	name = "120mm Cannon",
 	desc = "Often found in MBTs, the 120mm shreds lighter armor with utter impunity, and is formidable against even the big boys.",
@@ -130,7 +130,7 @@ ACF_defineGun("170mmC", {
 		propweight = 34
 	}
 } )
-	
+
 --- MODEL DATA
 
 ACE_DefineModelData("models/tankgun/tankgun_100mm.mdl",{

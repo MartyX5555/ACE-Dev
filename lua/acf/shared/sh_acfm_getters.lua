@@ -11,16 +11,16 @@ function ACF_GetGunValue(bdata, val)
     local class = guns[bdata]
 
     if class then
-        local ret 
-        
-        if class.round then 
-            ret = class.round[val] 
+        local ret
+
+        if class.round then
+            ret = class.round[val]
         end
 
-        if ret == nil then 
-            ret = class[val] 
+        if ret == nil then
+            ret = class[val]
         end
-        
+
         if ret ~= nil then
             return ret
         else
@@ -32,7 +32,7 @@ function ACF_GetGunValue(bdata, val)
             end
         end
     end
-    
+
 end
 
 
@@ -46,7 +46,7 @@ function ACF_GetRackValue(rdata, val)
     local guns = ACF.Weapons.Racks
     local class = guns[rdata]
 
-    if class then        
+    if class then
         if class[val] ~= nil then
             return class[val]
         else
@@ -58,7 +58,7 @@ function ACF_GetRackValue(rdata, val)
             end
         end
     end
-    
+
 end
 
 
@@ -69,22 +69,22 @@ function ACF_RackCanLoadCaliber(rackId, cal)
     local rack = ACF.Weapons.Racks[rackId]
     if not rack then return false, "Rack '" .. tostring(rackId) .. "' does not exist." end
 
-    if rack.caliber then 
+    if rack.caliber then
         local ret = (rack.caliber == cal)
         if ret then return true, ""
         else return false, "Only " .. math.Round(rack.caliber * 10, 2) .. "mm rounds can fit in this gun." end
     end
-    
-    if rack.mincaliber and cal < rack.mincaliber then 
+
+    if rack.mincaliber and cal < rack.mincaliber then
         return false, "Rounds must be at least " .. math.Round(rack.mincaliber * 10, 2) .. "mm to fit in this gun."
     end
-    
-    if rack.maxcaliber and cal > rack.maxcaliber then 
+
+    if rack.maxcaliber and cal > rack.maxcaliber then
         return false, "Rounds cannot be more than " .. math.Round(rack.maxcaliber * 10, 2) .. "mm to fit in this gun."
     end
-    
+
     return true
-    
+
 end
 
 
@@ -97,38 +97,38 @@ function ACF_CanLinkRack(rackId, ammoId, bdata, rack)
 
     local gun = GunsTable[ammoId]
     if not rack then return false, "Ammo '" .. tostring(ammoId) .. "' does not exist." end
-    
-    
+
+
     local rackAllow = ACF_GetGunValue(ammoId, "racks")
-    
+
     local rackAllowed = true
     local allowType = type(rackAllow)
-    
+
     if rackAllow == nil and rack.whitelistonly then
         rackAllowed = false
-    elseif allowType == "table" then 
+    elseif allowType == "table" then
         rackAllowed = rackAllow[rackId]
     elseif allowType == "function" then
         rackAllowed = rackAllow(bdata or ammoId, rack or rackId)
     end
-    
+
     if not rackAllowed then
         return false, ammoId .. " rounds are not compatible with a " .. tostring(rackId) .. "!"
     end
-    
-    
+
+
     local canCaliber, calMsg = ACF_RackCanLoadCaliber(rackId, gun.caliber)
     if not canCaliber then
         return false, calMsg
     end
-    
+
     local Classes = list.Get("ACFClasses").GunClass
-    if "missile" ~= Classes[gun.gunclass].type then 
-        return false, "Racks cannot be linked to ammo crates of type '" .. tostring(ammoId) .. "'!" 
+    if "missile" ~= Classes[gun.gunclass].type then
+        return false, "Racks cannot be linked to ammo crates of type '" .. tostring(ammoId) .. "'!"
     end
-    
+
     return true
-    
+
 end
 
 
@@ -143,18 +143,18 @@ function ACF_GetCompatibleRacks(ammoId)
             ret[#ret+1] = rackId
         end
     end
-    
+
     return ret
-    
+
 end
 
 
 
 
 function ACF_GetRoundFromCVars()
-    
+
     local round = {}
-    
+
     round.Id            = GetConVarString( "acfmenu_data1" )
     round.Type          = GetConVarString( "acfmenu_data2" )
     round.PropLength    = GetConVarNumber( "acfmenu_data3" )
@@ -170,7 +170,7 @@ function ACF_GetRoundFromCVars()
     round.Data13        = GetConVarNumber( "acfmenu_data13" )
     round.Data14        = GetConVarNumber( "acfmenu_data14" )
     round.Data15        = GetConVarNumber( "acfmenu_data15" )
-    
+
     return round
-    
+
 end

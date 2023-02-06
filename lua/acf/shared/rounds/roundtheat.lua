@@ -12,37 +12,37 @@ Round.desc  = ACFTranslation.THEAT[2]
 Round.netid = 15 --Unique ammotype ID for network transmission
 
 function Round.create( Gun, BulletData )
-    
+
     ACF_CreateBullet( BulletData )
 
 end
 
 function Round.ConeCalc( ConeAngle, Radius, Length )
-    
+
     local CLen = math.tan(math.rad(ConeAngle))*Radius
     local CArea = 3.1416 * Radius * (Radius^2 + CLen^2)^0.5
     local CVol = (3.1416 * Radius^2 * CLen)/3
 
     return CLen, CArea, CVol
-    
+
 end
 
 -- Function to convert the player's slider data into the complete round data
 function Round.convert( Crate, PlayerData )
-    
+
     local Data          = {}
     local ServerData    = {}
     local GUIData       = {}
-    
+
     PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0 
+    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
     PlayerData.Tracer       =  PlayerData.Tracer        or 0
     PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
     PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
     if not PlayerData.Data6 then PlayerData.Data6 = 0 end
     if not PlayerData.Data13 then PlayerData.Data13 = 0 end
     if not PlayerData.Data14 then PlayerData.Data14 = 0 end
-    
+
     PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
     local ConeThick         = Data.Caliber/50
@@ -65,7 +65,7 @@ function Round.convert( Crate, PlayerData )
     local MaxRadius         = 0
 
     MaxVol, MaxLength, MaxRadius = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
-        
+
     GUIData.MinConeAng      = 0
     GUIData.MaxConeAng      = math.deg( math.atan((Data.ProjLength - ConeThick )/(Data.Caliber/2)) )
 
@@ -79,17 +79,17 @@ function Round.convert( Crate, PlayerData )
 
     local ConeVol           = ConeArea * ConeThick
     local ConeVol2          = ConeArea2 * ConeThick
-        
+
     GUIData.MinFillerVol    = 0
     GUIData.MaxFillerVol    = math.max(MaxVol -  AirVol - ConeVol,GUIData.MinFillerVol)
     GUIData.FillerVol       = math.Clamp(PlayerData.Data5*1,GUIData.MinFillerVol,GUIData.MaxFillerVol)
-    
+
     Data.FillerMass         = GUIData.FillerVol * ACF.HEDensity/1450
     Data.BoomFillerMass     = Data.FillerMass / 3 --manually update function "pierceeffect" with the divisor
     Data.ProjMass           = math.max(GUIData.ProjVolume-GUIData.FillerVol- AirVol-AirVol2-ConeVol-ConeVol2,0)*7.9/1000 + Data.FillerMass + ConeVol*7.9/1000 + ConeVol2*7.9/1000
     Data.MuzzleVel          = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
     local Energy            = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-    
+
     --Let's calculate the actual HEAT slug
     Data.SlugMass           = ConeVol*7.9/1000
     Data.SlugMass2          = ConeVol2*7.9/1000
@@ -121,7 +121,7 @@ function Round.convert( Crate, PlayerData )
 
     Data.SlugRicochet       =   500                                     -- Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
-    
+
     Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/2000 - ConeVol2*7.9/2000
 
     --Random bullshit left
@@ -132,7 +132,7 @@ function Round.convert( Crate, PlayerData )
     Data.KETransfert        = 0.1                                       -- Kinetic energy transfert to the target for movement purposes
     Data.Ricochet           = 63                                        -- Base ricochet angle
     Data.DetonatorAngle     = 85
-    
+
     Data.Detonated          = 0
     Data.NotFirstPen        = false
     Data.BoomPower          = Data.PropMass + Data.FillerMass
@@ -142,12 +142,12 @@ function Round.convert( Crate, PlayerData )
         ServerData.Type = PlayerData.Type
         return table.Merge(Data,ServerData)
     end
-    
-    if CLIENT then --Only the GUI needs this part   
+
+    if CLIENT then --Only the GUI needs this part
         GUIData = table.Merge(GUIData, Round.getDisplayData(Data))
         return table.Merge(Data, GUIData)
     end
-    
+
 end
 
 function Round.getDisplayData(Data)
@@ -163,7 +163,7 @@ function Round.getDisplayData(Data)
     GUIData.Fragments   = math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
     GUIData.FragMass    = Data.CasingMass/GUIData.Fragments
     GUIData.FragVel     = (Data.BoomFillerMass*ACF.HEPower*1000/Data.CasingMass/GUIData.Fragments)^0.5
-    
+
     return GUIData
 end
 
@@ -191,10 +191,10 @@ function Round.network( Crate, BulletData )
 end
 
 function Round.cratetxt( BulletData, builtFullData )
-    
+
     local DData = Round.getDisplayData(BulletData)
-    
-    local str = 
+
+    local str =
     {
         "Muzzle Velocity: ", math.Round(BulletData.MuzzleVel, 1), " m/s\n",
         "Max Penetration(1st): ", math.floor(DData.MaxPen), " mm\n",
@@ -202,9 +202,9 @@ function Round.cratetxt( BulletData, builtFullData )
         "Blast Radius: ", math.Round(DData.BlastRadius, 1), " m\n",
         "Blast Energy: ", math.floor((BulletData.BoomFillerMass) * ACF.HEPower), " KJ"
     }
-    
+
     return table.concat(str)
-    
+
 end
 
 function Round.detonate( Index, Bullet, HitPos, HitNormal )
@@ -216,7 +216,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
     local DetCount      = Bullet.Detonated
 
     --First Detonation
-    if DetCount == 1 then 
+    if DetCount == 1 then
         --print("1ST CHARGE")
 
         Bullet.NotFirstPen = false
@@ -229,41 +229,41 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
         Bullet.Pos              = HitPos
         Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
         Bullet.DragCoef         = Bullet.SlugDragCoef
-    
+
         Bullet.ProjMass         = Bullet.SlugMass
         Bullet.CannonCaliber    = Bullet.Caliber * 2
         Bullet.Caliber          = Bullet.SlugCaliber
         Bullet.PenArea          = Bullet.SlugPenArea
         Bullet.Ricochet         = Bullet.SlugRicochet
-    
+
         local DeltaTime         = SysTime() - Bullet.LastThink
         Bullet.StartTrace       = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
-        Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)       --Calculates the next shell position      
+        Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)       --Calculates the next shell position
 
     --Second Detonation
-    elseif DetCount == 2 then 
+    elseif DetCount == 2 then
         --print("2ND CHARGE")
 
         Bullet.NotFirstPen = false
 
         ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.BoomFillerMass * Bullet.HEAllocation, Bullet.CasingMass, Bullet.Owner, nil, Bullet.Gun )
-    
+
         Bullet.InitTime         = SysTime()
         Bullet.FlightTime       = 0 --reseting timer
         Bullet.FuseLength       = 0.005 + 40/((Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37):Length()*0.0254)
         Bullet.Pos              = HitPos
         Bullet.Flight           = Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
         Bullet.DragCoef         = Bullet.SlugDragCoef2
-    
+
         Bullet.ProjMass         = Bullet.SlugMass2
         Bullet.Caliber          = Bullet.SlugCaliber2
         Bullet.PenArea          = Bullet.SlugPenArea2
         Bullet.Ricochet         = Bullet.SlugRicochet
-    
+
         local DeltaTime         = SysTime() - Bullet.LastThink
         Bullet.StartTrace       = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
         Bullet.NextPos          = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)       --Calculates the next shell position
-    
+
     end
 --  print(Bullet.Detonated)
 end
@@ -286,66 +286,66 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
     if Bullet.FirstPos then HitPos = Bullet.FirstPos end
 
     if ACF_Check( Target ) then
-    
+
         if DetCount > 0 then --Bullet Has Detonated
             Bullet.NotFirstPen = true
-            
+
             local Speed     = Bullet.Flight:Length() / ACF.VelScale
             local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass, 999999 )
             local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-            
+
             if HitRes.Overkill > 0 then
 
                 table.insert( Bullet.Filter , Target )                  --"Penetrate" (Ingoring the prop for the retry trace)
                 ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , (Energy.Kinetic*(HitRes.Loss)+0.2)*64 , Bullet.CannonCaliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-                Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37 
+                Bullet.Flight = Bullet.Flight:GetNormalized() * math.sqrt(Energy.Kinetic * (1 - HitRes.Loss) * ((Bullet.NotFirstPen and ACF.HEATPenLayerMul) or 1) * 2000 / Bullet.ProjMass) * 39.37
 
                 return "Penetrated"
 
             --If bullet has detonated once and fails to pen
-            elseif DetCount == 1 then 
+            elseif DetCount == 1 then
 
                 Bullet.Filter = {}
                 Round.detonate( Index, Bullet, HitPos, HitNormal )
 
-                return "Penetrated"         
+                return "Penetrated"
 
             else
-            
+
                 return false
             end
-    
+
         else
-            
+
             local Speed     = Bullet.Flight:Length() / ACF.VelScale
             local Energy    = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
             local HitRes    = ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bone )
-            
+
             if HitRes.Ricochet then
                 return "Ricochet"
             else
                 Round.detonate( Index, Bullet, HitPos, HitNormal )
                 return "Penetrated"
             end
-            
+
         end
     else
         table.insert( Bullet.Filter , Target )
         return "Penetrated"
     end
-    
+
     return false
-    
+
 end
 
 function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
     local DetCount = Bullet.Detonated or 0
 
-    if DetCount < 2 then    
+    if DetCount < 2 then
         Round.detonate( Index, Bullet, HitPos, HitNormal )
         return "Penetrated"
     end
-    
+
     local Energy = ACF_Kinetic( Bullet.Flight:Length() / ACF.VelScale, Bullet.ProjMass, 999999 )
     local HitRes = ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
     if HitRes.Penetrated then
@@ -353,7 +353,7 @@ function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
     else
         return false
     end
-    
+
 end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
@@ -368,11 +368,11 @@ function Round.endflight( Index, Bullet, HitPos, HitNormal )
     end
 
     ACF_RemoveBullet( Index )
-    
+
 end
 
 function Round.endeffect( Effect, Bullet )
-    
+
     local Impact = EffectData()
         Impact:SetEntity( Bullet.Crate )
         Impact:SetOrigin( Bullet.SimPos )
@@ -380,7 +380,7 @@ function Round.endeffect( Effect, Bullet )
         Impact:SetScale( Bullet.SimFlight:Length() )
         Impact:SetMagnitude( Bullet.RoundMass )
     util.Effect( "acf_ap_impact", Impact )
-    
+
 end
 
 function Round.pierceeffect( Effect, Bullet )
@@ -394,26 +394,26 @@ function Round.pierceeffect( Effect, Bullet )
             Spall:SetScale( Bullet.SimFlight:Length() )
             Spall:SetMagnitude( Bullet.RoundMass )
         util.Effect( "acf_ap_penetration", Spall )
-    
+
     else
-        
+
         local Radius = (Bullet.FillerMass/3)^0.33*8*39.37 --fillermass/3 has to be manually set, as this func uses networked data
         local Flash = EffectData()
             Flash:SetOrigin( Bullet.SimPos )
             Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
             Flash:SetRadius( math.max( Radius, 1 ) )
         util.Effect( "acf_heat_explosion", Flash )
-        
+
         Bullet.Detonated = 1
         Effect:SetModel("models/Gibs/wood_gib01e.mdl")
-    
+
         Round.pierceeffect( Effect, Bullet )
     end
-    
+
 end
 
 function Round.ricocheteffect( Effect, Bullet )
-    
+
     local Spall = EffectData()
         Spall:SetEntity( Bullet.Gun )
         Spall:SetOrigin( Bullet.SimPos )
@@ -421,45 +421,45 @@ function Round.ricocheteffect( Effect, Bullet )
         Spall:SetScale( Bullet.SimFlight:Length() )
         Spall:SetMagnitude( Bullet.RoundMass )
     util.Effect( "acf_ap_ricochet", Spall )
-    
+
 end
 
 function Round.guicreate( Panel, Table )
 
     acfmenupanel:AmmoSelect( ACF.AmmoBlacklist.THEAT )
-    
+
     acfmenupanel:CPanelText("CrateInfoBold", "Crate information:", "DermaDefaultBold")
-    
+
     acfmenupanel:CPanelText("BonusDisplay", "")
-    
+
     acfmenupanel:CPanelText("Desc", "") --Description (Name, Desc)
     acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
     acfmenupanel:CPanelText("LengthDisplay", "")    --Total round length (Name, Desc)
-    
+
     --Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-    acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   
-    acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   
+    acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")
+    acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")
     acfmenupanel:AmmoSlider("ConeAng",0,0,1000,3, "HEAT Cone Angle(1st)", "")
     acfmenupanel:AmmoSlider("ConeAng2",0,0,1000,3, "HEAT Cone Angle(2nd)", "")
     acfmenupanel:AmmoSlider("HEAllocation",0,0,1000,2, "HE Filler Allocation", "")
     acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Total HEAT Warhead volume", "")
 
     ACE_Checkboxes()
-    
+
     acfmenupanel:CPanelText("VelocityDisplay", "")  --Proj muzzle velocity (Name, Desc)
     acfmenupanel:CPanelText("BlastDisplay", "") --HE Blast data (Name, Desc)
     acfmenupanel:CPanelText("FragDisplay", "")  --HE Fragmentation data (Name, Desc)
-    
+
     --acfmenupanel:CPanelText("RicoDisplay", "")    --estimated rico chance
     acfmenupanel:CPanelText("SlugDisplay", "")  --HEAT Slug data (Name, Desc)
     acfmenupanel:CPanelText("SlugDisplay2", "") --HEAT Slug data (Name, Desc)
-    
+
     Round.guiupdate( Panel, Table )
-    
+
 end
 
 function Round.guiupdate( Panel, Table )
-    
+
     local PlayerData = {}
         PlayerData.Id = acfmenupanel.AmmoData.Data.id           --AmmoSelect GUI
         PlayerData.Type = "THEAT"                                       --Hardcoded, match ACFRoundTypes table index
@@ -471,9 +471,9 @@ function Round.guiupdate( Panel, Table )
         PlayerData.Data14 = acfmenupanel.AmmoData.HEAllocation
         PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
         PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
-    
+
     local Data = Round.convert( Panel, PlayerData )
-    
+
     RunConsoleCommand( "acfmenu_data1", acfmenupanel.AmmoData.Data.id )
     RunConsoleCommand( "acfmenu_data2", PlayerData.Type )
     RunConsoleCommand( "acfmenu_data3", Data.PropLength )       --For Gun ammo, Data3 should always be Propellant
@@ -484,7 +484,7 @@ function Round.guiupdate( Panel, Table )
     RunConsoleCommand( "acfmenu_data14", Data.HEAllocation )
     RunConsoleCommand( "acfmenu_data10", Data.Tracer )
     RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
-    
+
     ---------------------------Ammo Capacity-------------------------------------
     ACE_AmmoCapacityDisplay( Data )
     -------------------------------------------------------------------------------
@@ -499,15 +499,15 @@ function Round.guiupdate( Panel, Table )
 
     acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
     acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")  --Total round length (Name, Desc)
-    acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")   --Proj muzzle velocity (Name, Desc) 
+    acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")   --Proj muzzle velocity (Name, Desc)
     acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")    --Proj muzzle velocity (Name, Desc)
     acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s") --Proj muzzle penetration (Name, Desc)
-    
+
     acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \nPenetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration : "..math.floor(Data.MaxPen).." mm \n\n2nd Penetrator \nPenetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \nPenetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \nPenetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \nMax Penetration : "..math.floor(Data.MaxPen2).." mm \n")  --Proj muzzle penetration (Name, Desc)
-    
+
 end
 
-list.Set("HERoundTypes", 'THEAT', Round ) 
+list.Set("HERoundTypes", 'THEAT', Round )
 list.Set( "ACFRoundTypes", "THEAT", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "THEAT" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 

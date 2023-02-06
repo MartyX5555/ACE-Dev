@@ -70,7 +70,7 @@ function SWEP:InitBulletData()
     self.BulletData.Type = "THEAT"
     self.BulletData.Id = 2
     self.BulletData.Caliber = 12.0
-    self.BulletData.PropLength = 2 --Volume of the case as a cylinder * Powder density converted from g to kg		
+    self.BulletData.PropLength = 2 --Volume of the case as a cylinder * Powder density converted from g to kg
     self.BulletData.ProjLength = 60 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
     self.BulletData.Data5 = 12000 --He Filler or Flechette count
     self.BulletData.Data6 = 60 --HEAT ConeAng or Flechette Spread
@@ -133,7 +133,7 @@ function SWEP:InitBulletData()
     --		print("SlugPen: "..self.BulletData.MaxPen)
     local SlugEnergy = ACF_Kinetic(self.BulletData.SlugMV2 * 39.37, self.BulletData.SlugMass2, 999999)
     self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenArea2) * ACF.KEtoRHA
-    --		print("SlugPen2: "..self.BulletData.MaxPen)		
+    --		print("SlugPen2: "..self.BulletData.MaxPen)
     --For Fake Crate
     self.BoomFillerMass = self.BulletData.BoomFillerMass
     self.Type = self.BulletData.Type

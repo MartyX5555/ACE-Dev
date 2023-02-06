@@ -11,9 +11,9 @@ do
 	function ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 		local BulletMax = ACF.Weapons["Guns"][PlayerData["Id"]]["round"]
-			
+
 		GUIData.MaxTotalLength 	= BulletMax.maxlength * (Data.LengthAdj or 1)
-			
+
 		Data.Caliber			= ACF.Weapons["Guns"][PlayerData["Id"]]["caliber"]
 		Data.FrArea 			= PI * (Data.Caliber/2)^2
 
@@ -66,26 +66,26 @@ do
 
 		GUIData.MinPropLength = 0.01
 		GUIData.MaxPropLength = math.max(math.min(GUIData.MaxTotalLength - CurLength + PlayerData.PropLength, PropMax), GUIData.MinPropLength) --Check if the desired prop lenght fits in the case and doesn't exceed the gun max
-		
+
 		GUIData.MinProjLength = Data.Caliber * 1.5
 		GUIData.MaxProjLength = math.max(GUIData.MaxTotalLength - CurLength + PlayerData.ProjLength, GUIData.MinProjLength ) --Check if the desired proj lenght fits in the case
-		
+
 		--This is to check the current ratio between elements if i need to clamp it
-		local Ratio 			= math.min( (GUIData.MaxTotalLength - Data.Tracer )/(PlayerData.ProjLength + math.min(PlayerData.PropLength,PropMax)) , 1 ) 
-		
+		local Ratio 			= math.min( (GUIData.MaxTotalLength - Data.Tracer )/(PlayerData.ProjLength + math.min(PlayerData.PropLength,PropMax)) , 1 )
+
 		Data.ProjLength 		= math.Clamp( PlayerData.ProjLength * Ratio, GUIData.MinProjLength, GUIData.MaxProjLength )
 		Data.PropLength 		= math.Clamp( PlayerData.PropLength * Ratio, GUIData.MinPropLength, GUIData.MaxPropLength )
-		
+
 		Data.PropMass 		= Data.FrArea * (Data.PropLength * ACF.PDensity/1000) --Volume of the case as a cylinder * Powder density converted from g to kg
 		GUIData.ProjVolume 	= Data.FrArea * Data.ProjLength
 		Data.RoundVolume 	= Data.FrArea * (Data.ProjLength + Data.PropLength )
-		
+
 		return PlayerData, Data, ServerData, GUIData
 	end
 
 	function ACF_RoundShellCapacity( Momentum, FrArea, Caliber, ProjLength )
 
-		local MinWall 	= 0.2+((Momentum/FrArea)^0.7)/50 --The minimal shell wall thickness required to survive firing at the current energy level	
+		local MinWall 	= 0.2+((Momentum/FrArea)^0.7)/50 --The minimal shell wall thickness required to survive firing at the current energy level
 		local Length 	= math.max(ProjLength-MinWall,0)
 		local Radius 	= math.max((Caliber/2)-MinWall,0)
 		local Volume 	= PI * Radius^2 * Length
@@ -94,13 +94,13 @@ do
 	end
 
 	function ACF_RicoProbability( Rico, Speed )
-		
+
 		local RicoAngle = math.Round(math.min(Rico -  (( (Speed-800) / 39.37 ) /5),89))
-			
+
 	    local None = math.max(RicoAngle-10,1) --0% chance to ricochet
 		local Mean = math.max(RicoAngle,1)   --50% chance to ricochet
 		local Max = math.max(RicoAngle+10,1)  --100% chance to ricochet
-		
+
 		return None, Mean, Max
 
 	end
@@ -113,7 +113,7 @@ do
 		local D0 = (DragCoef * V0^2 / ACF.DragDiv)		-- initial drag
 		local K1 = ( D0 / (V0^(3/2)) )^-1				-- estimated drag coefficient
 
-		local Vel = (  math.max( math.sqrt(V0) - ((Range*39.37) / (2 * K1)), 0)   )^2 
+		local Vel = (  math.max( math.sqrt(V0) - ((Range*39.37) / (2 * K1)), 0)   )^2
 		local Pen = (ACF_Kinetic( Vel, ProjMass, LimitVel ).Penetration/PenArea)*ACF.KEtoRHA
 
 		return (Vel*0.0254), Pen
@@ -123,32 +123,32 @@ do
 
 		local function VerifyScale( Scale )
 			if not isvector( Scale ) then return end
-	
+
 			Scale.x = math.Clamp(Scale.x,10,1000)
 			Scale.y = math.Clamp(Scale.y,10,1000)
 			Scale.z = math.Clamp(Scale.z,10,1000)
-	
+
 			return Scale
 		end
-	
+
 		local function VerifyVector( vecstring )
-	
+
 			if isvector( vecstring ) then return vecstring end
 			if not isstring(vecstring) then return end
-	
-			
-	
-			local VecTbl = string.Explode( ":", vecstring ) 
+
+
+
+			local VecTbl = string.Explode( ":", vecstring )
 			local Scale = Vector(VecTbl[1],VecTbl[2],VecTbl[3])
-	
+
 			return Scale
 		end
-	
+
 		local function CreateRealScale( Scale )
-		
+
 			Scale = VerifyVector( Scale )
 			Scale = VerifyScale( Scale )
-	
+
 			return Scale
 		end
 
@@ -162,7 +162,7 @@ do
 			local GunId 	  = acfmenupanel.AmmoData.Data.id
 			local AmmoGunData = ACF.Weapons.Guns[GunId]
 			local GunClass    = AmmoGunData.gunclass
-			local ClassData   = ACF.Classes.GunClass[GunClass] 
+			local ClassData   = ACF.Classes.GunClass[GunClass]
 
 			local ProjLenght = Data.ProjLength
 			local PropLenght = Data.PropLength
@@ -180,7 +180,7 @@ do
 
 			local Id 		 = acfmenupanel.AmmoData.Id
 			local Dimensions = vector_origin
-			
+
 			if not ACE_CheckAmmo( Id ) then
 				Dimensions = CreateRealScale(Id)
 			else
@@ -189,8 +189,8 @@ do
 			end
 
 			local cap1 = Floor(Dimensions.x/shellLength) * Floor(Dimensions.y/width) * Floor(Dimensions.z/width)
-			local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width) 
-			local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width) 
+			local cap2 = Floor(Dimensions.y/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.z/width)
+			local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width)
 
 			--Split the shell in 2, leave the other piece next to it.
 			local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
@@ -203,7 +203,7 @@ do
 			local TwoPiece = false
 
 			--Why would you need the 2 piece for rounds below 50mm? Unless you want legos there....
-			if Data.Caliber >= 5 and ClassData.type ~= "missile" then 
+			if Data.Caliber >= 5 and ClassData.type ~= "missile" then
 				if FpieceCap > Cap and Data.TwoPiece > 0 then  --only if the 2 piece system is allowed to be used
 					Cap 	 = FpieceCap
 					TwoPiece = true
@@ -221,10 +221,10 @@ do
 			local Cap, RoFNerf, TwoPiece = ACE_AmmoCapacity( Data )
 
 			local plur = ""..Cap..(Cap > 1 and ' rounds' or ' round')
-			
+
 			local bonustxt = "Storage: "..plur
-			
-			if TwoPiece then	
+
+			if TwoPiece then
 				bonustxt = bonustxt..". Uses 2 piece ammo. -"..RoFNerf.."% RoF"
 			end
 			acfmenupanel:CPanelText("BonusDisplay", bonustxt )
@@ -243,7 +243,7 @@ do
 	    for i = 1, 4 do
 
 	    	Range.Distance[i] = (2^(i-1))*100
-	    	Range.Vel[i], Range.Pen[i] = ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenArea, LimitVel, Range.Distance[i] ) 
+	    	Range.Vel[i], Range.Pen[i] = ACF_PenRanging( MuzzleVel, DragCoef, ProjMass, PenArea, LimitVel, Range.Distance[i] )
 
 	    	final_text[i] = "At "..Range.Distance[i].."m pen: "..Floor(Range.Pen[i]).."mm @ "..Floor(Range.Vel[i]).."m\\s\n"
 
@@ -251,17 +251,17 @@ do
 
 	    local ftext = table.concat(final_text)
 
-	    acfmenupanel:CPanelText("PenetrationDisplay", ftext.."\nThe range data is an approximation and may not be entirely accurate.\n") 
+	    acfmenupanel:CPanelText("PenetrationDisplay", ftext.."\nThe range data is an approximation and may not be entirely accurate.\n")
 
 	end
 
 	function ACE_AmmoStats(RoundLenght, MaxTotalLenght, MuzzleVel, MaxPen)
 	   acfmenupanel:CPanelText("BoldAmmoStats", "Round information: ", "DermaDefaultBold")
 	   acfmenupanel:CPanelText("AmmoStats", "Round Length: "..RoundLenght.."/"..MaxTotalLenght.." cms ("..math.Round(RoundLenght/2.54, 2).." inches)\nMuzzle Velocity: "..MuzzleVel.." m\\s\nMax penetration: "..MaxPen.." mm RHA") --Total round length (Name, Desc)
-	   
+
 	end
 
-	do 
+	do
 
 		function ACE_UpperCommonDataDisplay( Data, PlayerData )
 
@@ -301,7 +301,7 @@ do
 			else
 
 			    acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
-			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip ) 
+			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip )
 
 			    local None, Mean, Max = ACF_RicoProbability( Data.Ricochet, Data.MuzzleVel*ACF.VelScale )
 			    acfmenupanel:CPanelText("RicoDisplay", '0% chance of ricochet at: '..None..'°\n50% chance of ricochet at: '..Mean..'°\n100% chance of ricochet at: '..Max..'°')
@@ -320,14 +320,14 @@ do
 			    acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip )
 			else
 		    	acfmenupanel:AmmoCheckbox("Tracer", "Enable Tracer: "..(Floor(Data.Tracer*5)/10).."cm\n", "", Trtip )           --Tracer checkbox (Name, Title, Desc)
-		    	acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip ) 	
+		    	acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", TPtip )
 			end
 		end
 	end
 
 	--=====================[ DEPRECATED FUNCTION ]=====================--
 
-	--This function is not used by ACE anymore, but i´ll keep it just for those acf2 custom ammos dont break	
+	--This function is not used by ACE anymore, but i´ll keep it just for those acf2 custom ammos dont break
 	function ACF_CalcCrateStats( CrateVol, RoundVol )
 		return 0, 0, 0
 	end

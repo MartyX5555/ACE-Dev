@@ -62,9 +62,9 @@ end
 local function isLinkableACFEnt(ent)
 
 	if not validPhysics(ent) then return false end
-	
+
 	local entClass = ent:GetClass()
-	
+
 	return ACF_E2_LinkTables[entClass] ~= nil
 
 end
@@ -112,7 +112,7 @@ end
 e2function void entity:acfActive( number on )
 	if not (isEngine(this) or isAmmo(this) or isFuel(this)) then return end
 	if not isOwner(self, this) then return end
-	this:TriggerInput("Active", on)	
+	this:TriggerInput("Active", on)
 end
 
 __e2setcost( 5 )
@@ -127,7 +127,7 @@ __e2setcost( 1 )
 
 
 
-ACF_E2_LinkTables = ACF_E2_LinkTables or 
+ACF_E2_LinkTables = ACF_E2_LinkTables or
 { -- link resources within each ent type.  should point to an ent: true if adding link.Ent, false to add link itself
 	acf_engine 		= {GearLink = true, FuelLink = false},
 	acf_gearbox		= {WheelLink = true, Master = false},
@@ -138,27 +138,27 @@ ACF_E2_LinkTables = ACF_E2_LinkTables or
 
 
 local function getLinks(ent, enttype)
-	
+
 	local ret = {}
 	-- find the link resources available for this ent type
 	for entry, mode in pairs(ACF_E2_LinkTables[enttype]) do
 		if not ent[entry] then error("Couldn't find link resource " .. entry .. " for entity " .. tostring(ent)) return end
-		
+
 		-- find all the links inside the resources
 		for _, link in pairs(ent[entry]) do
 			ret[#ret+1] = mode and link.Ent or link
 		end
 	end
-	
+
 	return ret
 end
 
 
 local function searchForGearboxLinks(ent)
 	local boxes = ents.FindByClass("acf_gearbox")
-	
+
 	local ret = {}
-	
+
 	for _, box in pairs(boxes) do
 		if IsValid(box) then
 			for _, link in pairs(box.WheelLink) do
@@ -169,7 +169,7 @@ local function searchForGearboxLinks(ent)
 			end
 		end
 	end
-	
+
 	return ret
 end
 
@@ -177,17 +177,17 @@ end
 __e2setcost( 20 )
 
 e2function array entity:acfLinks()
-	
+
 	if not IsValid(this) then return {} end
-	
+
 	local enttype = this:GetClass()
-	
+
 	if not ACF_E2_LinkTables[enttype] then
 		return searchForGearboxLinks(this)
 	end
-	
+
 	return getLinks(this, enttype)
-	
+
 end
 
 
@@ -231,7 +231,7 @@ e2function number entity:acfLinkTo(entity target, number notify)
 		end
 		return 0
 	end
-    
+
     local success, msg = this:Link(target)
     if notify > 0 then
         ACF_SendNotify(self.player, success, msg)
@@ -247,7 +247,7 @@ e2function number entity:acfUnlinkFrom(entity target, number notify)
 		end
 		return 0
 	end
-    
+
     local success, msg = this:Unlink(target)
     if notify > 0 then
         ACF_SendNotify(self.player, success, msg)
@@ -373,13 +373,13 @@ end
 e2function number entity:acfInPowerband()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	
+
 	pbmin = this.PeakMinRPM
 	pbmax = this.PeakMaxRPM
 
 	if (this.FlyRPM < pbmin) then return 0 end
 	if (this.FlyRPM > pbmax) then return 0 end
-	
+
 	return 1
 end
 
@@ -675,7 +675,7 @@ end
 e2function void entity:acfFire( number fire )
 	if not isGun(this) then return end
 	if not isOwner(self, this) then return end
-	this:TriggerInput("Fire", fire)	
+	this:TriggerInput("Fire", fire)
 end
 
 -- Causes an ACF weapon to unload
@@ -904,7 +904,7 @@ e2function number ranger:acfEffectiveArmor()
 	return math.Round(this.Entity.ACF.Armour/math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))),1)
 end
 
--- Returns the material of an entity. 
+-- Returns the material of an entity.
 e2function string entity:acfPropMaterial()
 	if not validPhysics(this) then return "RHA" end
 	if restrictInfo(self, this) then return "RHA" end
@@ -980,13 +980,13 @@ e2function number entity:acfFuel()
 	elseif isEngine(this) then
 		if restrictInfo(self, this) then return 0 end
 		if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-		
+
 		local liters = 0
 		for _,tank in pairs(this.FuelLink) do
 			if not validPhysics(tank) then continue end
 			if tank.Active then liters = liters + tank.Fuel end
 		end
-		
+
 		return math.Round(liters, 3)
 	end
 	return 0
@@ -1000,18 +1000,18 @@ e2function number entity:acfFuelLevel()
 	elseif isEngine(this) then
 		if restrictInfo(self, this) then return 0 end
 		if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-		
+
 		local liters = 0
 		local capacity = 0
 		for _,tank in pairs(this.FuelLink) do
 			if not validPhysics(tank) then continue end
-			if tank.Active then 
+			if tank.Active then
 				capacity = capacity + tank.Capacity
 				liters = liters + tank.Fuel
 			end
 		end
 		if not (capacity > 0) then return 0 end
-		
+
 		return math.Round(liters / capacity, 3)
 	end
 	return 0
@@ -1022,14 +1022,14 @@ e2function number entity:acfFuelUse()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-	
+
 	local Tank = nil
 	for _,fueltank in pairs(this.FuelLink) do
 		if not validPhysics(fueltank) then continue end
 		if fueltank.Fuel > 0 and fueltank.Active then Tank = fueltank break end
 	end
 	if not Tank then return 0 end
-	
+
 	local Consumption
 	if this.FuelType == "Electric" then
 		Consumption = 60 * (this.Torque * this.FlyRPM / 9548.8) * this.FuelUse
@@ -1045,14 +1045,14 @@ e2function number entity:acfPeakFuelUse()
 	if not isEngine(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not #(this.FuelLink) then return 0 end --if no tanks, return 0
-	
+
 	local fuel = "Petrol"
 	local Tank = nil
 	for _,fueltank in pairs(this.FuelLink) do
 		if fueltank.Fuel > 0 and fueltank.Active then Tank = fueltank break end
 	end
 	if tank then fuel = tank.Fuel end
-	
+
 	local Consumption
 	if this.FuelType == "Electric" then
 		Consumption = 60 * (this.PeakTorque * this.LimitRPM / (4*9548.8)) * this.FuelUse

@@ -1,17 +1,17 @@
 
-   
- /*--------------------------------------------------------- 
-    Initializes the effect. The data is a table of data  
-    which was passed from the server. 
- ---------------------------------------------------------*/ 
-function EFFECT:Init( data ) 
-	
+
+ /*---------------------------------------------------------
+    Initializes the effect. The data is a table of data
+    which was passed from the server.
+ ---------------------------------------------------------*/
+function EFFECT:Init( data )
+
 	self.Origin = data:GetOrigin()
 	self.DirVec = data:GetNormal()
 	self.Radius = math.max(data:GetRadius()/50,1)
 	self.Emitter = ParticleEmitter( self.Origin )
 	self.ParticleMul = tonumber(LocalPlayer():GetInfo("acf_cl_particlemul")) or 1
-	
+
 	for i=0, 3*self.Radius*self.ParticleMul do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin )
@@ -24,16 +24,16 @@ function EFFECT:Init( data )
 			Smoke:SetStartSize( 2*self.Radius )
 			Smoke:SetEndSize( 15*self.Radius )
 			Smoke:SetRoll( math.Rand(150, 360) )
-			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )			
-			Smoke:SetAirResistance( 300 ) 			 
-			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -450 ) ) 			
+			Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Smoke:SetAirResistance( 300 )
+			Smoke:SetGravity( Vector( math.random(-5,5)*self.Radius, math.random(-5,5)*self.Radius, -450 ) )
 			Smoke:SetColor( 160,160,160)
 		end
 
 	end
-	
+
 	for i=0, 4*self.Radius*self.ParticleMul do
-	
+
 		local Debris = self.Emitter:Add( "effects/fleck_tile"..math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( (self.DirVec + VectorRand()/10) * math.random(250*self.Radius,450*self.Radius) )
@@ -44,15 +44,15 @@ function EFFECT:Init( data )
 			Debris:SetStartSize( 0.3*self.Radius )
 			Debris:SetEndSize( 0.3*self.Radius )
 			Debris:SetRoll( math.Rand(0, 360) )
-			Debris:SetRollDelta( math.Rand(-3, 3) )			
-			Debris:SetAirResistance( 200 ) 			 
-			Debris:SetGravity( Vector( 0, 0, -650 ) ) 			
+			Debris:SetRollDelta( math.Rand(-3, 3) )
+			Debris:SetAirResistance( 200 )
+			Debris:SetGravity( Vector( 0, 0, -650 ) )
 			Debris:SetColor( 120,120,120 )
 		end
 	end
-		
+
 	for i=0, 5*self.Radius*self.ParticleMul do
-	
+
 		local Embers = self.Emitter:Add( "particles/flamelet"..math.random(1,5), self.Origin )
 		if (Embers) then
 			Embers:SetVelocity ( (self.DirVec + VectorRand()/10) * math.random(50*self.Radius,300*self.Radius) )
@@ -65,26 +65,26 @@ function EFFECT:Init( data )
 			Embers:SetStartLength( 5*self.Radius )
 			Embers:SetEndLength ( 0*self.Radius )
 			Embers:SetRoll( math.Rand(0, 360) )
-			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )	
-			Embers:SetAirResistance( 20 ) 			 
-			Embers:SetGravity( Vector( 0, 0, -650 ) ) 			
+			Embers:SetRollDelta( math.Rand(-0.2, 0.2) )
+			Embers:SetAirResistance( 20 )
+			Embers:SetGravity( Vector( 0, 0, -650 ) )
 			Embers:SetColor( 200,200,200 )
 		end
-	end	
-	
-	local Flash = EffectData()				
+	end
+
+	local Flash = EffectData()
 		Flash:SetOrigin( self.Origin )
 		Flash:SetScale( self.Radius )
 		Flash:SetNormal( self.DirVec )
 	util.Effect( "ACF_Scaled_Explosion", Flash )
-	
- end   
-   
+
+ end
+
 /*---------------------------------------------------------
    THINK
 ---------------------------------------------------------*/
 function EFFECT:Think( )
-		
+
 end
 
 /*---------------------------------------------------------
@@ -93,4 +93,4 @@ end
 function EFFECT:Render()
 end
 
- 
+

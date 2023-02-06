@@ -13,9 +13,9 @@ net.Receive("ACF_refreshfriends", function(len)
 	--Msg("\ncl refreshfriends\n")
 	local perms = net.ReadTable()
 	local checks = getPanelChecks()
-	
+
 	--PrintTable(perms)
-	
+
 	for k, check in pairs(checks) do
 		if perms[check.steamid] then
 			check:SetChecked(true)
@@ -23,7 +23,7 @@ net.Receive("ACF_refreshfriends", function(len)
 			check:SetChecked(false)
 		end
 	end
-	
+
 end)
 
 
@@ -31,7 +31,7 @@ end)
 net.Receive("ACF_refreshfeedback", function(len)
 	local success = net.ReadBit()
 	local str, notify
-	
+
 	if success then
 		str = "Successfully updated your ACE damage permissions!"
 		notify = "NOTIFY_GENERIC"
@@ -39,21 +39,21 @@ net.Receive("ACF_refreshfeedback", function(len)
 		str = "Failed to update your ACE damage permissions."
 		notify = "NOTIFY_ERROR"
 	end
-	
+
 	GAMEMODE:AddNotify(str, notify, 7)
-	
+
 end)
 
 
 
 function this.ApplyPermissions(checks)
 	perms = {}
-	
+
 	for k, check in pairs(checks) do
 		if not check.steamid then Error("Encountered player checkbox without an attached SteamID!") end
 		perms[check.steamid] = check:GetChecked()
 	end
-	
+
 	net.Start("ACF_dmgfriends")
 		net.WriteTable(perms)
 	net.SendToServer()
@@ -67,7 +67,7 @@ function this.ClientPanel(Panel)
 
 	if !this.ClientCPanel then this.ClientCPanel = Panel end
 	Panel:SetName("ACF Damage Permissions")
-	
+
 	local txt = Panel:Help("ACF Damage Permission Panel")
 	txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 	txt:SetFont("DermaDefaultBold")
@@ -77,12 +77,12 @@ function this.ClientPanel(Panel)
 	local txt = Panel:Help("Allow or deny ACF damage to your props using this panel.\n\nThese preferences only work during the Build and Strict Build modes.")
 	txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 	--txt:SetAutoStretchVertical(false)
-	
+
 	Panel.playerChecks = {}
 	local checks = Panel.playerChecks
-	
+
 	getPanelChecks = function() return checks end
-	
+
 	local Players = player.GetAll()
 	for _, tar in pairs(Players) do
 		if(IsValid(tar)) then
@@ -94,7 +94,7 @@ function this.ClientPanel(Panel)
 	end
 	local button = Panel:Button("Give Damage Permission")
 	button.DoClick = function() this.ApplyPermissions(Panel.playerChecks) end
-	
+
 	net.Start("ACF_refreshfriends")
 		net.WriteBit(true)
 	net.SendToServer(ply)

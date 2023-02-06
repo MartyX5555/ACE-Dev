@@ -33,7 +33,7 @@ do
 	do
 
 		local function ApplyOverride( ply, seat, data )
-			
+
 			timer.Simple(0.1, function()
 				if not IsValid(seat) then return end
 
@@ -59,7 +59,7 @@ do
 	do
 
 		function TOOL:LeftClick( trace )
-			
+
 			if CLIENT then return true end
 
 			if not IsValid(trace.Entity) then return false end
@@ -117,9 +117,9 @@ do
 		net.Receive("ACE_CamOverride", ReceiveBoolFromServer)
 
 		function TOOL:DrawHUD()
-		    
+
 		    if not CLIENT then return end
-		    
+
 		    local seat = self:GetOwner():GetEyeTrace().Entity
 
 			if not IsValid(seat) then return end
@@ -130,7 +130,7 @@ do
 		    local pos = seat:WorldSpaceCenter()
 
 		    AddWorldTip( nil, text, nil, pos, nil )
-		    
+
 		end
 
 		function TOOL.BuildCPanel( panel )

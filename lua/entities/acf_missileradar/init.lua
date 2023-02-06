@@ -21,32 +21,32 @@ local RadarWireDescs = {
 }
 
 function ENT:Initialize()
-    
+
     self.BaseClass.Initialize(self)
-    
+
     self.Inputs                 = WireLib.CreateInputs( self, { "Active" } )
     self.Outputs                = WireLib.CreateOutputs( self, {"Detected ("..RadarWireDescs["Detected"]..")", "ClosestDistance", "Entities ("..RadarWireDescs["Entities"]..") [ARRAY]", "Position ("..RadarWireDescs["Position"]..") [ARRAY]", "Velocity ("..RadarWireDescs["Velocity"]..") [ARRAY]"} )
-    
+
     self.ThinkDelay             = 0.1
     self.StatusUpdateDelay      = 0.5
     self.LastStatusUpdate       = CurTime()
-    
+
     self.NextLegalCheck         = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
     self.Legal                  = true
     self.LegalIssues            = ""
-    
+
     self.Active                 = false
-    
+
     self:CreateRadar((self.ACFName or "Missile Radar"), (self.ConeDegs or 180))
-    
+
     self:EnableClientInfo(true)
-    
+
     self:ConfigureForClass()
 
     self:GetOverlayText()
-    
+
     self:SetActive(false)
-    
+
 end
 
 
@@ -55,9 +55,9 @@ end
 function ENT:ConfigureForClass()
 
     local behaviour = ACFM.RadarBehaviour[self.Class]
-    
+
     if not behaviour then return end
-    
+
     self.GetDetectedEnts = behaviour.GetDetectedEnts
 
 end
@@ -77,7 +77,7 @@ end
 function ENT:SetActive(active)
 
     self.Active = active
-    
+
     if active then
         local sequence = self:LookupSequence("active") or 0
         self:ResetSequence(sequence)
@@ -98,40 +98,40 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
     if not Owner:CheckLimit("_acf_missileradar") then return false end
 
     local radar = ACF.Weapons.Radars[Id]
-    
+
     if not radar then return false end
-    
+
     local Radar = ents.Create("acf_missileradar")
     if not Radar:IsValid() then return false end
     Radar:SetAngles(Angle)
     Radar:SetPos(Pos)
-    
+
     Radar.Model     = radar.model
     Radar.Weight    = radar.weight
     Radar.ACFName   = radar.name
-    Radar.ConeDegs  = radar.viewcone        
-    Radar.Range     = radar.range           
+    Radar.ConeDegs  = radar.viewcone
+    Radar.Range     = radar.range
     Radar.Id        = Id
     Radar.Class     = radar.class
-    
+
     Radar:Spawn()
     Radar:SetPlayer(Owner)
-    
+
     if CPPI then
         Radar:CPPISetOwner(Owner)
     end
-    
+
     Radar.Owner = Owner
-    
+
     Radar:SetModelEasy(radar.model)
-    
+
     Owner:AddCount( "_acf_missileradar", Radar )
     Owner:AddCleanup( "acfmenu", Radar )
-    
+
     Radar:SetNWString( "WireName", Radar.ACFName )
 
     return Radar
-    
+
 end
 list.Set( "ACFCvars", "acf_missileradar", {"id"} )
 duplicator.RegisterEntityClass("acf_missileradar", MakeACF_MissileRadar, "Pos", "Angle", "Id" )
@@ -140,12 +140,12 @@ duplicator.RegisterEntityClass("acf_missileradar", MakeACF_MissileRadar, "Pos", 
 
 
 function ENT:CreateRadar(ACFName, ConeDegs)
-    
+
     self.ConeDegs = ConeDegs
     self.ACFName = ACFName
-    
+
     self:RefreshClientInfo()
-    
+
 end
 
 
@@ -166,35 +166,35 @@ end
 function ENT:SetModelEasy(mdl)
 
     local Rack = self
-    
-    Rack:SetModel( mdl )    
+
+    Rack:SetModel( mdl )
     Rack.Model = mdl
-    
-    Rack:PhysicsInit( SOLID_VPHYSICS )          
-    Rack:SetMoveType( MOVETYPE_VPHYSICS )       
+
+    Rack:PhysicsInit( SOLID_VPHYSICS )
+    Rack:SetMoveType( MOVETYPE_VPHYSICS )
     Rack:SetSolid( SOLID_VPHYSICS )
-    
-    local phys = Rack:GetPhysicsObject()    
-    if (phys:IsValid()) then 
+
+    local phys = Rack:GetPhysicsObject()
+    if (phys:IsValid()) then
         phys:SetMass(Rack.Weight)
-    end     
-    
+    end
+
 end
 
 
 
 
 function ENT:Think()
-    
+
     if self.Inputs.Active.Value ~= 0 and self.Active and self.Legal then
         self:ScanForMissiles()
     else
         self:ClearOutputs()
     end
-    
+
     local curTime = CurTime()
     self:NextThink(curTime + self.ThinkDelay)
-    
+
     if ACF.CurTime > self.NextLegalCheck then
 
         self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight,2), nil, true, true)
@@ -204,7 +204,7 @@ function ENT:Think()
             self.Active = false
             self:SetActive(false)
         end
-        
+
     end
 
     if (self.LastStatusUpdate + self.StatusUpdateDelay < curTime) then
@@ -215,7 +215,7 @@ function ENT:Think()
     self:GetOverlayText()
 
     return true
-        
+
 end
 
 
@@ -237,36 +237,36 @@ end
 function ENT:ScanForMissiles()
 
     local missiles = self:GetDetectedEnts() or {}
-    
+
     local entArray = {}
     local posArray = {}
     local velArray = {}
-    
+
     local i = 0
-    
+
     local closest
     local closestSqr = math.huge
-    
+
     local thisPos = self:GetPos()
-    
+
     for k, missile in pairs(missiles) do
-    
+
         i = i + 1
-    
+
         entArray[i] = missile
         posArray[i] = missile.CurPos
         velArray[i] = missile.LastVel
-        
-        local curSqr = thisPos:DistToSqr(missile.CurPos) 
+
+        local curSqr = thisPos:DistToSqr(missile.CurPos)
 
         if curSqr < closestSqr then
             closest = missile.CurPos
             closestSqr = curSqr
         end
     end
-    
+
     if not closest then closestSqr = 0 end
-    
+
     WireLib.TriggerOutput( self, "Detected", i )
     WireLib.TriggerOutput( self, "ClosestDistance", math.sqrt(closestSqr) )
     WireLib.TriggerOutput( self, "Entities", entArray )
@@ -276,9 +276,9 @@ function ENT:ScanForMissiles()
     if i > (self.LastMissileCount or 0) then
         self:EmitSound( self.Sound or ACFM.DefaultRadarSound, 500, 100 )
     end
-    
+
     self.LastMissileCount = i
-    
+
 end
 
 function ENT:ClearOutputs()
@@ -291,7 +291,7 @@ function ENT:ClearOutputs()
         WireLib.TriggerOutput( self, "Position", {} )
         WireLib.TriggerOutput( self, "ClosestDistance", 0 )
     end
-    
+
     if #self.Outputs.Velocity.Value > 0 then
         WireLib.TriggerOutput( self, "Velocity", {} )
     end
@@ -301,21 +301,21 @@ end
 function ENT:EnableClientInfo(bool)
     self.ClientInfo = bool
     self:SetNWBool("VisInfo", bool)
-    
+
     if bool then
         self:RefreshClientInfo()
     end
 end
 
 --New Overlay text that is shown when you are looking at the radar
-function ENT:GetOverlayText()   
-    
+function ENT:GetOverlayText()
+
     local cone      = self.ConeDegs
     local range     = self.Range
     local status    = self.Status or "Off"
     local detected  = self.Outputs.Detected.Value
-    
-    
+
+
     local ret = {}
 
     local txt = "Status: "..status

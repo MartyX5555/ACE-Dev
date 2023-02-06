@@ -92,9 +92,9 @@ do
 	function SWEP:PrimaryAttack()
 
 		self:SetNextPrimaryFire( CurTime() + 0.05 )
-	
+
 		local userid = self:GetOwner()
-	
+
 		local trace = {}
 		trace.start 	= userid:GetShootPos()
 		trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
@@ -102,117 +102,117 @@ do
 		trace.mins 		= vector_origin
 		trace.maxs 		= trace.mins
 		local tr = util.TraceHull( trace )
-	
+
 		if ( tr.HitWorld ) then return end
 		if CLIENT then return end
-	
+
 		local ent = tr.Entity
-	
+
 		if IsValid(ent) and not BlackListEnts[ent:GetClass()] then
-	
+
 			if ent:IsPlayer() or ent:IsNPC() then
-	
+
 				local PlayerHealth 		= ent:Health() --get the health
 				local PlayerMaxHealth 	= ent:GetMaxHealth() --and max health too
 				local PlayerArmour 		= ent:IsPlayer() and ent:Armor() or 0
 				local PlayerMaxArmour 	= 100
-	
+
 				if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
-	
+
 				PlayerHealth = PlayerHealth + 3 --otherwise add 1 HP
 				ent:SetHealth( PlayerHealth ) --and boost the player's HP to that.
-	
+
 				self:SetNWFloat( "HP", PlayerHealth ) --Output to the HUD bar
 				self:SetNWFloat( "Armour", PlayerArmour )
 				self:SetNWFloat( "MaxHP", PlayerMaxHealth )
 				self:SetNWFloat( "MaxArmour", PlayerMaxArmour )
-	
+
 				local AngPos = userid:GetAttachment( 4 )
 				local effect = EffectData() --then make some pretty effects :D ("Fixed that up a bit so it looks like it's actually emanating from the healing player, well mostly" Kaf)
 				effect:SetOrigin( AngPos.Pos + userid:GetAimVector() * 10 )
 				effect:SetNormal( userid:GetAimVector() )
 				effect:SetEntity( self )
 				util.Effect( "thruster_ring", effect, true, true ) --("The 2 booleans control clientside override, by default it doesn't display it since it'll lag a bit behind inputs in MP, same for sounds" Kaf)
-	
+
 				ent:EmitSound( "items/medshot4.wav" ) --and play a sound.
 			else
-	
+
 				if CPPI and not ent:CPPICanTool( self:GetOwner(), "torch" ) then return false end
-	
+
 				if ACF_Check( ent ) and ent.ACF.Health < ent.ACF.MaxHealth then
-	
+
 					ent.ACF.Health = math.min(ent.ACF.Health + (600 / ent.ACF.MaxArmour), ent.ACF.MaxHealth)
 					ent.ACF.Armour = math.min(ent.ACF.MaxArmour * (ent.ACF.Health / ent.ACF.MaxHealth), ent.ACF.MaxArmour)
 					ent:EmitSound( "ambient/energy/NewSpark0" .. tostring( math.random( 3, 5 ) ) .. ".wav", 75, 100, 1, CHAN_WEAPON )
 					TeslaSpark(tr.HitPos , 1 )
-	
+
 					ACF_UpdateVisualHealth(ent)
-	
+
 					self:SetNWFloat( "HP", ent.ACF.Health )
 					self:SetNWFloat( "Armour", ent.ACF.Armour )
 					self:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 					self:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-	
+
 				end
 			end
 		else
-	
+
 			self:SetNWFloat( "HP", 0 )
 			self:SetNWFloat( "Armour", 0 )
 			self:SetNWFloat( "MaxHP", 0 )
 			self:SetNWFloat( "MaxArmour", 0 )
 		end
-	
+
 	end
-	
+
 	function SWEP:SecondaryAttack()
-	
+
 		self:SetNextPrimaryFire( CurTime() + 0.05 )
-	
+
 		local userid = self:GetOwner()
-	
+
 		local trace = {}
-	
+
 		trace.start 	= userid:GetShootPos()
 		trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
 		trace.filter 	= userid
 		trace.mins 		= vector_origin
 		trace.maxs 		= trace.mins
-	
+
 		local tr = util.TraceHull( trace )
-	
+
 		if ( tr.HitWorld ) then return end
 		if CLIENT then return end
-	
+
 		local ent = tr.Entity
-	
+
 		if not IsValid(ent) then return end
-	
+
 		if ACF_Check ( ent ) then
-	
+
 			self:SetNWFloat( "HP", ent.ACF.Health )
 			self:SetNWFloat( "Armour", ent.ACF.Armour )
 			self:SetNWFloat( "MaxHP", ent.ACF.MaxHealth )
 			self:SetNWFloat( "MaxArmour", ent.ACF.MaxArmour )
-	
+
 			local HitRes = {}
 			local Energy = {}
-	
+
 			if ent:IsPlayer() or ent:IsNPC() or ent:IsNextBot() then
-	
+
 				Energy = { Kinetic = 0.2,Momentum = 0,Penetration = 0.2 }
 				HitRes = ACF_Damage ( ent, Energy, 2, 0, self:GetOwner(), _, self, "Torch" )
 			else
-	
+
 				if CPPI and not ent:CPPICanTool( self:GetOwner(), "torch" ) then return false end
-	
+
 				Energy = { Kinetic = 500, Momentum = 0, Penetration = 500 }
 				HitRes = ACF_Damage ( ent, Energy, 2, 0, self:GetOwner(), _, self, "Torch" )
-	
+
 			end
-	
+
 			if HitRes.Kill and not ent:IsPlayer() then
-	
+
 				ACF_APKill( ent, VectorRand() , 0)
 				ent:EmitSound("ambient/energy/NewSpark0" .. tostring(math.random(3, 5)) .. ".wav", 75, 100, 1, CHAN_AUTO)
 			else
@@ -222,7 +222,7 @@ do
 				effectdata:SetScale( 1.0 )
 				effectdata:SetStart( userid:GetShootPos() )
 				effectdata:SetOrigin( tr.HitPos )
-	
+
 				util.Effect( "Sparks", effectdata , true , true )
 				ent:EmitSound("weapons/physcannon/superphys_small_zap" .. tostring(math.random(1, 4)) .. ".wav", 75, 100, 1, CHAN_WEAPON)
 			end
@@ -233,9 +233,9 @@ do
 			self:SetNWFloat( "MaxArmour", 0 )
 		end
 	end
-	
+
 	function SWEP:Reload()
-	
+
 	end
 
 end

@@ -19,18 +19,18 @@ this.desc = "This fuse triggers upon direct contact against solid surfaces."
 this.Primer = 0
 
 -- Configuration information for things like acfmenu.
-this.Configurable = 
+this.Configurable =
 {
     {
         Name        = "Primer",                         -- name of the variable to change
         DisplayName = "Arming Delay (in seconds)",      -- name displayed to the user
         CommandName = "AD",                             -- shorthand name used in console commands
-        
+
         Type        = "number",                         -- lua type of the configurable variable
         Min         = 0,                                -- number specific: minimum value
         MinConfig   = "armdelay",                       -- round specific override for minimum value
         Max         = 10                                -- number specific: maximum value
-        
+
         -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
     }
 }
@@ -67,7 +67,7 @@ function this:PerformDetonation( missile, bdata, phys, pos )
     if bdata.Filter then bdata.Filter[#bdata.Filter+1] = missile else bdata.Filter = {missile} end
 
     bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
-    bdata.ProjMass  = bdata.ProjMass or bdata.RoundMass 
+    bdata.ProjMass  = bdata.ProjMass or bdata.RoundMass
 
     bdata.HandlesOwnIteration = nil
 

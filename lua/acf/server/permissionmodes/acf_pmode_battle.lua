@@ -37,7 +37,7 @@ local DefaultPermission = false
 //*/
 local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
-	
+
 	if szs then
 		local entpos = ent:GetPos()
 		local attpos = attacker:GetPos()
@@ -45,14 +45,14 @@ local function modepermission(owner, attacker, ent)
 		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) then return false end
 	end
 
-	return 
+	return
 end
 
 
 
 function tellPlyAboutZones(ply, zone, oldzone)
 	if perms.DamagePermission ~= modepermission then return end
-	ply:SendLua("chat.AddText(Color(" .. (zone and "0,255,0" or "255,0,0") .. "),\"You have entered the " .. (zone and zone .. " safezone." or "battlefield!") .. "\")") 
+	ply:SendLua("chat.AddText(Color(" .. (zone and "0,255,0" or "255,0,0") .. "),\"You have entered the " .. (zone and zone .. " safezone." or "battlefield!") .. "\")")
 end
 hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAboutZones)
 
@@ -60,7 +60,7 @@ hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAbout
 
 local function DisableNoclipPressInBattle( ply, wantsNoclipOn )
 	if not (ShouldDisableNoclip and wantsNoclipOn and table.KeyFromValue(perms.Modes, perms.DamagePermission) == modename) then return end
-	
+
 	return (perms.IsInSafezone(ply:GetPos()) ~= false)
 end
 hook.Add( "PlayerNoClip", "ACF_DisableNoclipPressInBattle", DisableNoclipPressInBattle )
@@ -72,24 +72,24 @@ local function modethink()
 		--print(ply:GetPos(), perms.IsInSafezone(ply:GetPos()))
 		if not perms.IsInSafezone(ply:GetPos()) then
 --			ply:GodDisable()
-			
+
 			if ShouldDisableNoclip and ply:GetMoveType() ~= MOVETYPE_WALK then
 				ply:SetMoveType(MOVETYPE_WALK)
 			end
-			
+
 			local HP = ply:Health()
 			local AR = ply:Armor()
-			
+
 			if HP > MAX_HP then
 				ply:SetHealth(MAX_HP)
 			end
-			
+
 			if AR > MAX_Armour then
 				ply:SetArmor(MAX_Armour)
 			end
 		end
 	end
-	
+
 	return 0.25
 end
 

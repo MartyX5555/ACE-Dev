@@ -1,4 +1,4 @@
-    
+
 --define the class
 ACF_defineGunClass("UAR", {
     type            = "missile",
@@ -197,7 +197,7 @@ ACF_defineGun("S-24 ASR", { --id
     racks       = {["1xRK"] = true, ["3xRK"] = true, ["2xRK"] = true, ["6xUARRK"] = true},    -- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
     skinindex   = {HEAT = 0, HE = 1},
-    
+
     ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.0     -- minimum fuse arming delay
 } )
@@ -239,7 +239,7 @@ ACF_defineGun("Zuni ASR", { --id
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Timed", "Optical", "Radio"},
     racks       = {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["127mm4xPOD"] = true},
-    
+
     ghosttime   = 0.3,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.0
 

@@ -9,15 +9,15 @@ function ENT:Draw()
 
     local lply = LocalPlayer()
     local hideBubble = not GetConVar("ACF_EngineInfoWhileSeated"):GetBool() and IsValid(lply) and lply:InVehicle()
-    
+
     self.BaseClass.DoNormalDraw(self, false, hideBubble)
     Wire_Render(self)
-    
-    if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then 
+
+    if self.GetBeamLength and (not self.GetShowBeam or self:GetShowBeam()) then
         -- Every SENT that has GetBeamLength should draw a tracer. Some of them have the GetShowBeam boolean
-        Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false ) 
+        Wire_DrawTracerBeam( self, 1, self.GetBeamHighlight and self:GetBeamHighlight() or false )
     end
-    
+
 end
 --[[
 function ACE_EngineGUI_Create( Table )
@@ -29,7 +29,7 @@ function ACE_EngineGUI_Create( Table )
 
     do
         -- filters by fuel type
-        acfmenupanel.CData.EngineFuelBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay ) 
+        acfmenupanel.CData.EngineFuelBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
         local EngineFuelBox = acfmenupanel.CData.EngineFuelBox
 
         EngineFuelBox:SetSize(100,30)
@@ -48,7 +48,7 @@ function ACE_EngineGUI_Create( Table )
                 filtered[fueltype] = true
             end
 
-            
+
         end
 
         EngineFuelBox.OnSelect = function( value , index , data )
@@ -70,7 +70,7 @@ function ACE_EngineGUI_Create( Table )
                     filtered[cat] = true
                 end
 
-                
+
             end
         end
         acfmenupanel.CustomDisplay:AddItem( EngineFuelBox )
@@ -79,7 +79,7 @@ function ACE_EngineGUI_Create( Table )
 
     do
         -- filters by category
-        acfmenupanel.CData.EngineCatBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay ) 
+        acfmenupanel.CData.EngineCatBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
         local EngineCatBox = acfmenupanel.CData.EngineCatBox
 
         EngineCatBox:SetSize(100,30)
@@ -102,7 +102,7 @@ function ACE_EngineGUI_Create( Table )
                     acfmenupanel.CData.EngineIdBox:AddChoice( name, id  )
                 end
 
-                
+
             end
 
         end
@@ -112,7 +112,7 @@ function ACE_EngineGUI_Create( Table )
 
     do
         -- filters by id
-        acfmenupanel.CData.EngineIdBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay ) 
+        acfmenupanel.CData.EngineIdBox = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
         local EngineIdBox = acfmenupanel.CData.EngineIdBox
 
         EngineIdBox:SetSize(100,30)
@@ -136,12 +136,12 @@ function ACE_EngineGUI_Create( Table )
 end
 ]]
 function ACE_EngineGUI_Update( Table )
-    
+
     --local Id = acfmenupanel.EngineData.Id print(Id)
     --Table = ACF.Weapons.Mobility[Id]
 
     acfmenupanel:CPanelText("Name", Table.name, "DermaDefaultBold")
-    
+
     if not acfmenupanel.CData.DisplayModel then
 
         acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", acfmenupanel.CustomDisplay )
@@ -152,13 +152,13 @@ function ACE_EngineGUI_Update( Table )
         acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
         acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
         acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
-    
+
     end
 
     acfmenupanel.CData.DisplayModel:SetModel( Table.model )
 
     acfmenupanel:CPanelText("Desc", Table.desc)
-    
+
     local peakkw = Table.peakpower
     local peakkwrpm = Table.peakpowerrpm
     local peaktqrpm = Table.peaktqrpm
@@ -175,10 +175,10 @@ function ACE_EngineGUI_Update( Table )
 
     acfmenupanel:CPanelText("RPM", "Idle : "..(Table.idlerpm).." RPM\nPowerband : "..(math.Round(pbmin / 10) * 10).."-"..(math.Round(pbmax / 10) * 10).." RPM\nRedline : "..(Table.limitrpm).." RPM")
     acfmenupanel:CPanelText("Weight", "Weight : "..(Table.weight).." kg")
-    
-    
+
+
     acfmenupanel:CPanelText("FuelType", "\nFuel Type : "..(Table.fuel))
-    
+
     if Table.fuel == "Electric" then
         local cons = ACF.ElecRate * peakkw / ACF.Efficiency[Table.enginetype]
         acfmenupanel:CPanelText("FuelCons", "Peak energy use : "..math.Round(cons,1).." kW / "..math.Round(0.06*cons,1).." MJ/min")
@@ -191,14 +191,14 @@ function ACE_EngineGUI_Update( Table )
         local fuelcons = ACF.FuelRate * ACF.Efficiency[Table.enginetype] * ACF.TorqueBoost * peakkw / (60 * ACF.FuelDensity[Table.fuel])
         acfmenupanel:CPanelText("FuelCons", (Table.fuel).." Use at "..math.Round(peakkwrpm).." rpm : "..math.Round(fuelcons,2).." liters/min / "..math.Round(0.264*fuelcons,2).." gallons/min")
     end
-    
+
     if Table.requiresfuel then
         acfmenupanel:CPanelText("Fuelreq", "\nTHIS ENGINE REQUIRES "..(Table.fuel == "Electric" and "BATTERIES" or "FUEL").."\n", "DermaDefaultBold")
     else
         acfmenupanel:CPanelText("FueledPower", "\nWhen supplied with fuel:\nPeak Power : "..math.floor(peakkw*ACF.TorqueBoost).." kW / "..math.Round(peakkw*ACF.TorqueBoost*1.34).." HP @ "..math.Round(peakkwrpm).." RPM")
         acfmenupanel:CPanelText("FueledTorque", "Peak Torque : "..(Table.torque*ACF.TorqueBoost).." n/m  / "..math.Round(Table.torque*ACF.TorqueBoost*0.73).." ft-lb @ "..math.Round(peaktqrpm).." RPM\n")
     end
-    
+
     acfmenupanel.CustomDisplay:PerformLayout()
-    
+
 end

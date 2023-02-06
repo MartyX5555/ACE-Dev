@@ -11,7 +11,7 @@ ACF_defineGunClass("GBU", {
 	soundDistance   = " ",
 	soundNormal     = " ",
 	nothrust		= true,
-    
+
 	reloadmul       = 2
 } )
 
@@ -48,20 +48,20 @@ ACF_defineGun("WalleyeGBU", { 						-- id
 		finmul		= 0.02,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.2)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
-   
+
     ent         = "acf_missile_to_rack", 			-- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb", "Laser"},
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
 
 	racks       = {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,  
-					["2xRK"] = true,  
+					["1xRK"] = true,
+					["2xRK"] = true,
 					["3xRK"] = true
 				},
 
     seekcone    = 90,   							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 120,   							-- getting outside this cone will break the lock.  Divided by 2. 
-    
+    viewcone    = 120,   							-- getting outside this cone will break the lock.  Divided by 2.
+
     agility     = 2,     							-- multiplier for missile turn-rate.
     ghosttime   = 0.5,                              -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00     							-- minimum fuse arming delay
@@ -94,19 +94,19 @@ ACF_defineGun("227kgGBU", { 						-- id
 		finmul		= 0.02,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
-   
+
     ent         = "acf_missile_to_rack", 			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
- 
+
 	racks       = {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,  
+					["1xRK"] = true,
 					["2xRK"] = true
-				},   
+				},
 
     seekcone    = 60,   							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2. 
-    
+    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2.
+
     agility     = 1,     							-- multiplier for missile turn-rate.
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00     							-- minimum fuse arming delay
@@ -139,19 +139,19 @@ ACF_defineGun("454kgGBU", { 						-- id
 		finmul		= 0.02,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.04)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
-   
+
     ent         = "acf_missile_to_rack", 			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
- 
+
 	racks       = {									-- a whitelist for racks that this missile can load into.
-					["1xRK"] = true,  
+					["1xRK"] = true,
 					["2xRK"] = true
-				},   
- 
+				},
+
     seekcone    = 60,   							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2. 
-    
+    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2.
+
     agility     = 1,     							-- multiplier for missile turn-rate.
     ghosttime   = 0.5,                              -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00     							-- minimum fuse arming delay
@@ -165,7 +165,7 @@ ACF_defineGun("909kgGBU", { 						-- id
     rack 			= "1xRK",  						-- Which rack to spawn this missile on?
 	length 			= 320,
 	caliber 		= 20.0,
-	weight 			= 909,    						-- Don't scale down the weight though! 
+	weight 			= 909,    						-- Don't scale down the weight though!
 	year 			= 1976,
 	rofmod			= 2,
     modeldiameter 	= 20, 					-- in cm
@@ -184,18 +184,18 @@ ACF_defineGun("909kgGBU", { 						-- id
 		finmul		= 0.01,							-- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.09)  				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
-   
+
     ent         = "acf_missile_to_rack", 			-- A workaround ent which spawns an appropriate rack for the missile.
 	guidance    = {"Dumb", "Laser"},
     fuses       = {"Contact", "Timed", "Optical", "Cluster"},
- 
+
 	racks       = {									-- a whitelist for racks that this missile can load into.'
 					["1xRK"] = true
-				},   
- 
+				},
+
     seekcone    = 60,   							-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)
-    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2. 
-    
+    viewcone    = 80,   							-- getting outside this cone will break the lock.  Divided by 2.
+
     agility     = 1,     							-- multiplier for missile turn-rate.
     ghosttime   = 0.5,                              -- Time where this missile will be unable to hit surfaces, in seconds
     armdelay    = 0.00     							-- minimum fuse arming delay

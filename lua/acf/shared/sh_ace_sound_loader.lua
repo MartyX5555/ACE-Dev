@@ -59,7 +59,7 @@ for k, Data in pairs(TableTypes) do
 
             --if table.IsEmpty(ExSounds) then print("No se encontro nada!") end
 
-            ACE.Sounds[Data["Type"]][Category[Iteration]] = ACE.Sounds[Data["Type"]][Category[Iteration]] or {}         
+            ACE.Sounds[Data["Type"]][Category[Iteration]] = ACE.Sounds[Data["Type"]][Category[Iteration]] or {}
 
             ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]] = ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]] or {}
 
@@ -67,7 +67,7 @@ for k, Data in pairs(TableTypes) do
             for i,Sound in pairs(ExSounds) do
 
                 local Str = "acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/"..Sound     --print('Loading sound: '..Str)
-        
+
                 table.insert(ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]], Str )
 
             end

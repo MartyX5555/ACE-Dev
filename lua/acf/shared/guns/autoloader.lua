@@ -88,7 +88,7 @@ ACF_defineGun("140mmAL", {
 		propweight = 28
 	}
 } )
-		
+
 
 ACF_defineGun("170mmAL", {
 	name = "170mm Autoloading Cannon",

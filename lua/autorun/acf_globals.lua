@@ -31,7 +31,7 @@ CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents lim
 CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
 
 --CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
-CreateConVar('acf_meshvalue', 1) 
+CreateConVar('acf_meshvalue', 1)
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
 
 -- Cvars for legality checking
@@ -46,7 +46,7 @@ CreateConVar( "acf_legal_ignore_visclip", 0 , FCVAR_ARCHIVE)
 CreateConVar( "acf_legal_ignore_parent", 0 , FCVAR_ARCHIVE)
 
 -- Prop Protection system
-CreateConVar( "acf_enable_dp", 0 , FCVAR_ARCHIVE )    -- Enable the inbuilt damage protection system.    
+CreateConVar( "acf_enable_dp", 0 , FCVAR_ARCHIVE )    -- Enable the inbuilt damage protection system.
 
 -- Cvars for recoil/he push
 CreateConVar("acf_hepush", 1, FCVAR_ARCHIVE)
@@ -88,7 +88,7 @@ ACFM.FlareBurnMultiplier        = 0.5
 ACFM.FlareDistractMultiplier    = 1 / 35
 
 ACF.DebrisChance        = 0.5
-ACF.DebrisLifeTime      = 60  
+ACF.DebrisLifeTime      = 60
 
 ACF.ScaledHEMax         = 50
 ACF.ScaledEntsMax       = 5
@@ -105,7 +105,7 @@ ACF.KEtoSpall           = 1
 ACF.AmmoMod             = 2.6                       -- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul       = 1
 ACF.AmmoWidthMul        = 1
-ACF.ArmorMod            = 1 
+ACF.ArmorMod            = 1
 ACF.SlopeEffectFactor   = 1.1                       -- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
@@ -121,8 +121,8 @@ ACF.APDamageMult        = 2                         -- AP Damage Multipler      
 ACF.APCDamageMult       = 1.5                       -- APC Damage Multipler           -1.1
 ACF.APBCDamageMult      = 1.5                       -- APBC Damage Multipler           -1.05
 ACF.APCBCDamageMult     = 1.0                       -- APCBC Damage Multipler           -1.05
-ACF.APHEDamageMult      = 1.5                       -- APHE Damage Multipler          
-ACF.APDSDamageMult      = 1.5                       -- APDS Damage Multipler          
+ACF.APHEDamageMult      = 1.5                       -- APHE Damage Multipler
+ACF.APDSDamageMult      = 1.5                       -- APDS Damage Multipler
 ACF.HVAPDamageMult      = 1.65                      -- HVAP/APCR Damage Multipler
 ACF.FLDamageMult        = 1.4                       -- FL Damage Multipler
 ACF.HEATDamageMult      = 2                         -- HEAT Damage Multipler
@@ -173,7 +173,7 @@ ACF.LiIonED             = 0.27                      -- li-ion energy density: kw
 ACF.CuIToLiter          = 0.0163871                 -- cubic inches to liters
 
 ACF.RefillDistance      = 400                       -- Distance in which ammo crate starts refilling.
-ACF.RefillSpeed         = 250                       -- (ACF.RefillSpeed / RoundMass) / Distance 
+ACF.RefillSpeed         = 250                       -- (ACF.RefillSpeed / RoundMass) / Distance
 
 ACF.DebrisIgniteChance  = 0.25
 ACF.DebrisScale         = 20                        -- Ignore debris that is less than this bounding radius.
@@ -237,21 +237,21 @@ elseif CLIENT then
 
     include("acf/client/cl_acfpermission.lua")
     include("acf/client/gui/cl_acfsetpermission.lua")
-    
+
     CreateConVar("acf_cl_particlemul", 1)
     CreateClientConVar("ACF_MobilityRopeLinks", "1", true, true)
-    
+
     -- Cache results so we don't need to do expensive filesystem checks every time
     local IsValidCache = {}
 
     -- Returns whether or not a sound actually exists, fixes client timeout issues
     function IsValidSound( path )
-        if IsValidCache[path] == nil then 
+        if IsValidCache[path] == nil then
             IsValidCache[path] = file.Exists( string.format( "sound/%s", tostring( path ) ), "GAME" ) and true or false
         end
         return IsValidCache[path]
     end
-    
+
 end
 
 
@@ -268,7 +268,7 @@ include("acf/shared/rounds/roundhp.lua")
 include("acf/shared/rounds/roundsmoke.lua")
 include("acf/shared/rounds/roundrefill.lua")
 include("acf/shared/rounds/roundapc.lua")
-    
+
 
 --interwar period
 if ACF.Year > 1920 then
@@ -278,14 +278,14 @@ if ACF.Year > 1920 then
 
 end
 --A surprising amount of things were made during WW2
-if ACF.Year > 1939 then 
+if ACF.Year > 1939 then
 
     include("acf/shared/rounds/roundhesh.lua")
     include("acf/shared/rounds/roundheat.lua")
     include("acf/shared/rounds/roundaphe.lua")
     include("acf/shared/rounds/roundaphecbc.lua")
     include("acf/shared/rounds/roundhvap.lua")
-    
+
 end
 --Cold war
 if ACF.Year > 1960 then
@@ -296,14 +296,14 @@ if ACF.Year > 1960 then
     include("acf/shared/rounds/roundhefs.lua")
     include("acf/shared/rounds/roundflare.lua")
     include("acf/shared/rounds/roundglgm.lua")
-    
+
 end
 --almost finishing cold war
 if ACF.Year > 1989 then
 
     include("acf/shared/rounds/roundtheat.lua")
     include("acf/shared/rounds/roundtheatfs.lua")
-    
+
 end
 
 
@@ -417,7 +417,7 @@ else
     local function ACF_Notify()
         local Type = NOTIFY_ERROR
         if tobool( net.ReadBit() ) then Type = NOTIFY_GENERIC end
-        
+
         GAMEMODE:AddNotify( net.ReadString(), Type, 7 )
     end
     net.Receive( "ACF_Notify", ACF_Notify )

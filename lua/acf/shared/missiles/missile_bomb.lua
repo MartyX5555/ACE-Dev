@@ -11,7 +11,7 @@ ACF_defineGunClass("BOMB", {
     soundDistance   = " ",
     soundNormal     = " ",
     nothrust        = true,
-    
+
     reloadmul       = 8
 } )
 
@@ -43,19 +43,19 @@ ACF_defineGun("50kgBOMB", {                         -- id
         finmul      = 0.004,                        -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
-    
+
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true,  
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true,  
-                    ["3xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true
-                },   
-  
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -88,19 +88,19 @@ ACF_defineGun("100kgBOMB", {                        -- id
         finmul      = 0.004,                        -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
-        
+
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true,  
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true,  
-                    ["3xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true
-                },   
- 
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -132,19 +132,19 @@ ACF_defineGun("250kgBOMB", {                        -- id
         finmul      = 0.004,                        -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
- 
+
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true,  
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true,  
-                    ["3xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true
-                },   
- 
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -176,16 +176,16 @@ ACF_defineGun("500kgBOMB", {                        -- id
         finmul      = 0.004,                        -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
 
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK"] = true,  
+                    ["1xRK"] = true,
                     ["2xRK"] = true
-                },   
- 
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -199,7 +199,7 @@ ACF_defineGun("1000kgBOMB", {                       -- id
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
     length          = 227, --i know. Real one is too big for the largest of the ammocrates
     caliber         = 30,
-    weight          = 1000,                         -- Don't scale down the weight though! 
+    weight          = 1000,                         -- Don't scale down the weight though!
     year            = 1945,
     modeldiameter   = 26,                   -- in cm
     round = {
@@ -217,15 +217,15 @@ ACF_defineGun("1000kgBOMB", {                       -- id
         finmul      = 0.004,                        -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.08)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
- 
+
     racks       = {                                 -- a whitelist for racks that this missile can load into.
                     ["1xRK"] = true
-                },                  
- 
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -238,7 +238,7 @@ ACF_defineGun("100kgGBOMB", {                       -- id
     model           = "models/missiles/micro.mdl",
     gunclass        = "BOMB",
     rack            = "1xRK",                       -- Which rack to spawn this missile on?
-    length          = 121, 
+    length          = 121,
     caliber         = 10.0,
     weight          = 150,                          -- Don't scale down the weight though!
     year            = 1939,
@@ -258,19 +258,19 @@ ACF_defineGun("100kgGBOMB", {                       -- id
         finmul      = 0.05,                         -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
 
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true,  
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true,  
-                    ["3xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true
-                },   
-    
+                },
+
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 
     armdelay    = 0.00                              -- minimum fuse arming delay
@@ -291,7 +291,7 @@ ACF_defineGun("250kgGBOMB", {                       -- id
     round = {
         model       = "models/missiles/fab250.mdl",
         rackmdl     = "models/missiles/fab250.mdl",
-        maxlength   = 150, 
+        maxlength   = 150,
         casing      = 0.2,                          -- thickness of missile casing, cm
         armour      = 25,                           -- effective armour thickness of casing, in mm
         propweight  = 0,                            -- motor mass - motor casing
@@ -303,18 +303,18 @@ ACF_defineGun("250kgGBOMB", {                       -- id
         finmul      = 0.05,                         -- fin multiplier (mostly used for unpropelled guidance)
         penmul      = math.sqrt(0.05)               -- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
     },
-   
+
     ent         = "acf_missile_to_rack",            -- A workaround ent which spawns an appropriate rack for the missile.
     guidance    = {"Dumb"},
     fuses       = {"Contact", "Optical", "Cluster"},
- 
+
     racks       = {                                 -- a whitelist for racks that this missile can load into.
-                    ["1xRK_small"] = true,  
-                    ["1xRK"] = true, 
-                    ["2xRK"] = true,  
-                    ["3xRK"] = true, 
+                    ["1xRK_small"] = true,
+                    ["1xRK"] = true,
+                    ["2xRK"] = true,
+                    ["3xRK"] = true,
                     ["4xRK"] = true
-                },  
+                },
 
     ghosttime   = 0.5,                                     -- Time where this missile will be unable to hit surfaces, in seconds
 

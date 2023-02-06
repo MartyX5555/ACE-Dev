@@ -52,7 +52,7 @@ function ENT:isLegal()
 	if not self:IsSolid() then return false end
 
 	ACF_GetPhysicalParent(self)
-	
+
 	self.IsLegal = self.acfphysparent:IsSolid()
 
 	return self.IsLegal
@@ -71,7 +71,7 @@ end
 function ENT:SetActive(active)
 
 	self.Active = active
-	
+
 	if active  then
 		local sequence = self:LookupSequence("active") or 0
 		self:ResetSequence(sequence)
@@ -87,13 +87,13 @@ end
 
 function ENT:Think()
 
-	local curTime = CurTime()	
+	local curTime = CurTime()
 	self:NextThink(curTime + self.ThinkDelay)
 
     self.LegalTick = (self.LegalTick or 0) + 1
 
     if 	self.LegalTick >= (self.checkLegalIn or 0) then
-	
+
         self.LegalTick = 0
         self.checkLegalIn = 5+math.random(0,5) --Random checks every 5-10 seconds
         self:isLegal()
@@ -115,25 +115,25 @@ function ENT:Think()
 	    scanEnt = ACE.radarEntities[self.JamID]
 
 		if(IsValid( scanEnt )) then
-		
-			local radActive = scanEnt.Active 
+
+			local radActive = scanEnt.Active
 			local entpos = scanEnt:GetPos()
 
-			local LOStr = util.TraceLine( { 
+			local LOStr = util.TraceLine( {
 				start = thisPos ,
 				endpos = entpos,
 				collisiongroup = COLLISION_GROUP_WORLD,
 				filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end, --Hits anything in the world.
 				mins = Vector(0,0,0),
 				maxs = Vector(0,0,0)
-				} ) 
+				} )
 
 			if not LOStr.Hit then --Trace did not hit world
-				self.CurrentlyJamming = self.JamID	
+				self.CurrentlyJamming = self.JamID
 			end
 		end
     else
-	
+
 		self.JamEnergy = math.min(self.JamEnergy + 1,100)
 
 		if self.JamEnergy == 100 then

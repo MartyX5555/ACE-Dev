@@ -5,7 +5,7 @@ local Menu = {}
 Menu.Category = "ACE"
 
 
-// the name of the item 
+// the name of the item
 Menu.Name = "Set Permission Mode"
 
 // the convar to execute when the player clicks on the tab
@@ -31,7 +31,7 @@ local cppidl 			= "Do you need ACE protection? Remember to restart your game onc
 
 local cvarstat = false
 
-local list 
+local list
 local button
 local button2
 local button3
@@ -39,7 +39,7 @@ local status
 local status2
 
 function ACE_ReceiveDPStatus()
-	
+
     cvarstat = net.ReadBool() or false
     Permissions:Update()
 
@@ -47,13 +47,13 @@ end
 net.Receive( "ACE_DPStatus", ACE_ReceiveDPStatus )
 
 net.Receive("ACF_refreshpermissions", function(len)
-	
+
 	PermissionModes 	= net.ReadTable()
-	CurrentPermission 	= net.ReadString() 
+	CurrentPermission 	= net.ReadString()
 	DefaultPermission 	= net.ReadString()
-	
+
 	Permissions:Update()
-	
+
 end)
 
 local function CheckCPPI()
@@ -65,9 +65,9 @@ end
 function Menu.MakePanel(Panel)
 
 	Permissions:RequestUpdate()
-	
+
 	if not PermissionModes then return end
-	
+
 	Panel:SetName("Permission Modes")
 	Panel:AddItem(txt)
 
@@ -92,10 +92,10 @@ function Menu.MakePanel(Panel)
 	currentMode:SetContentAlignment( TEXT_ALIGN_CENTER )
 	currentMode:SetFont("DermaDefaultBold")
 	currentMode:SizeToContents()
-	
+
 	Panel:AddItem(currentMode)
-	
-	
+
+
 	if LocalPlayer():IsAdmin() then
 
 		list = vgui.Create("DListView")
@@ -108,7 +108,7 @@ function Menu.MakePanel(Panel)
 		for permission,desc in pairs(PermissionModes) do
 			list:AddLine(permission, "", "")
 		end
-		
+
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
@@ -125,43 +125,43 @@ function Menu.MakePanel(Panel)
 			end
 		end
 		Panel:AddItem(list)
-		
+
 		local txt = Panel:Help("What this mode does:")
 		txt:SetContentAlignment( TEXT_ALIGN_CENTER )
 		txt:SetFont("DermaDefaultBold")
 		txt:SizeToContents()
 		Panel:AddItem(txt)
-		
+
 		ModeDescTxt = Panel:Help(PermissionModes[CurrentPermission] or ModeDescDefault)
 		ModeDescTxt:SetContentAlignment( TEXT_ALIGN_CENTER )
 		ModeDescTxt:SizeToContents()
 		Panel:AddItem(ModeDescTxt)
-		
+
 		--Button 1
 		button = Panel:Button("Set Permission Mode")
-		button.DoClick = function()	
+		button.DoClick = function()
 			local line = list:GetLine(list:GetSelectedLine())
 			if not line then
 				Permissions:RequestUpdate()
 				return
 			end
-			
+
 			local mode = line and line:GetValue(1)
-			RunConsoleCommand("ACF_setpermissionmode",mode) 
+			RunConsoleCommand("ACF_setpermissionmode",mode)
 		end
 		Panel:AddItem(button)
-		
+
 		--Button 2
 		button2 = Panel:Button("Set Default Permission Mode")
-		button2.DoClick = function()  
+		button2.DoClick = function()
 			local line = list:GetLine(list:GetSelectedLine())
 			if not line then
 				Permissions:RequestUpdate()
 				return
 			end
-			
+
 			local mode = line and line:GetValue(1)
-			RunConsoleCommand("ACF_setdefaultpermissionmode",mode) 
+			RunConsoleCommand("ACF_setdefaultpermissionmode",mode)
 		end
 		Panel:AddItem(button2)
 
@@ -174,7 +174,7 @@ function Menu.MakePanel(Panel)
 
 			--Button 3
 			button3 = Panel:Button("Download NADMOD!")
-			button3.DoClick = function()  
+			button3.DoClick = function()
 				gui.OpenURL( "https://steamcommunity.com/sharedfiles/filedetails/?id=159298542" )
 			end
 			Panel:AddItem(button3)
@@ -186,7 +186,7 @@ end
 
 function Permissions:Update()
 
-	if IsValid(list) then	
+	if IsValid(list) then
 		for id,line in pairs(list:GetLines()) do
 			if line:GetValue(1) == CurrentPermission then
 				list:GetLine(id):SetValue(2,"Yes")
@@ -200,7 +200,7 @@ function Permissions:Update()
 			end
 		end
 	end
-	
+
 	if IsValid(currentMode) then
 		currentMode:SetText(string.format(currentModeTxt, CurrentPermission))
 		currentMode:SizeToContents()
@@ -247,14 +247,14 @@ end
 
 function Permissions:RequestUpdate()
 	net.Start("ACF_refreshpermissions")
-		net.WriteBit(true)	
+		net.WriteBit(true)
 	net.SendToServer()
 end
 
 
 function Menu.OnSpawnmenuOpen()
 	Permissions:RequestUpdate()
-end 
+end
 
 
 

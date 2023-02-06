@@ -8,10 +8,10 @@ function ENT:Initialize()
 
 end
 
-function ENT:Draw() 
-	
+function ENT:Draw()
+
 	self:DrawModel()
-	
+
 end
 
 --Brought from ACF3. Fixes the physgun grabbing beam glitch
@@ -34,7 +34,7 @@ end
 local function BuildFakePhysics( entity )
 
 	entity:PhysicsInit(SOLID_VPHYSICS)
-    entity:SetMoveType( MOVETYPE_VPHYSICS )       
+    entity:SetMoveType( MOVETYPE_VPHYSICS )
     entity:SetSolid( SOLID_VPHYSICS )
 
 	local PhysObj = entity:GetPhysicsObject()
@@ -76,13 +76,13 @@ end
 
 net.Receive("ACE_Scalable_Network", function()
 
-	local x = net.ReadFloat() 
-	local y = net.ReadFloat() 
-	local z = net.ReadFloat() 
+	local x = net.ReadFloat()
+	local y = net.ReadFloat()
+	local z = net.ReadFloat()
 
 	local entity = net.ReadEntity()
 
-	if IsValid(entity) then 
+	if IsValid(entity) then
 
 		BuildFakePhysics( entity )
 
@@ -90,7 +90,7 @@ net.Receive("ACE_Scalable_Network", function()
 		entity.Matrix = Matrix()
 		entity.Matrix:Scale(Scale)
 		entity:EnableMatrix("RenderMultiply", entity.Matrix)
-	
+
 		BuildRealPhysics( entity, Scale )
 
 	end

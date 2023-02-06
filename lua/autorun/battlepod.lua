@@ -22,7 +22,7 @@ local V =  {
 }
 list.Set( "Vehicles", "acf_pod", V )
 
-local V = { 	
+local V = {
 	// Required information
 	Name = "Standard Pilot Seat",
 	Class = "prop_vehicle_prisoner_pod",

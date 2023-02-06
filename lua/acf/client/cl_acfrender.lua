@@ -27,15 +27,15 @@ hook.Add("PostDrawOpaqueRenderables", "ACF_RenderDamage", function()
 end)
 
 net.Receive("ACF_RenderDamage", function()
-    
+
 	local Table = net.ReadTable()
 
 		if not Table then return end
-	
+
     	for k,v in ipairs( Table ) do
 
     		if not v.ID then break end
-	
+
     	 	local ent, Health, MaxHealth = ents.GetByIndex( v.ID ), v.Health, v.MaxHealth
     		if not IsValid(ent) then return end
     		if Health != MaxHealth then

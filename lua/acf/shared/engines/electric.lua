@@ -33,7 +33,7 @@ ACF_DefineEngine( "Electric-Medium", {
     limitrpm            = 20000,
     iselec              = true,
     flywheeloverride    = 8000
-    
+
 } )
 
 ACF_DefineEngine( "Electric-Large", {
@@ -51,7 +51,7 @@ ACF_DefineEngine( "Electric-Large", {
     limitrpm            = 20000,
     iselec              = true,
     flywheeloverride    = 8000
-    
+
 } )
 
 ACF_DefineEngine( "Electric-Tiny-NoBatt", {
