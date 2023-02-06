@@ -8,7 +8,7 @@ local Round = {}
 
 Round.type  = "Ammo"									-- Tells the spawn menu what entity to spawn
 Round.name  = "[AP] - "..ACFTranslation.ShellAP[1]	-- Human readable name
-Round.model = "models/munitions/round_100mm_shot.mdl"   -- Shell flight model
+Round.model = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
 Round.desc  = ACFTranslation.ShellAP[2]				-- Ammo description
 Round.netid = 1										-- Unique ID for this ammo
 
@@ -27,8 +27,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData	= {}
 	local GUIData	= {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 
@@ -191,8 +191,8 @@ function Round.guicreate( Panel, Table )
 
 	ACE_UpperCommonDataDisplay()
 
-	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	ACE_CommonDataDisplay()
 
@@ -205,8 +205,8 @@ function Round.guiupdate( Panel, Table )
 	local PlayerData = {}
 		PlayerData.Id		= acfmenupanel.AmmoData.Data.id					-- AmmoSelect GUI
 		PlayerData.Type		= Round.Type										-- Hardcoded, match ACFRoundTypes table index
-		PlayerData.PropLength   = acfmenupanel.AmmoData.PropLength				-- PropLength slider
-		PlayerData.ProjLength   = acfmenupanel.AmmoData.ProjLength				-- ProjLength slider
+		PlayerData.PropLength	= acfmenupanel.AmmoData.PropLength				-- PropLength slider
+		PlayerData.ProjLength	= acfmenupanel.AmmoData.ProjLength				-- ProjLength slider
 		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
 		PlayerData.TwoPiece	= acfmenupanel.AmmoData.TwoPiece
 

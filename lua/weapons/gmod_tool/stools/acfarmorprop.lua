@@ -1,14 +1,14 @@
 
 local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "ACF" or "Construction");
 
-TOOL.Category   = cat
+TOOL.Category	= cat
 TOOL.Name	= "#tool.acfarmorprop.name"
 TOOL.Command	= nil
 TOOL.ConfigName = ""
 
 TOOL.ClientConVar["thickness"]  = 1
 TOOL.ClientConVar["ductility"]  = 0
-TOOL.ClientConVar["material"]   = "RHA"
+TOOL.ClientConVar["material"]	= "RHA"
 
 --Used by the panel. If i can to use the TOOL itself for this, i would be really appreciated
 local ToolPanel = ToolPanel or {}
@@ -123,7 +123,7 @@ if CLIENT then
 
 			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MaterialData.curve) )
 			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : "..(MaterialData.massMod) .."x RHA" )
-			ArmorPanelText( "ComboKE"   , ToolPanel.panel, "KE protection : "..(MaterialData.effectiveness ) .."x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MaterialData.effectiveness ) .."x RHA" )
 			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : "..(MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
 			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : "..(MaterialData.year or "unknown") )
 
@@ -229,7 +229,7 @@ if CLIENT then
 
 				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MatData.curve) )
 				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: "..(MatData.massMod ) .."x RHA")
-				ArmorPanelText( "ComboKE"   , ToolPanel.panel, "KE protection : "..(MatData.effectiveness ) .."x RHA" )
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MatData.effectiveness ) .."x RHA" )
 				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : "..(MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
 				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : "..(MatData.year or "unknown") )
 
@@ -325,7 +325,7 @@ function TOOL:Reload( trace )
 
 	local total		= ent.acftotal
 	local phystotal	= ent.acfphystotal
-	local parenttotal   = ent.acftotal - ent.acfphystotal
+	local parenttotal	= ent.acftotal - ent.acfphystotal
 	local physratio	= 100 * ent.acfphystotal / ent.acftotal
 
 	local power		= data.Power
@@ -358,7 +358,7 @@ if CLIENT then
 
 		local total		= math.Round( net.ReadFloat(), 1 )
 		local phystotal	= math.Round( net.ReadFloat(), 1 )
-		local parenttotal   = math.Round( net.ReadFloat(), 1 )
+		local parenttotal	= math.Round( net.ReadFloat(), 1 )
 		local physratio	= math.Round( net.ReadFloat(), 1 )
 		local power		= net.ReadFloat() -- Note: intentional
 		local fuel		= math.Round( net.ReadFloat(), 1 )
@@ -388,7 +388,7 @@ if CLIENT then
 
 		for material, mass in pairs( FromJSON[1] ) do
 
-			local Percent   =  math.Round( FromJSON[2][material] * 100 ,1)
+			local Percent	=  math.Round( FromJSON[2][material] * 100 ,1)
 			local TbStr	= { Color4, "> "..material.." @ ", Color3, ""..math.Round(mass,1), Color4, " kgs (", Color3, Percent.."%", Color4, ")"..Sep }
 
 			Tabletxt = table.Add(Tabletxt,TbStr)
@@ -404,7 +404,7 @@ function TOOL:Think()
 
 	if CLIENT then return end
 
-	local ply   = self:GetOwner()
+	local ply	= self:GetOwner()
 
 	local tr	= util.GetPlayerTrace(ply)
 	tr.mins	= Vector(0,0,0)

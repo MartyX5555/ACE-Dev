@@ -466,14 +466,14 @@ function EFFECT:Airburst( SmokeColor )
 end
 
 /*---------------------------------------------------------
-   THINK
+	THINK
 ---------------------------------------------------------*/
 function EFFECT:Think( )
 
 end
 
 /*---------------------------------------------------------
-   Draw the effect
+	Draw the effect
 ---------------------------------------------------------*/
 function EFFECT:Render()
 end

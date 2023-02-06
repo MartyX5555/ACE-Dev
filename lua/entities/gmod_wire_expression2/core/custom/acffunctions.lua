@@ -802,7 +802,7 @@ e2function number entity:acfDragCoef()
 	if restrictInfo(self, this) then return 0 end
 
 	local BulletData = this.BulletData
-	local DragCoef   = BulletData and BulletData.DragCoef
+	local DragCoef	= BulletData and BulletData.DragCoef
 
 	return DragCoef and DragCoef / ACF.DragDiv or 0
 end

@@ -24,7 +24,7 @@ ACE.CrackDistanceMultipler  = 1
 ACE.EnableTinnitus		= 1
 
 --Defines the distance where ring ears start to affect to player
-ACE.TinnitusZoneMultipler   = 1.5
+ACE.TinnitusZoneMultipler	= 1.5
 
 
 ACE.Sounds		= ACE.Sounds or {}
@@ -90,7 +90,7 @@ function ACE_SHasLOS( EventPos )
 	local ply = LocalPlayer()
 
 	local plyPos	= ply.aceposoverride or ply:GetPos()
-	local headPos   = plyPos + ( not ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
+	local headPos	= plyPos + ( not ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
 
 	local LOSTr	= {}
 	LOSTr.start	= EventPos + Vector(0,0,10)
@@ -115,8 +115,8 @@ function ACE_SIsInDoor()
 
 	local CeilTr	= {}
 	CeilTr.start	= plyPos
-	CeilTr.endpos   = plyPos + Vector(0,0,2000)
-	CeilTr.filter   = {}
+	CeilTr.endpos	= plyPos + Vector(0,0,2000)
+	CeilTr.filter	= {}
 	CeilTr.mask	= MASK_SOLID_BRUSHONLY
 	CeilTr.mins	= vector_origin
 	CeilTr.maxs	= CeilTr.mins
@@ -176,13 +176,13 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					local PitchFix
 
 					--Required radius to be considered a small explosion. Less than this the explosion will be considered tiny
-					local SmallEx   = 5
+					local SmallEx	= 5
 
 					--Required radius to be considered a medium explosion
 					local MediumEx  = 10
 
 					--Required radius to be considered a large explosion
-					local LargeEx   = 20
+					local LargeEx	= 20
 
 					--Required radius to be considered a huge explosion. IDK what thing could pass this, but there is it :)
 					local HugeEx	= 150
@@ -281,7 +281,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 							timer.Simple(0.01, function()
 								entply:SetDSP( 33, true )
 								entply:StopSound( "acf_other/explosions/ring/tinnitus.mp3" ) --See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
-								entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )   --Disabled sound
+								entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )	--Disabled sound
 
 							end)
 						end
@@ -328,7 +328,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 	local entply	= ply
 
 	local count	= 1
-	local Emitted   = false --Was the sound played?
+	local Emitted	= false --Was the sound played?
 	local ide	= 'ACE_Penetration#'..math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
@@ -377,7 +377,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 	local entply	= ply
 	local count	= 1
-	local Emitted   = false --Was the sound played?
+	local Emitted	= false --Was the sound played?
 
 	local ide	= 'ACE_Ricochet#'..math.random(1,100000)
 
@@ -460,7 +460,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 	local entply	= ply
 
 	local count	= 1
-	local Emitted   = false
+	local Emitted	= false
 	local ide	= 'ACEFire#'..math.random(1,100000)
 
 	local Pos	= Gun:GetPos()
@@ -507,10 +507,10 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 					local State = "main"
 					if Dist >= CloseDist and Dist < MediumDist then
 
-						State   = "mid"
+						State	= "mid"
 					elseif Dist >= MediumDist then
 
-						State   = "far"
+						State	= "far"
 					end
 
 					ACE.Sounds.GunTb[GunId] = (ACE.Sounds.GunTb[GunId] or 0) + 1
@@ -520,10 +520,10 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 
 						--print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
 
-						Sound   = SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]]
+						Sound	= SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]]
 
 						VolFix  = SoundData[State]["Volume"]
-						Pitch   = SoundData[State]["Pitch"]
+						Pitch	= SoundData[State]["Pitch"]
 					end
 
 				end
@@ -554,7 +554,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 	debugoverlay.Cross(BulletData.SimPos, 10, 5, Color(0,0,255))
 
 	local count	= 1
-	local Emitted   = false --Was the sound played?
+	local Emitted	= false --Was the sound played?
 
 	local ide	= 'ACECrack#'..math.random(1,100000)
 

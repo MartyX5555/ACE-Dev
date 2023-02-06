@@ -71,8 +71,8 @@ function Round.convert( Crate, PlayerData )
 
 	Data["LengthAdj"] = 0.5
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData["Data5"]		= PlayerData["Data5"]	or 0	-- flechette count
@@ -95,7 +95,7 @@ function Round.convert( Crate, PlayerData )
 	end
 
 
-	Data["MinFlechettes"]   = 2
+	Data["MinFlechettes"]	= 2
 	Data["Flechettes"]	= math.Clamp(math.floor(PlayerData["Data5"]),Data["MinFlechettes"], Data["MaxFlechettes"])  --number of flechettes
 
 	Data["MinSpread"]	= 0.25
@@ -110,7 +110,7 @@ function Round.convert( Crate, PlayerData )
 	Data["FlechetteArea"]	= 3.1416 * Data["FlechetteRadius"]^2 -- area of a single flechette
 	Data["FlechetteMass"]	= Data["FlechetteArea"] * (Data["ProjLength"]*7.9/1000) -- volume of single flechette * density of steel
 	Data["FlechettePenArea"]	= (PenAdj*Data["FlechetteArea"])^ACF.PenAreaMod
-	Data["FlechetteDragCoef"]   = (Data["FlechetteArea"]/10000)/Data["FlechetteMass"]
+	Data["FlechetteDragCoef"]	= (Data["FlechetteArea"]/10000)/Data["FlechetteMass"]
 
 	Data["ProjMass"]			= Data["Flechettes"] * Data["FlechetteMass"] -- total mass of all flechettes
 	Data["PropMass"]			= Data["PropMass"]
@@ -284,9 +284,9 @@ function Round.guicreate( Panel, Table )
 
 	ACE_UpperCommonDataDisplay()
 
-	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("Flechettes",2,3,128,0, "Flechettes", "")   --flechette count Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("Flechettes",2,3,128,0, "Flechettes", "")	--flechette count Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FlechetteSpread",10,5,60,1, "Flechette Spread", "")	--flechette spread Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	ACE_CommonDataDisplay()
@@ -319,7 +319,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data["MaxTotalLength"],3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )   --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data["MaxTotalLength"],3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data["MaxTotalLength"],3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("Flechettes",Data.Flechettes,Data.MinFlechettes,Data.MaxFlechettes,0, "Flechettes", "Flechette Radius: "..math.Round(Data["FlechetteRadius"]*10,2).." mm")
 	acfmenupanel:AmmoSlider("FlechetteSpread",Data.FlechetteSpread,Data.MinSpread,Data.MaxSpread,1, "Flechette Spread", "")

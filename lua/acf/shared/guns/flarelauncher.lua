@@ -9,7 +9,7 @@ ACF_defineGunClass("FGL", {
 	year = 1970,
 	sound = "acf_extra/tankfx/flare_launch.wav",
 
-	ammoBlacklist   = {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
+	ammoBlacklist	= {"AP", "APHE", "FL", "HE", "HEAT", "HP", "SM"} -- ok fun's over
 } )
 
 --add a gun to the class

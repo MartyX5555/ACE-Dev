@@ -38,11 +38,11 @@ do
 		self.Efficiency	= 1-(ACF.Efficiency[self.EngineType] or ACF.Efficiency["GenericPetrol"]) -- Energy not transformed into kinetic energy and instead into thermal
 		self.Legal		= true
 		self.CanUpdate	= true
-		self.RequiresFuel   = false
+		self.RequiresFuel	= false
 		self.NextLegalCheck = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 		self.Legal		= true
 		self.LegalIssues	= ""
-		self.LockOnActive   = false --used to turn on the engine in case of being lockdown by not legal
+		self.LockOnActive	= false --used to turn on the engine in case of being lockdown by not legal
 		self.CrewLink	= {}
 		self.HasDriver	= 0
 
@@ -99,7 +99,7 @@ do
 		Engine.PeakTorque	= Lookup.torque
 		Engine.peakkw		= Lookup.peakpower
 		Engine.PeakKwRPM		= Lookup.peakpowerrpm
-		Engine.PeakTorqueHeld   = Lookup.torque
+		Engine.PeakTorqueHeld	= Lookup.torque
 		Engine.IdleRPM		= Lookup.idlerpm
 		Engine.PeakMinRPM	= Lookup.peakminrpm
 		Engine.PeakMaxRPM	= Lookup.peakmaxrpm
@@ -202,7 +202,7 @@ function ENT:Update( ArgsTable )
 	self.LimitRPM		= Lookup.limitrpm
 	self.Inertia			= Lookup.flywheelmass*(3.1416)^2
 	self.iselec			= Lookup.iselec -- is the engine electric?
-	self.FlywheelOverride   = Lookup.flywheeloverride -- modifies rpm drag on iselec==true
+	self.FlywheelOverride	= Lookup.flywheeloverride -- modifies rpm drag on iselec==true
 	self.IsTrans			= Lookup.istrans
 	self.FuelType		= Lookup.fuel
 	self.EngineType		= Lookup.enginetype
@@ -363,7 +363,7 @@ function ENT:ACF_Activate()
 
 end
 
-function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 
 	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulEngine) or 1) --Heat penetrators deal bonus damage to engines
 	local HitRes = ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function

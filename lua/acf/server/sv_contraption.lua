@@ -5,7 +5,7 @@
 
 ACE.contraptionEnts = {}	--table which will have all registered ents
 
-ACE.radarEntities   = {}	--for tracking radar usage
+ACE.radarEntities	= {}	--for tracking radar usage
 ACE.radarIDs		= {}	--ID radar purpose
 ACE.ECMPods		= {}	--ECM usage
 ACE.Opticals		= {}	--GLATGM optical computers
@@ -59,7 +59,7 @@ ACF.Debris = {
 	["acf_gearbox"]				= true,
 	["acf_engine"]				= true,
 	["prop_physics"]				= true,
-	["prop_vehicle_prisoner_pod"]   = true
+	["prop_vehicle_prisoner_pod"]	= true
 }
 
 
@@ -195,7 +195,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 			end
 
 			-- Finally, remove this Entity from the main list
-			if MEnt:EntIndex() == Ent:EntIndex() then   --check if we are taking same ent
+			if MEnt:EntIndex() == Ent:EntIndex() then	--check if we are taking same ent
 				table.remove( ACE.contraptionEnts , i)					--if same, remove it
 
 				--print("[ACE | INFO]- the entity '..Ent:GetClass()..' ("..Ent:GetModel()..") has been removed!")

@@ -7,7 +7,7 @@ ACF_defineGunClass("ATGM", {
 	rofmod		= 1,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
 	year			= 1969,
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor ATGM",
 	reloadmul	= 5,
@@ -27,8 +27,8 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 	weight	= 76.4,										-- Don't scale down the weight though!
 	year		= 1970,
 	rofmod	= 0.55,
-	modeldiameter   = 3 * 2.54,
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/bgm_71e.mdl",
@@ -44,7 +44,7 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		dragcoef		= 0.003,								-- drag coefficient while falling
 		dragcoefflight  = 0.06,								-- drag coefficient during flight
 		finmul		= 0.05,								-- fin multiplier (mostly used for unpropelled guidance)
-		penmul		= math.sqrt(0.9265)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)   --was 0.797
+		penmul		= math.sqrt(0.9265)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.797
 	},
 
 	ent		= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -76,8 +76,8 @@ ACF_defineGun("9M133 ASM", {									-- id
 	weight		= 29,									-- Don't scale down the weight though!
 	year			= 1994,
 	rofmod		= 0.7,
-	modeldiameter   = 3 * 2.54, -- in cm
-	rotmult		= 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54, -- in cm
+	rotmult		= 1.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/kali/weapons/kornet/parts/9m133 kornet missile.mdl",  -- shhh, don't look directly at the hacks, the attachments on the proper model are fucked up.
@@ -128,8 +128,8 @@ ACF_defineGun("AT-3 ASM", { --id
 	weight	= 12.5,										-- Don't scale down the weight though!
 	year		= 1969,
 	rofmod	= 0.4,
-	modeldiameter   = 3 * 2.54,
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/at3.mdl",
@@ -159,7 +159,7 @@ ACF_defineGun("AT-3 ASM", { --id
 					["3xRK"] = true
 				},
 
-	skinindex   = {HEAT = 0, HE = 1},
+	skinindex	= {HEAT = 0, HE = 1},
 
 	agility		= 0.1, --0.3										-- multiplier for missile turn-rate.
 	guidanceInac	= 1, --50									-- How much inaccuracy this missile will have when its being guided. In units
@@ -181,8 +181,8 @@ ACF_defineGun("Ataka ASM", { --id
 	weight		= 198,									-- Don't scale down the weight though!
 	year			= 1984,
 	rofmod		= 0.6,
-	modeldiameter   = 3 * 2.54,
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/9m120.mdl",
@@ -198,7 +198,7 @@ ACF_defineGun("Ataka ASM", { --id
 		dragcoef		= 0.01,								-- drag coefficient while falling							--was 0.001
 		dragcoefflight  = 0.04,								-- drag coefficient during flight
 		finmul		= 0.05,								-- fin multiplier (mostly used for unpropelled guidance)
-		penmul		= math.sqrt(1.148)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)   --was 0.854
+		penmul		= math.sqrt(1.148)					-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)	--was 0.854
 	},
 
 	ent		= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
@@ -217,7 +217,7 @@ ACF_defineGun("Ataka ASM", { --id
 
 	agility	= 0.05,  --0.15								-- multiplier for missile turn-rate.
 	guidanceInac	= 1, --50								-- How much inaccuracy this missile will have when its being guided. In units
-	ghosttime   = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00										-- minimum fuse arming delay
 } )
@@ -234,8 +234,8 @@ ACF_defineGun("AT-2 ASM", { --id
 	weight	= 27,										-- Don't scale down the weight though!
 	year		= 1969,
 	rofmod	= 0.4,
-	modeldiameter   = 3 * 2.54,
-	rotmult	= 1.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult	= 1.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/at2.mdl",
@@ -286,12 +286,12 @@ ACF_defineGun("FGM-148 ASM", {
 	weight	= 11.8,										-- Don't scale down the weight though!  --was 97.2
 	year		= 1989,										-- year
 	rofmod	= 0.74,										-- Rate Of Fire	--was 1.45
-	modeldiameter   = 3 * 2.54,
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
-		model		= "models/mcace/Jevelinemissile.mdl",   -- models/mcace/Jevelinemissile.mdl	--model that will be fired out of tube
-		rackmdl		= "models/mcace/Jevelinemissile.mdl",   -- model when its in tube
+		model		= "models/mcace/Jevelinemissile.mdl",	-- models/mcace/Jevelinemissile.mdl	--model that will be fired out of tube
+		rackmdl		= "models/mcace/Jevelinemissile.mdl",	-- model when its in tube
 		maxlength	= 110,
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm

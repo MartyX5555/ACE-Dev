@@ -29,7 +29,7 @@ ACE.CritEnts = {
 	acf_rack					= true,
 	acf_missile				= true,
 	ace_missile_swep_guided	= true,
-	prop_vehicle_prisoner_pod   = true,
+	prop_vehicle_prisoner_pod	= true,
 	gmod_wire_gate			= true
 }
 
@@ -56,7 +56,7 @@ end
 		HitPos	- detonation center,
 		FillerMass  - mass of TNT being detonated in KG
 		FragMass	- mass of the round casing for fragmentation purposes
-		Inflictor   - owner of said TNT
+		Inflictor	- owner of said TNT
 		NoOcc	- table with entities to ignore
 		Gun		- gun entity from which round is fired
 	Purpose:
@@ -70,7 +70,7 @@ do
 	function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 		local Power		= FillerMass * ACF.HEPower			-- Power in KiloJoules of the filler mass of  TNT
-		local Radius		= ACE_CalculateHERadius( FillerMass )   -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
+		local Radius		= ACE_CalculateHERadius( FillerMass )	-- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
 		local MaxSphere	= (4 * PI * (Radius*2.54 )^2)	-- Surface Area of the sphere at maximum radius
 		local Amp		= math.min(Power/2000,50)
 
@@ -182,7 +182,7 @@ do
 						end
 
 					else
-						Targets[i] = NULL   --Target was invalid, so let's ignore it
+						Targets[i] = NULL	--Target was invalid, so let's ignore it
 						table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 					end
 				end
@@ -208,8 +208,8 @@ do
 				}
 
 				local FragRes
-				local FragHit   = Fragments * AreaFraction
-				local FragVel   = math.max(FragVel - ( (Table.Dist/FragVel) * FragVel^2 * FragWeight^0.33/10000 )/ACF.DragDiv,0)
+				local FragHit	= Fragments * AreaFraction
+				local FragVel	= math.max(FragVel - ( (Table.Dist/FragVel) * FragVel^2 * FragWeight^0.33/10000 )/ACF.DragDiv,0)
 				local FragKE	= ACF_Kinetic( FragVel , FragWeight*FragHit, 1500 )
 				if FragHit < 0 then
 					if math.Rand(0,1) > FragHit then FragHit = 1 else FragHit = 0 end
@@ -234,7 +234,7 @@ do
 						Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized()*100
 						Occlusion.filter	= NoOcc
 
-						local Occ   = util.TraceLine( Occlusion )
+						local Occ	= util.TraceLine( Occlusion )
 
 						if not Occ.Hit and NewHitpos ~= NewHitat then
 							local NewHitat  = Tar:GetPos()
@@ -303,7 +303,7 @@ do
 		end
 
 		util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius*10 )
-		--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1   in console to see
+		--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see
 
 	end
 end
@@ -331,12 +331,12 @@ do
 		if SpallMul > 0 and Caliber*10 > UsedArmor and Caliber > 3 then
 
 			-- Normal spalling core
-			local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 150
+			local TotalWeight	= PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 150
 			local Spall		= math.min(math.floor((Caliber-3)*ACF.KEtoSpall*SpallMul*1.33)*ACF.SpallMult,24)
-			local SpallWeight   = TotalWeight/Spall*SpallMul
+			local SpallWeight	= TotalWeight/Spall*SpallMul
 			local SpallVel	= (KE*16/SpallWeight)^0.5/Spall*SpallMul
 			local SpallArea	= (SpallWeight/7.8)^0.33
-			local SpallEnergy   = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+			local SpallEnergy	= ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
 			for i = 1,Spall do
 
@@ -352,8 +352,8 @@ do
 				ACE.Spall[Index].start  = HitPos
 				ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized()+VectorRand()/3):GetNormalized()*math.max( SpallVel*10, math.random(450,600) ) --I got bored of spall not going across the tank
 				ACE.Spall[Index].filter = table.Copy(Filter)
-				ACE.Spall[Index].mins   = Vector(0,0,0)
-				ACE.Spall[Index].maxs   = Vector(0,0,0)
+				ACE.Spall[Index].mins	= Vector(0,0,0)
+				ACE.Spall[Index].maxs	= Vector(0,0,0)
 
 				ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor)
 
@@ -378,7 +378,7 @@ do
 
 		--General
 		local FindEnd	= true			--marked for initial loop
-		local TraceBugged   = false			--Sometimes trace tends to bug itself and renders the loop useless, so we need to tag it
+		local TraceBugged	= false			--Sometimes trace tends to bug itself and renders the loop useless, so we need to tag it
 		local iteration	= 0				--since while has not index
 
 		local EntsToHit	= Filter	--Used for the second tracer, where it tells what ents must hit
@@ -557,12 +557,12 @@ do
 			if MatData.IsExplosive then Filter[1].ACF.ERAexploding = true return end
 
 			-- HESH spalling core
-			local TotalWeight   = PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 2500
+			local TotalWeight	= PI * (Caliber/2)^2 * math.max(UsedArmor,30) * 2500
 			local Spall		= math.min(math.floor((Caliber-3)/3*ACF.KEtoSpall*SpallMul),24) --24
-			local SpallWeight   = TotalWeight/Spall*SpallMul
+			local SpallWeight	= TotalWeight/Spall*SpallMul
 			local SpallVel	= (HEFiller*16/SpallWeight)^0.5/Spall*SpallMul
 			local SpallArea	= (SpallWeight/7.8)^0.33
-			local SpallEnergy   = ACF_Kinetic( SpallVel , SpallWeight, 800 )
+			local SpallEnergy	= ACF_Kinetic( SpallVel , SpallWeight, 800 )
 
 			for i = 1,Spall do
 
@@ -619,7 +619,7 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 		local MatData	= ACE_GetMaterialData( Mat )
 
 		local spallarmor	= MatData.spallarmor
-		local spallresist   = MatData.spallresist
+		local spallresist	= MatData.spallresist
 
 		SpallEnergy.Penetration = SpallEnergy.Penetration / spallarmor
 
@@ -730,7 +730,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 		Bullet.Ricochets	= Bullet.Ricochets + 1
 		Bullet["Pos"]	= HitPos + HitNormal * 0.75
-		Bullet.FlightTime   = 0
+		Bullet.FlightTime	= 0
 		Bullet.Flight	= (ACF_RicochetVector(Bullet.Flight, HitNormal) + VectorRand()*0.025):GetNormalized() * Speed * Ricochet
 
 		if IsValid( ACF_GetPhysicalParent(Target):GetPhysicsObject() ) then
@@ -783,7 +783,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 		local Angle	= ACF_GetHitAngle( HitNormal, Bullet.Flight )
 		local MinAngle  = math.min(Bullet.Ricochet - Speed/39.37/30 + 20,89.9)  --Making the chance of a ricochet get higher as the speeds increase
 
-		if Angle > math.random(MinAngle,90) and Angle < 89.9 then   --Checking for ricochet
+		if Angle > math.random(MinAngle,90) and Angle < 89.9 then	--Checking for ricochet
 			Ricochet = Angle/90*0.75
 		end
 
@@ -798,7 +798,7 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 	else
 		Bullet.Flight	= Bullet.Flight * (1 - loss)
 		Bullet.Pos		= DigRes.StartPos + Bullet.Flight:GetNormalized() * 0.25 --this is actually where trace left brush
-		HitRes.Penetrated   = true
+		HitRes.Penetrated	= true
 	end
 
 	return HitRes
@@ -1042,7 +1042,7 @@ do
 		local HEWeight
 		local ExplodePos = {}
 
-		local MaxGroup   = ACF.ScaledEntsMax	-- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
+		local MaxGroup	= ACF.ScaledEntsMax	-- Max number of ents to be cached. Reducing this value will make explosions more realistic at the cost of more explosions = lag
 		local MaxHE	= ACF.ScaledHEMax	-- Max amount of HE to be cached. This is useful when we dont want nukes being created by large amounts of clipped ammo.
 
 		local Inflictor  = ent.Inflictor or nil
@@ -1057,7 +1057,7 @@ do
 			HEWeight = ( math.min( Fuel, Capacity ) / ACF.FuelDensity[Type] ) * FuelExplosionScale
 		else
 
-			local HE		= ent.BulletData.FillerMass   or 0
+			local HE		= ent.BulletData.FillerMass	or 0
 			local Propel	= ent.BulletData.PropMass	or 0
 			local Ammo	= ent.Ammo					or 0
 
@@ -1139,7 +1139,7 @@ do
 
 						HEWeight = HEWeight + FoundHEWeight
 
-						Found.IsExplosive   = false
+						Found.IsExplosive	= false
 						Found.DamageAction  = false
 						Found.KillAction	= false
 						Found.Exploding	= true

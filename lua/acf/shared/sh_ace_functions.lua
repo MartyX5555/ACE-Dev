@@ -91,7 +91,7 @@ end
 
 function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
 
-	local PEnergy   = ACF.PBase * ((1+Propellant)^ACF.PScale-1)
+	local PEnergy	= ACF.PBase * ((1+Propellant)^ACF.PScale-1)
 	local Speed	= ((PEnergy*2000/Mass)^ACF.MVScale)
 	local Final	= Speed -- - Speed * math.Clamp(Speed/2000,0,0.5)
 

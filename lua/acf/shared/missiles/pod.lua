@@ -6,7 +6,7 @@ ACF_DefineRackClass("POD", {
 	muzzleflash	= "40mm_muzzleflash_noscale",
 	rofmod		= 2,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 
 	hidemissile	= true,
@@ -32,11 +32,11 @@ ACF_DefineRack("40mm7xPOD", {
 	armour	= 15,
 	caliber	= 4,
 
-	reloadmul   = 150,
+	reloadmul	= 150,
 
 	hidemissile	= false,
 	protectmissile  = true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -64,11 +64,11 @@ ACF_DefineRack("70mm7xPOD", {
 	armour	= 24,
 	caliber	= 7,
 
-	reloadmul   = 150,
+	reloadmul	= 150,
 
 	hidemissile	= false,
 	protectmissile  = true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -96,7 +96,7 @@ ACF_DefineRack("1x BGM-71E", {
 	armour  = 18,
 	caliber = 13,
 
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
 	hidemissile	= true,
 
@@ -120,7 +120,7 @@ ACF_DefineRack("2x BGM-71E", {
 	armour  = 18,
 	caliber = 13,
 
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
 	hidemissile	= true,
 
@@ -145,7 +145,7 @@ ACF_DefineRack("4x BGM-71E", {
 	armour  = 24,
 	caliber = 13,
 
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
 	hidemissile	= true,
 
@@ -171,7 +171,7 @@ ACF_DefineRack("380mmRW61", {
 	caliber	= 38,
 
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
 
 	mountpoints =
@@ -197,7 +197,7 @@ ACF_DefineRack("3xUARRK", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -220,7 +220,7 @@ ACF_DefineRack("6xUARRK", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	inverted = true,
 
@@ -249,7 +249,7 @@ ACF_DefineRack("1x FIM-92", {
 	caliber = 11,
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -271,7 +271,7 @@ ACF_DefineRack("2x FIM-92", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -293,7 +293,7 @@ ACF_DefineRack("4x FIM-92", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -318,7 +318,7 @@ ACF_DefineRack("1x Strela-1", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -339,7 +339,7 @@ ACF_DefineRack("2x Strela-1", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -362,7 +362,7 @@ ACF_DefineRack("4x Strela-1", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -387,7 +387,7 @@ ACF_DefineRack("1x Ataka", {
 
 	protectmissile  = true,
 	hidemissile	= true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -410,7 +410,7 @@ ACF_DefineRack("1x SPG9", {
 
 	protectmissile  = true,
 	hidemissile	= true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -432,7 +432,7 @@ ACF_DefineRack("1x Kornet", {
 
 	protectmissile  = true,
 	hidemissile	= true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -444,7 +444,7 @@ ACF_DefineRack("1x Kornet", {
 ACF_DefineRack("127mm4xPOD", {
 	name = "5.0 Inch Zuni Pod",
 	desc = "LAU-10/A Pod for the Zuni rocket.",
-	model   = "models/ghosteh/lau10.mdl",
+	model	= "models/ghosteh/lau10.mdl",
 	gunclass = "POD",
 	weight = 100,
 	year = 1957,
@@ -454,7 +454,7 @@ ACF_DefineRack("127mm4xPOD", {
 
 	protectmissile  = true,
 	hidemissile	= false,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{
@@ -477,7 +477,7 @@ ACF_DefineRack("1x 9m311", {
 	armour  = 18,
 	caliber = 12,
 
-	whitelistonly   = true,
+	whitelistonly	= true,
 	protectmissile  = true,
 	hidemissile	= true,
 
@@ -501,7 +501,7 @@ ACF_DefineRack("1x Javelin", {
 
 	protectmissile  = true,
 	hidemissile	= true,
-	whitelistonly   = true,
+	whitelistonly	= true,
 
 	mountpoints =
 	{

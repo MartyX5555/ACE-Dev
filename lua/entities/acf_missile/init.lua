@@ -30,7 +30,7 @@ function ENT:Initialize()
 	self.SpecialDamage = true	-- If true needs a special ACF_OnDamage function
 	self.SpecialHealth = true	-- If true needs a special ACF_Activate function
 
-	self.CanTrack   = false		-- Used when the missile has waited the required time to guide
+	self.CanTrack	= false		-- Used when the missile has waited the required time to guide
 	self.Timer	= false
 
 	self.CutoutTime = CurTime() + 10000
@@ -100,8 +100,8 @@ function ENT:CalcFlight()
 	local Pos	= self.CurPos
 	local Dir	= self.CurDir
 
-	local LastPos   = self.LastPos
-	local LastVel   = self.LastVel
+	local LastPos	= self.LastPos
+	local LastVel	= self.LastVel
 	local Flight	= self.FlightTime
 
 	local Speed	= LastVel:Length()
@@ -149,17 +149,17 @@ function ENT:CalcFlight()
 		local Dist	= Pos:Distance(TargetPos)
 		TargetPos	= TargetPos + (Vector(0,0,self.Gravity * Dist / 100000)) + Vector(math.random(-missileInac,missileInac),math.random(-missileInac,missileInac),math.random(-missileInac,missileInac))
 		local LOS	= (TargetPos - Pos):GetNormalized()
-		local LastLOS   = self.LastLOS
+		local LastLOS	= self.LastLOS
 		local NewDir	= Dir
-		local DirDiff   = 0
+		local DirDiff	= 0
 
 		if LastLOS then
 
-			local Agility   = self.Agility
+			local Agility	= self.Agility
 			local SpeedMul  = math.min((Speed / DeltaTime / self.MinimumSpeed) ^ 3,1)
 
-			local LOSDiff   = math.deg(math.acos( LastLOS:Dot(LOS) )) * 20
-			local MaxTurn   = Agility * SpeedMul * 5
+			local LOSDiff	= math.deg(math.acos( LastLOS:Dot(LOS) )) * 20
+			local MaxTurn	= Agility * SpeedMul * 5
 
 			if LOSDiff > 0.01 and MaxTurn > 0.1 then
 
@@ -289,7 +289,7 @@ function ENT:CalcFlight()
 
 				if CFW then
 
-					local conTarget   = HitTarget:GetContraption() or {}
+					local conTarget	= HitTarget:GetContraption() or {}
 					local conLauncher = self.Launcher:GetContraption() or {}
 
 					if conTarget == conLauncher then -- Not required to do anything else.
@@ -398,7 +398,7 @@ function ENT:Launch()
 	self.Guidance:Configure(self)
 	self.Fuse:Configure(self, self.Guidance)
 
-	self.Launched   = true
+	self.Launched	= true
 	self.ThinkDelay = 1 / 66
 	self.Filter	= self.Filter or {self}
 
@@ -499,11 +499,11 @@ function ENT:ConfigureFlight()
 	self.Gravity		= GetConVar("sv_gravity"):GetFloat()
 	self.DragCoef	= Round.dragcoef
 	self.DragCoefFlight = Round.dragcoefflight or Round.dragcoef
-	self.MinimumSpeed   = Round.minspeed
+	self.MinimumSpeed	= Round.minspeed
 
 	self.FinMultiplier  = Round.finmul
 	self.Agility		= GunData.agility or 1
-	self.guidanceInac   = GunData.guidanceInac or 0
+	self.guidanceInac	= GunData.guidanceInac or 0
 	self.CurPos		= BulletData.Pos
 	self.CurDir		= BulletData.Flight:GetNormalized()
 	self.LastPos		= self.CurPos
@@ -515,7 +515,7 @@ function ENT:ConfigureFlight()
 	local Length		= GunData.length
 	local Width		= GunData.caliber
 
-	self.RotMultipler   = GunData.rotmult or 1
+	self.RotMultipler	= GunData.rotmult or 1
 	self.MaxTorque	= GunData.maxrottq or 1000000
 	self.Inertia		= 0.08333 * Mass * (3.1416 * (Width / 2) ^ 2 + Length)
 	self.TorqueMul	= Length * 3
@@ -640,7 +640,7 @@ function ENT:Dud()
 		Vel = NewDir * VelMul
 	end
 
-	if Vel then   --making check
+	if Vel then	--making check
 		Phys:SetVelocity(Vel)
 	end
 
@@ -733,7 +733,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Area / 0.78)   --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop Area gone
 	local Percent = 1
 
@@ -750,7 +750,7 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Density	= (self.PhysObj:GetMass()*1000) / self.ACF.Volume
 	self.ACF.Type	= "Prop"
 
-	self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
 
 end
 
@@ -758,11 +758,11 @@ do
 
 	local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
-	function ENT:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor )   --This function needs to return HitRes
+	function ENT:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor )	--This function needs to return HitRes
 
 		if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
 
-		local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )   --Calling the standard damage prop function
+		local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )	--Calling the standard damage prop function
 
 		-- Detonate if the shot penetrates the casing.
 		HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0

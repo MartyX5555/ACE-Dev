@@ -218,7 +218,7 @@ function ENT:AcquireLock()
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
 
-		nonlocang   = difpos:Angle()
+		nonlocang	= difpos:Angle()
 		ang		= self:WorldToLocalAngles(nonlocang)		--Used for testing if inrange
 		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 

@@ -53,7 +53,7 @@ if SERVER then
 
 		if breachProb > math.random() and maxPenetration > armor then			-- Breach chance roll
 
-			HitRes.Damage   = FrArea / resiliance * DamageModifier * damageMult						-- Inflicted Damage
+			HitRes.Damage	= FrArea / resiliance * DamageModifier * damageMult						-- Inflicted Damage
 			HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 			HitRes.Loss	= armor / maxPenetration						-- Energy loss in percents
 
@@ -64,7 +64,7 @@ if SERVER then
 
 			local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
-			HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
+			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss	= Penetration / maxPenetration
 
@@ -75,7 +75,7 @@ if SERVER then
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness)
 
-		HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
+		HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
 		HitRes.Overkill = 0
 		HitRes.Loss	= 1
 

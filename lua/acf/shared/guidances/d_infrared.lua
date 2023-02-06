@@ -227,7 +227,7 @@ function this:AcquireLock(missile)
 		--Skip if not Hotter than AmbientTemp in deg C.
 		if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
 
-		ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())   --Used for testing if inrange
+		ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
 		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
 
 		if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone

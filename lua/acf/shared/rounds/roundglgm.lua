@@ -46,8 +46,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)

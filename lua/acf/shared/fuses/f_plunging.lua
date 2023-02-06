@@ -62,7 +62,7 @@ function this:GetDetonate(missile, guidance)
 	local missilePos = missile:GetPos()
 
 	local tracedata = {
-		start   = missilePos,
+		start	= missilePos,
 		endpos  = missilePos + missile:GetUp() * -self.Distance,
 		filter  = missile.Filter or missile,
 	}
@@ -95,10 +95,10 @@ function this:PerformDetonation( missile, bdata, phys, pos )
 	bdata.Flight = missile:GetUp() * - 100
 
 	bdata.Owner = bdata.Owner or missile.Owner
-	bdata.Pos   = pos + (missile.DetonateOffset or bdata.Flight)
+	bdata.Pos	= pos + (missile.DetonateOffset or bdata.Flight)
 
-	bdata.NoOcc =   missile
-	bdata.Gun   =   missile
+	bdata.NoOcc =	missile
+	bdata.Gun	=	missile
 
 	bdata.Filter = bdata.Filter or {}
 	table.insert( bdata.Filter, missile )

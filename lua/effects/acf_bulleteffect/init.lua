@@ -66,10 +66,10 @@ function EFFECT:Init( data )
 
 		BulletData.SimFlight	= data:GetStart()*10
 		BulletData.SimPos	= data:GetOrigin()
-		BulletData.SimPosLast   = BulletData.SimPos
+		BulletData.SimPosLast	= BulletData.SimPos
 		BulletData.Caliber	= BulletData.Crate:GetNWFloat( "Caliber", 10 )
 		BulletData.RoundMass	= BulletData.Crate:GetNWFloat( "ProjMass", 10 )
-		BulletData.FillerMass   = BulletData.Crate:GetNWFloat( "FillerMass" )
+		BulletData.FillerMass	= BulletData.Crate:GetNWFloat( "FillerMass" )
 		BulletData.WPMass	= BulletData.Crate:GetNWFloat( "WPMass" )
 		BulletData.DragCoef	= BulletData.Crate:GetNWFloat( "DragCoef", 1 )
 		BulletData.AmmoType	= BulletData.Crate:GetNWString( "AmmoType", "AP" )
@@ -79,7 +79,7 @@ function EFFECT:Init( data )
 		BulletData.LastThink	= CurTime() --ACF.CurTime
 		BulletData.Effect	= self.Entity
 		BulletData.CrackCreated = false
-		BulletData.InitialPos   = BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
+		BulletData.InitialPos	= BulletData.SimPos --Store the first pos, se we can limit the crack sound at certain distance
 
 		BulletData.BulletModel  = BulletData.Crate:GetNWString( "BulletModel", "models/munitions/round_100mm_shot.mdl" )
 

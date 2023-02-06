@@ -32,7 +32,7 @@ local configs = this.Configurable
 configs[#configs + 1] =
 {
 	Name = "Distance",		-- name of the variable to change
-	DisplayName = "Distance",   -- name displayed to the user
+	DisplayName = "Distance",	-- name displayed to the user
 	CommandName = "Ds",		-- shorthand name used in console commands
 
 	Type = "number",			-- lua type of the configurable variable
@@ -109,7 +109,7 @@ do
 			if ACF_Check( HitEnt ) then
 
 				local HitPos	= HitEnt:GetPos()
-				local tolocal   = missile:WorldToLocal(HitPos)
+				local tolocal	= missile:WorldToLocal(HitPos)
 
 				-- Cool
 				if CFW then

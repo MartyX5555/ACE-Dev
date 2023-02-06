@@ -5,7 +5,7 @@ local Round = {}
 
 Round.type  = "Ammo"									-- Tells the spawn menu what entity to spawn
 Round.name  = "[APC] - "..ACFTranslation.ShellAPC[1]	-- Human readable name
-Round.model = "models/munitions/round_100mm_shot.mdl"   -- Shell flight model
+Round.model = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
 Round.desc  = ACFTranslation.ShellAPC[2]
 Round.netid = 17										-- Unique ammotype ID for network transmission
 
@@ -22,8 +22,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData	= {}
 	local GUIData	= {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 
@@ -43,7 +43,7 @@ function Round.convert( Crate, PlayerData )
 
 
 	if SERVER then --Only the crates need this part
-		ServerData.Id   = PlayerData.Id
+		ServerData.Id	= PlayerData.Id
 		ServerData.Type = PlayerData.Type
 		return table.Merge(Data,ServerData)
 	end
@@ -211,14 +211,14 @@ function Round.guicreate( Panel, Table )
 
 	ACE_UpperCommonDataDisplay()
 
-	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:AmmoCheckbox("Tracer", "Tracer", "")		--Tracer checkbox (Name, Title, Desc)
 	acfmenupanel:AmmoCheckbox("TwoPiece", "Enable Two Piece Storage", "", "" )
 
 	acfmenupanel:CPanelText("RicoDisplay", "")  --estimated rico chance
-	acfmenupanel:CPanelText("PenetrationDisplay", "")   --Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("PenetrationDisplay", "")	--Proj muzzle penetration (Name, Desc)
 
 	Round.guiupdate( Panel, Table )
 
@@ -244,7 +244,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
 	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_UpperCommonDataDisplay( Data, PlayerData )
 	ACE_CommonDataDisplay( Data )

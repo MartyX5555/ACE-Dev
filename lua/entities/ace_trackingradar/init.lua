@@ -49,7 +49,7 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar.Cone				= Radar.ICone
 	Radar.InaccuracyMul		= (0.035 * (Radar.Cone/15)^2)*0.2
 	Radar.DPLRFAC			= 65-(Radar.Cone/2)
-	Radar.ConeInducedGCTRSize   = Radar.Cone * 10
+	Radar.ConeInducedGCTRSize	= Radar.Cone * 10
 
 	Radar.Id					= Id
 	Radar.Class				= radar.class
@@ -174,9 +174,9 @@ function ENT:Think()
 			local ScanArray = ACE.contraptionEnts
 
 			local thisPos	= self:GetPos()
-			local thisforward   = self:GetForward()
-			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))   --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-			local randinac2	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))   --Using one inaccuracy was boring
+			local thisforward	= self:GetForward()
+			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
+			local randinac2	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using one inaccuracy was boring
 
 			local ownArray	= {}
 			local posArray	= {}

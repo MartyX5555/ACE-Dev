@@ -10,7 +10,7 @@ Material.year		= 1955
 Material.massMod		= 2
 Material.curve		= 0.95
 
-Material.effectiveness	= 2.5   --5 --Data before to angle factor. Needs proper testing
+Material.effectiveness	= 2.5	--5 --Data before to angle factor. Needs proper testing
 Material.HEATeffectiveness  = 8	--20
 
 Material.resiliance		= 1
@@ -22,7 +22,7 @@ Material.Neffectiveness	= 0.25
 Material.Nresiliance		= 1
 
 Material.APSensorFactor	= 4	-- quotient used to determinate minimal pen for detonation for Kinetic shells
-Material.HEATSensorFactor   = 16	-- quotient used to determinate minimal pen for detonation for chemical shells
+Material.HEATSensorFactor	= 16	-- quotient used to determinate minimal pen for detonation for chemical shells
 
 Material.spallarmor	= 1
 Material.spallresist	= 1
@@ -43,7 +43,7 @@ if SERVER then
 	Material.HEATList = {
 
 		HEAT	= true,
-		THEAT   = true,
+		THEAT	= true,
 		HEATFS  = true,
 		THEATFS = true
 	}
@@ -96,7 +96,7 @@ if SERVER then
 			--Importart to remove the ent before the explosions begin
 			Entity:Remove()
 
-			HitRes.Damage   = 9999999999999
+			HitRes.Damage	= 9999999999999
 			HitRes.Overkill = math.Clamp(maxPenetration - blastArmor,0,1)					-- Remaining penetration.
 			HitRes.Loss	= math.Clamp(blastArmor / maxPenetration,0,0.98)					-- leaves 2% max penetration to pass
 
@@ -150,7 +150,7 @@ if SERVER then
 			-- Breach chance roll
 			if breachProb > math.random() and maxPenetration > armor then
 
-				HitRes.Damage   = FrArea / resiliance * damageMult		-- Inflicted Damage
+				HitRes.Damage	= FrArea / resiliance * damageMult		-- Inflicted Damage
 				HitRes.Overkill = maxPenetration - armor					-- Remaining penetration
 				HitRes.Loss	= armor / maxPenetration					-- Energy loss in percents
 
@@ -161,7 +161,7 @@ if SERVER then
 
 				local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
-				HitRes.Damage   = ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
+				HitRes.Damage	= ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
 				HitRes.Overkill = ( maxPenetration - Penetration )
 				HitRes.Loss	= Penetration / maxPenetration
 
@@ -172,7 +172,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-			HitRes.Damage   = (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
+			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 

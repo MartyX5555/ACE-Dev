@@ -8,7 +8,7 @@ ACF_defineGunClass("SAM", {
 	rofmod		= 1,
 	year = 1960,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor",
 	reloadmul	= 8
@@ -25,10 +25,10 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 	length		= 150,
 	caliber		= 11,
 	weight		= 20,									-- 15.1,	-- Don't scale down the weight though!
-	modeldiameter   = 3,									-- in cm
+	modeldiameter	= 3,									-- in cm
 	year			= 1978,
 	rofmod		= 0.15,
-	rotmult		= 0.1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult		= 0.1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/fim_92.mdl",
@@ -77,7 +77,7 @@ ACF_defineGun("Mistral SAM", {								-- id
 	length		= 150,
 	caliber		= 11,
 	weight		= 19.7,									-- 15.1,	-- Don't scale down the weight though!
-	modeldiameter   = 3,									-- in cm
+	modeldiameter	= 3,									-- in cm
 	year			= 1974,
 	rofmod		= 0.15,
 	rotmult		= 0.25,
@@ -128,7 +128,7 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 	weight		= 72,									-- 15.1,	-- Don't scale down the weight though!
 	year			= 1960,
 	rofmod		= 0.3,
-	modeldiameter   = 10,
+	modeldiameter	= 10,
 	rotmult		= 1,
 
 	round = {
@@ -180,7 +180,7 @@ ACF_defineGun("9M311 SAM", {										-- id
 	weight	= 71,										-- Don't scale down the weight though!
 	year		= 1982,
 	rofmod	= 0.3,
-	modeldiameter   = 3 * 2.54,
+	modeldiameter	= 3 * 2.54,
 	rotmult	= 1,
 
 	round = {

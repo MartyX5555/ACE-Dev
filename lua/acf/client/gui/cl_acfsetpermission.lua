@@ -19,7 +19,7 @@ local PermissionModes	= {}
 local CurrentPermission = "default"
 local DefaultPermission = "none"
 local ModeDescTxt
-local ModeDescDefault   = "Can't find any info for this mode!"
+local ModeDescDefault	= "Can't find any info for this mode!"
 local currentMode
 local currentModeTxt	= "\nThe current damage permission mode is %s."
 local introTxt			= "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."

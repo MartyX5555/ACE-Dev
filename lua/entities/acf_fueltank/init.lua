@@ -35,7 +35,7 @@ do
 		self.FuelType	= nil
 		self.EmptyMass	= 0	--mass of tank only
 		self.NextMassUpdate = 0
-		self.Id			= nil   --model id
+		self.Id			= nil	--model id
 		self.Active		= false
 		self.SupplyFuel	= false
 		self.Leaking		= 0
@@ -98,7 +98,7 @@ function ENT:ACF_Activate( Recalc )
 
 end
 
-function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 
 	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulFuel) or 1) --Heat penetrators deal bonus damage to fuel
 	local HitRes = ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function
@@ -209,7 +209,7 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 		pct = self.Fuel / self.Capacity
 	end
 
-	local PhysObj   = self:GetPhysicsObject()
+	local PhysObj	= self:GetPhysicsObject()
 	local Area	= PhysObj:GetSurfaceArea()
 	local Wall	= 0.03937 --wall thickness in inches (1mm)
 
@@ -223,7 +223,7 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 
 	if self.FuelType == "Electric" then
 		self.Liters	= self.Capacity --batteries capacity is different from internal volume
-		self.Capacity   = self.Capacity * ACF.LiIonED
+		self.Capacity	= self.Capacity * ACF.LiIonED
 		self.Fuel	= pct * self.Capacity
 	else
 		self.Fuel	= pct * self.Capacity

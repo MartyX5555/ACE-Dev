@@ -150,8 +150,8 @@ concommand.Add( "ACF_AddSafeZone", function(ply, cmd, args, str)
 
 	if not args[1] then printmsg(HUD_PRINTCONSOLE,
 		" - Add a safezone as an AABB box." ..
-		"\n   Input a name and six numbers.  First three numbers are minimum co-ords, last three are maxs." ..
-		"\n   Example; ACF_addsafezone airbase -500 -500 0 500 500 1000")
+		"\n	Input a name and six numbers.  First three numbers are minimum co-ords, last three are maxs." ..
+		"\n	Example; ACF_addsafezone airbase -500 -500 0 500 500 1000")
 		return false
 	end
 
@@ -197,8 +197,8 @@ concommand.Add( "ACF_RemoveSafeZone", function(ply, cmd, args, str)
 
 	if not args[1] then printmsg(HUD_PRINTCONSOLE,
 		" - Delete a safezone using its name." ..
-		"\n   Input a safezone name.  If it exists, it will be removed." ..
-		"\n   Deletion is not permanent until safezones are saved.")
+		"\n	Input a safezone name.  If it exists, it will be removed." ..
+		"\n	Deletion is not permanent until safezones are saved.")
 		return false
 	end
 
@@ -288,7 +288,7 @@ concommand.Add( "ACF_SetPermissionMode", function(ply, cmd, args, str)
 		end
 		printmsg(HUD_PRINTCONSOLE,
 		" - Set damage permission behaviour mode." ..
-		"\n   Available modes: " .. modes)
+		"\n	Available modes: " .. modes)
 		return false
 	end
 
@@ -328,7 +328,7 @@ concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, cmd, args, str)
 		end
 		printmsg(HUD_PRINTCONSOLE,
 		" - Set damage permission behaviour mode." ..
-		"\n   Available modes: " .. modes)
+		"\n	Available modes: " .. modes)
 		return false
 	end
 

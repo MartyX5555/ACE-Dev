@@ -9,7 +9,7 @@ ACF_defineGunClass("ARTY", {
 	rofmod		= 1,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
 	year = 1944,
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor Arty"
 } )
@@ -29,11 +29,11 @@ ACF_defineGun("Type 63 RA", {							-- id
 	year		= 1960,
 	rofmod	= 0.3,
 	roundclass  = "Rocket",
-	modeldiameter   = 7,
+	modeldiameter	= 7,
 	rotmult	= 60,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	maxrottq	= 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
-	round	=   {
+	round	=	{
 		model		= "models/missiles/glatgm/mgm51.mdl",
 		rackmdl		= "models/missiles/glatgm/mgm51.mdl",
 		maxlength	= 200,
@@ -65,7 +65,7 @@ ACF_defineGun("Type 63 RA", {							-- id
 
 	viewcone	= 180,									-- cone radius, 180 = full 360 tracking
 	agility	= 0.08,
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00									-- minimum fuse arming delay
 } )
 
@@ -85,11 +85,11 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 	year		= 1980,
 	rofmod	= 0.25,
 	roundclass  = "Rocket",
-	modeldiameter   = 10,
-	rotmult	= 20,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 10,
+	rotmult	= 20,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	maxrottq	= 2000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
-	round	=   {
+	round	=	{
 		model		= "models/missiles/9m31.mdl",
 		rackmdl		= "models/missiles/9m31.mdl",
 		maxlength	= 140,
@@ -120,7 +120,7 @@ ACF_defineGun("SAKR-10 RA", {							-- id
 
 	agility	= 0.07,
 	viewcone	= 180,
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00									-- minimum fuse arming delay
 } )
@@ -141,11 +141,11 @@ ACF_defineGun("SS-40 RA", {								-- id
 	year		= 1983,
 	rofmod	= 0.2,
 	roundclass  = "Rocket",
-	modeldiameter   = 4 * 2.54,
-	rotmult	= 25,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 4 * 2.54,
+	rotmult	= 25,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	maxrottq	= 3000, -- Max torque applied to the missile when its rotating during a unguided flight. Use this if you see your missile doing crazy movements when its out.
 
-	round	=   {
+	round	=	{
 		model		= "models/missiles/aim120.mdl",
 		rackmdl		= "models/missiles/aim120.mdl",
 		maxlength	= 180,
@@ -176,7 +176,7 @@ ACF_defineGun("SS-40 RA", {								-- id
 
 	agility	= 0.03,
 	viewcone	= 180,
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00									-- minimum fuse arming delay
 } )
@@ -196,14 +196,14 @@ ACF_defineGun("RW61 RA", {								-- id
 	year		= 1944,
 	rofmod	= 0.25,
 	roundclass  = "Rocket",
-	modeldiameter   = 16,
-	rotmult	= 100,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 16,
+	rotmult	= 100,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round	=
 	{
 		model	= "models/missiles/RW61M.mdl",
 		rackmdl	= "models/missiles/RW61M.mdl",
-		maxlength   = 160,
+		maxlength	= 160,
 		casing	= 1.0,								-- thickness of missile casing, cm
 		armour	= 10,								-- effective armour thickness of casing, in mm
 		propweight  = 5,									-- motor mass - motor casing
@@ -229,7 +229,7 @@ ACF_defineGun("RW61 RA", {								-- id
 	viewcone	= 55,									-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 1,										-- multiplier for missile turn-rate.
-	ghosttime   = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00									-- minimum fuse arming delay
 } )

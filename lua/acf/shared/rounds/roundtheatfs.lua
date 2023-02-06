@@ -34,8 +34,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
@@ -225,8 +225,8 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 		Bullet.InitTime	= SysTime()
 		Bullet.Pos		= HitPos
 		Bullet.Flight	= Bullet.Flight:GetNormalized() * Bullet.SlugMV2 * 39.37
-		Bullet.FlightTime   = 0 --reseting timer
-		Bullet.FuseLength   = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
+		Bullet.FlightTime	= 0 --reseting timer
+		Bullet.FuseLength	= 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 		Bullet.DragCoef	= Bullet.SlugDragCoef2
 
 		Bullet.ProjMass	= Bullet.SlugMass2
@@ -235,7 +235,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 		Bullet.Ricochet	= Bullet.SlugRicochet
 
 		local DeltaTime	= SysTime() - Bullet.LastThink
-		Bullet.StartTrace   = Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())+25)
+		Bullet.StartTrace	= Bullet.Pos - Bullet.Flight:GetNormalized()*(math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())+25)
 		Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)	--Calculates the next shell position
 
 	end
@@ -435,22 +435,22 @@ function Round.guiupdate( Panel, Table )
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
 	-------------------------------------------------------------------------------
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*3.9),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )   --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*3.9),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle(1st)", "")  --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ConeAng2",Data.ConeAng2,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle(2nd)", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("HEAllocation",Data.HEAllocation,0.05,0.95,2, "HE Filler Distribution", "HE Filler Ratio : "..math.floor(((1-Data.HEAllocation)*100)).."% (1st), "..math.floor(Data.HEAllocation*100).."% (2nd)")   --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("HEAllocation",Data.HEAllocation,0.05,0.95,2, "HE Filler Distribution", "HE Filler Ratio : "..math.floor(((1-Data.HEAllocation)*100)).."% (1st), "..math.floor(Data.HEAllocation*100).."% (2nd)")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_Checkboxes( Data )
 
-	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
+	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")  --Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")   --Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s") --Proj muzzle penetration (Name, Desc)
 
-	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration: "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Max Penetration : "..math.floor(Data.MaxPen2).." mm \n")   --Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("SlugDisplay", "1st Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV).." m/s \nMax Penetration: "..math.floor(Data.MaxPen).." mm \n\n 2nd Penetrator \n Penetrator Mass : "..(math.floor(Data.SlugMass2*10000)/10).." g \n Penetrator Caliber : "..(math.floor(Data.SlugCaliber2*100)/10).." mm \n Penetrator Velocity : "..math.floor(Data.SlugMV2).." m/s \n Max Penetration : "..math.floor(Data.MaxPen2).." mm \n")	--Proj muzzle penetration (Name, Desc)
 
 end
 

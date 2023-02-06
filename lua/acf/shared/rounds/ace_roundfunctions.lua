@@ -98,7 +98,7 @@ do
 		local RicoAngle = math.Round(math.min(Rico -  (( (Speed-800) / 39.37 ) /5),89))
 
 		local None = math.max(RicoAngle-10,1) --0% chance to ricochet
-		local Mean = math.max(RicoAngle,1)   --50% chance to ricochet
+		local Mean = math.max(RicoAngle,1)	--50% chance to ricochet
 		local Max = math.max(RicoAngle+10,1)  --100% chance to ricochet
 
 		return None, Mean, Max
@@ -113,7 +113,7 @@ do
 		local D0 = (DragCoef * V0^2 / ACF.DragDiv)		-- initial drag
 		local K1 = ( D0 / (V0^(3/2)) )^-1				-- estimated drag coefficient
 
-		local Vel = (  math.max( math.sqrt(V0) - ((Range*39.37) / (2 * K1)), 0)   )^2
+		local Vel = (  math.max( math.sqrt(V0) - ((Range*39.37) / (2 * K1)), 0)	)^2
 		local Pen = (ACF_Kinetic( Vel, ProjMass, LimitVel ).Penetration/PenArea)*ACF.KEtoRHA
 
 		return (Vel*0.0254), Pen
@@ -162,7 +162,7 @@ do
 			local GunId	= acfmenupanel.AmmoData.Data.id
 			local AmmoGunData = ACF.Weapons.Guns[GunId]
 			local GunClass	= AmmoGunData.gunclass
-			local ClassData   = ACF.Classes.GunClass[GunClass]
+			local ClassData	= ACF.Classes.GunClass[GunClass]
 
 			local ProjLenght = Data.ProjLength
 			local PropLenght = Data.PropLength
@@ -184,7 +184,7 @@ do
 			if not ACE_CheckAmmo( Id ) then
 				Dimensions = CreateRealScale(Id)
 			else
-				local AmmoData   = ACF.Weapons.Ammo[Id]
+				local AmmoData	= ACF.Weapons.Ammo[Id]
 				Dimensions = Vector(AmmoData.Lenght,AmmoData.Width,AmmoData.Height)
 			end
 

@@ -108,7 +108,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 
 	Radar.Model	= radar.model
 	Radar.Weight	= radar.weight
-	Radar.ACFName   = radar.name
+	Radar.ACFName	= radar.name
 	Radar.ConeDegs  = radar.viewcone
 	Radar.Range	= radar.range
 	Radar.Id		= Id

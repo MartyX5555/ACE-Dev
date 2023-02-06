@@ -12,7 +12,7 @@ CreateConVar("sbox_max_acf_explosive", 20)
 function ENT:Initialize()
 
 	self.BulletData = self.BulletData or {}
-	self.SpecialDamage = true   --If true needs a special ACF_OnDamage function
+	self.SpecialDamage = true	--If true needs a special ACF_OnDamage function
 
 	self.Inputs = Wire_CreateInputs( self, { "Detonate" } )
 	self.Outputs = Wire_CreateOutputs( self, {} )
@@ -24,7 +24,7 @@ end
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 function ENT:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor )
 	self.ACF.Armour = 0.1
-	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )   --Calling the standard damage prop function
+	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Angle , Inflictor )	--Calling the standard damage prop function
 	if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
 
 	local CanDo = hook.Run("ACF_AmmoExplode", self, self.BulletData )
@@ -188,7 +188,7 @@ function ENT:Detonate(overrideBData)
 
 	local bdata = overrideBData or self.BulletData
 	local phys  = self:GetPhysicsObject()
-	local pos   = self:GetPos()
+	local pos	= self:GetPos()
 
 	local phyvel =  phys and phys:GetVelocity() or Vector(0, 0, 1000)
 	bdata.Flight =  bdata.Flight or phyvel

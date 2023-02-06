@@ -8,7 +8,7 @@ ACF_defineGunClass("BOMB", {
 	rofmod		= 0.1,
 	year = 1915,
 	sound		= "acf_extra/tankfx/clunk.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	nothrust		= true,
 
@@ -27,11 +27,11 @@ ACF_defineGun("50kgBOMB", {						-- id
 	caliber		= 5.0,
 	weight		= 50,						-- Don't scale down the weight though!
 	year			= 1915,
-	modeldiameter   = 10,					-- in cm
+	modeldiameter	= 10,					-- in cm
 	round = {
 		model	= "models/bombs/fab50.mdl",
 		rackmdl	= "models/bombs/fab50.mdl",
-		maxlength   = 62,
+		maxlength	= 62,
 		casing	= 0.05,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -56,7 +56,7 @@ ACF_defineGun("50kgBOMB", {						-- id
 					["4xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )
@@ -72,11 +72,11 @@ ACF_defineGun("100kgBOMB", {						-- id
 	caliber		= 10.0,
 	weight		= 100,						-- Don't scale down the weight though!
 	year			= 1939,
-	modeldiameter   = 13,				-- in cm
+	modeldiameter	= 13,				-- in cm
 	round = {
 		model	= "models/bombs/fab100.mdl",
 		rackmdl	= "models/bombs/fab100.mdl",
-		maxlength   = 125,
+		maxlength	= 125,
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -101,7 +101,7 @@ ACF_defineGun("100kgBOMB", {						-- id
 					["4xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )
@@ -116,11 +116,11 @@ ACF_defineGun("250kgBOMB", {						-- id
 	caliber		= 12.5,
 	weight		= 250,						-- Don't scale down the weight though!
 	year			= 1941,
-	modeldiameter   = 15, -- in cm
+	modeldiameter	= 15, -- in cm
 	round = {
 		model	= "models/bombs/fab250.mdl",
 		rackmdl	= "models/bombs/fab250.mdl",
-		maxlength   = 150,						-- was 115, wtf!
+		maxlength	= 150,						-- was 115, wtf!
 		casing	= 0.15,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -145,7 +145,7 @@ ACF_defineGun("250kgBOMB", {						-- id
 					["4xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )
@@ -160,11 +160,11 @@ ACF_defineGun("500kgBOMB", {						-- id
 	caliber		= 30,
 	weight		= 500,						-- Don't scale down the weight though!
 	year			= 1943,
-	modeldiameter   = 18,				-- in cm
+	modeldiameter	= 18,				-- in cm
 	round = {
 		model	= "models/bombs/fab500.mdl",
 		rackmdl	= "models/bombs/fab500.mdl",
-		maxlength   = 300,
+		maxlength	= 300,
 		casing	= 0.2,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -186,7 +186,7 @@ ACF_defineGun("500kgBOMB", {						-- id
 					["2xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )
@@ -201,11 +201,11 @@ ACF_defineGun("1000kgBOMB", {					-- id
 	caliber		= 30,
 	weight		= 1000,						-- Don't scale down the weight though!
 	year			= 1945,
-	modeldiameter   = 26,				-- in cm
+	modeldiameter	= 26,				-- in cm
 	round = {
 		model	= "models/bombs/an_m66.mdl",
 		rackmdl	= "models/bombs/an_m66.mdl",
-		maxlength   = 600,
+		maxlength	= 600,
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -226,7 +226,7 @@ ACF_defineGun("1000kgBOMB", {					-- id
 					["1xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )
@@ -242,11 +242,11 @@ ACF_defineGun("100kgGBOMB", {					-- id
 	caliber		= 10.0,
 	weight		= 150,						-- Don't scale down the weight though!
 	year			= 1939,
-	modeldiameter   = 13,				-- in cm
+	modeldiameter	= 13,				-- in cm
 	round = {
 		model	= "models/missiles/micro.mdl",
 		rackmdl	= "models/missiles/micro.mdl",
-		maxlength   = 125,
+		maxlength	= 125,
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -271,7 +271,7 @@ ACF_defineGun("100kgGBOMB", {					-- id
 					["4xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 })
@@ -287,11 +287,11 @@ ACF_defineGun("250kgGBOMB", {					-- id
 	caliber		= 12.5,
 	weight		= 375,						-- Don't scale down the weight though!
 	year			= 1941,
-	modeldiameter   = 15,				-- in cm
+	modeldiameter	= 15,				-- in cm
 	round = {
 		model	= "models/missiles/fab250.mdl",
 		rackmdl	= "models/missiles/fab250.mdl",
-		maxlength   = 150,
+		maxlength	= 150,
 		casing	= 0.2,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
@@ -316,7 +316,7 @@ ACF_defineGun("250kgGBOMB", {					-- id
 					["4xRK"] = true
 				},
 
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00							-- minimum fuse arming delay
 } )

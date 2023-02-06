@@ -69,7 +69,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local Armour	= EmptyMass*1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health	= self.ACF.Volume/ACF.Threshold						--Setting the threshold of the prop Area gone
-	local Percent   = 1
+	local Percent	= 1
 
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
 		Percent = self.ACF.Health/self.ACF.MaxHealth
@@ -96,7 +96,7 @@ do
 
 	local HEATtbl = {
 		HEAT	= true,
-		THEAT   = true,
+		THEAT	= true,
 		HEATFS  = true,
 		THEATFS = true
 	}
@@ -107,7 +107,7 @@ do
 		HEFS	= true
 	}
 
-	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )   --This function needs to return HitRes
+	function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
 
 		local Mul	= (( HEATtbl[Type] and ACF.HEATMulAmmo ) or 1) --Heat penetrators deal bonus damage to ammo
 		local HitRes	= ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function
@@ -140,7 +140,7 @@ do
 
 			local Ratio	= ( HitRes.Damage/self.BulletData.RoundVolume )^0.2
 			local CMul	= 1  --30% Chance to detonate, 5% chance to cookoff
-			local DetRand   = 0
+			local DetRand	= 0
 
 			--Heat penetrators deal bonus damage to ammo, 90% chance to detonate, 15% chance to cookoff
 			if HEATtbl[Type] then
@@ -250,7 +250,7 @@ do
 					Dimensions  = Scale
 
 					local ModelData = ACE.ModelData[Model]
-					local DefaultSize   = ModelData.DefaultSize
+					local DefaultSize	= ModelData.DefaultSize
 					local Mesh		= ModelData.CustomMesh
 					local PhysMaterial  = ModelData.physMaterial
 					local EntityScale = Vector(Scale.x / DefaultSize, Scale.y / DefaultSize, Scale.z / DefaultSize)
@@ -300,9 +300,9 @@ do
 			Ammo.Ammo	= Ammo.Capacity
 			Ammo.EmptyMass  = Weight or 1
 
-			Ammo.AmmoMass   = Ammo.EmptyMass + Ammo.AmmoMassMax
+			Ammo.AmmoMass	= Ammo.EmptyMass + Ammo.AmmoMassMax
 
-			Ammo.LastMass   = 1
+			Ammo.LastMass	= 1
 			Ammo:UpdateMass()
 
 			Owner:AddCount( "_acf_ammo", Ammo )
@@ -429,7 +429,7 @@ do
 		["70mmFFARDAGR"]	= "70mmFFAR",
 		["9M113 ASM"]	= "9M133 ASM",
 		["9M311"]		= "9M311 SAM",
-		["SIMBAD-RC SAM"]   = "Mistral SAM"
+		["SIMBAD-RC SAM"]	= "Mistral SAM"
 	}
 
 	--List of munitions no longer stay on ACE
@@ -465,11 +465,11 @@ do
 		self.RoundData15		= Data15					or 0
 
 
-		local PlayerData = {}   --what a mess
+		local PlayerData = {}	--what a mess
 		PlayerData.Id		= self.RoundId
 		PlayerData.Type		= self.RoundType
-		PlayerData.PropLength   = self.RoundPropellant
-		PlayerData.ProjLength   = self.RoundProjectile
+		PlayerData.PropLength	= self.RoundPropellant
+		PlayerData.ProjLength	= self.RoundProjectile
 		PlayerData.Data5		= self.RoundData5
 		PlayerData.Data6		= self.RoundData6
 		PlayerData.Data7		= self.RoundData7
@@ -721,9 +721,9 @@ function ENT:Think()
 				self.BulletData.Pos	= self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
 				self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
 
-				self.BulletData.Owner   = self.BulletData.Owner or self.Inflictor or self.Owner
-				self.BulletData.Gun	= self.BulletData.Gun   or self
-				self.BulletData.Crate   = self.BulletData.Crate or self:EntIndex()
+				self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self.Owner
+				self.BulletData.Gun	= self.BulletData.Gun	or self
+				self.BulletData.Crate	= self.BulletData.Crate or self:EntIndex()
 
 				self.CreateShell		= ACF.RoundTypes[CrateType].create
 				self:CreateShell( self.BulletData )

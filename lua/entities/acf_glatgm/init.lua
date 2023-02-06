@@ -178,10 +178,10 @@ function ENT:Detonate()
 
 		btdat["SlugMass"]	= self.BulletData.SlugMass
 		btdat["SlugCaliber"]	= self.BulletData.SlugCaliber
-		btdat["SlugDragCoef"]   = self.BulletData.SlugDragCoef
+		btdat["SlugDragCoef"]	= self.BulletData.SlugDragCoef
 		btdat["SlugMV"]		= self.BulletData.SlugMV
 		btdat["SlugPenArea"]	= self.BulletData.SlugPenArea
-		btdat["SlugRicochet"]   = self.BulletData.SlugRicochet
+		btdat["SlugRicochet"]	= self.BulletData.SlugRicochet
 		btdat["ConeVol"]		= self.BulletData.ConeVol
 		btdat["CasingMass"]	= self.BulletData.CasingMass
 		btdat["BoomFillerMass"] = self.BulletData.BoomFillerMass

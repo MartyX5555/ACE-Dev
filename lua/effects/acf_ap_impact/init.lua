@@ -6,44 +6,44 @@
  ---------------------------------------------------------*/
  function EFFECT:Init( data )
 
-   self.Ent = data:GetEntity()
-   self.Id = self.Ent:GetNWString( "AmmoType", "AP" )
-   self.Caliber = self.Ent:GetNWFloat( "Caliber", 10 )
-   self.Origin = data:GetOrigin()
-   self.DirVec = data:GetNormal()
-   self.Velocity = data:GetScale() --Mass of the projectile in kg
-   self.Mass = data:GetMagnitude() --Velocity of the projectile in gmod units
-   self.Emitter = ParticleEmitter( self.Origin )
+	self.Ent = data:GetEntity()
+	self.Id = self.Ent:GetNWString( "AmmoType", "AP" )
+	self.Caliber = self.Ent:GetNWFloat( "Caliber", 10 )
+	self.Origin = data:GetOrigin()
+	self.DirVec = data:GetNormal()
+	self.Velocity = data:GetScale() --Mass of the projectile in kg
+	self.Mass = data:GetMagnitude() --Velocity of the projectile in gmod units
+	self.Emitter = ParticleEmitter( self.Origin )
 
-   self.Cal = self.Ent:GetNWFloat("Caliber", 2 )
+	self.Cal = self.Ent:GetNWFloat("Caliber", 2 )
 
-   self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
+	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
 
-   local Tr = {}
-   Tr.start = self.Origin - self.DirVec*10
-   Tr.endpos = self.Origin + self.DirVec*10
-   Tr.mins = Vector(0,0,0)
-   Tr.maxs = Vector(0,0,0)
+	local Tr = {}
+	Tr.start = self.Origin - self.DirVec*10
+	Tr.endpos = self.Origin + self.DirVec*10
+	Tr.mins = Vector(0,0,0)
+	Tr.maxs = Vector(0,0,0)
 
-   local SurfaceTr = util.TraceHull( Tr )
+	local SurfaceTr = util.TraceHull( Tr )
 
-   util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec*10 )
+	util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec*10 )
 
-   --debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
-   --debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec*10, 2 , Color(math.random(100,255),0,0) )
+	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
+	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec*10, 2 , Color(math.random(100,255),0,0) )
 
-   --this is crucial for subcaliber, this will boost the dust's size.
-   self.SubCalBoost = {
+	--this is crucial for subcaliber, this will boost the dust's size.
+	self.SubCalBoost = {
 	APDS = true,
 	APDSS = true,
 	APFSDS = true,
 	APFSDSS = true,
 	APCR = true,
 	HVAP = true
-   }
+	}
 
-   --the dust is for non-explosive rounds, so lets skip this
-   self.TypeIgnore = {
+	--the dust is for non-explosive rounds, so lets skip this
+	self.TypeIgnore = {
 	APHE = true,
 	APHECBC = true,
 	HE = true,
@@ -53,35 +53,35 @@
 	HEATFS = true,
 	THEAT = true,
 	THEATFS = true
-   }
+	}
 
-   self.Ignore = {
+	self.Ignore = {
 	npc = true,
 	player =true
-   }
+	}
 
-   -- Material Enum
-   -- 65  ANTLION
-   -- 66 BLOODYFLESH
-   -- 67 CONCRETE / NODRAW
-   -- 68 DIRT
-   -- 70 FLESH
-   -- 71 GRATE
-   -- 72 ALIENFLESH
-   -- 73 CLIP
-   -- 76 PLASTIC
-   -- 77 METAL
-   -- 78 SAND
-   -- 79 FOLIAGE
-   -- 80 COMPUTER
-   -- 83 SLOSH
-   -- 84 TILE
-   -- 86 VENT
-   -- 87 WOOD
-   -- 89 GLASS
+	-- Material Enum
+	-- 65  ANTLION
+	-- 66 BLOODYFLESH
+	-- 67 CONCRETE / NODRAW
+	-- 68 DIRT
+	-- 70 FLESH
+	-- 71 GRATE
+	-- 72 ALIENFLESH
+	-- 73 CLIP
+	-- 76 PLASTIC
+	-- 77 METAL
+	-- 78 SAND
+	-- 79 FOLIAGE
+	-- 80 COMPUTER
+	-- 83 SLOSH
+	-- 84 TILE
+	-- 86 VENT
+	-- 87 WOOD
+	-- 89 GLASS
 
-   --do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
-   if not self.TypeIgnore[self.Id] and self.Id ~= nil then
+	--do this if we are dealing with non-explosive rounds. nil types are being created by HEAT, so skip it too
+	if not self.TypeIgnore[self.Id] and self.Id ~= nil then
 
 	if SurfaceTr.HitWorld or (IsValid(SurfaceTr.Entity) and self.Ignore[SurfaceTr.Entity:GetClass()]) then
 
@@ -109,9 +109,9 @@
 			self:Metal( SmokeColor )
 		end
 	end
-   end
+	end
 
-   local BulletEffect = {}
+	local BulletEffect = {}
 	BulletEffect.Num = 1
 	BulletEffect.Src = self.Origin - self.DirVec
 	BulletEffect.Dir = self.DirVec
@@ -119,28 +119,28 @@
 	BulletEffect.Tracer = 0
 	BulletEffect.Force = 0
 	BulletEffect.Damage = 0
-   LocalPlayer():FireBullets(BulletEffect)
+	LocalPlayer():FireBullets(BulletEffect)
 
-   if self.Emitter then self.Emitter:Finish() end
+	if self.Emitter then self.Emitter:Finish() end
  end
 
 function EFFECT:Dust( SmokeColor )
 
-   local PMul		= self.ParticleMul
-   local Vel		= self.Velocity/2500
-   local Mass		= self.Mass
+	local PMul		= self.ParticleMul
+	local Vel		= self.Velocity/2500
+	local Mass		= self.Mass
 
-   local HalfArea	= ( self.SubCalBoost[self.Id] and 0.75) or 1
-   local ShellArea   = 3.141*(self.Cal/2) * HalfArea
+	local HalfArea	= ( self.SubCalBoost[self.Id] and 0.75) or 1
+	local ShellArea	= 3.141*(self.Cal/2) * HalfArea
 
-   --print(ShellArea)
+	--print(ShellArea)
 
-   --KE main formula
-   local Energy	= math.Clamp( (((Mass*(Vel^2))/2)/2 ) * ShellArea, 4 ,math.max(ShellArea^0.95,4) )
+	--KE main formula
+	local Energy	= math.Clamp( (((Mass*(Vel^2))/2)/2 ) * ShellArea, 4 ,math.max(ShellArea^0.95,4) )
 
-   --print(Energy)
+	--print(Energy)
 
-   for i=1, 3 do
+	for i=1, 3 do
 
 	local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin - self.DirVec*5 )
 	if (Dust) then
@@ -158,25 +158,25 @@ function EFFECT:Dust( SmokeColor )
 
 		Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )
 	end
-   end
+	end
 
 end
 
 function EFFECT:Metal( SmokeColor )
 
-   SmokeColor.a = SmokeColor.a*0.5
+	SmokeColor.a = SmokeColor.a*0.5
 
-   local PMul = self.ParticleMul
-   local Vel = self.Velocity/2500
-   local Mass = self.Mass
+	local PMul = self.ParticleMul
+	local Vel = self.Velocity/2500
+	local Mass = self.Mass
 
-   --this is the size boost fo subcaliber rounds
-   local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
+	--this is the size boost fo subcaliber rounds
+	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
 
-   --KE main formula
-   local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
+	--KE main formula
+	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
 
-   for i=0, math.max(self.Caliber/3,1) do
+	for i=0, math.max(self.Caliber/3,1) do
 
 	local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin - self.DirVec*5 )
 	if (Dust) then
@@ -194,27 +194,27 @@ function EFFECT:Metal( SmokeColor )
 
 		Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )
 	end
-   end
+	end
 
-   local Sparks = EffectData()
+	local Sparks = EffectData()
 	Sparks:SetOrigin( self.Origin )
 	Sparks:SetNormal( self.DirVec+VectorRand()*1.5)
 	Sparks:SetMagnitude( self.Scale/1.75 )
 	Sparks:SetScale( self.Scale/1.75 )
 	Sparks:SetRadius( self.Scale/1.75 )
-   util.Effect( "Sparks", Sparks )
+	util.Effect( "Sparks", Sparks )
 
 end
 
 /*---------------------------------------------------------
-   THINK
+	THINK
 ---------------------------------------------------------*/
 function EFFECT:Think( )
-   return false
+	return false
 end
 
 /*---------------------------------------------------------
-   Draw the effect
+	Draw the effect
 ---------------------------------------------------------*/
 function EFFECT:Render()
 end

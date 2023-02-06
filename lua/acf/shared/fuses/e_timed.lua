@@ -28,7 +28,7 @@ local configs = this.Configurable
 configs[#configs + 1] =
 {
 	Name = "Timer",			-- name of the variable to change
-	DisplayName = "Trigger Delay",   -- name displayed to the user
+	DisplayName = "Trigger Delay",	-- name displayed to the user
 	CommandName = "Tm",		-- shorthand name used in console commands
 
 	Type = "number",			-- lua type of the configurable variable

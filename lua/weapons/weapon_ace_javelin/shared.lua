@@ -228,7 +228,7 @@ function SWEP:GetViewModelPosition( EyePos, EyeAng )
 
 	local Right	= EyeAng:Right()
 	local Up		= EyeAng:Up()
-	local Forward   = EyeAng:Forward()
+	local Forward	= EyeAng:Forward()
 
 	EyePos = EyePos + Offset.x * Right * Mul
 	EyePos = EyePos + Offset.y * Forward * Mul
@@ -253,7 +253,7 @@ function SWEP:GetWhitelistedEntsInCone()
 	local difpos		= Vector()
 	local dist		= 0
 
-	local MinimumDistance = 1   *  39.37
+	local MinimumDistance = 1	*  39.37
 	local MaximumDistance = 2400  *  39.37
 
 	for _, scanEnt in ipairs(ScanArray) do
@@ -315,7 +315,7 @@ function SWEP:AcquireLock()
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
 
-		nonlocang   = difpos:Angle()
+		nonlocang	= difpos:Angle()
 		ang		= self:WorldToLocalAngles(nonlocang)	--Used for testing if inrange
 		absang	= Angle(math.abs(ang.p), math.abs(ang.y), 0)  --Since I like ABS so much
 

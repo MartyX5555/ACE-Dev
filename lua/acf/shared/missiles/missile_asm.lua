@@ -9,7 +9,7 @@ ACF_defineGunClass("ASM", {
 	year = 1969,
 	rofmod		= 1,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor Missile1",		-- Small/Medium size missile
 
@@ -28,7 +28,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	length		= 163,
 	caliber		= 16,
 	weight		= 45,							-- Don't scale down the weight though!
-	modeldiameter   = 3 * 2.54,					-- in cm
+	modeldiameter	= 3 * 2.54,					-- in cm
 	year			= 1984,
 	round = {
 		model		= "models/missiles/agm_114.mdl",
@@ -37,9 +37,9 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		casing		= 0.2,						-- thickness of missile casing, cm
 		armour		= 10,						-- effective armour thickness of casing, in mm
 		propweight	= 1,							-- motor mass - motor casing
-		thrust		= 15000,						-- average thrust - kg*in/s^2   --was 12000
+		thrust		= 15000,						-- average thrust - kg*in/s^2	--was 12000
 		burnrate		= 100,						-- cm^3/s at average chamber pressure
-		starterpct	= 0.25,						-- percentage of the propellant consumed in the starter motor.   --was 0.25
+		starterpct	= 0.25,						-- percentage of the propellant consumed in the starter motor.	--was 0.25
 		minspeed		= 4000,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.001,						-- drag coefficient while falling
 		dragcoefflight  = 0.05,						-- drag coefficient during flight
@@ -61,7 +61,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	seekcone	= 10,
 	viewcone	= 40,								-- getting outside this cone will break the lock.  Divided by 2.
 	agility	= 0.07,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )
@@ -77,7 +77,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 	length		= 383,
 	caliber		= 20.3,
 	weight		= 177,							-- Don't scale down the weight though!
-	modeldiameter   = 4 * 2.54,					-- in cm
+	modeldiameter	= 4 * 2.54,					-- in cm
 	year			= 1969,
 	rofmod		= 0.6,
 	round = {
@@ -90,7 +90,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		thrust		= 2000,						-- average thrust - kg*in/s^2		--was 600
 		burnrate		= 300,						-- cm^3/s at average chamber pressure
 		starterpct	= 0.05,						-- percentage of the propellant consumed in the starter motor.
-		minspeed		= 4000,						-- minimum speed beyond which the fins work at 100% efficiency   --was 4000
+		minspeed		= 4000,						-- minimum speed beyond which the fins work at 100% efficiency	--was 4000
 		dragcoef		= 0.004,						-- drag coefficient while falling								--was 0.001
 		dragcoefflight  = 0.004,						-- drag coefficient during flight
 		finmul		= 0.2,						-- fin multiplier (mostly used for unpropelled guidance)
@@ -113,7 +113,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 	viewcone	= 10,								-- I don't think a fucking SAM site should have to dodge much >_>
 
 	agility	= 0.03,								-- multiplier for missile turn-rate.  --was 0.08
-	ghosttime   = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )
@@ -131,8 +131,8 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 	weight	= 88,								-- Don't scale down the weight though!
 	rofmod	= 0.3,
 	year		= 1986,
-	modeldiameter   = 3 * 2.54,
-	rotmult		= 0.25,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult		= 0.25,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/aim9.mdl",
@@ -142,7 +142,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		armour		= 5,							-- effective armour thickness of casing, in mm
 		propweight	= 4,							-- motor mass - motor casing
 		thrust		= 8500,						-- average thrust - kg*in/s^2	--was 4000
-		burnrate		= 1600,						-- cm^3/s at average chamber pressure   --was 1400
+		burnrate		= 1600,						-- cm^3/s at average chamber pressure	--was 1400
 		starterpct	= 0.4,						-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 12000,						-- minimum speed beyond which the fins work at 100% efficiency	--was 5000
 		dragcoef		= 0.005,						-- drag coefficient while falling								--0.001
@@ -167,7 +167,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 	viewcone	= 14,								-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 0.3,								-- multiplier for missile turn-rate.  --was 0.3
-	ghosttime   = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00								-- minimum fuse arming delay		--was 0.4
 } )
@@ -184,7 +184,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 	caliber		= 30.5,
 	weight		= 300,							-- Don't scale down the weight though!
 	year			= 1974,
-	modeldiameter   = 9.0 * 2.54,					-- in cm
+	modeldiameter	= 9.0 * 2.54,					-- in cm
 	rofmod		= 0.3,
 	round = {
 		model		= "models/missiles/aim54.mdl",
@@ -194,7 +194,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		armour		= 10,						-- effective armour thickness of casing, in mm
 		propweight	= 5,							-- motor mass - motor casing
 		thrust		= 18000,						-- average thrust - kg*in/s^2	--was 10000
-		burnrate		= 200,						-- cm^3/s at average chamber pressure   --was 800
+		burnrate		= 200,						-- cm^3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,						-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 1000,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.01,						-- drag coefficient while falling
@@ -215,7 +215,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 	viewcone	= 60,								-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 0.15,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.2,									-- Time where this missile will be unable to hit surfaces, in seconds
 
 	armdelay	= 0.00,								-- minimum fuse arming delay --was 0.3
 

@@ -9,7 +9,7 @@ ACF_defineGunClass("FFAR", {
 	rofmod		= 1,
 	year = 1960,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor FFAR"
 } )
@@ -30,12 +30,12 @@ ACF_defineGun("40mmFFAR", { --id
 	length	= 65, -- Length affects inertia calculations
 	rofmod	= 0.1,
 	year		= 1960,
-	modeldiameter   = 2,
+	modeldiameter	= 2,
 	round	=
 	{
 		model	= "models/missiles/ffar_40mm.mdl",
 		rackmdl	= "models/missiles/ffar_40mm_closed.mdl",
-		maxlength   = 60,
+		maxlength	= 60,
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 5,			-- effective armour thickness of casing, in mm
 		propweight  = 0.2,		-- motor mass - motor casing
@@ -75,12 +75,12 @@ ACF_defineGun("70mmFFAR", { --id
 	year		= 1960,
 	rofmod	= 0.06,
 	roundclass  = "Rocket",
-	modeldiameter   = 3,
+	modeldiameter	= 3,
 	round	=
 	{
 		model	= "models/missiles/ffar_70mm.mdl",
 		rackmdl	= "models/missiles/ffar_70mm_closed.mdl",
-		maxlength   = 90,
+		maxlength	= 90,
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 8,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
@@ -102,8 +102,8 @@ ACF_defineGun("70mmFFAR", { --id
 
 	agility	= 0.08,	-- multiplier for missile turn-rate.
 
-	seekcone	= 30,   -- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
-	viewcone	= 30,   -- getting outside this cone will break the lock.  Divided by 2.
+	seekcone	= 30,	-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	viewcone	= 30,	-- getting outside this cone will break the lock.  Divided by 2.
 	seeksensitivity = 0.5, --Less sophisticated seeker is better at close range
 
 	armdelay	= 0.00	-- minimum fuse arming delay

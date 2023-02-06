@@ -1,10 +1,10 @@
 
 --[[
-   set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
-   with a hard to predict check time and punishing lockout time
-   usage:
-   Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
-   Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
+	set up to provide a random, fairly low cost legality check that discourages trying to game legality checking
+	with a hard to predict check time and punishing lockout time
+	usage:
+	Ent.Legal, Ent.LegalIssues = ACF_CheckLegal(Ent, Model, MinMass, MinInertia, NeedsGateParent, CanVisclip )
+	Ent.NextLegalCheck = ACF.LegalSettings:NextCheck(Ent.Legal)
 ]]
 
 ACF = ACF or {}
@@ -25,16 +25,16 @@ ACF.Legal.Ignore.Parent	= math.max(GetConVar("acf_legal_ignore_parent"):GetInt()
 
 function ACF_LegalityCallBack()
 
-   ACF.Legal.IsActivated		= math.max(GetConVar("acf_legalcheck"):GetInt(), 0)
+	ACF.Legal.IsActivated		= math.max(GetConVar("acf_legalcheck"):GetInt(), 0)
 
-   ACF.Legal.Ignore.Solid	= math.max(GetConVar("acf_legal_ignore_solid"):GetInt(), 0)
-   ACF.Legal.Ignore.Model	= math.max(GetConVar("acf_legal_ignore_model"):GetInt(), 0)
-   ACF.Legal.Ignore.Mass		= math.max(GetConVar("acf_legal_ignore_mass"):GetInt(), 0)
-   ACF.Legal.Ignore.Material	= math.max(GetConVar("acf_legal_ignore_material"):GetInt(), 0)
-   ACF.Legal.Ignore.Inertia	= math.max(GetConVar("acf_legal_ignore_inertia"):GetInt(), 0)
-   ACF.Legal.Ignore.makesphere  = math.max(GetConVar("acf_legal_ignore_makesphere"):GetInt(), 0)
-   ACF.Legal.Ignore.visclip	= math.max(GetConVar("acf_legal_ignore_visclip"):GetInt(), 0)
-   ACF.Legal.Ignore.Parent	= math.max(GetConVar("acf_legal_ignore_parent"):GetInt(), 0)
+	ACF.Legal.Ignore.Solid	= math.max(GetConVar("acf_legal_ignore_solid"):GetInt(), 0)
+	ACF.Legal.Ignore.Model	= math.max(GetConVar("acf_legal_ignore_model"):GetInt(), 0)
+	ACF.Legal.Ignore.Mass		= math.max(GetConVar("acf_legal_ignore_mass"):GetInt(), 0)
+	ACF.Legal.Ignore.Material	= math.max(GetConVar("acf_legal_ignore_material"):GetInt(), 0)
+	ACF.Legal.Ignore.Inertia	= math.max(GetConVar("acf_legal_ignore_inertia"):GetInt(), 0)
+	ACF.Legal.Ignore.makesphere  = math.max(GetConVar("acf_legal_ignore_makesphere"):GetInt(), 0)
+	ACF.Legal.Ignore.visclip	= math.max(GetConVar("acf_legal_ignore_visclip"):GetInt(), 0)
+	ACF.Legal.Ignore.Parent	= math.max(GetConVar("acf_legal_ignore_parent"):GetInt(), 0)
 
 end
 
@@ -58,27 +58,27 @@ ACF.Legal.NextCheck  = function(self, Legal) return ACF.CurTime + (Legal and mat
 
 
 --[[
-   checks if an ent meets the given requirements for legality
-   MinInertia needs to be mass normalized (normalized=inertia/mass)
-   ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
+	checks if an ent meets the given requirements for legality
+	MinInertia needs to be mass normalized (normalized=inertia/mass)
+	ballistics doesn't check visclips on anything except prop_physics, so no need to check on acf ents
 ]]--
 
 do
 
-   local AllowedMaterials = {
+	local AllowedMaterials = {
 	RHA = true,
 	CHA = true,
 	Alum = true
-   }
+	}
 
-   local ValidCollisionGroups = {
+	local ValidCollisionGroups = {
 	[COLLISION_GROUP_NONE] = true,
 	[COLLISION_GROUP_WORLD] = true,
 	[COLLISION_GROUP_VEHICLE] = true
-   }
+	}
 
-   --TODO: remove unused functions
-   function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
+	--TODO: remove unused functions
+	function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
 
 	local problems = {} --problems table definition
 	if ACF.Legal.IsActivated == 0 then return (#problems == 0), table.concat(problems, ", ") end
@@ -153,5 +153,5 @@ do
 	-- legal if number of problems is 0
 	return (#problems == 0), table.concat(problems, ", ")
 
-   end
+	end
 end

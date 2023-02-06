@@ -20,7 +20,7 @@ ACE.Sounds = ACE.Sounds or {}
 --Step 1: Build the main sound table here
 --Insert all the tables
 local TableTypes = {
-	{ Type = "Blasts",		Path = "explosions/ambient",			Category = { "tiny","small","medium","large","huge"},   Distance = { "close", "mid", "far"} },
+	{ Type = "Blasts",		Path = "explosions/ambient",			Category = { "tiny","small","medium","large","huge"},	Distance = { "close", "mid", "far"} },
 	{ Type = "Penetrations",	Path = "penetratingshots/penetrations", Category = { "large"},								Distance = { "close" }			},
 	{ Type = "Ricochets",	Path = "ricochets/props",			Category = { "small","medium","large"},				Distance = { "close", "mid" }	},
 	{ Type = "Cracks",		Path = "fly/cracks",					Category = { "small","medium","large"},				Distance = { "close" }			},
@@ -54,7 +54,7 @@ for k, Data in pairs(TableTypes) do
 			--print("Iteration2: "..Iteration2)
 
 			-- Look for sounds in the designated path
-			local TxtToFind = "sound/acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/*.mp3"   --print( "\n"..TxtToFind.."\n" )
+			local TxtToFind = "sound/acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/*.mp3"	--print( "\n"..TxtToFind.."\n" )
 			local ExSounds = file.Find( TxtToFind, "GAME" )
 
 			--if table.IsEmpty(ExSounds) then print("No se encontro nada!") end

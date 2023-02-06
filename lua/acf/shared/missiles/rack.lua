@@ -80,8 +80,8 @@ ACF_DefineRack("3xRK", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(-3.601,0,-8.1),	["offset"] = Vector(5.5,0,-4.5),	["scaledir"] = Vector(-0.2,0,-0.3)},
-		["missile2"] = { ["pos"] = Vector(-3.241,3.419,-3.6),   ["offset"] = Vector(5.5,3,0),	["scaledir"] = Vector(-0.2,0.3,-0.1)},
-		["missile3"] = { ["pos"] = Vector(-3.241,-3.42,-3.6),   ["offset"] = Vector(5.5,-3,0),	["scaledir"] = Vector(-0.2,-0.3,-0.1)},
+		["missile2"] = { ["pos"] = Vector(-3.241,3.419,-3.6),	["offset"] = Vector(5.5,3,0),	["scaledir"] = Vector(-0.2,0.3,-0.1)},
+		["missile3"] = { ["pos"] = Vector(-3.241,-3.42,-3.6),	["offset"] = Vector(5.5,-3,0),	["scaledir"] = Vector(-0.2,-0.3,-0.1)},
 	}
 } )
 
@@ -98,9 +98,9 @@ ACF_DefineRack("4xRK", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,12.5,9),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,1,0)},
-		["missile2"] = { ["pos"] = Vector(0,-12.5,9),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,-1,0)},
+		["missile2"] = { ["pos"] = Vector(0,-12.5,9),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,-1,0)},
 		["missile3"] = { ["pos"] = Vector(0,-12.5,-5),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
-		["missile4"] = { ["pos"] = Vector(0,12.5,-5),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)}
+		["missile4"] = { ["pos"] = Vector(0,12.5,-5),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)}
 	}
 } )
 
@@ -118,7 +118,7 @@ ACF_DefineRack("2x AGM-114", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,-8.1,5.4),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
-		["missile2"] = { ["pos"] = Vector(0,8.1,5.4),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
+		["missile2"] = { ["pos"] = Vector(0,8.1,5.4),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
 	}
 } )
 
@@ -136,7 +136,7 @@ ACF_DefineRack("4x AGM-114", {
 	mountpoints =
 	{
 		["missile1"] = { ["pos"] = Vector(0,-8.1,5.4),  ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
-		["missile2"] = { ["pos"] = Vector(0,8.1,5.4),   ["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
+		["missile2"] = { ["pos"] = Vector(0,8.1,5.4),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
 		["missile3"] = { ["pos"] = Vector(0,-8.1,-12.6),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)},
 		["missile4"] = { ["pos"] = Vector(0,8.1,-12.6),	["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0,0,-1)}
 	}

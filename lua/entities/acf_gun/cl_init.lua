@@ -7,12 +7,12 @@ function ENT:Initialize()
 
 	self.BaseClass.Initialize( self )
 
-	self.LastFire   = 0
+	self.LastFire	= 0
 	self.Reload	= 1
 	self.CloseTime  = 1
 	self.Rate	= 1
 	self.RateScale  = 1
-	self.FireAnim   = self:LookupSequence( "shoot" )
+	self.FireAnim	= self:LookupSequence( "shoot" )
 	self.CloseAnim  = self:LookupSequence( "load" )
 	self.LastThink  = 0
 end
@@ -129,7 +129,7 @@ function ACFGunGUICreate( Table )
 		local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
 		local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 		acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
-		if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :   "..Table.magreload.." s") end
+		if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :	"..Table.magreload.." s") end
 		acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
 		acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
 

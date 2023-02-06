@@ -84,14 +84,14 @@ function ACF_Activate( Entity , Recalc )
 	local Ductility = math.Clamp( Entity.ACF.Ductility, -0.8, 0.8 )
 
 	local Mat	= Entity.ACF.Material or "RHA"
-	local MatData   = ACE_GetMaterialData( Mat )
+	local MatData	= ACE_GetMaterialData( Mat )
 
-	local massMod   = MatData.massMod
+	local massMod	= MatData.massMod
 
 	local Armour	= ACF_CalcArmor( Area, Ductility, Entity:GetPhysicsObject():GetMass() / massMod ) -- So we get the equivalent thickness of that prop in mm if all its weight was a steel plate
 	local Health	= ( Area / ACF.Threshold ) * ( 1 + Ductility ) -- Setting the threshold of the prop Area gone
 
-	local Percent   = 1
+	local Percent	= 1
 
 	if Recalc and Entity.ACF.Health and Entity.ACF.MaxHealth then
 		Percent = Entity.ACF.Health/Entity.ACF.MaxHealth
@@ -281,7 +281,7 @@ function ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone,
 	if (Bone) then
 
 		if ( Bone == 1 ) then	--This means we hit the head
-			Target.ACF.Armour = Mass*0.02   --Set the skull thickness as a percentage of Squishy weight, this gives us 2mm for a player, about 22mm for an Antlion Guard. Seems about right
+			Target.ACF.Armour = Mass*0.02	--Set the skull thickness as a percentage of Squishy weight, this gives us 2mm for a player, about 22mm for an Antlion Guard. Seems about right
 			HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)	--This is hard bone, so still sensitive to impact angle
 			Damage = HitRes.Damage*20
 			if HitRes.Overkill > 0 then								--If we manage to penetrate the skull, then MASSIVE DAMAGE
@@ -294,7 +294,7 @@ function ACF_SquishyDamage( Entity , Energy , FrArea , Angle , Inflictor , Bone,
 			Damage = Damage + HitRes.Damage*20
 
 		elseif ( Bone == 0 or Bone == 2 or Bone == 3 ) then	--This means we hit the torso. We are assuming body armour/tough exoskeleton/zombie don't give fuck here, so it's tough
-			Target.ACF.Armour = Mass*0.04   --Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
+			Target.ACF.Armour = Mass*0.04	--Set the armour thickness as a percentage of Squishy weight, this gives us 8mm for a player, about 90mm for an Antlion Guard. Seems about right
 			HitRes = ACF_CalcDamage( Target , Energy , FrArea , Angle , Type)	--Armour plate,, so sensitive to impact angle
 			Damage = HitRes.Damage*5
 			if HitRes.Overkill > 0 then

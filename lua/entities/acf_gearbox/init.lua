@@ -58,13 +58,13 @@ do
 
 		if not Owner:CheckLimit("_acf_misc") then return false end
 
-		local Gearbox   = ents.Create("acf_gearbox")
+		local Gearbox	= ents.Create("acf_gearbox")
 
 		if not IsValid( Gearbox ) then return false end
 
 		if not ACE_CheckGearbox( Id ) then
 			Id = "1Gear-T-S" --deal with it
-			Data1   = 0.1 --gear1
+			Data1	= 0.1 --gear1
 			Data10  = 0.5 --gear2
 		end
 
@@ -80,7 +80,7 @@ do
 		Gearbox.Model	= GearboxData.model
 		Gearbox.Mass		= GearboxData.weight		or 1
 		Gearbox.SwitchTime  = GearboxData.switch
-		Gearbox.MaxTorque   = GearboxData.maxtq		or 0
+		Gearbox.MaxTorque	= GearboxData.maxtq		or 0
 		Gearbox.Gears	= GearboxData.gears		or 2 --hmmmmmm ok? just if everything fails
 		Gearbox.Dual		= GearboxData.doubleclutch	or false
 		Gearbox.CVT		= GearboxData.cvt			or false
@@ -752,7 +752,7 @@ function ENT:Link( Target )
 
 	local Phys	= Target:GetPhysicsObject()
 	local Axis	= Phys:WorldToLocalVector( self:GetRight() )
-	local Inertia   = ( Axis * Phys:GetInertia() ):Length()
+	local Inertia	= ( Axis * Phys:GetInertia() ):Length()
 
 	local Link = {
 		Ent		= Target,

@@ -8,7 +8,7 @@ ACF_defineGunClass("GBU", {
 	rofmod		= 0.1,
 	year = 1967,
 	sound		= "WT/Misc/bomb_drop.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	nothrust		= true,
 
@@ -63,7 +63,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 	viewcone	= 120,							-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 2,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )
 
@@ -108,7 +108,7 @@ ACF_defineGun("227kgGBU", {						-- id
 	viewcone	= 80,							-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 1,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )
 
@@ -153,7 +153,7 @@ ACF_defineGun("454kgGBU", {						-- id
 	viewcone	= 80,							-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 1,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )
 
@@ -197,6 +197,6 @@ ACF_defineGun("909kgGBU", {						-- id
 	viewcone	= 80,							-- getting outside this cone will break the lock.  Divided by 2.
 
 	agility	= 1,								-- multiplier for missile turn-rate.
-	ghosttime   = 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.5,							-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.00								-- minimum fuse arming delay
 } )

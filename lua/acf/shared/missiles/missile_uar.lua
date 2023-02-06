@@ -9,7 +9,7 @@ ACF_defineGunClass("UAR", {
 	rofmod		= 0.5,
 	year = 1933,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor Arty"
 } )
@@ -31,14 +31,14 @@ ACF_defineGun("RS82 ASR", { --id
 	year		= 1933,
 	rofmod	= 0.07,
 	roundclass  = "Rocket",
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	modeldiameter = 4,
 
 	round	=
 	{
 		model	= "models/missiles/rs82.mdl",
 		rackmdl	= "models/missiles/rs82.mdl",
-		maxlength   = 50,
+		maxlength	= 50,
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 5,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
@@ -78,14 +78,14 @@ ACF_defineGun("HVAR ASR", { --id
 	year		= 1933,
 	rofmod	= 0.5,
 	roundclass  = "Rocket",
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	modeldiameter = 12,
 
 	round	=
 	{
 		model	= "models/missiles/hvar.mdl",
 		rackmdl	= "models/missiles/hvar.mdl",
-		maxlength   = 155,
+		maxlength	= 155,
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 8,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
@@ -105,7 +105,7 @@ ACF_defineGun("HVAR ASR", { --id
 
 	racks	= {["1xRK"] = true, ["1xRK_small"] = true, ["3xUARRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	ghosttime   = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.0	-- minimum fuse arming delay
 } )
 
@@ -123,14 +123,14 @@ ACF_defineGun("SPG-9 ASR", { --id
 	year		= 1962,
 	rofmod	= 0.4,
 	roundclass  = "Rocket",
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	modeldiameter = 5,
 
 	round	=
 	{
 		model	= "models/missiles/glatgm/9m112f.mdl",
 		rackmdl	= "models/munitions/round_100mm_mortar_shot.mdl",
-		maxlength   = 100,
+		maxlength	= 100,
 		casing	= 0.08,		-- thickness of missile casing, cm
 		armour	= 4,			-- effective armour thickness of casing, in mm
 		propweight  = 0.5,		-- motor mass - motor casing
@@ -151,7 +151,7 @@ ACF_defineGun("SPG-9 ASR", { --id
 
 	racks	= {["1x SPG9"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	ghosttime   = 0.1,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.1,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.0	-- minimum fuse arming delay, very short since we have a high muzzle velocity
 } )
 
@@ -169,14 +169,14 @@ ACF_defineGun("S-24 ASR", { --id
 	year		= 1960,
 	rofmod	= 0.4,
 	roundclass  = "Rocket",
-	rotmult	= 360,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult	= 360,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	modeldiameter = 18,
 
 	round	=
 	{
 		model	= "models/missiles/s24.mdl",
 		rackmdl	= "models/missiles/s24.mdl",
-		maxlength   = 100,
+		maxlength	= 100,
 		casing	= 0.3,					-- thickness of missile casing, cm
 		armour	= 10,					-- effective armour thickness of casing, in mm
 		propweight  = 20,					-- motor mass - motor casing
@@ -196,9 +196,9 @@ ACF_defineGun("S-24 ASR", { --id
 
 	racks	= {["1xRK"] = true, ["3xRK"] = true, ["2xRK"] = true, ["6xUARRK"] = true},	-- a whitelist for racks that this missile can load into.  can also be a 'function(bulletData, rackEntity) return boolean end'
 
-	skinindex   = {HEAT = 0, HE = 1},
+	skinindex	= {HEAT = 0, HE = 1},
 
-	ghosttime   = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.0	-- minimum fuse arming delay
 } )
 
@@ -215,14 +215,14 @@ ACF_defineGun("Zuni ASR", { --id
 	year		= 1957,
 	rofmod	= 0.5,
 	roundclass  = "Rocket",
-	rotmult	= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	rotmult	= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 	modeldiameter = 5,
 
 	round	=
 	{
 		model	= "models/ghosteh/zuni.mdl",
 		rackmdl	= "models/ghosteh/zuni_folded.mdl",
-		maxlength   = 200,
+		maxlength	= 200,
 		casing	= 0.2,
 		armor	= 10,
 		propweight  = 0.7,
@@ -240,7 +240,7 @@ ACF_defineGun("Zuni ASR", { --id
 	fuses	= {"Contact", "Timed", "Optical", "Radio"},
 	racks	= {["1xRK"] = true, ["2xRK"] = true, ["3xRK"] = true, ["4xRK"] = true, ["127mm4xPOD"] = true},
 
-	ghosttime   = 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
+	ghosttime	= 0.3,									-- Time where this missile will be unable to hit surfaces, in seconds
 	armdelay	= 0.0
 
 })

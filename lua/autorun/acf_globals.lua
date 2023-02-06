@@ -96,7 +96,7 @@ ACF.ScaledEntsMax	= 5
 ACF.LargeCaliber		= 10 --Gun caliber in CM to be considered a large caliber gun, 10cm = 100mm
 
 ACF.Threshold		= 264.7					-- Health Divisor (don't forget to update cvar function down below)
-ACF.PartialPenPenalty   = 5						-- Exponent for the damage penalty for partial penetration
+ACF.PartialPenPenalty	= 5						-- Exponent for the damage penalty for partial penetration
 ACF.PenAreaMod		= 0.85
 ACF.KinFudgeFactor	= 2.1					-- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
 ACF.KEtoRHA			= 0.25					-- Empirical conversion from (kinetic energy in KJ)/(Area in Cm2) to RHA penetration
@@ -106,7 +106,7 @@ ACF.AmmoMod			= 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul	= 1
 ACF.AmmoWidthMul		= 1
 ACF.ArmorMod			= 1
-ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(angle)^factor
+ACF.SlopeEffectFactor	= 1.1					-- Sloped armor effectiveness: armor / cos(angle)^factor
 ACF.Spalling			= 1
 ACF.SpallMult		= 1
 
@@ -159,7 +159,7 @@ ACF.MVScale			= 0.5					-- Propellant to MV convertion expotential
 ACF.PDensity			= 1.6					-- Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 
 ACF.TorqueBoost		= 1.25					-- torque multiplier from using fuel
-ACF.DriverTorqueBoost   = 0.25					-- torque multiplier from having a driver
+ACF.DriverTorqueBoost	= 0.25					-- torque multiplier from having a driver
 ACF.FuelRate			= 10						-- multiplier for fuel usage, 1.0 is approx real world
 ACF.ElecRate			= 2						-- multiplier for electrics								--BEFORE to balance: 0.458
 ACF.TankVolumeMul	= 1						-- multiplier for fuel tank capacity, 1.0 is approx real world
@@ -179,7 +179,7 @@ ACF.DebrisIgniteChance  = 0.25
 ACF.DebrisScale		= 20						-- Ignore debris that is less than this bounding radius.
 ACF.SpreadScale		= 16						-- The maximum amount that damage can decrease a gun's accuracy.  Default 4x
 ACF.GunInaccuracyScale  = 1						-- A multiplier for gun accuracy.
-ACF.GunInaccuracyBias   = 2						-- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
+ACF.GunInaccuracyBias	= 2						-- Higher numbers make shots more likely to be inaccurate.  Choose between 0.5 to 4. Default is 2 (unbiased).
 
 ACF.EnableKillicons	= true					-- Enable killicons overwriting.
 
@@ -310,7 +310,7 @@ end
 ACF.Weapons	= list.Get("ACFEnts")
 ACF.Classes	= list.Get("ACFClasses")
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")   --Lookup tables so i can get rounds classes from clientside with just an integer
+ACF.IdRounds	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 ACE.Armors	= list.Get("ACE_MaterialTypes")
 ACE.GSounds	= list.Get("ACESounds")

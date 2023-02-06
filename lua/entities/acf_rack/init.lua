@@ -8,7 +8,7 @@ include("shared.lua")
 DEFINE_BASECLASS( "base_wire_entity" )
 
 local GunClasses	= ACF.Classes.GunClass
-local RackClasses   = ACF.Classes.Rack
+local RackClasses	= ACF.Classes.Rack
 
 local GunTable	= ACF.Weapons.Guns
 local RackTable	= ACF.Weapons.Racks
@@ -57,7 +57,7 @@ local RackWireDescs = {
 	--Inputs
 	["Reload"]	= "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
 	["Delay"]	= "Sets a specific delay to guidance control over the default one in seconds.\n Note that you cannot override lower values than default.",
-	["TargetPos"]   = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
+	["TargetPos"]	= "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
 
 	--Outputs
 	["Ready"]	= "Returns if the rack is ready to fire."
@@ -96,10 +96,10 @@ function ENT:Initialize()
 	self.ForceTdelay			= 0
 	self.Inaccuracy			= 1
 
-	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload ("..RackWireDescs["Reload"]..")", "Track Delay ("..RackWireDescs["Delay"]..")",   "Target Pos ("..RackWireDescs["TargetPos"]..")" },
+	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload ("..RackWireDescs["Reload"]..")", "Track Delay ("..RackWireDescs["Delay"]..")",	"Target Pos ("..RackWireDescs["TargetPos"]..")" },
 													{ "NORMAL", "NORMAL", "NORMAL", "VECTOR" } )
 
-	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready ("..RackWireDescs["Ready"]..")",   "Entity",   "Shots Left",  "Position" },
+	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready ("..RackWireDescs["Ready"]..")",	"Entity",	"Shots Left",  "Position" },
 														{ "NORMAL", "ENTITY", "NORMAL", "VECTOR" } )
 
 	Wire_TriggerOutput(self, "Entity", self)
@@ -656,7 +656,7 @@ function ENT:LoadAmmo( Reload )
 
 	self:TrimNullMissiles()
 	Ammo = table.Count(self.Missiles)
-	self:SetNWInt("Ammo",   Ammo)
+	self:SetNWInt("Ammo",	Ammo)
 
 	local ReloadTime = 1
 
@@ -742,7 +742,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	Rack.ProtectMissile	= gundef.protectmissile or gunclass.protectmissile  or false
 	Rack.CustomArmour	= gundef.armour		or gunclass.armour		or 1
 
-	Rack.ReloadMultiplier   = ACF_GetRackValue(Id, "reloadmul")
+	Rack.ReloadMultiplier	= ACF_GetRackValue(Id, "reloadmul")
 	Rack.WhitelistOnly	= ACF_GetRackValue(Id, "whitelistonly")
 
 	Rack:SetNWString("WireName",Rack.name)
@@ -852,7 +852,7 @@ function ENT:FireMissile()
 			self:MuzzleEffect( attach, missile.BulletData )
 
 			Ammo = table.Count(self.Missiles)
-			self:SetNWInt("Ammo",   Ammo)
+			self:SetNWInt("Ammo",	Ammo)
 
 		else
 			self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)
@@ -951,7 +951,7 @@ function ENT:GetOverlayText()
 	local Ammo		= table.Count(self.Missiles)	-- Ammo count
 	local FireRate	= self.LastValidFireDelay or 1	-- How many time take one lauch from another. in secs
 	local Reload		= self:GetNWFloat("Reload")		-- reload time. in secs
-	local ReloadBonus   = self.ReloadMultiplierBonus or 0  -- the word explains by itself
+	local ReloadBonus	= self.ReloadMultiplierBonus or 0  -- the word explains by itself
 	local Status		= self.RackStatus				-- this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
 
 	local txt = '-  '..Status..'  -'

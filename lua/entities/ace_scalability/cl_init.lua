@@ -18,7 +18,7 @@ end
 function ENT:CalcAbsolutePosition() -- Faking sync
 	local PhysObj  = self:GetPhysicsObject()
 	local Position = self:GetPos()
-	local Angles   = self:GetAngles()
+	local Angles	= self:GetAngles()
 
 	if IsValid(PhysObj) then
 		PhysObj:SetPos(Position)
@@ -103,7 +103,7 @@ do -- Dealing with visual clip's bullshit
 
 		if Type == "RenderMultiply" and self.Matrix then
 			local Current = self.Matrix:GetScale()
-			local Scale   = Value:GetScale()
+			local Scale	= Value:GetScale()
 
 			-- Visual clip provides a scale of 0, 0, 0
 			-- So we just update it with our actual scale

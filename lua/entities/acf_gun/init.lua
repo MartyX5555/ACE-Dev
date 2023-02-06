@@ -51,8 +51,8 @@ end
 do
 	local Inputs = {
 		Fire	= "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
-		Unload   = "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
-		Reload   = "Reload (Reloads the current weapon, according to the active ammo it has.)",
+		Unload	= "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
+		Reload	= "Reload (Reloads the current weapon, according to the active ammo it has.)",
 		FuseTime = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
 		ROFLimit = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
 	}
@@ -62,7 +62,7 @@ do
 		Entity		= "Entity [ENTITY]",
 		ShotsLeft	= "Shots Left (Returns the number of shots in the gun.)",
 		FireRate	= "Fire Rate (Returns the Rate of Fire of this gun)",
-		MuzzleWeight   = "Muzzle Weight (Returns the muzzle weight)",
+		MuzzleWeight	= "Muzzle Weight (Returns the muzzle weight)",
 		MuzzleVelocity = "Muzzle Velocity (Returns the muzzle velocity)" ,
 		Heat		= "Heat (Returns the gun's temperature.)",
 		OverHeat	= "OverHeat (Is the gun overheating?)"
@@ -277,7 +277,7 @@ function ENT:UpdateOverlayText()
 
 	local clipLeft	= isEmpty and 0 or (self.MagSize - self.CurrentShot)
 	local ammoLeft	= (self.Ammo or 0) + clipLeft
-	local isReloading   = not isEmpty and CurTime() < self.NextFire and (self.MagSize == 1 or (self.LastLoadDuration > self.ReloadTime))
+	local isReloading	= not isEmpty and CurTime() < self.NextFire and (self.MagSize == 1 or (self.LastLoadDuration > self.ReloadTime))
 	local gunStatus	= isReloading and "reloading" or (clipLeft .. " in gun")
 
 	local text = roundType .. " - " .. ammoLeft .. (ammoLeft == 1 and " shot left" or " shots left ( " .. gunStatus .. " )")

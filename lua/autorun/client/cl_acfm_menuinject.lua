@@ -18,7 +18,7 @@ function SetMissileGUIEnabled(panel, enabled, gundata)
 			acfmenupanel.CustomDisplay:AddItem(spacer)
 		end
 
-		local default = "Dumb"   -- Dumb is the only acceptable default
+		local default = "Dumb"	-- Dumb is the only acceptable default
 		if not acfmenupanel.CData.GuidanceSelect then
 			acfmenupanel.CData.GuidanceSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
 			acfmenupanel.CData.GuidanceSelect:SetSize(100, 30)
@@ -274,7 +274,7 @@ function ModifyACFMenu(panel)
 
 	for k, node in pairs(rootNodes) do -- iterating though found folders
 
-				if node:GetText() == "Missiles" then   --Missile folder is the one that we need
+				if node:GetText() == "Missiles" then	--Missile folder is the one that we need
 
 					gunsNode = node
 					break

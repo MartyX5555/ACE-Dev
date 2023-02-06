@@ -223,7 +223,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)   --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume / ACF.Threshold							--Setting the threshold of the prop Area gone
 	local Percent = 1
 
@@ -240,17 +240,17 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.Density	= (PhysObj:GetMass() * 1000) / self.ACF.Volume
 	self.ACF.Type	= "Prop"
 
-	self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
 
 end
 
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
-function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )   --This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )	--This function needs to return HitRes
 
 	if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
 
-	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Ang , Inflictor )   --Calling the standard damage prop function
+	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Ang , Inflictor )	--Calling the standard damage prop function
 
 	-- Detonate if the shot penetrates the casing.
 	HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0

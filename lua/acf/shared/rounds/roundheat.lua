@@ -35,8 +35,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData	= {}
 	local GUIData	= {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
@@ -94,7 +94,7 @@ function Round.convert( Crate, PlayerData )
 	local SlugFrArea		= 3.1416 * (Data.SlugCaliber/2)^2
 	Data.SlugPenArea		= SlugFrArea^ACF.PenAreaMod
 	Data.SlugDragCoef	= ((SlugFrArea/10000)/Data.SlugMass)*800
-	Data.SlugRicochet	=   500								--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
+	Data.SlugRicochet	=	500								--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
 	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
 
@@ -132,7 +132,7 @@ function Round.getDisplayData(Data)
 
 	GUIData.MaxPen	= (SlugEnergy.Penetration/Data.SlugPenArea)*ACF.KEtoRHA
 	GUIData.BlastRadius = (Data.BoomFillerMass)^0.33*8--*39.37
-	GUIData.Fragments   = math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
+	GUIData.Fragments	= math.max(math.floor((Data.BoomFillerMass/Data.CasingMass)*ACF.HEFrag),2)
 	GUIData.FragMass	= Data.CasingMass/GUIData.Fragments
 	GUIData.FragVel	= (Data.BoomFillerMass*ACF.HEPower*1000/Data.CasingMass/GUIData.Fragments)^0.5
 
@@ -399,17 +399,17 @@ function Round.guiupdate( Panel, Table )
 	ACE_AmmoCapacityDisplay( Data )
 	-------------------------------------------------------------------------------
 	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle", "")   --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ConeAng",Data.ConeAng,Data.MinConeAng,Data.MaxConeAng,0, "Crush Cone Angle", "")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_Checkboxes( Data )
 
-	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)   --Description (Name, Desc)
+	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
 	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")  --Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")   --Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
-	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\nAverage Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \nAverage Fragment Velocity : "..math.floor(Data.FragVel).." m/s")   --Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\nAverage Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \nAverage Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 
 
 	--print("Ammo Pen in menu:"..Data.MaxPen)

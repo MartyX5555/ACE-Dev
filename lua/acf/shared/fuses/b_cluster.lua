@@ -28,7 +28,7 @@ local configs = this.Configurable
 configs[#configs + 1] =
 {
 	Name = "Cluster",		-- name of the variable to change
-	DisplayName = "Distance",   -- name displayed to the user
+	DisplayName = "Distance",	-- name displayed to the user
 	CommandName = "Ds",		-- shorthand name used in console commands
 
 	Type = "number",			-- lua type of the configurable variable
@@ -93,7 +93,7 @@ do
 		missile.BulletData["Caliber"]		= math.Clamp(bdata.Caliber/Bomblets*10,0.05,bdata.Caliber*0.8) --Controls visual size, does nothing else
 		missile.BulletData["Crate"]			= bdata.Crate
 		missile.BulletData["DragCoef"]		= bdata.DragCoef/Bomblets/2
-		missile.BulletData["FillerMass"]	= bdata.FillerMass/Bomblets/2   --nan armor ocurrs when this value is > 1
+		missile.BulletData["FillerMass"]	= bdata.FillerMass/Bomblets/2	--nan armor ocurrs when this value is > 1
 
 		--print(bdata.FillerMass)
 		--print(Bomblets)
@@ -137,7 +137,7 @@ do
 			missile.BulletData["SlugRicochet"]	= bdata.SlugRicochet
 			missile.BulletData["ConeVol"]		= bdata.SlugMass*1000/7.9/(Bomblets/6)
 			missile.BulletData["CasingMass"]	= missile.BulletData.ProjMass + missile.BulletData.FillerMass + (missile.BulletData.ConeVol*1000/7.9)
-			missile.BulletData["BoomFillerMass"]   = missile.BulletData.FillerMass/1.5
+			missile.BulletData["BoomFillerMass"]	= missile.BulletData.FillerMass/1.5
 
 			--local SlugEnergy = ACF_Kinetic( missile.BulletData.MuzzleVel*39.37 + missile.BulletData.SlugMV*39.37 , missile.BulletData.SlugMass, 999999 )
 			--local  MaxPen = (SlugEnergy.Penetration/missile.BulletData.SlugPenArea)*ACF.KEtoRHA

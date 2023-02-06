@@ -8,7 +8,7 @@ ACF_defineGunClass("AAM", {
 	muzzleflash	= "40mm_muzzleflash_noscale",
 	rofmod		= 1,
 	sound		= "acf_extra/airfx/rocket_fire2.wav",
-	soundDistance   = " ",
+	soundDistance	= " ",
 	soundNormal	= " ",
 	effect		= "Rocket Motor Missile1",
 	year = 1953,
@@ -28,8 +28,8 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 	weight		= 75,								-- Don't scale down the weight though!
 	rofmod		= 0.5,
 	year			= 1953,
-	modeldiameter   = 3 * 2.54,
-	rotmult		= 0.5,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 3 * 2.54,
+	rotmult		= 0.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/aim9m.mdl",
@@ -39,7 +39,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 1,								-- motor mass - motor casing
 		thrust		= 25000,							-- average thrust - kg*in/s^2	--was 100000
-		burnrate		= 700,							-- cm^3/s at average chamber pressure   --was 650
+		burnrate		= 700,							-- cm^3/s at average chamber pressure	--was 650
 		starterpct	= 0.1,							-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 12000,							-- minimum speed beyond which the fins work at 100% efficiency. Affects how agility is applied only
 		dragcoef		= 0.002,							-- drag coefficient while falling
@@ -81,8 +81,8 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 	weight		= 125,								-- Don't scale down the weight though! --was 152, I cut that down to 1/2 an AIM-7s weight
 	year			= 1991,
 	rofmod		= 0.35,
-	modeldiameter   = 4 * 2.54,						-- in cm
-	rotmult		= 1,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 4 * 2.54,						-- in cm
+	rotmult		= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/aim120c.mdl",
@@ -92,9 +92,9 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 1,								-- motor mass - motor casing
 		thrust		= 50000,							-- average thrust - kg*in/s^2	--was 25000
-		burnrate		= 700,							-- cm^3/s at average chamber pressure   --was 450
+		burnrate		= 700,							-- cm^3/s at average chamber pressure	--was 450
 		starterpct	= 0.02,							-- percentage of the propellant consumed in the starter motor.
-		minspeed		= 23000,							-- minimum speed beyond which the fins work at 100% efficiency   --was 3000
+		minspeed		= 23000,							-- minimum speed beyond which the fins work at 100% efficiency	--was 3000
 		dragcoef		= 0.002,							-- drag coefficient while falling
 		dragcoefflight  = 0.05,							-- drag coefficient during flight
 		finmul		= 0.025							-- fin multiplier (mostly used for unpropelled guidance)
@@ -133,8 +133,8 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	weight		= 463,								-- Don't scale down the weight though!
 	year			= 1974,
 	rofmod		= 0.32,
-	modeldiameter   = 9.0 * 2.54,						-- in cm
-	rotmult		= 6,   -- Adjust this if you see that your missile falls too quickly. 0 to deny falling
+	modeldiameter	= 9.0 * 2.54,						-- in cm
+	rotmult		= 6,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
 		model		= "models/missiles/aim54.mdl",
@@ -144,7 +144,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 5,								-- motor mass - motor casing
 		thrust		= 140000,						-- average thrust - kg*in/s^2	--was 10000
-		burnrate		= 200,							-- cm^3/s at average chamber pressure   --was 800
+		burnrate		= 200,							-- cm^3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 32000,							-- minimum speed beyond which the fins work at 100% efficiency  --was 1000
 		dragcoef		= 0.01,							-- drag coefficient while falling

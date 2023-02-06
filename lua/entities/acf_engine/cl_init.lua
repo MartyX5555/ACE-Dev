@@ -25,7 +25,7 @@ function ACE_EngineGUI_Create( Table )
 	acfmenupanel.EngineData		= acfmenupanel.EngineData	or {}
 	acfmenupanel.EngineData.Id	= acfmenupanel.EngineData.Id	or "19.0-V8"
 	acfmenupanel.EngineData.Fuel	= acfmenupanel.EngineData.Fuel  or "Diesel"
-	acfmenupanel.EngineData.Cat	= acfmenupanel.EngineData.Cat   or "V8"
+	acfmenupanel.EngineData.Cat	= acfmenupanel.EngineData.Cat	or "V8"
 
 	do
 		-- filters by fuel type
@@ -92,7 +92,7 @@ function ACE_EngineGUI_Create( Table )
 
 				if not EngineList.enginetype then continue end
 
-				local cat   = EngineList.category
+				local cat	= EngineList.category
 				local name  = EngineList.name
 				local id	= EngineList.id
 				local fuel  = EngineList.fuel

@@ -41,15 +41,15 @@ local fueltank_base = {
 	type = "FuelTanks"
 }
 local rack_base = {
-	ent =   "acf_rack",
+	ent =	"acf_rack",
 	type =  "Racks"
 }
 local radar_base = {
-	ent =   "acf_missileradar",
+	ent =	"acf_missileradar",
 	type =  "Radars"
 }
 local trackradar_base = {
-	ent =   "ace_trackingradar",
+	ent =	"ace_trackingradar",
 	type =  "Radars"
 }
 local irst_base = {
@@ -73,8 +73,8 @@ if CLIENT then
 	radar_base.guicreate		= function( Panel, Table ) ACFRadarGUICreate( Table )	end
 	radar_base.guiupdate		= function() return end
 
-	trackradar_base.guicreate   = function( Panel, Table ) ACFTrackRadarGUICreate( Table )  end or nil
-	trackradar_base.guiupdate   = function() return end
+	trackradar_base.guicreate	= function( Panel, Table ) ACFTrackRadarGUICreate( Table )  end or nil
+	trackradar_base.guiupdate	= function() return end
 
 	irst_base.guicreate		= function( Panel, Table ) ACFIRSTGUICreate( Table )		end or nil
 	irst_base.guiupdate		= function() return end
@@ -120,7 +120,7 @@ function ACF_DefineEngine( id, data )
 
 		data.peaktqrpm	= engineData.peakTqRPM
 		data.peakpower	= engineData.peakPower
-		data.peakpowerrpm   = engineData.peakPowerRPM
+		data.peakpowerrpm	= engineData.peakPowerRPM
 		data.peakminrpm	= engineData.powerbandMinRPM
 		data.peakmaxrpm	= engineData.powerbandMaxRPM
 		data.curvefactor	= (data.limitrpm - data.idlerpm) / data.limitrpm
@@ -288,18 +288,18 @@ ACF.IdRounds = list.Get("ACFIdRounds")  --Lookup tables so i can get rounds clas
 
 -- now that the tables are populated, throw them in the acf ents list
 list.Set( "ACFClasses"  , "GunClass"	, GunClasses	)
-list.Set( "ACFClasses"  , "Rack"		, RackClasses   )
+list.Set( "ACFClasses"  , "Rack"		, RackClasses	)
 list.Set( "ACFClasses"  , "Radar"	, RadarClasses  )
 
 list.Set( "ACFEnts"	, "Guns"		, GunTable	)
 list.Set( "ACFEnts"	, "Racks"	, RackTable	)
-list.Set( "ACFEnts"	, "Engines"	, EngineTable   )
-list.Set( "ACFEnts"	, "Gearboxes"   , GearboxTable  )
-list.Set( "ACFEnts"	, "FuelTanks"   , FuelTankTable )
+list.Set( "ACFEnts"	, "Engines"	, EngineTable	)
+list.Set( "ACFEnts"	, "Gearboxes"	, GearboxTable  )
+list.Set( "ACFEnts"	, "FuelTanks"	, FuelTankTable )
 list.Set( "ACFEnts"	, "FuelTanksSize", FuelTankSizeTable )
 list.Set( "ACFEnts"	, "Radars"	, Radars		)
 
-list.Set( "ACESounds"   , "GunFire"	, GSoundData	)
+list.Set( "ACESounds"	, "GunFire"	, GSoundData	)
 
 --Small remainder of Mobility table. Still being used in stuff like starfall/e2. This can change
 
@@ -308,8 +308,8 @@ list.Set( "ACFEnts"	, "Mobility"		, MobilityTable )
 ACF.Weapons	= list.Get("ACFEnts")
 ACF.Classes	= list.Get("ACFClasses")
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds	= list.Get("ACFIdRounds")   --Lookup tables so i can get rounds classes from clientside with just an integer
+ACF.IdRounds	= list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
 
 ACE.Armors	= list.Get("ACE_MaterialTypes")
 ACE.GSounds	= list.Get("ACESounds")
-ACE.ModelData   = ModelData
+ACE.ModelData	= ModelData

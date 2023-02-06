@@ -47,7 +47,7 @@ function ENT:Initialize()
 
 	end
 
-	ModelPath   = ACE.ModelData[id].Model
+	ModelPath	= ACE.ModelData[id].Model
 
 	self:SetModel( ModelPath ) --Make it compatible with ACF-3
 	self:PhysicsInit(SOLID_VPHYSICS)

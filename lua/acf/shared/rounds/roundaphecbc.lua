@@ -22,8 +22,8 @@ function Round.convert( Crate, PlayerData )
 	local ServerData	= {}
 	local GUIData	= {}
 
-	PlayerData.PropLength   =  PlayerData.PropLength	or 0
-	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.PropLength	=  PlayerData.PropLength	or 0
+	PlayerData.ProjLength	=  PlayerData.ProjLength	or 0
 	PlayerData.Tracer	=  PlayerData.Tracer		or 0
 	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
@@ -74,13 +74,13 @@ end
 
 
 function Round.getDisplayData(Data)
-	local GUIData   = {}
+	local GUIData	= {}
 	local Energy	= ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
 	GUIData.MaxPen  = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
 
 	GUIData.BlastRadius = (Data.FillerMass)^0.33*8
 	local FragMass	= Data.ProjMass - Data.FillerMass
-	GUIData.Fragments   = math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
+	GUIData.Fragments	= math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
 	GUIData.FragMass	= FragMass/GUIData.Fragments
 	GUIData.FragVel	= (Data.FillerMass*ACF.HEPower*1000/GUIData.FragMass/GUIData.Fragments)^0.5
 	return GUIData
@@ -157,9 +157,9 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 				if Bullet.HasPenned == false then --Activate APHE Fuse
 
 					Bullet.HasPenned	= true
-					Bullet.FuseLength   = Bullet.DetDelay or 0
+					Bullet.FuseLength	= Bullet.DetDelay or 0
 					Bullet.InitTime	= SysTime()
-					Bullet.FlightTime   = 0
+					Bullet.FlightTime	= 0
 
 				end
 
@@ -247,8 +247,8 @@ function Round.guicreate( Panel, Table )
 
 	ACE_UpperCommonDataDisplay()
 
-	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")   --Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")   --Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "HE Filler", "")--Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	ACE_Checkboxes()
@@ -258,7 +258,7 @@ function Round.guicreate( Panel, Table )
 
 	acfmenupanel:CPanelText("RicoDisplay", "")  --estimated rico chance
 
-	acfmenupanel:CPanelText("PenetrationDisplay", "")   --Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("PenetrationDisplay", "")	--Proj muzzle penetration (Name, Desc)
 
 	Round.guiupdate( Panel, Table )
 
@@ -288,7 +288,7 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
 	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)   --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("DetDelay",Data.DetDelay,0,1,2, "Detonation Fuse Delay", "Delay : "..(math.Round(Data.DetDelay*1000,2)).." ms") --HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
