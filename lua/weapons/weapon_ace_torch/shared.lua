@@ -1,6 +1,6 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
---include('shared.lua')
+--include("shared.lua")
 
 SWEP.Base = "weapon_ace_base"
 SWEP.Category = "ACE Tools"

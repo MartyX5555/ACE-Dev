@@ -8,7 +8,7 @@ ACF.CurrentVersion = 0      -- just defining a variable, do not change
 
 ACF.Year = 2022             -- Current Year
 
-print('[ACE | INFO]- loading ACE. . .')
+print("[ACE | INFO]- loading ACE. . .")
 
 ACE                 = {}
 ACE.ArmorTypes      = {}
@@ -22,16 +22,16 @@ ACF.IdRounds        = {}    --Lookup tables so i can get rounds classes from cli
        Entity Limits
 ]]------------------------------
 
-CreateConVar('sbox_max_acf_gun', 24)                            -- Gun limit
-CreateConVar('sbox_max_acf_rapidgun', 4)                        -- Guns like RACs, MGs, and ACs
-CreateConVar('sbox_max_acf_largegun', 2)                        -- Guns with a caliber above 100mm
-CreateConVar('sbox_max_acf_smokelauncher', 20)                  -- smoke launcher limit
-CreateConVar('sbox_max_acf_ammo', 50)                           -- ammo limit
-CreateConVar('sbox_max_acf_misc', 50)                           -- misc ents limit
-CreateConVar('sbox_max_acf_rack', 12)                           -- Racks limit
+CreateConVar("sbox_max_acf_gun", 24)                            -- Gun limit
+CreateConVar("sbox_max_acf_rapidgun", 4)                        -- Guns like RACs, MGs, and ACs
+CreateConVar("sbox_max_acf_largegun", 2)                        -- Guns with a caliber above 100mm
+CreateConVar("sbox_max_acf_smokelauncher", 20)                  -- smoke launcher limit
+CreateConVar("sbox_max_acf_ammo", 50)                           -- ammo limit
+CreateConVar("sbox_max_acf_misc", 50)                           -- misc ents limit
+CreateConVar("sbox_max_acf_rack", 12)                           -- Racks limit
 
---CreateConVar('sbox_max_acf_mines', 5)                         -- mines. Experimental
-CreateConVar('acf_meshvalue', 1)
+--CreateConVar("sbox_max_acf_mines", 5)                         -- mines. Experimental
+CreateConVar("acf_meshvalue", 1)
 CreateConVar("sbox_acf_restrictinfo", 1)                        -- 0=any, 1=owned
 
 -- Cvars for legality checking
@@ -447,4 +447,4 @@ cleanup.Register( "aceexplosives" )
 AddCSLuaFile("autorun/acf_missile/folder.lua")
 include("autorun/acf_missile/folder.lua")
 
-print('[ACE | INFO]- Done!')
+print("[ACE | INFO]- Done!")

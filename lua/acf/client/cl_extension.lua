@@ -291,7 +291,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
                     --If a wall is in front of the player and is indoor, reduces its vol
                     if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-                        --print('Inside of building')
+                        --print("Inside of building")
                         VolFix = VolFix*0.05
                     end
 
@@ -356,7 +356,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
                 --If a wall is in front of the player and is indoor, reduces its vol at 50%
                 if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-                    --print('Inside of building')
+                    --print("Inside of building")
                     VolFix = VolFix*0.5
                 end
 
@@ -433,7 +433,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
                 --If a wall is in front of the player and is indoor, reduces its vol at 50%
                 if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
-                    --print('Inside of building')
+                    --print("Inside of building")
                     VolFix = VolFix*0.5
                 end
 
@@ -530,7 +530,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 
                 --If a wall is in front of the player and is indoor, reduces its vol at 50%
                 if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
-                    --print('Inside of building')
+                    --print("Inside of building")
                     VolFix = VolFix*0.5
                 end
 
@@ -605,7 +605,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
                 --If a wall is in front of the player and is indoor, reduces its vol
                 if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
-                    --print('Inside of building')
+                    --print("Inside of building")
                     VolFix = VolFix*0.025
                 end
 

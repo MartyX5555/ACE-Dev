@@ -455,7 +455,7 @@ function ENT:CheckRopes()
         local Ent = Link.Ent
 
         --skips any invalid entity and remove from list
-        if not IsValid(Ent) then print('[ACE | WARN]- We found invalid ents linked to a gear, removing it. . .') table.remove(self.WheelLink, Key) continue end
+        if not IsValid(Ent) then print("[ACE | WARN]- We found invalid ents linked to a gear, removing it. . .") table.remove(self.WheelLink, Key) continue end
 
         local OutPos = self:LocalToWorld( Link.Output )
         local InPos = Ent:GetPos()

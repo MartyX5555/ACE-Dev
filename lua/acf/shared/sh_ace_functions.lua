@@ -231,7 +231,7 @@ function ACF_UpdateChecking( )
 
         --maybe not the best way to get git but well......
         str = tostring("String:"..contents)
-        i,k = string.find(str,'ACF.Version =')
+        i,k = string.find(str,"ACF.Version =")
 
         local rev = tonumber(string.sub(str,k+2,k+4)) or 0
 

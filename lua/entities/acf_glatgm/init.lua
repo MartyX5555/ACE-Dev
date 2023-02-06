@@ -60,7 +60,7 @@ function ENT:Initialize()
             --Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
             if Optical:GetPos():DistToSqr(self:GetPos()) < 250^2 and Optical:CPPIGetOwner() == self.Owner then
 
-                --print('Attaching Nearest Computer...')
+                --print("Attaching Nearest Computer...")
                 --debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
 
                 self.Guidance = Optical

@@ -200,7 +200,7 @@ list.Set( "ACFCvars", "acf_fueltank", {"id", "data1", "data2"} )
 duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle", "Id", "SizeId", "FuelType" )
 
 function ENT:UpdateFuelTank(Id, Data1, Data2)
-    --print('updated!')
+    --print("updated!")
 
     local TankData = TankTable[Data1]
     local pct = 1 --how full is the tank?

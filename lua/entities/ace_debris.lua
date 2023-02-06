@@ -21,7 +21,7 @@ function ENT:Initialize()
 	if IsValid( phys ) then
 
 		phys:Wake()
-	    phys:SetMaterial('jeeptire')
+	    phys:SetMaterial("jeeptire")
 
 	end
 

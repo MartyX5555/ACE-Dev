@@ -729,10 +729,10 @@ function ENT:Think()
         end
 
         if self.Firing then
-            --print('Fire!')
+            --print("Fire!")
             self:FireShell()
         elseif self.Reloading then
-            --print('Reloading!')
+            --print("Reloading!")
             self:ReloadMag()
             self.Reloading = false
         end
