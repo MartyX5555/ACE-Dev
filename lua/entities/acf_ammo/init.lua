@@ -246,7 +246,7 @@ do
 
                     Id          = Scale
                     Model       = "models/holograms/rcube_thin.mdl"
-                    Weight      = (Scale.x * Scale.y * Scale.z)/200    
+                    Weight      = (Scale.x * Scale.y * Scale.z)/200
                     Dimensions  = Scale
 
                     local ModelData = ACE.ModelData[Model]
@@ -653,7 +653,7 @@ function ENT:Think()
 
     if ACF.CurTime > self.NextLegalCheck then
 
-        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.EmptyMass,2), nil, true, true)
+        self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.min(math.Round(self.EmptyMass,2),50000), nil, true, true)
         self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
         self:UpdateOverlayText()
 
