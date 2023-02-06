@@ -98,8 +98,8 @@ do
 	end
 
 	-- check if the model matches
-	if Model != nil then
-		if ACF.Legal.Ignore.Model <= 0 and Ent:GetModel() != Model then
+	if Model ~= nil then
+		if ACF.Legal.Ignore.Model <= 0 and Ent:GetModel() ~= Model then
 			table.insert(problems,"Wrong model")
 		end
 	end
@@ -110,7 +110,7 @@ do
 		--Lets assume that input minmass is also rounded like here.
 		local CMass = math.Round(physobj:GetMass(),2)
 
-		if MinMass != nil and CMass < MinMass then
+		if MinMass ~= nil and CMass < MinMass then
 			table.insert(problems,"Under min mass")
 		end
 
@@ -128,7 +128,7 @@ do
 	end
 
 	-- check inertia components
-	if ACF.Legal.Ignore.Inertia <= 0 and MinInertia != nil then
+	if ACF.Legal.Ignore.Inertia <= 0 and MinInertia ~= nil then
 		local inertia = physobj:GetInertia()/physobj:GetMass()
 		if (inertia.x < MinInertia.x) or (inertia.y < MinInertia.y) or (inertia.z < MinInertia.z) then
 			table.insert(problems,"Under min inertia")
@@ -141,7 +141,7 @@ do
 	end
 
 	-- check for clips
-	if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData != nil) and (#Ent.ClipData > 0) then
+	if ACF.Legal.Ignore.visclip <= 0 and not CanVisclip and (Ent.ClipData ~= nil) and (#Ent.ClipData > 0) then
 		table.insert(problems,"Has visclip")
 	end
 

@@ -225,7 +225,7 @@ function SWEP:GetWhitelistedEntsInCone()
 				LOSdata.start		= IRSTPos
 				LOSdata.endpos		= entpos
 				LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
-				LOSdata.filter		= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+				LOSdata.filter		= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
 				LOSdata.mins			= vector_origin
 				LOSdata.maxs			= LOSdata.mins
 

@@ -30,7 +30,7 @@ hook.Add("PopulateWeapons", "AddWeaponContentACESweps", function(pnlContent, tre
 	--loop through all weapon categories
 	for _, categoryNode in pairs(tree:Root():GetChildNodes()) do
 		--if the text matches the categories we saved before we replace DoPopulate
-		if (ACEWeapons[categoryNode:GetText()] != nil) then
+		if (ACEWeapons[categoryNode:GetText()] ~= nil) then
 			local manifest = {
 				["Other"] = {} --default header
 			}
@@ -75,7 +75,7 @@ hook.Add("PopulateWeapons", "AddWeaponContentACESweps", function(pnlContent, tre
 						local icon = createSpawnIcon(ent, self.PropPanel)
 						local oldPaint = icon.Paint
 						local we = weapons.Get(ent.ClassName)
-						local bPossibleBlueprint = we.Base != "weapon_ace_base"
+						local bPossibleBlueprint = we.Base ~= "weapon_ace_base"
 
 						if (bPossibleBlueprint) then
 							icon.DoClick = function()

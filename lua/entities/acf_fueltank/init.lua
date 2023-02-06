@@ -310,7 +310,7 @@ function ENT:Update( ArgsTable )
 		return false, "You don't own that fuel tank!"
 	end
 
-	if ( ArgsTable[6] != self.FuelType ) then
+	if ( ArgsTable[6] ~= self.FuelType ) then
 		for Key, Engine in pairs( self.Master ) do
 			if Engine:IsValid() then
 				Engine:Unlink( self )

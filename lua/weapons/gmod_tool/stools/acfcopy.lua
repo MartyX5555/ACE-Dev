@@ -30,7 +30,7 @@ function TOOL:LeftClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then
+	if not IsValid( ent ) then
 		return false;
 	end
 
@@ -63,7 +63,7 @@ function TOOL:RightClick( trace )
 
 	local ent = trace.Entity;
 
-	if !IsValid( ent ) then
+	if not IsValid( ent ) then
 		return false;
 	end
 

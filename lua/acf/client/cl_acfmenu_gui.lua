@@ -1187,7 +1187,7 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 
 	acfmenupanel["CData"][Name].OnValueChanged = function( slider, val )
 
-	if acfmenupanel.AmmoData[Name] != val then
+	if acfmenupanel.AmmoData[Name] ~= val then
 
 		acfmenupanel.AmmoData[Name] = val
 			self:UpdateAttribs( Name )

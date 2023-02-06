@@ -259,7 +259,7 @@ function ENT:GetUser( inp )
 			return self:GetUser(inp.Inputs["Shoot"].Src)
 		elseif inp.Inputs then
 			for _,v in pairs(inp.Inputs) do
-				if (!IsValid(v.Src)) then return inp.Owner or inp:GetOwner() end
+				if not IsValid(v.Src) then return inp.Owner or inp:GetOwner() end
 				if table.HasValue(WireTable, v.Src:GetClass()) then
 					return self:GetUser(v.Src)
 				end

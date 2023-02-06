@@ -218,7 +218,7 @@ function ENT:Think()
 
 							start = thisPos ,endpos = entpos,
 							collisiongroup = COLLISION_GROUP_WORLD,
-							filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+							filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
 							mins = Vector( -0, -0, -0 ),
 							maxs = Vector( 0, 0, 0 )
 
@@ -250,7 +250,7 @@ function ENT:Think()
 								start = entpos,
 								endpos = entpos + difpos:GetNormalized() * 2000,
 								collisiongroup  = COLLISION_GROUP_DEBRIS,
-								filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end,
+								filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end,
 								mins = Vector( -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize, -self.ConeInducedGCTRSize ),
 								maxs = Vector( self.ConeInducedGCTRSize, self.ConeInducedGCTRSize, self.ConeInducedGCTRSize )
 
@@ -342,7 +342,7 @@ function ENT:UpdateOverlayText()
 
 	local cone	= self.Cone
 	local status	= self.Status or "Off"
-	local detected  = status ~= "Off" and self.ClosestToBeam != -1 or false
+	local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
 	local Jammed	= self.IsJammed
 
 	local txt = "Status: "..status

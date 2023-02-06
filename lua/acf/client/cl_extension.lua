@@ -90,7 +90,7 @@ function ACE_SHasLOS( EventPos )
 	local ply = LocalPlayer()
 
 	local plyPos	= ply.aceposoverride or ply:GetPos()
-	local headPos   = plyPos + ( !ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
+	local headPos   = plyPos + ( not ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
 
 	local LOSTr	= {}
 	LOSTr.start	= EventPos + Vector(0,0,10)

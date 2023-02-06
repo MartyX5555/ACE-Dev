@@ -136,7 +136,7 @@ function this:GetWhitelistedEntsInCone(missile)
 			LOSdata.start			= missilePos
 			LOSdata.endpos			= entpos
 			LOSdata.collisiongroup	= COLLISION_GROUP_WORLD
-			LOSdata.filter			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.
+			LOSdata.filter			= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end --Hits anything world related.
 			LOSdata.mins			= Vector(0,0,0)
 			LOSdata.maxs			= Vector(0,0,0)
 			local LOStr = util.TraceHull( LOSdata )
@@ -151,7 +151,7 @@ function this:GetWhitelistedEntsInCone(missile)
 					collisiongroup  = COLLISION_GROUP_WORLD,
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
-					filter = function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+					filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
 					}) --Hits anything in the world.
 
 					--Doppler testing fun

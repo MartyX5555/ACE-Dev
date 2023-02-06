@@ -146,7 +146,7 @@ function this:GetWhitelistedEntsInCone(missile)
 		LOSdata.start		= missilePos
 		LOSdata.endpos		= entpos
 		LOSdata.collisiongroup  = COLLISION_GROUP_WORLD
-		LOSdata.filter		= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end
+		LOSdata.filter		= function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
 		LOSdata.mins			= Vector(0,0,0)
 		LOSdata.maxs			= Vector(0,0,0)
 

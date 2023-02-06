@@ -65,7 +65,7 @@ function this.ClientPanel(Panel)
 
 	if IsValid(Panel) then Panel:Clear() end
 
-	if !this.ClientCPanel then this.ClientCPanel = Panel end
+	if not this.ClientCPanel then this.ClientCPanel = Panel end
 	Panel:SetName("ACF Damage Permissions")
 
 	local txt = Panel:Help("ACF Damage Permission Panel")

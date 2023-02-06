@@ -33,23 +33,23 @@ if SERVER then
 
 		local function ACF_OnNPCKilled( ent, attacker, inflictor )
 			-- Don't spam the killfeed with scripted stuff
-			if ( ent:GetClass() == "npc_bullseye" || ent:GetClass() == "npc_launcher" ) then return end
+			if ( ent:GetClass() == "npc_bullseye" or ent:GetClass() == "npc_launcher" ) then return end
 
-			if ( IsValid( attacker ) && attacker:GetClass() == "trigger_hurt" ) then attacker = ent end
+			if ( IsValid( attacker ) and attacker:GetClass() == "trigger_hurt" ) then attacker = ent end
 
-			if ( IsValid( attacker ) && attacker:IsVehicle() && IsValid( attacker:GetDriver() ) ) then
+			if ( IsValid( attacker ) and attacker:IsVehicle() and IsValid( attacker:GetDriver() ) ) then
 				attacker = attacker:GetDriver()
 			end
 
-			if ( !IsValid( inflictor ) && IsValid( attacker ) ) then
+			if ( not IsValid( inflictor ) and IsValid( attacker ) ) then
 				inflictor = attacker
 			end
 
 			-- Convert the inflictor to the weapon that they're holding if we can.
-			if ( IsValid( inflictor ) && attacker == inflictor && ( inflictor:IsPlayer() || inflictor:IsNPC() ) ) then
+			if ( IsValid( inflictor ) and attacker == inflictor and ( inflictor:IsPlayer() or inflictor:IsNPC() ) ) then
 
 				inflictor = inflictor:GetActiveWeapon()
-				if ( !IsValid( attacker ) ) then inflictor = attacker end
+				if ( not IsValid( attacker ) ) then inflictor = attacker end
 
 			end
 
@@ -57,7 +57,7 @@ if SERVER then
 			local AttackerClass = "worldspawn"
 
 			if ( IsValid( inflictor ) ) then
-				if inflictor.ACF and inflictor.Class and inflictor:GetClass() != "acf_ammo" then
+				if inflictor.ACF and inflictor.Class and inflictor:GetClass() ~= "acf_ammo" then
 					InflictorClass = "acf_" .. inflictor.Class
 				else
 					InflictorClass = inflictor:GetClass()
@@ -101,13 +101,13 @@ if SERVER then
 
 		local function ACF_PlayerDeath( ply, inflictor, attacker )
 
-			if ( IsValid( attacker ) && attacker:GetClass() == "trigger_hurt" ) then attacker = ply end
+			if ( IsValid( attacker ) and attacker:GetClass() == "trigger_hurt" ) then attacker = ply end
 
-			if ( IsValid( attacker ) && attacker:IsVehicle() && IsValid( attacker:GetDriver() ) ) then
+			if ( IsValid( attacker ) and attacker:IsVehicle() and IsValid( attacker:GetDriver() ) ) then
 				attacker = attacker:GetDriver()
 			end
 
-			if ( !IsValid( inflictor ) && IsValid( attacker ) ) then
+			if ( not IsValid( inflictor ) and IsValid( attacker ) ) then
 				inflictor = attacker
 			end
 
@@ -116,13 +116,13 @@ if SERVER then
 			-- pistol but kill you by hitting you with their arm.
 			local InflictorClass = "worldspawn"
 
-			if ( IsValid( inflictor ) && inflictor == attacker && ( inflictor:IsPlayer() || inflictor:IsNPC() ) ) then
+			if ( IsValid( inflictor ) and inflictor == attacker and ( inflictor:IsPlayer() or inflictor:IsNPC() ) ) then
 
 				inflictor = inflictor:GetActiveWeapon()
-				if ( !IsValid( inflictor ) ) then inflictor = attacker end
+				if ( not IsValid( inflictor ) ) then inflictor = attacker end
 			end
 
-			if inflictor.ACF and inflictor:GetClass() != "acf_ammo" then
+			if inflictor.ACF and inflictor:GetClass() ~= "acf_ammo" then
 				InflictorClass = "acf_" .. (inflictor.Class or "gun")
 			else
 				InflictorClass = inflictor:GetClass()
@@ -190,8 +190,8 @@ if CLIENT then
 			local inflictor	= net.ReadString()
 			local attacker	= net.ReadEntity()
 
-			if ( !IsValid( attacker ) ) then return end
-			if ( !IsValid( victim ) ) then return end
+			if ( not IsValid( attacker ) ) then return end
+			if ( not IsValid( victim ) ) then return end
 
 			GAMEMODE:AddDeathNotice( attacker:Name(), attacker:Team(), inflictor, victim:Name(), victim:Team() )
 
@@ -201,7 +201,7 @@ if CLIENT then
 		local function RecvPlayerKilledSelf()
 
 			local victim = net.ReadEntity()
-			if ( !IsValid( victim ) ) then return end
+			if ( not IsValid( victim ) ) then return end
 			GAMEMODE:AddDeathNotice( nil, 0, "suicide", victim:Name(), victim:Team() )
 
 		end
@@ -210,7 +210,7 @@ if CLIENT then
 		local function RecvPlayerKilled()
 
 			local victim	= net.ReadEntity()
-			if ( !IsValid( victim ) ) then return end
+			if ( not IsValid( victim ) ) then return end
 			local inflictor	= net.ReadString()
 			local attacker	= "#" .. net.ReadString()
 
@@ -229,24 +229,24 @@ if CLIENT then
 			--
 			-- For some reason the killer isn't known to us, so don't proceed.
 			--
-			if ( !IsValid( attacker ) ) then return end
+			if ( not IsValid( attacker ) ) then return end
 
 			GAMEMODE:AddDeathNotice( attacker:Name(), attacker:Team(), inflictor, victim, -1 )
 
-			local bIsLocalPlayer = ( IsValid(attacker) && attacker == LocalPlayer() )
+			local bIsLocalPlayer = ( IsValid(attacker) and attacker == LocalPlayer() )
 
 			local bIsEnemy = IsEnemyEntityName( victimtype )
 			local bIsFriend = IsFriendEntityName( victimtype )
 
-			if ( bIsLocalPlayer && bIsEnemy ) then
+			if ( bIsLocalPlayer and bIsEnemy ) then
 				achievements.IncBaddies()
 			end
 
-			if ( bIsLocalPlayer && bIsFriend ) then
+			if ( bIsLocalPlayer and bIsFriend ) then
 				achievements.IncGoodies()
 			end
 
-			if ( bIsLocalPlayer && ( !bIsFriend && !bIsEnemy ) ) then
+			if ( bIsLocalPlayer and ( not bIsFriend and not bIsEnemy ) ) then
 				achievements.IncBystander()
 			end
 

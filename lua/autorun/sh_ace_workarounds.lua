@@ -8,7 +8,7 @@ if CLIENT then
 		--Make sure that allowed seats use this override.
 		if not Vehicle.ACE_CamOverride then return end
 
-		if ( Vehicle.GetThirdPersonMode == nil || ply:GetViewEntity() != ply ) then
+		if ( Vehicle.GetThirdPersonMode == nil or ply:GetViewEntity() ~= ply ) then
 			-- This shouldn't ever happen.
 			return
 		end
@@ -16,7 +16,7 @@ if CLIENT then
 		--
 		-- If we're not in third person mode - then get outa here stalker
 		--
-		if ( !Vehicle:GetThirdPersonMode() ) then return view end
+		if ( not Vehicle:GetThirdPersonMode() ) then return view end
 
 		-- Don't roll the camera
 		-- view.angles.roll = 0
@@ -46,7 +46,7 @@ if CLIENT then
 		--
 		-- If the trace hit something, put the camera there.
 		--
-		if ( tr.Hit && !tr.StartSolid) then
+		if ( tr.Hit and not tr.StartSolid) then
 			view.origin = view.origin + tr.HitNormal * WallOffset
 		end
 
