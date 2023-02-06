@@ -96,11 +96,11 @@ do
 		local userid = self:GetOwner()
 
 		local trace = {}
-		trace.start 	= userid:GetShootPos()
-		trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
-		trace.filter 	= userid --Not hitting the owner's feet when aiming down
-		trace.mins 		= vector_origin
-		trace.maxs 		= trace.mins
+		trace.start	= userid:GetShootPos()
+		trace.endpos	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
+		trace.filter	= userid --Not hitting the owner's feet when aiming down
+		trace.mins		= vector_origin
+		trace.maxs		= trace.mins
 		local tr = util.TraceHull( trace )
 
 		if ( tr.HitWorld ) then return end
@@ -112,10 +112,10 @@ do
 
 			if ent:IsPlayer() or ent:IsNPC() then
 
-				local PlayerHealth 		= ent:Health() --get the health
-				local PlayerMaxHealth 	= ent:GetMaxHealth() --and max health too
-				local PlayerArmour 		= ent:IsPlayer() and ent:Armor() or 0
-				local PlayerMaxArmour 	= 100
+				local PlayerHealth		= ent:Health() --get the health
+				local PlayerMaxHealth	= ent:GetMaxHealth() --and max health too
+				local PlayerArmour		= ent:IsPlayer() and ent:Armor() or 0
+				local PlayerMaxArmour	= 100
 
 				if ( PlayerHealth >= PlayerMaxHealth ) then return end --if the player is healthy or somehow dead, move right along.
 
@@ -173,11 +173,11 @@ do
 
 		local trace = {}
 
-		trace.start 	= userid:GetShootPos()
-		trace.endpos 	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
-		trace.filter 	= userid
-		trace.mins 		= vector_origin
-		trace.maxs 		= trace.mins
+		trace.start	= userid:GetShootPos()
+		trace.endpos	= userid:GetShootPos() + ( userid:GetAimVector() * 128	)
+		trace.filter	= userid
+		trace.mins		= vector_origin
+		trace.maxs		= trace.mins
 
 		local tr = util.TraceHull( trace )
 

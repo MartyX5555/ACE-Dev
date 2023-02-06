@@ -1,23 +1,23 @@
 DEFINE_BASECLASS( "base_wire_entity" )
 
-ENT.PrintName 		= "Scalable Entity"
-ENT.WireDebugName 	= "Scalable Entity"
+ENT.PrintName		= "Scalable Entity"
+ENT.WireDebugName	= "Scalable Entity"
 
 cleanup.Register("scalable entity")
 
 function ENT:ConvertMeshToScale(MeshData, Scale)
 
-    local NewMesh = table.Copy(MeshData)
+	local NewMesh = table.Copy(MeshData)
 
-    for i, vertexgroup in pairs(NewMesh) do
+	for i, vertexgroup in pairs(NewMesh) do
 
-        for k, vertex in pairs(vertexgroup) do
-            vertexgroup[k] = (istable(vertex) and vertex.pos or vertex) * Scale
-        end
+		for k, vertex in pairs(vertexgroup) do
+			vertexgroup[k] = (istable(vertex) and vertex.pos or vertex) * Scale
+		end
 
-    end
+	end
 
-    return NewMesh
+	return NewMesh
 end
 
 -- A More shitty workaround to avoid certain tools can modify the physics of scalable ents. The hack below didnt work for some reason.

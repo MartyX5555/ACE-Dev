@@ -231,14 +231,14 @@ function ENT:ACF_Activate( Recalc )
 		Percent = self.ACF.Health / self.ACF.MaxHealth
 	end
 
-	self.ACF.Health	 = Health * Percent
+	self.ACF.Health	= Health * Percent
 	self.ACF.MaxHealth  = Health
-	self.ACF.Armour	 = Armour * (0.5 + Percent / 2)
+	self.ACF.Armour	= Armour * (0.5 + Percent / 2)
 	self.ACF.MaxArmour  = Armour
-	self.ACF.Type	   = nil
-	self.ACF.Mass	   = self.Mass
+	self.ACF.Type	= nil
+	self.ACF.Mass	= self.Mass
 	self.ACF.Density	= (PhysObj:GetMass() * 1000) / self.ACF.Volume
-	self.ACF.Type	   = "Prop"
+	self.ACF.Type	= "Prop"
 
 	self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
 

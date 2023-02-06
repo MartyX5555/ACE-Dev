@@ -1,29 +1,29 @@
 
 
 --[[---------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
 ]]-----------------------------------------------------------
 function EFFECT:Init( data )
 
 	local Gun = data:GetEntity()
 	if not IsValid(Gun) then return end
 
-	local Propellant 	 = data:GetScale()
-	local ReloadTime 	 = data:GetMagnitude()
+	local Propellant	= data:GetScale()
+	local ReloadTime	= data:GetMagnitude()
 
-	local Sound 		 = Gun:GetNWString( "Sound", "" )
-	local Class 		 = Gun:GetNWString( "Class", "C" )
-	local Caliber 		 = Gun:GetNWInt( "Caliber", 1 ) * 10
+	local Sound		= Gun:GetNWString( "Sound", "" )
+	local Class		= Gun:GetNWString( "Class", "C" )
+	local Caliber		= Gun:GetNWInt( "Caliber", 1 ) * 10
 	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", '50cal_muzzleflash_noscale' )
 
 	--This tends to fail
-	local ClassData 	= ACF.Classes.GunClass[Class]
-	local Attachment 	= "muzzle"
+	local ClassData	= ACF.Classes.GunClass[Class]
+	local Attachment	= "muzzle"
 
 	if ClassData then
 
-		local longbarrel 	= ClassData.longbarrel or nil
+		local longbarrel	= ClassData.longbarrel or nil
 
 		if longbarrel ~= nil then
 			if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then

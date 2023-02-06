@@ -118,18 +118,18 @@ do
 
 		function TOOL:DrawHUD()
 
-		    if not CLIENT then return end
+			if not CLIENT then return end
 
-		    local seat = self:GetOwner():GetEyeTrace().Entity
+			local seat = self:GetOwner():GetEyeTrace().Entity
 
 			if not IsValid(seat) then return end
 			local class = seat:GetClass()
 			if not string.StartWith(class, "prop_vehicle_") then return false end
 
 			local text = "Override: "..(seat.ACE_CamOverride and "Yes" or "No")
-		    local pos = seat:WorldSpaceCenter()
+			local pos = seat:WorldSpaceCenter()
 
-		    AddWorldTip( nil, text, nil, pos, nil )
+			AddWorldTip( nil, text, nil, pos, nil )
 
 		end
 

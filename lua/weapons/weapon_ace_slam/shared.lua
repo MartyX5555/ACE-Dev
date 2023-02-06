@@ -15,7 +15,7 @@ SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Grenades/Mines"
 
 --Visual
-SWEP.ViewModelFlip 	= false
+SWEP.ViewModelFlip	= false
 SWEP.ViewModel		= "models/weapons/v_slam.mdl"
 SWEP.WorldModel		= "models/weapons/w_slam.mdl"
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"

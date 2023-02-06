@@ -31,50 +31,50 @@ end
 
 function ACFM_ModifyRoundDisplayFuncs()
 
-    local roundTypes = list.GetForEdit("ACFRoundTypes")
+	local roundTypes = list.GetForEdit("ACFRoundTypes")
 
-    if not ACFM_RoundDisplayFuncs then
+	if not ACFM_RoundDisplayFuncs then
 
-        ACFM_RoundDisplayFuncs = {}
+		ACFM_RoundDisplayFuncs = {}
 
-        for k, v in pairs(roundTypes) do
-            ACFM_RoundDisplayFuncs[k] = v.getDisplayData
-        end
+		for k, v in pairs(roundTypes) do
+			ACFM_RoundDisplayFuncs[k] = v.getDisplayData
+		end
 
-    end
+	end
 
 
-    for k, v in pairs(roundTypes) do
+	for k, v in pairs(roundTypes) do
 
-        local oldDisplayData = ACFM_RoundDisplayFuncs[k]
+		local oldDisplayData = ACFM_RoundDisplayFuncs[k]
 
-        if oldDisplayData then
-            v.getDisplayData = function(data)
+		if oldDisplayData then
+			v.getDisplayData = function(data)
 
-                if not checkIfDataIsMissile(data) then
+				if not checkIfDataIsMissile(data) then
 					return oldDisplayData(data)
 				end
 
-                -- NOTE: if these replacements cause side-effects somehow, move to a masking-metatable approach
+				-- NOTE: if these replacements cause side-effects somehow, move to a masking-metatable approach
 
-                local MuzzleVel = data.MuzzleVel
-                local slugMV = data.SlugMV
+				local MuzzleVel = data.MuzzleVel
+				local slugMV = data.SlugMV
 				local slugMV2 = data.SlugMV2
 
-                data.MuzzleVel = 0
-                data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
+				data.MuzzleVel = 0
+				data.SlugMV = (slugMV or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
 				data.SlugMV2 = (slugMV2 or 0) * (ACF_GetGunValue(data.Id, "penmul") or 1.2)
 
-                local ret = oldDisplayData(data)
+				local ret = oldDisplayData(data)
 
-                data.SlugMV = slugMV
+				data.SlugMV = slugMV
 				data.SlugMV2 = slugMV2
-                data.MuzzleVel = MuzzleVel
+				data.MuzzleVel = MuzzleVel
 
-                return ret
-            end
-        end
-    end
+				return ret
+			end
+		end
+	end
 
 end
 
@@ -98,27 +98,27 @@ end
 
 function ACFM_ModifyCrateTextFuncs()
 
-    local roundTypes = list.GetForEdit("ACFRoundTypes")
+	local roundTypes = list.GetForEdit("ACFRoundTypes")
 
-    if not ACFM_CrateTextFuncs then
+	if not ACFM_CrateTextFuncs then
 
-        ACFM_CrateTextFuncs = {}
+		ACFM_CrateTextFuncs = {}
 
-        for k, v in pairs(roundTypes) do
-            ACFM_CrateTextFuncs[k] = v.cratetxt
-        end
+		for k, v in pairs(roundTypes) do
+			ACFM_CrateTextFuncs[k] = v.cratetxt
+		end
 
-    end
+	end
 
 
-    for k, v in pairs(roundTypes) do
+	for k, v in pairs(roundTypes) do
 
-        local oldCratetxt = ACFM_CrateTextFuncs[k]
+		local oldCratetxt = ACFM_CrateTextFuncs[k]
 
-        if oldCratetxt then
-            v.cratetxt = function(data, crate)
+		if oldCratetxt then
+			v.cratetxt = function(data, crate)
 
-                local origCrateTxt = oldCratetxt(data)
+				local origCrateTxt = oldCratetxt(data)
 
 				if not checkIfDataIsMissile(data) then
 					return origCrateTxt
@@ -129,7 +129,7 @@ function ACFM_ModifyCrateTextFuncs()
 				local Type = IsValid(crate) and crate.RoundId or data.RoundId
 
 				local guidance  = IsValid(crate) and crate.RoundData7 or data.Data7
-				local fuse      = IsValid(crate) and crate.RoundData8 or data.Data8
+				local fuse	= IsValid(crate) and crate.RoundData8 or data.Data8
 
 				if guidance then
 					guidance = ACFM_CreateConfigurable(guidance, ACF.Guidance, bdata, "guidance")
@@ -153,12 +153,12 @@ function ACFM_ModifyCrateTextFuncs()
 					end
 				end
 
-                return table.concat(str)
-            end
+				return table.concat(str)
+			end
 
 			ACF.RoundTypes[k].cratetxt = v.cratetxt
-        end
-    end
+		end
+	end
 
 end
 
@@ -167,21 +167,21 @@ end
 
 function ACFM_ModifyRoundBaseGunpowder()
 
-    local oldGunpowder = ACFM_ModifiedRoundBaseGunpowder and oldGunpowder or ACF_RoundBaseGunpowder
+	local oldGunpowder = ACFM_ModifiedRoundBaseGunpowder and oldGunpowder or ACF_RoundBaseGunpowder
 
 
-    ACF_RoundBaseGunpowder = function(PlayerData, Data, ServerData, GUIData)
+	ACF_RoundBaseGunpowder = function(PlayerData, Data, ServerData, GUIData)
 
-        PlayerData, Data, ServerData, GUIData = oldGunpowder(PlayerData, Data, ServerData, GUIData)
+		PlayerData, Data, ServerData, GUIData = oldGunpowder(PlayerData, Data, ServerData, GUIData)
 
-        Data.Id = PlayerData.Id
+		Data.Id = PlayerData.Id
 
-        return PlayerData, Data, ServerData, GUIData
+		return PlayerData, Data, ServerData, GUIData
 
-    end
+	end
 
 
-    ACFM_ModifiedRoundBaseGunpowder = true
+	ACFM_ModifiedRoundBaseGunpowder = true
 
 end
 

@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("C", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.1,
 	name = "Cannon",
 	desc = ACFTranslation.GunClasses[4],
@@ -12,8 +12,8 @@ ACF_defineGunClass("C", {
 
 --add a gun to the class
 ACF_defineGun("37mmC", { --id
-    name = "37mm Cannon",
-    desc = "A light and fairly weak cannon with good accuracy.",
+	name = "37mm Cannon",
+	desc = "A light and fairly weak cannon with good accuracy.",
 	model = "models/tankgun/tankgun_37mm.mdl",
 	sound = "ace_weapons/multi_sound/50mm_multi.mp3",
 	gunclass = "C",
@@ -135,7 +135,7 @@ ACF_defineGun("170mmC", {
 
 ACE_DefineModelData("models/tankgun/tankgun_100mm.mdl",{
 
-    Model = "models/tankgun/tankgun_100mm.mdl",
-    DefaultSize = 100,
+	Model = "models/tankgun/tankgun_100mm.mdl",
+	DefaultSize = 100,
 
 })

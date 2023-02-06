@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("HMG", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.4,
 	name = "Heavy Machinegun",
 	desc = ACFTranslation.GunClasses[7],

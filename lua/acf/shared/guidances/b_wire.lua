@@ -26,93 +26,93 @@ end
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
 function this:GetSeekFilter(class)
-    if self.Filter == self.DefaultFilter then
-        self.Filter = table.Copy(self.DefaultFilter)
-    end
+	if self.Filter == self.DefaultFilter then
+		self.Filter = table.Copy(self.DefaultFilter)
+	end
 
-    return self.Filter
+	return self.Filter
 end
 
 function this:Configure(missile)
 
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
+	local launcher = missile.Launcher
+	local outputs = launcher.Outputs
 
-    if outputs then
+	if outputs then
 
-        local names = self:GetNamedWireInputs(missile)
+		local names = self:GetNamedWireInputs(missile)
 
 
-        if #names > 0 then
+		if #names > 0 then
 
-            self.InputSource = launcher
-            self.InputNames = names
+			self.InputSource = launcher
+			self.InputNames = names
 
-        else
+		else
 
-            names = self:GetFallbackWireInputs(missile)
+			names = self:GetFallbackWireInputs(missile)
 
-            if #names > 0 then
-                self.InputSource = launcher
-                self.InputNames = names
-            end
+			if #names > 0 then
+				self.InputSource = launcher
+				self.InputNames = names
+			end
 
-        end
+		end
 
-    end
+	end
 
-    self.WireSnapped = false
+	self.WireSnapped = false
 
 end
 
 function this:GetNamedWireInputs(missile)
 
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
+	local launcher = missile.Launcher
+	local outputs = launcher.Outputs
 
-    local names = {}
+	local names = {}
 
-    -- If we have a Position output, we're in business.
-    if outputs.Position and outputs.Position.Type == "VECTOR" then
+	-- If we have a Position output, we're in business.
+	if outputs.Position and outputs.Position.Type == "VECTOR" then
 
-        names[#names+1] = "Position"
+		names[#names+1] = "Position"
 
-    end
-
-
-    if outputs.Target and outputs.Target.Type == "ENTITY" then
-
-        names[#names+1] = "Target"
-
-    end
+	end
 
 
-    return names
+	if outputs.Target and outputs.Target.Type == "ENTITY" then
+
+		names[#names+1] = "Target"
+
+	end
+
+
+	return names
 
 end
 
 function this:GetFallbackWireInputs(missile)
 
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
+	local launcher = missile.Launcher
+	local outputs = launcher.Outputs
 
-    -- To avoid ambiguity, only link if there's a single vector output.
-    local foundOutput = nil
+	-- To avoid ambiguity, only link if there's a single vector output.
+	local foundOutput = nil
 
-    for k, v in pairs(outputs) do
-        if v.Type == "VECTOR" then
-            if foundOutput then
-                foundOutput = nil
-                break
-            else
-                foundOutput = k
-            end
-        end
-    end
+	for k, v in pairs(outputs) do
+		if v.Type == "VECTOR" then
+			if foundOutput then
+				foundOutput = nil
+				break
+			else
+				foundOutput = k
+			end
+		end
+	end
 
-    if foundOutput then
-        return {foundOutput}
-    end
+	if foundOutput then
+		return {foundOutput}
+	end
 
 end
 
@@ -120,71 +120,71 @@ function this:GetGuidance(missile)
 
 	local launcher = self.InputSource
 
-    if not IsValid(launcher) then
-        return {}
-    end
+	if not IsValid(launcher) then
+		return {}
+	end
 
 	local launcherPos = launcher:GetPos()
-    local distMsl = missile:GetPos():DistToSqr(launcherPos)		-- We're using squared distance to optimise
+	local distMsl = missile:GetPos():DistToSqr(launcherPos)		-- We're using squared distance to optimise
 
-    if distMsl > self.WireLength ^ 2 then
-        self.WireSnapped = true
-        return {TargetPos = nil}
-    end
+	if distMsl > self.WireLength ^ 2 then
+		self.WireSnapped = true
+		return {TargetPos = nil}
+	end
 
 
-    local posVec = self:GetWireTarget()
+	local posVec = self:GetWireTarget()
 
-    if not posVec or type(posVec) != "Vector" or posVec == Vector() then
-        return {TargetPos = nil}
+	if not posVec or type(posVec) != "Vector" or posVec == Vector() then
+		return {TargetPos = nil}
 	else
 		local distTrgt = posVec:DistToSqr(launcherPos)
 		if distMsl > distTrgt then
 			return {TargetPos = nil}
 		end
-    end
+	end
 
 
-    self.TargetPos = posVec
+	self.TargetPos = posVec
 	return {TargetPos = posVec}
 
 end
 
 function this:GetWireTarget()
 
-    if not IsValid(self.InputSource) then
+	if not IsValid(self.InputSource) then
 		return {}
 	end
 
-    local outputs = self.InputSource.Outputs
+	local outputs = self.InputSource.Outputs
 
-    if not outputs then
-        return {}
+	if not outputs then
+		return {}
 	end
 
 
-    local posVec
+	local posVec
 
-    for k, name in pairs(self.InputNames) do
+	for k, name in pairs(self.InputNames) do
 
-        local outTbl = outputs[name]
+		local outTbl = outputs[name]
 
-        if not (outTbl and outTbl.Value) then continue end
+		if not (outTbl and outTbl.Value) then continue end
 
-        local val = outTbl.Value
+		local val = outTbl.Value
 
-        if isvector(val) and (val.x ~= 0 or val.y ~= 0 or val.z ~= 0) then
-            posVec = val
-            break
-        elseif IsEntity(val) and IsValid(val) then
-            posVec = val:GetPos()
-            break
-        end
+		if isvector(val) and (val.x ~= 0 or val.y ~= 0 or val.z ~= 0) then
+			posVec = val
+			break
+		elseif IsEntity(val) and IsValid(val) then
+			posVec = val:GetPos()
+			break
+		end
 
-    end
+	end
 
 
-    return posVec
+	return posVec
 
 end
 

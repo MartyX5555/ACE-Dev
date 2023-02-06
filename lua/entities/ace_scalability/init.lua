@@ -167,8 +167,8 @@ do -- AdvDupe2 duped parented ammo workaround
 	end
 
 	hook.Add("AdvDupe_FinishPasting", "ACF Parented Scalable Ent Fix", function(DupeInfo)
-		local Dupe      = unpack(DupeInfo, 1, 1)
-		local Player    = Dupe.Player
+		local Dupe	= unpack(DupeInfo, 1, 1)
+		local Player	= Dupe.Player
 		local CanParent = not IsValid(Player) or tobool(Player:GetInfo("advdupe2_paste_parents"))
 
 		if not CanParent then return end

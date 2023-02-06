@@ -24,10 +24,10 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-    PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
-    PlayerData.Tracer       =  PlayerData.Tracer        or 0
-    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
+	PlayerData.PropLength   =  PlayerData.PropLength	or 0
+	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.Tracer	=  PlayerData.Tracer		or 0
+	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 
 	PlayerData.Type = 'HEFS'
@@ -223,8 +223,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
-        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
-        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
+		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
+		PlayerData.TwoPiece	= acfmenupanel.AmmoData.TwoPiece
 
 	local Data = Round.convert( Panel, PlayerData )
 
@@ -233,8 +233,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data3", Data.PropLength )		--For Gun ammo, Data3 should always be Propellant
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )		--And Data4 total round mass
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
-    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
@@ -251,7 +251,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 
-    ---------------------------Chance of Ricochet table----------------------------
+	---------------------------Chance of Ricochet table----------------------------
 
 	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
 
@@ -263,4 +263,4 @@ list.Set( "ACFRoundTypes", "HEFS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds    = list.Get("ACFIdRounds")
+ACF.IdRounds	= list.Get("ACFIdRounds")

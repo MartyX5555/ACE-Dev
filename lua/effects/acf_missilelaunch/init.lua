@@ -1,8 +1,8 @@
 
 
  /*---------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
  ---------------------------------------------------------*/
  function EFFECT:Init( data )
 
@@ -33,7 +33,7 @@
 			--sound.Play( ACF.Classes["GunClass"][Class]["soundNormal"], Gun:GetPos() , math.Clamp(SoundPressure,75,255), math.Clamp(100,15,255))
 
 			local Muzzle = Gun:GetAttachment( Attachment ) or { Pos = Gun:GetPos(), Ang = Gun:GetAngles() }
-            Muzzle.Ang = (-Muzzle.Ang:Forward()):Angle()
+			Muzzle.Ang = (-Muzzle.Ang:Forward()):Angle()
 			ParticleEffect( ACF.Classes["GunClass"][Class]["muzzleflash"], Muzzle.Pos, Muzzle.Ang, Gun )
 		end
 

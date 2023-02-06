@@ -1,16 +1,16 @@
 
 
  --[[-------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
  ---------------------------------------------------------]]
 function EFFECT:Init( data )
 
-	self.Origin 		= data:GetOrigin()
-	self.DirVec 		= data:GetNormal()
-	self.Radius 		= math.max( data:GetRadius()  / 50 ,1)
-	self.Emitter 		= ParticleEmitter( self.Origin )
-	self.ParticleMul 	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
+	self.Origin		= data:GetOrigin()
+	self.DirVec		= data:GetNormal()
+	self.Radius		= math.max( data:GetRadius()  / 50 ,1)
+	self.Emitter		= ParticleEmitter( self.Origin )
+	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1, 1)
 
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)*self.Radius

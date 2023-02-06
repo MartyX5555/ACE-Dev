@@ -129,7 +129,7 @@ __e2setcost( 1 )
 
 ACF_E2_LinkTables = ACF_E2_LinkTables or
 { -- link resources within each ent type.  should point to an ent: true if adding link.Ent, false to add link itself
-	acf_engine 		= {GearLink = true, FuelLink = false},
+	acf_engine		= {GearLink = true, FuelLink = false},
 	acf_gearbox		= {WheelLink = true, Master = false},
 	acf_fueltank	= {Master = false},
 	acf_gun			= {AmmoLink = false},
@@ -232,11 +232,11 @@ e2function number entity:acfLinkTo(entity target, number notify)
 		return 0
 	end
 
-    local success, msg = this:Link(target)
-    if notify > 0 then
-        ACF_SendNotify(self.player, success, msg)
-    end
-    return success and 1 or 0
+	local success, msg = this:Link(target)
+	if notify > 0 then
+		ACF_SendNotify(self.player, success, msg)
+	end
+	return success and 1 or 0
 end
 
 --allows e2 to perform ACF unlinks
@@ -248,11 +248,11 @@ e2function number entity:acfUnlinkFrom(entity target, number notify)
 		return 0
 	end
 
-    local success, msg = this:Unlink(target)
-    if notify > 0 then
-        ACF_SendNotify(self.player, success, msg)
-    end
-    return success and 1 or 0
+	local success, msg = this:Unlink(target)
+	if notify > 0 then
+		ACF_SendNotify(self.player, success, msg)
+	end
+	return success and 1 or 0
 end
 
 -- returns any wheels linked to this engine/gearbox or child gearboxes

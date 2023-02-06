@@ -17,7 +17,7 @@ function pairsByKeys (t, f)
   local a = {}
   for n in pairs(t) do table.insert(a, n) end
   table.sort(a, f or mixedcompare)
-  local i = 0      -- iterator variable
+  local i = 0	-- iterator variable
   local iter = function ()   -- iterator function
 	i = i + 1
 	if a[i] == nil then return nil
@@ -38,7 +38,7 @@ function printByName(tbl)
 	end
 	plst = tbl -- reference!
 
-    if pbnTrace then debug.Trace() end
+	if pbnTrace then debug.Trace() end
 end
 
 pbn = printByName

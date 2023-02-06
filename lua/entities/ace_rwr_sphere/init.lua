@@ -83,7 +83,7 @@ function ENT:Think()
 
 	self.LegalTick = (self.LegalTick or 0) + 1
 
-	if 	self.LegalTick >= (self.checkLegalIn or 0) then
+	if	self.LegalTick >= (self.checkLegalIn or 0) then
 
 		self.LegalTick = 0
 		self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds

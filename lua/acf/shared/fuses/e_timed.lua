@@ -27,15 +27,15 @@ this.Configurable = table.Copy(this:super().Configurable)
 local configs = this.Configurable
 configs[#configs + 1] =
 {
-    Name = "Timer",             -- name of the variable to change
-    DisplayName = "Trigger Delay",   -- name displayed to the user
-    CommandName = "Tm",         -- shorthand name used in console commands
+	Name = "Timer",			-- name of the variable to change
+	DisplayName = "Trigger Delay",   -- name displayed to the user
+	CommandName = "Tm",		-- shorthand name used in console commands
 
-    Type = "number",            -- lua type of the configurable variable
-    Min = 0,                    -- number specific: minimum value
-    Max = 30                    -- number specific: maximum value
+	Type = "number",			-- lua type of the configurable variable
+	Min = 0,					-- number specific: minimum value
+	Max = 30					-- number specific: maximum value
 
-    -- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
+	-- in future if needed: min/max getter function based on munition type.  useful for modifying radar cones?
 }
 
 

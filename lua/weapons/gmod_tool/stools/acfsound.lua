@@ -253,17 +253,17 @@ function TOOL.BuildCPanel(panel)
 	end
 
 	panel:AddControl("Slider", {
-        Label = "Pitch:",
-        Command = "acfsound_pitch",
-        Type = "Float",
-        Min = "0.1",
-        Max = "2",
-    }):SetTooltip("Works only for engines.")
+		Label = "Pitch:",
+		Command = "acfsound_pitch",
+		Type = "Float",
+		Min = "0.1",
+		Max = "2",
+	}):SetTooltip("Works only for engines.")
 	/*
 	local SoundPitch = vgui.Create("DNumSlider")
 	SoundPitch:SetMin( 0.1 )
 	SoundPitch:SetMax( 2 )
-    SoundPitch:SetDecimals( 0.1 )
+	SoundPitch:SetDecimals( 0.1 )
 	SoundPitch:SetWide(wide)
 	SoundPitch:SetText("Pitch:")
 	SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])

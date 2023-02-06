@@ -42,10 +42,10 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-    PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
-    PlayerData.Tracer       =  PlayerData.Tracer        or 0
-    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
+	PlayerData.PropLength   =  PlayerData.PropLength	or 0
+	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.Tracer	=  PlayerData.Tracer		or 0
+	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	if not PlayerData.Data5 then PlayerData.Data5 = 0 end
 
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
@@ -214,8 +214,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.PropLength = acfmenupanel.AmmoData.PropLength	--PropLength slider
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
-        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
-        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
+		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
+		PlayerData.TwoPiece	= acfmenupanel.AmmoData.TwoPiece
 
 	local Data = Round.convert( Panel, PlayerData )
 
@@ -248,4 +248,4 @@ list.Set( "ACFRoundTypes", "FLR", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "FLR" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds    = list.Get("ACFIdRounds")
+ACF.IdRounds	= list.Get("ACFIdRounds")

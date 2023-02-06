@@ -34,8 +34,8 @@ end
 local function BuildFakePhysics( entity )
 
 	entity:PhysicsInit(SOLID_VPHYSICS)
-    entity:SetMoveType( MOVETYPE_VPHYSICS )
-    entity:SetSolid( SOLID_VPHYSICS )
+	entity:SetMoveType( MOVETYPE_VPHYSICS )
+	entity:SetSolid( SOLID_VPHYSICS )
 
 	local PhysObj = entity:GetPhysicsObject()
 
@@ -51,8 +51,8 @@ local ModelData = ACE.ModelData
 --Creates the real physic object for the scalable.
 local function BuildRealPhysics( entity, Scale )
 
-	local Model 		= entity:GetModel()
-	local Mesh 			= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
+	local Model		= entity:GetModel()
+	local Mesh			= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
 	local PhysMaterial  = ModelData[Model].physMaterial or ""
 
 	if entity.ConvertMeshToScale then

@@ -43,11 +43,11 @@ local function modepermission(owner, attacker, ent)
 		else return DefaultPermission end
 	end
 
-	local ownerid 		= owner:SteamID()
-	local attackerid 	= attacker:SteamID()
-	local ownerperms 	= perms.GetDamagePermissions(ownerid)
-	local godOwner 		= owner:HasGodMode()
-	local godInflictor 	= attacker:HasGodMode()
+	local ownerid		= owner:SteamID()
+	local attackerid	= attacker:SteamID()
+	local ownerperms	= perms.GetDamagePermissions(ownerid)
+	local godOwner		= owner:HasGodMode()
+	local godInflictor	= attacker:HasGodMode()
 
 	-- Disallow the damage if the attacker has not any way to receive damage to him.
 	if attacker.HasDisabledPerms then

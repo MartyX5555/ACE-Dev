@@ -374,10 +374,10 @@ concommand.Add( "ACF_ReloadPermissionModes", function(ply, cmd, args, str)
 
 	else
 
-    	local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
-    	for k, data in pairs( files ) do
-        	include( "acf/server/permissionmodes/"..data )
-    	end
+		local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
+		for k, data in pairs( files ) do
+			include( "acf/server/permissionmodes/"..data )
+		end
 
 
 		local mode = table.KeyFromValue(this.Modes, this.DamagePermission)
@@ -481,8 +481,8 @@ hook.Add("ACF_BulletDamage", "ACF_DamagePermissionCore", this.CanDamage)
 
 function this.thinkWrapper()
 
-	local curmode 	= table.KeyFromValue(this.Modes, this.DamagePermission)
-	local think 	= this.ModeThinks[curmode]
+	local curmode	= table.KeyFromValue(this.Modes, this.DamagePermission)
+	local think	= this.ModeThinks[curmode]
 	local nextthink
 
 	if think then
@@ -662,10 +662,10 @@ hook.Add("ACF_ProtectionModeChanged", "ACF_ResendPermissionsOnChanged", this.Res
 
 do
 
-    local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
-   	for k, data in pairs( files ) do
-        include( "acf/server/permissionmodes/"..data )
-    end
+	local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
+	for k, data in pairs( files ) do
+		include( "acf/server/permissionmodes/"..data )
+	end
 
 	local mode = table.KeyFromValue(this.Modes, this.DamagePermission)
 

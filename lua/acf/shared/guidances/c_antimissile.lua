@@ -50,7 +50,7 @@ this.desc = "This guidance package detects a missile in front of itself, and gui
 
 function this:Init()
 	self.LastSeek = CurTime() - self.SeekDelay - 0.000001
-    --self.Filter = self.DefaultFilter
+	--self.Filter = self.DefaultFilter
 	self.Filter = table.Copy(self.DefaultFilter)
 	self.LastTargetPos = Vector()
 end
@@ -60,11 +60,11 @@ end
 
 function this:Configure(missile)
 
-    self:super().Configure(self, missile)
+	self:super().Configure(self, missile)
 
-    self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
+	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
-    self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
+	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
 
 end
 
@@ -72,11 +72,11 @@ end
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
 function this:GetSeekFilter(class)
-    if self.Filter == self.DefaultFilter then
-        self.Filter = table.Copy(self.DefaultFilter)
-    end
+	if self.Filter == self.DefaultFilter then
+		self.Filter = table.Copy(self.DefaultFilter)
+	end
 
-    return self.Filter
+	return self.Filter
 end
 
 
@@ -84,16 +84,16 @@ end
 
 function this:GetNamedWireInputs(missile)
 
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
+	local launcher = missile.Launcher
+	local outputs = launcher.Outputs
 
-    local names = {}
+	local names = {}
 
-    if outputs.Target and outputs.Target.Type == "ENTITY" then
-        names[#names+1] = "Target"
-    end
+	if outputs.Target and outputs.Target.Type == "ENTITY" then
+		names[#names+1] = "Target"
+	end
 
-    return names
+	return names
 
 end
 
@@ -102,8 +102,8 @@ end
 
 function this:GetFallbackWireInputs()
 
-    -- Can't scan for entity outputs: a lot of ents have self-outputs.
-    return {}
+	-- Can't scan for entity outputs: a lot of ents have self-outputs.
+	return {}
 
 end
 
@@ -134,15 +134,15 @@ function this:GetGuidance(missile)
 		--targetPos = util.LocalToWorld( self.Target, targetPhysObj:GetMassCenter(), nil )
 	--end
 
-	local mfo       = missile:GetForward()
-	local mdir      = (targetPos - missilePos):GetNormalized()
-	local dot       = mfo:Dot(mdir)
+	local mfo	= missile:GetForward()
+	local mdir	= (targetPos - missilePos):GetNormalized()
+	local dot	= mfo:Dot(mdir)
 
 	if dot < self.ViewConeCos then
 		self.Target = nil
 		return {}
 	else
-        self.TargetPos = targetPos
+		self.TargetPos = targetPos
 		return {TargetPos = targetPos, ViewCone = self.ViewCone}
 	end
 
@@ -187,33 +187,33 @@ end
 
 function this:GetWireTarget(missile)
 
-    local launcher = missile.Launcher
-    local outputs = launcher.Outputs
+	local launcher = missile.Launcher
+	local outputs = launcher.Outputs
 
-    if not IsValid(self.InputSource) then
+	if not IsValid(self.InputSource) then
 		return nil
 	end
 
-    local outputs = self.InputSource.Outputs
+	local outputs = self.InputSource.Outputs
 
-    if not outputs then
-        return nil
+	if not outputs then
+		return nil
 	end
 
 
-    for k, name in pairs(self.InputNames) do
+	for k, name in pairs(self.InputNames) do
 
-        local outTbl = outputs[name]
+		local outTbl = outputs[name]
 
-        if not (outTbl and outTbl.Value) then continue end
+		if not (outTbl and outTbl.Value) then continue end
 
-        local val = outTbl.Value
+		local val = outTbl.Value
 
-        if IsValid(val) and IsEntity(val) then
-            return val
-        end
+		if IsValid(val) and IsEntity(val) then
+			return val
+		end
 
-    end
+	end
 
 end
 
@@ -237,7 +237,7 @@ end
 
 function this:GetWhitelistedEntsInCone(missile)
 
-    local missilePos = missile:GetPos()
+	local missilePos = missile:GetPos()
 	local missileForward = missile:GetForward()
 	local minDot = math.cos(math.rad(self.SeekCone))
 
@@ -248,7 +248,7 @@ function this:GetWhitelistedEntsInCone(missile)
 	local foundEnt
 	local minDistSqr = ( self.MinimumDistance * self.MinimumDistance )
 
-    local filter = self.Filter
+	local filter = self.Filter
 	for i, foundEnt in pairs(found) do
 
 		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then continue end
@@ -267,7 +267,7 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	end
 
-    return foundAnim
+	return foundAnim
 
 end
 
@@ -282,8 +282,8 @@ function this:HasLOSVisibility(ent, missile)
 		endpos = ent:GetPos(),
 		mask = MASK_SOLID_BRUSHONLY,
 		filter = {missile, ent},
-        mins = Vector(0,0,0),
-        maxs = Vector(0,0,0)
+		mins = Vector(0,0,0),
+		maxs = Vector(0,0,0)
 	}
 
 	local res = util.TraceHull(traceArgs)
@@ -302,21 +302,21 @@ function this:AcquireLock(missile)
 
 	local curTime = CurTime()
 
-    if self.LastSeek + self.WireSeekDelay <= curTime then
+	if self.LastSeek + self.WireSeekDelay <= curTime then
 
-        local wireEnt = self:GetWireTarget(missile)
+		local wireEnt = self:GetWireTarget(missile)
 
-        if wireEnt then
-            --print("wiremod provided", wireEnt)
-            return wireEnt
-        end
+		if wireEnt then
+			--print("wiremod provided", wireEnt)
+			return wireEnt
+		end
 
-    end
+	end
 
 	if self.LastSeek + self.SeekDelay > curTime then
-        --print("tried seeking within timeout period")
-        return nil
-    end
+		--print("tried seeking within timeout period")
+		return nil
+	end
 	self.LastSeek = curTime
 
 	-- Part 1: get all whitelisted entities in seek-cone.
@@ -325,12 +325,12 @@ function this:AcquireLock(missile)
 	-- Part 2: get a good seek target
 	local foundCt = table.Count(found)
 	if foundCt < 2 then
-        --print("shortcircuited and found", found[1])
-		   return found[1]
+		--print("shortcircuited and found", found[1])
+		return found[1]
 
-    end
+	end
 
-    local missilePos = missile:GetPos()
+	local missilePos = missile:GetPos()
 	local missileForward = missile:GetForward()
 
 	local mostCentralEnt
@@ -368,13 +368,13 @@ function this:AcquireLock(missile)
 			highestDot = currentDot
 
 			if currentDot >= self.SeekTolerance then
-                --print("found", mostCentralEnt, "in tolerance")
-                return currentEnt
-            end
+				--print("found", mostCentralEnt, "in tolerance")
+				return currentEnt
+			end
 		end
 	end
 
-    --print("iterated and found", mostCentralEnt)
+	--print("iterated and found", mostCentralEnt)
 
 	return mostCentralEnt
 end

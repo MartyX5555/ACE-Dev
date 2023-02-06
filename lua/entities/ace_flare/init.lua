@@ -11,10 +11,10 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 
-	self.Heat 		= self.Heat or 1
-	self.Life 		= self.Life or 0.1
+	self.Heat		= self.Heat or 1
+	self.Life		= self.Life or 0.1
 
-	self.Owner 		= self:GetOwner()
+	self.Owner		= self:GetOwner()
 
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(3)

@@ -2,19 +2,19 @@ local ACFEnts = list.Get("ACFEnts")
 local GunTable = ACFEnts.Guns
 
  /*---------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
  ---------------------------------------------------------*/
  function EFFECT:Init( data )
 
-	self.Ent 			= data:GetEntity()
-	self.Caliber 		= self.Ent:GetNWFloat( "Caliber", 10 )
-	self.Origin 		= data:GetOrigin()
-	self.DirVec 		= data:GetNormal()
-	self.Velocity 		= data:GetScale() --Mass of the projectile in kg
-	self.Mass 			= data:GetMagnitude() --Velocity of the projectile in gmod units
-	self.Emitter 		= ParticleEmitter( self.Origin )
-	self.ParticleMul 	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
+	self.Ent			= data:GetEntity()
+	self.Caliber		= self.Ent:GetNWFloat( "Caliber", 10 )
+	self.Origin		= data:GetOrigin()
+	self.DirVec		= data:GetNormal()
+	self.Velocity		= data:GetScale() --Mass of the projectile in kg
+	self.Mass			= data:GetMagnitude() --Velocity of the projectile in gmod units
+	self.Emitter		= ParticleEmitter( self.Origin )
+	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
 
 	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
 

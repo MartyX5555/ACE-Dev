@@ -2,22 +2,22 @@
 local AmmoTable = {}  --Start ammo containers listing
 
 --[[----------------
-    Ammo Format
+	Ammo Format
 --------------------
 
-local Ammo1x1x1 = {}                                             --Definition. The new ammocrate must have this first!
-	Ammo1x1x1.id = "Ammo1x1x1"                                   --ID. This will be the "name" that will appear on the ammo section.
-	Ammo1x1x1.ent = "acf_ammo"                                   --Entity Class. In this case, acf_ammo.
-	Ammo1x1x1.type = "Ammo"                                      --Ammo, don´t change.
-	Ammo1x1x1.name = "Modular Ammo Crate"                        --Name. not very useful but it should have one.
-	Ammo1x1x1.desc = "Modular Ammo Crate 2x4x4 Size\n"           --Desc. This is the desc of the ammocrate that will appear once selected.
+local Ammo1x1x1 = {}											--Definition. The new ammocrate must have this first!
+	Ammo1x1x1.id = "Ammo1x1x1"								--ID. This will be the "name" that will appear on the ammo section.
+	Ammo1x1x1.ent = "acf_ammo"								--Entity Class. In this case, acf_ammo.
+	Ammo1x1x1.type = "Ammo"									--Ammo, don´t change.
+	Ammo1x1x1.name = "Modular Ammo Crate"						--Name. not very useful but it should have one.
+	Ammo1x1x1.desc = "Modular Ammo Crate 2x4x4 Size\n"		--Desc. This is the desc of the ammocrate that will appear once selected.
 	Ammo1x1x1.model = "models/hunter/blocks/cube05x05x05.mdl.mdl"--The model of this ammocrate
-	Ammo1x1x1.weight = 10                                        --Weight of the ammocrate when its fully empty. Remember that.
-	Ammo1x1x1.Lenght = 10                                        --X dimension of this ammocrate.
-	Ammo1x1x1.Width = 10                                         --Y dimension of this ammocrate.
-	Ammo1x1x1.Height = 10                                        --Z dimension of this ammocrate.
-	Ammo1x1x1.volume = 1000                                      --Volume of this ammocrate. Looks deprecated since you can get the volume by multipling X*Y*Z
-AmmoTable["Ammo1x1x1"] = Ammo1x1x1                               --Putting the ammocrate on the AmmoTable
+	Ammo1x1x1.weight = 10										--Weight of the ammocrate when its fully empty. Remember that.
+	Ammo1x1x1.Lenght = 10										--X dimension of this ammocrate.
+	Ammo1x1x1.Width = 10										--Y dimension of this ammocrate.
+	Ammo1x1x1.Height = 10										--Z dimension of this ammocrate.
+	Ammo1x1x1.volume = 1000									--Volume of this ammocrate. Looks deprecated since you can get the volume by multipling X*Y*Z
+AmmoTable["Ammo1x1x1"] = Ammo1x1x1							--Putting the ammocrate on the AmmoTable
 
 
 
@@ -651,21 +651,21 @@ list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing
 --WOW
 ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
 
-    Model = "models/holograms/rcube_thin.mdl",
+	Model = "models/holograms/rcube_thin.mdl",
 	physMaterial = "metal",
-    DefaultSize = 12,
-    CustomMesh = { --Its a box anyways
-        {
-            Vector(6, 6, 6),
-            Vector(6, -6, 6),
-            Vector(-6, 6, 6),
-            Vector(-6, -6, 6),
-            Vector(6, 6, -6),
-            Vector(6, -6, -6),
-            Vector(-6, 6, -6),
-            Vector(-6, -6, -6)
-        },
-    }
+	DefaultSize = 12,
+	CustomMesh = { --Its a box anyways
+		{
+			Vector(6, 6, 6),
+			Vector(6, -6, 6),
+			Vector(-6, 6, 6),
+			Vector(-6, -6, 6),
+			Vector(6, 6, -6),
+			Vector(6, -6, -6),
+			Vector(-6, 6, -6),
+			Vector(-6, -6, -6)
+		},
+	}
 
 })
 

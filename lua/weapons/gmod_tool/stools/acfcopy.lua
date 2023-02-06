@@ -3,7 +3,7 @@ local cat = ((ACF.CustomToolCategory and ACF.CustomToolCategory:GetBool()) and "
 
 TOOL.Category		= cat
 TOOL.Name			= "#Tool.acfcopy.listname";
-TOOL.Author 		= "looter";
+TOOL.Author		= "looter";
 TOOL.Command		= nil;
 TOOL.ConfigName		= "";
 

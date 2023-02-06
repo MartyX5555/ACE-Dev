@@ -30,10 +30,10 @@ end
 
 function this:Configure(missile)
 
-    self:super().Configure(self, missile)
+	self:super().Configure(self, missile)
 
-    self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
-    self.ViewConeCos = math.cos(math.rad(self.ViewCone))
+	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
+	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 
 end
 
@@ -42,19 +42,19 @@ end
 
 function this:GetGuidance(missile)
 
-    local posVec = self:GetWireTarget()
+	local posVec = self:GetWireTarget()
 
-    if not posVec or type(posVec) != "Vector" or posVec == Vector() then
-        return {TargetPos = nil}
-    end
+	if not posVec or type(posVec) != "Vector" or posVec == Vector() then
+		return {TargetPos = nil}
+	end
 
 	if posVec then
-		local mfo       = missile:GetForward()
-		local mdir      = (posVec - missile:GetPos()):GetNormalized()
-		local dot       = mfo.x * mdir.x + mfo.y * mdir.y + mfo.z * mdir.z
+		local mfo	= missile:GetForward()
+		local mdir	= (posVec - missile:GetPos()):GetNormalized()
+		local dot	= mfo.x * mdir.x + mfo.y * mdir.y + mfo.z * mdir.z
 
 		if dot < self.ViewConeCos then
-        	return {TargetPos = nil}
+			return {TargetPos = nil}
 		end
 
 		local traceArgs =
@@ -63,8 +63,8 @@ function this:GetGuidance(missile)
 			endpos = posVec,
 			mask = MASK_SOLID_BRUSHONLY,
 			filter = {missile},
-        	mins = Vector(0,0,0),
-        	maxs = Vector(0,0,0)
+			mins = Vector(0,0,0),
+			maxs = Vector(0,0,0)
 		}
 
 		local res = util.TraceHull(traceArgs)
@@ -76,7 +76,7 @@ function this:GetGuidance(missile)
 
 	end
 
-    self.TargetPos = posVec
+	self.TargetPos = posVec
 	return {TargetPos = posVec, ViewCone = self.ViewCone}
 
 end

@@ -1,7 +1,7 @@
 
  /*---------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
  ---------------------------------------------------------*/
 
 function EFFECT:Init( data )
@@ -18,7 +18,7 @@ function EFFECT:Init( data )
 		ImpactTr.endpos = self.Origin + self.DirVec*20
 		ImpactTr.mins = Vector(0,0,0)
 		ImpactTr.maxs = Vector(0,0,0)
-	local Impact = util.TraceHull(ImpactTr)                                        --Trace to see if it will hit anything
+	local Impact = util.TraceHull(ImpactTr)										--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
 
 	local GroundTr = { }

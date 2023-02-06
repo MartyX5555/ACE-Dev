@@ -15,19 +15,19 @@ Menu.Command = ""
 
 local Permissions = {}
 
-local PermissionModes 	= {}
+local PermissionModes	= {}
 local CurrentPermission = "default"
 local DefaultPermission = "none"
 local ModeDescTxt
 local ModeDescDefault   = "Can't find any info for this mode!"
 local currentMode
-local currentModeTxt    = "\nThe current damage permission mode is %s."
-local introTxt 		    = "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."
+local currentModeTxt	= "\nThe current damage permission mode is %s."
+local introTxt			= "Damage Permission Modes change the way that ACE damage works.\n\nYou can change the DP mode if you are an admin."
 
-local statusTxt 		= "\nCurrent Protection status:"
-local condition  		= "Unknown"
+local statusTxt		= "\nCurrent Protection status:"
+local condition		= "Unknown"
 
-local cppidl 			= "Do you need ACE protection? Remember to restart your game once installed!"
+local cppidl			= "Do you need ACE protection? Remember to restart your game once installed!"
 
 local cvarstat = false
 
@@ -40,17 +40,17 @@ local status2
 
 function ACE_ReceiveDPStatus()
 
-    cvarstat = net.ReadBool() or false
-    Permissions:Update()
+	cvarstat = net.ReadBool() or false
+	Permissions:Update()
 
 end
 net.Receive( "ACE_DPStatus", ACE_ReceiveDPStatus )
 
 net.Receive("ACF_refreshpermissions", function(len)
 
-	PermissionModes 	= net.ReadTable()
-	CurrentPermission 	= net.ReadString()
-	DefaultPermission 	= net.ReadString()
+	PermissionModes	= net.ReadTable()
+	CurrentPermission	= net.ReadString()
+	DefaultPermission	= net.ReadString()
 
 	Permissions:Update()
 
@@ -215,19 +215,19 @@ function Permissions:Update()
 
 		condition = ""
 
-		local color 	= Color(0,100,0)
-		local warning 	= false
+		local color	= Color(0,100,0)
+		local warning	= false
 
 		if not cvarstat or not CPPI then
 			warning = true
 			color = Color(255,0,0)
 
 			if not cvarstat then
-				condition 	= condition .. "Disabled by the server. "
+				condition	= condition .. "Disabled by the server. "
 			end
 
 			if not CPPI then
-				condition 	= condition .. "No CPPI found."
+				condition	= condition .. "No CPPI found."
 			end
 
 		end

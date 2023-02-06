@@ -9,7 +9,7 @@
 ----Volume (0-1)			: Adjust the volume of this section. This applies to all sounds for this section and always consider to amplify sounds via programs if they are too quiet as this will not solve that entirely.
 ----Pitch (0-255)			: You can set the desired Pitch for the sounds of this section. Leave as 100 if you dont want to mess with it, but if you want more control over your sounds.... use it.
 ----Package (table)			: This is the area where you insert your sounds. Flood this table to your liking as long as you put their paths correctly. The gun will switch between these sounds when being used. Recommended to put the id here too.
-----NOTE about Package 		: sounds are played IN order according to the table. So if you want that x sound is played before another, put that first sound first in the list (from above)
+----NOTE about Package		: sounds are played IN order according to the table. So if you want that x sound is played before another, put that first sound first in the list (from above)
 
 -- These sound packages will work for both sounds placed via sound replacer or generic ones, so feel free to create your own scripted sounds. Only works with GUNs.
 
@@ -17,8 +17,8 @@
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/7_62mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/7_62/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/7_62/close/close1.mp3",
@@ -44,8 +44,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/7_62mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/7_62/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/7_62/medium/mid1.mp3",
@@ -66,8 +66,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/7_62mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/7_62/far/far.mp3",
 				"ace_weapons/multi_sound/content/7_62/far/far1.mp3",
@@ -96,8 +96,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/7_62mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/12_7/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/12_7/close/close1.mp3",
@@ -122,8 +122,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/12_7/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/12_7/medium/mid1.mp3",
@@ -146,8 +146,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/12_7/far/far.mp3",
 				"ace_weapons/multi_sound/content/12_7/far/far1.mp3",
@@ -172,8 +172,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20hmg/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/20hmg/close/close1.mp3",
@@ -196,8 +196,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20hmg/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/20hmg/medium/mid1.mp3",
@@ -223,8 +223,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20hmg/far/far.mp3",
 				"ace_weapons/multi_sound/content/20hmg/far/far1.mp3",
@@ -253,8 +253,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30hmg/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/30hmg/close/close1.mp3",
@@ -267,8 +267,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30hmg/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/30hmg/medium/mid1.mp3",
@@ -279,8 +279,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30hmg/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/30hmg/medium/mid1.mp3",
@@ -296,8 +296,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/20/close/close1.mp3",
@@ -313,8 +313,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/20/medium/mid1.mp3",
@@ -331,8 +331,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/20/far/far.mp3",
 				"ace_weapons/multi_sound/content/20/far/far1.mp3",
@@ -351,8 +351,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/30/close/close1.mp3",
@@ -362,8 +362,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/30/medium/mid1.mp3",
@@ -374,8 +374,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/30/far/far.mp3",
 				"ace_weapons/multi_sound/content/30/far/far1.mp3",
@@ -394,8 +394,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/40/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/40/close/close1.mp3",
@@ -406,8 +406,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/40/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/40/medium/mid1.mp3",
@@ -418,8 +418,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/40/far/far.mp3",
 				"ace_weapons/multi_sound/content/40/far/far1.mp3",
@@ -438,8 +438,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/50/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/50/close/close1.mp3",
@@ -448,8 +448,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/50/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/50/medium/mid1.mp3",
@@ -459,8 +459,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/50/far/far.mp3",
 				"ace_weapons/multi_sound/content/50/far/far1.mp3",
@@ -474,8 +474,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/75/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/75/close/close1.mp3",
@@ -484,8 +484,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/75/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/75/medium/mid1.mp3",
@@ -495,8 +495,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/75/far/far.mp3",
 				"ace_weapons/multi_sound/content/75/far/far1.mp3",
@@ -511,8 +511,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/100/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/100/close/close1.mp3",
@@ -521,8 +521,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/100/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/100/medium/mid1.mp3",
@@ -532,8 +532,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/100/far/far.mp3",
 				"ace_weapons/multi_sound/content/100/far/far1.mp3",
@@ -548,8 +548,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/120/close/close_multi.mp3",
 				"ace_weapons/multi_sound/content/120/close/close1.mp3",
@@ -559,8 +559,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/120/medium/mid.mp3",
 				"ace_weapons/multi_sound/content/120/medium/mid1.mp3",
@@ -571,8 +571,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/120/far/far.mp3",
 				"ace_weapons/multi_sound/content/120/far/far1.mp3",
@@ -587,8 +587,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 	{
 		main = {
-			Volume 	= 10,
-			Pitch 	= 100,
+			Volume	= 10,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/howitzer/close/close1.wav",
 				"ace_weapons/multi_sound/content/howitzer/close/close2.wav",
@@ -598,8 +598,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 
 		},
 		mid = {
-			Volume 	= 10,
-			Pitch 	= 100,
+			Volume	= 10,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/howitzer/medium/mid1.wav",
 				"ace_weapons/multi_sound/content/howitzer/medium/mid2.wav",
@@ -609,8 +609,8 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 
 		},
 		far = {
-			Volume 	= 10,
-			Pitch 	= 100,
+			Volume	= 10,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/howitzer/medium/mid1.wav",
 				"ace_weapons/multi_sound/content/howitzer/medium/mid2.wav",
@@ -625,23 +625,23 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"weapons/ACF_Gun/mortar_new.wav"
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"weapons/ACF_Gun/mortar_new.wav"
 			}
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"weapons/ACF_Gun/mortar_new.wav"
 			}
@@ -653,15 +653,15 @@ ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
 ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"acf_extra/tankfx/gnomefather/7mm1.wav"
 			}
 		},
 		mid = {
-			Volume 	= 100,
-			Pitch 	= 100,
+			Volume	= 100,
+			Pitch	= 100,
 			Package = {
 				"acf_other/gunfire/autocannon/autocannon_mid_far1.wav",
 				"acf_other/gunfire/autocannon/autocannon_mid_far2.wav",
@@ -671,8 +671,8 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 
 		},
 		far = {
-			Volume 	= 100,
-			Pitch 	= 100,
+			Volume	= 100,
+			Pitch	= 100,
 			Package = {
 				"acf_other/gunfire/autocannon/autocannon_mid_far1.wav",
 				"acf_other/gunfire/autocannon/autocannon_mid_far2.wav",
@@ -687,15 +687,15 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 	{
 		main = {
-			Volume 	= 0.9,
-			Pitch 	= 90,
+			Volume	= 0.9,
+			Pitch	= 90,
 			Package = {
 				"weapons/acf_gun/mg_fire2.wav"
 			}
 		},
 		mid = {
-			Volume 	= 2,
-			Pitch 	= 100,
+			Volume	= 2,
+			Pitch	= 100,
 			Package = {
 				"acf_other/gunfire/rotaryautocannon/rac_mid_far1.wav",
 				"acf_other/gunfire/rotaryautocannon/rac_mid_far2.wav",
@@ -705,8 +705,8 @@ ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 
 		},
 		far = {
-			Volume 	= 2,
-			Pitch 	= 100,
+			Volume	= 2,
+			Pitch	= 100,
 			Package = {
 				"acf_other/gunfire/rotaryautocannon/rac_mid_far1.wav",
 				"acf_other/gunfire/rotaryautocannon/rac_mid_far2.wav",
@@ -721,23 +721,23 @@ ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"weapons/acf_gun/grenadelauncher.wav"
 			}
 		},
 		mid = {
-			Volume 	= 0.5,
-			Pitch 	= 100,
+			Volume	= 0.5,
+			Pitch	= 100,
 			Package = {
 				"weapons/acf_gun/grenadelauncher.wav"
 			}
 
 		},
 		far = {
-			Volume 	= 0.5,
-			Pitch 	= 100,
+			Volume	= 0.5,
+			Pitch	= 100,
 			Package = {
 				"weapons/acf_gun/grenadelauncher.wav"
 			}
@@ -749,23 +749,23 @@ ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/smoke_multi.mp3",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/smoke/launcher/close/close_multi.mp3"
 			}
 		},
 		mid = {
-			Volume 	= 0.1,
-			Pitch 	= 100,
+			Volume	= 0.1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/smoke/launcher/mid/mid.mp3"
 			}
 
 		},
 		far = {
-			Volume 	= 0.1,
-			Pitch 	= 100,
+			Volume	= 0.1,
+			Pitch	= 100,
 			Package = {
 				"ace_weapons/multi_sound/content/smoke/launcher/mid/mid.mp3"
 			}
@@ -777,23 +777,23 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/smoke_multi.mp3",
 ACE_DefineGunFireSound( "acf_extra/tankfx/flare_launch.wav",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"acf_extra/tankfx/flare_launch.wav"
 			}
 		},
 		mid = {
-			Volume 	= 0.1,
-			Pitch 	= 100,
+			Volume	= 0.1,
+			Pitch	= 100,
 			Package = {
 				"acf_extra/tankfx/flare_launch.wav"
 			}
 
 		},
 		far = {
-			Volume 	= 0.1,
-			Pitch 	= 100,
+			Volume	= 0.1,
+			Pitch	= 100,
 			Package = {
 				"acf_extra/tankfx/flare_launch.wav"
 			}
@@ -806,8 +806,8 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/flare_launch.wav",
 ACE_DefineGunFireSound( "physics/metal/bts5_panels_impact_lg_01.wav",
 	{
 		main = {
-			Volume 	= 1,
-			Pitch 	= 100,
+			Volume	= 1,
+			Pitch	= 100,
 			Package = {
 				"physics/metal/bts5_panels_impact_lg_01.wav",
 				"physics/metal/bts5_panels_impact_lg_02.wav",
@@ -821,8 +821,8 @@ ACE_DefineGunFireSound( "physics/metal/bts5_panels_impact_lg_01.wav",
 			}
 		},
 		mid = {
-			Volume 	= 1,
-			Pitch 	= 50,
+			Volume	= 1,
+			Pitch	= 50,
 			Package = {
 				"physics/metal/bts5_panels_impact_lg_01.wav",
 				"physics/metal/bts5_panels_impact_lg_02.wav",
@@ -837,8 +837,8 @@ ACE_DefineGunFireSound( "physics/metal/bts5_panels_impact_lg_01.wav",
 
 		},
 		far = {
-			Volume 	= 1,
-			Pitch 	= 25,
+			Volume	= 1,
+			Pitch	= 25,
 			Package = {
 				"physics/metal/bts5_panels_impact_lg_01.wav",
 				"physics/metal/bts5_panels_impact_lg_02.wav",

@@ -35,10 +35,10 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-    PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
-    PlayerData.Tracer       =  PlayerData.Tracer        or 0
-    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
+	PlayerData.PropLength   =  PlayerData.PropLength	or 0
+	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.Tracer	=  PlayerData.Tracer		or 0
+	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	if not PlayerData.Data6 then PlayerData.Data6 = 0 end
 	if not PlayerData.Data7 then PlayerData.Data7 = 0 end
@@ -98,7 +98,7 @@ function Round.convert( Crate, PlayerData )
 	local SlugFrArea = 3.1416 * (Data.SlugCaliber/2)^2
 	Data.SlugPenArea = SlugFrArea^ACF.PenAreaMod
 	Data.SlugDragCoef = ((SlugFrArea/10000)/Data.SlugMass)*800
-	Data.SlugRicochet = 	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
+	Data.SlugRicochet =	500									--Base ricochet angle (The HEAT slug shouldn't ricochet at all)
 
 	--Random bullshit left
 	Data.CasingMass = Data.ProjMass - Data.FillerMass - ConeVol*7.9/1000
@@ -190,7 +190,7 @@ function Round.detonate( Index, Bullet, HitPos, HitNormal )
 	Bullet.InitTime = SysTime()
 	Bullet.Pos = HitPos
 	Bullet.Flight = Bullet.Flight:GetNormalized() * Bullet.SlugMV * 39.37
-	Bullet.FlightTime       = 0 --reseting timer
+	Bullet.FlightTime	= 0 --reseting timer
 	Bullet.FuseLength = 0.1 + 10/(Bullet.Flight:Length()*0.0254)
 	Bullet.DragCoef = Bullet.SlugDragCoef
 
@@ -271,36 +271,36 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 
-    if not Bullet.Detonated then
-        ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
-    end
+	if not Bullet.Detonated then
+		ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
+	end
 
-    ACF_RemoveBullet( Index )
+	ACF_RemoveBullet( Index )
 
 end
 
 function Round.endeffect( Effect, Bullet )
 
-    if not Bullet.Detonated then
+	if not Bullet.Detonated then
 
-        local Radius = (Bullet.FillerMass)^0.33*8*39.37
-        local Flash = EffectData()
-            Flash:SetOrigin( Bullet.SimPos )
-            Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-            Flash:SetRadius( math.max( Radius, 1 ) )
-        util.Effect( "ACF_Scaled_Explosion", Flash )
+		local Radius = (Bullet.FillerMass)^0.33*8*39.37
+		local Flash = EffectData()
+			Flash:SetOrigin( Bullet.SimPos )
+			Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
+			Flash:SetRadius( math.max( Radius, 1 ) )
+		util.Effect( "ACF_Scaled_Explosion", Flash )
 
-    else
+	else
 
-        local Impact = EffectData()
-            Impact:SetEntity( Bullet.Crate )
-            Impact:SetOrigin( Bullet.SimPos )
-            Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
-            Impact:SetScale( Bullet.SimFlight:Length() )
-            Impact:SetMagnitude( Bullet.RoundMass )
-        util.Effect( "acf_ap_impact", Impact )
+		local Impact = EffectData()
+			Impact:SetEntity( Bullet.Crate )
+			Impact:SetOrigin( Bullet.SimPos )
+			Impact:SetNormal( (Bullet.SimFlight):GetNormalized() )
+			Impact:SetScale( Bullet.SimFlight:Length() )
+			Impact:SetMagnitude( Bullet.RoundMass )
+		util.Effect( "acf_ap_impact", Impact )
 
-    end
+	end
 
 end
 
@@ -383,8 +383,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.ProjLength = acfmenupanel.AmmoData.ProjLength	--ProjLength slider
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data6 = acfmenupanel.AmmoData.ConeAng
-        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
-        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
+		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
+		PlayerData.TwoPiece	= acfmenupanel.AmmoData.TwoPiece
 
 	local Data = Round.convert( Panel, PlayerData )
 
@@ -394,8 +394,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data4", Data.ProjLength )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data6", Data.ConeAng )
-    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
@@ -414,7 +414,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\nAverage Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \nAverage Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
 
-    ---------------------------Chance of Ricochet table----------------------------
+	---------------------------Chance of Ricochet table----------------------------
 
 	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
 
@@ -437,4 +437,4 @@ list.Set( "ACFRoundTypes", "HEATFS", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "HEATFS" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds    = list.Get("ACFIdRounds")
+ACF.IdRounds	= list.Get("ACFIdRounds")

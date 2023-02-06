@@ -24,10 +24,10 @@ function Round.convert( Crate, PlayerData )
 	local ServerData = {}
 	local GUIData = {}
 
-    PlayerData.PropLength   =  PlayerData.PropLength    or 0
-    PlayerData.ProjLength   =  PlayerData.ProjLength    or 0
-    PlayerData.Tracer       =  PlayerData.Tracer        or 0
-    PlayerData.TwoPiece     =  PlayerData.TwoPiece      or 0
+	PlayerData.PropLength   =  PlayerData.PropLength	or 0
+	PlayerData.ProjLength   =  PlayerData.ProjLength	or 0
+	PlayerData.Tracer	=  PlayerData.Tracer		or 0
+	PlayerData.TwoPiece	=  PlayerData.TwoPiece	or 0
 	PlayerData.Data5 = math.max(PlayerData.Data5 or 0, 0)
 	PlayerData.Data6 = math.max(PlayerData.Data6 or 0, 0)
 	PlayerData.Data7 = tonumber(PlayerData.Data7) or 0  --catching some possible errors with string data in legacy dupes
@@ -284,8 +284,8 @@ function Round.guiupdate( Panel, Table )
 		PlayerData.Data5 = acfmenupanel.AmmoData.FillerVol
 		PlayerData.Data6 = acfmenupanel.AmmoData.WPVol
 		PlayerData.Data7 = acfmenupanel.AmmoData.FuseLength
-        PlayerData.Tracer       = acfmenupanel.AmmoData.Tracer
-        PlayerData.TwoPiece     = acfmenupanel.AmmoData.TwoPiece
+		PlayerData.Tracer	= acfmenupanel.AmmoData.Tracer
+		PlayerData.TwoPiece	= acfmenupanel.AmmoData.TwoPiece
 
 	local Data = Round.convert( Panel, PlayerData )
 
@@ -296,8 +296,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data5", Data.FillerVol )
 	RunConsoleCommand( "acfmenu_data6", Data.WPVol )
 	RunConsoleCommand( "acfmenu_data7", Data.FuseLength )
-    RunConsoleCommand( "acfmenu_data10", Data.Tracer )
-    RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
+	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
+	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
@@ -321,4 +321,4 @@ list.Set( "ACFRoundTypes", "SM", Round )  --Set the round properties
 list.Set( "ACFIdRounds", Round.netid, "SM" ) --Index must equal the ID entry in the table above, Data must equal the index of the table above
 
 ACF.RoundTypes  = list.Get("ACFRoundTypes")
-ACF.IdRounds    = list.Get("ACFIdRounds")
+ACF.IdRounds	= list.Get("ACFIdRounds")

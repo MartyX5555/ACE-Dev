@@ -910,11 +910,11 @@ end
 
 local linkTables =
 { -- link resources within each ent type. should point to an ent: true if adding link.Ent, false to add link itself
-	acf_engine      = { GearLink = true, FuelLink = false },
-	acf_gearbox     = { WheelLink = true, Master = false },
-	acf_fueltank    = { Master = false },
-	acf_gun         = { AmmoLink = false },
-	acf_ammo        = { Master = false }
+	acf_engine	= { GearLink = true, FuelLink = false },
+	acf_gearbox	= { WheelLink = true, Master = false },
+	acf_fueltank	= { Master = false },
+	acf_gun		= { AmmoLink = false },
+	acf_ammo		= { Master = false }
 }
 
 local function getLinks ( ent, enttype )

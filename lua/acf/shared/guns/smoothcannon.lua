@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("SBC", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.095,
 	name = "Smooth-Bore Cannon",
 	desc = ACFTranslation.GunClasses[15],
@@ -108,8 +108,8 @@ ACF_defineGun("170mmSBC", {
 
 ACE_DefineModelData("models/tankgun_new/tankgun_100mm.mdl",{
 
-    Model = "models/tankgun_new/tankgun_100mm.mdl",
-    DefaultSize = 100,
+	Model = "models/tankgun_new/tankgun_100mm.mdl",
+	DefaultSize = 100,
 
 })
 

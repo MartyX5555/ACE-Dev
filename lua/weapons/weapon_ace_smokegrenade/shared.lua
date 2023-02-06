@@ -5,14 +5,14 @@ SWEP.SubCategory = "Grenades/Mines"
 
 if CLIENT then
 	SWEP.PrintName		= "Smoke Grenade"
-	SWEP.Slot		    = 4
+	SWEP.Slot			= 4
 	SWEP.SlotPos		= 3
 end
 
 SWEP.Spawnable		= true
 
 --Visual
-SWEP.ViewModelFlip 	= true
+SWEP.ViewModelFlip	= true
 SWEP.ViewModel		= "models/weapons/v_eq_smokegrenade.mdl"
 SWEP.WorldModel		= "models/weapons/w_eq_smokegrenade.mdl"
 SWEP.ReloadSound	= "weapons/knife/knife_deploy1.wav"

@@ -12,39 +12,39 @@ local this = inherit
  */
 function this.doInherit( child, baseClass )
 
-    local new_class = child or {}
-    local class_mt = { __index = new_class }
+	local new_class = child or {}
+	local class_mt = { __index = new_class }
 
-    function new_class:__new()
-        local newinst = {}
-        setmetatable( newinst, class_mt )
+	function new_class:__new()
+		local newinst = {}
+		setmetatable( newinst, class_mt )
 		newinst:Init()
-        return newinst
-    end
+		return newinst
+	end
 
 	class_mt.__call = new_class.__new
 
 
 	function new_class:Init()
 
-    end
+	end
 
 
-    if nil ~= baseClass then
-        setmetatable( new_class, { __index = baseClass, __call = new_class.__new } )
+	if nil ~= baseClass then
+		setmetatable( new_class, { __index = baseClass, __call = new_class.__new } )
 	else
 		setmetatable( new_class, { __call = new_class.__new } )
-    end
+	end
 
 
-    function new_class:class()
-        return new_class
-    end
+	function new_class:class()
+		return new_class
+	end
 
 
-    function new_class:super()
-        return baseClass
-    end
+	function new_class:super()
+		return baseClass
+	end
 
 
 	function new_class:instanceof(class)
@@ -60,7 +60,7 @@ function this.doInherit( child, baseClass )
 	end
 	--*/
 
-    return new_class, class_mt
+	return new_class, class_mt
 end
 
 

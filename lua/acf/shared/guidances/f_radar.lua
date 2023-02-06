@@ -39,11 +39,11 @@ end
 
 function this:Configure(missile)
 
-    self:super().Configure(self, missile)
+	self:super().Configure(self, missile)
 
-    self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
+	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
 	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
-    self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
+	self.SeekCone = ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone
 
 end
 
@@ -66,15 +66,15 @@ function this:GetGuidance(missile)
 	local targetPhysObj = self.Target:GetPhysicsObject()
 	local targetPos = self.Target:GetPos() + Vector(0,0,25)
 
-	local mfo       = missile:GetForward()
-	local mdir      = (targetPos - missilePos):GetNormalized()
-	local dot       = mfo:Dot(mdir)
+	local mfo	= missile:GetForward()
+	local mdir	= (targetPos - missilePos):GetNormalized()
+	local dot	= mfo:Dot(mdir)
 
 	if dot < self.ViewConeCos then
 		self.Target = nil
 		return {}
 	else
-        self.TargetPos = targetPos
+		self.TargetPos = targetPos
 		return {TargetPos = targetPos, ViewCone = self.ViewCone}
 	end
 
@@ -133,12 +133,12 @@ function this:GetWhitelistedEntsInCone(missile)
 		if dist < self.MinimumDistance then continue end
 
 			local LOSdata = {}
-			LOSdata.start 			= missilePos
-			LOSdata.endpos 			= entpos
-			LOSdata.collisiongroup 	= COLLISION_GROUP_WORLD
-			LOSdata.filter 			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.
-			LOSdata.mins 			= Vector(0,0,0)
-			LOSdata.maxs 			= Vector(0,0,0)
+			LOSdata.start			= missilePos
+			LOSdata.endpos			= entpos
+			LOSdata.collisiongroup	= COLLISION_GROUP_WORLD
+			LOSdata.filter			= function( ent ) if ( ent:GetClass() != "worldspawn" ) then return false end end --Hits anything world related.
+			LOSdata.mins			= Vector(0,0,0)
+			LOSdata.maxs			= Vector(0,0,0)
 			local LOStr = util.TraceHull( LOSdata )
 
 			--Trace did not hit world
@@ -162,9 +162,9 @@ function this:GetWhitelistedEntsInCone(missile)
 					local Dopplertest2 = math.min(math.abs(entvel:Length()/math.max(math.abs(DPLR.Z),0.01))*100,10000)
 
 				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/entvel:Length()) > 0.3) or (not GCtr.Hit) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
-                    --print("PassesDoppler")
+					--print("PassesDoppler")
 					--Valid target
-                    --print(scanEnt)
+					--print(scanEnt)
 					table.insert(foundAnim, scanEnt)
 
 				end
@@ -174,7 +174,7 @@ function this:GetWhitelistedEntsInCone(missile)
 
 	end
 
-    return foundAnim
+	return foundAnim
 
 end
 
@@ -183,7 +183,7 @@ function this:AcquireLock(missile)
 
 	local curTime = CurTime()
 
-    --We make sure that its seeking between the defined delay
+	--We make sure that its seeking between the defined delay
 	if self.LastSeek + self.SeekDelay > curTime then return nil end
 
 	self.LastSeek = curTime
@@ -192,7 +192,7 @@ function this:AcquireLock(missile)
 	local found = self:GetWhitelistedEntsInCone(missile)
 
 	-- Part 2: get a good seek target
-    local missilePos = missile:GetPos()
+	local missilePos = missile:GetPos()
 
 	local bestAng = math.huge
 	local bestent = nil
@@ -225,7 +225,7 @@ function this:AcquireLock(missile)
 		end
 	end
 
---    print("iterated and found", mostCentralEnt)
+--	print("iterated and found", mostCentralEnt)
 	if not bestent then return nil end
 
 	return bestent

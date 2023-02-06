@@ -64,9 +64,9 @@ function TOOL:LeftClick( trace )
 	if CLIENT then return true end
 	if not IsValid( trace.Entity ) and not trace.Entity:IsWorld() then return false end
 
-	local ply 	= self:GetOwner()
-	local Type 	= self:GetClientInfo( "type" )
-	local Id 	= self:GetClientInfo( "id" )
+	local ply	= self:GetOwner()
+	local Type	= self:GetClientInfo( "type" )
+	local Id	= self:GetClientInfo( "id" )
 	local entClass
 	local TypeId = ACF.Weapons[Type][Id]
 

@@ -1,8 +1,8 @@
 
 
  /*---------------------------------------------------------
-    Initializes the effect. The data is a table of data
-    which was passed from the server.
+	Initializes the effect. The data is a table of data
+	which was passed from the server.
  ---------------------------------------------------------*/
 function EFFECT:Init( data )
 
