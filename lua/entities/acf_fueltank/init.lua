@@ -112,7 +112,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 
 		self.Exploding = true
 
-		if( IsValid(Inflictor) and Inflictor:IsPlayer() ) then
+		if IsValid(Inflictor) and Inflictor:IsPlayer() then
 			self.Inflictor = Inflictor
 		end
 

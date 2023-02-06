@@ -22,7 +22,7 @@ file.CreateDir(mapDPMDir)
 
 
 
-local function msgtoconsole(hud, msg)
+local function msgtoconsole()
 	--print(msg)
 end
 
@@ -73,7 +73,7 @@ local function validateSZs(safetable)
 		if type(k) ~= "string" then return false end
 		if not (#v == 2 and v[1] and v[2]) then return false end
 
-		for a, b in ipairs(v) do
+		for _, b in ipairs(v) do
 			if not (b.x and b.y and b.z) then return false end
 		end
 
@@ -128,9 +128,9 @@ end )
 
 local plyzones = {}
 hook.Add("Think", "ACF_DetectSZTransition", function()
-	for k, ply in pairs(player.GetAll()) do
+	for _, ply in pairs(player.GetAll()) do
 		local sid = ply:SteamID()
-		local trans = false
+		--local trans = false
 		local pos = ply:GetPos()
 		local oldzone = plyzones[sid]
 
@@ -144,7 +144,7 @@ hook.Add("Think", "ACF_DetectSZTransition", function()
 end)
 
 
-concommand.Add( "ACF_AddSafeZone", function(ply, cmd, args, str)
+concommand.Add( "ACF_AddSafeZone", function(ply, _, args)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
@@ -191,7 +191,7 @@ concommand.Add( "ACF_AddSafeZone", function(ply, cmd, args, str)
 	end
 end)
 
-concommand.Add( "ACF_RemoveSafeZone", function(ply, cmd, args, str)
+concommand.Add( "ACF_RemoveSafeZone", function(ply, _, args)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
@@ -230,7 +230,7 @@ concommand.Add( "ACF_RemoveSafeZone", function(ply, cmd, args, str)
 end)
 
 
-concommand.Add( "ACF_SaveSafeZones", function(ply, cmd, args, str)
+concommand.Add( "ACF_SaveSafeZones", function(ply)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
@@ -256,7 +256,7 @@ concommand.Add( "ACF_SaveSafeZones", function(ply, cmd, args, str)
 end)
 
 
-concommand.Add( "ACF_ReloadSafeZones", function(ply, cmd, args, str)
+concommand.Add( "ACF_ReloadSafeZones", function(ply)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
@@ -277,13 +277,13 @@ concommand.Add( "ACF_ReloadSafeZones", function(ply, cmd, args, str)
 end)
 
 
-concommand.Add( "ACF_SetPermissionMode", function(ply, cmd, args, str)
+concommand.Add( "ACF_SetPermissionMode", function(ply, _, args)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
 	if not args[1] then
 		local modes = ""
-		for k, v in pairs(this.Modes) do
+		for k in pairs(this.Modes) do
 			modes = modes .. k .. " "
 		end
 		printmsg(HUD_PRINTCONSOLE,
@@ -316,14 +316,14 @@ concommand.Add( "ACF_SetPermissionMode", function(ply, cmd, args, str)
 	end
 end)
 
-concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, cmd, args, str)
+concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, _, args)
 
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
 	if not args[1] then
 		local modes = ""
-		for k, v in pairs(this.Modes) do
+		for k in pairs(this.Modes) do
 			modes = modes .. k .. " "
 		end
 		printmsg(HUD_PRINTCONSOLE,
@@ -350,11 +350,11 @@ concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, cmd, args, str)
 		SaveMapDPM(mode)
 		this.DefaultPermission = mode
 
-		printmsg(HUD_PRINTCONSOLE, "Command SUCCESSFUL: Default permission mode for "..game.GetMap().." set to: "..mode)
+		printmsg(HUD_PRINTCONSOLE, "Command SUCCESSFUL: Default permission mode for " .. game.GetMap() .. " set to: " .. mode)
 
-		for k,v in pairs(player.GetAll()) do
+		for _, v in pairs(player.GetAll()) do
 			if v:IsAdmin() then
-				v:SendLua("chat.AddText(Color(255,0,0),\"Default permission mode for "..game.GetMap().." has been set to " .. mode .. "!\")")
+				v:SendLua("chat.AddText(Color(255,0,0),\"Default permission mode for " .. game.GetMap() .. " has been set to " .. mode .. "!\")")
 			end
 		end
 
@@ -364,7 +364,7 @@ concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, cmd, args, str)
 end)
 
 
-concommand.Add( "ACF_ReloadPermissionModes", function(ply, cmd, args, str)
+concommand.Add( "ACF_ReloadPermissionModes", function(ply)
 	local validply = IsValid(ply)
 	local printmsg = validply and function(hud, msg) ply:PrintMessage(hud, msg) end or msgtoconsole
 
@@ -375,8 +375,8 @@ concommand.Add( "ACF_ReloadPermissionModes", function(ply, cmd, args, str)
 	else
 
 		local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
-		for k, data in pairs( files ) do
-			include( "acf/server/permissionmodes/"..data )
+		for _, data in pairs( files ) do
+			include( "acf/server/permissionmodes/" .. data )
 		end
 
 
@@ -398,7 +398,7 @@ end)
 local function tellPlysAboutDPMode(mode, oldmode)
 	if mode == oldmode then return end
 
-	for k, v in pairs(player.GetAll()) do
+	for _, v in pairs(player.GetAll()) do
 		v:SendLua("chat.AddText(Color(255,0,0),\"Damage protection has been changed to " .. mode .. " mode!\")")
 	end
 end
@@ -451,7 +451,8 @@ function this.RegisterMode(mode, name, desc, default, think, defaultaction)
 	end
 end
 
-function this.CanDamage(Type, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun)
+--function this.CanDamage(Type, Entity, Energy, FrArea, Angle, Inflictor, Bone, Gun)
+function this.CanDamage(_, Entity, _, _, _, Inflictor, _, _)
 
 	--Disables protection if either CPPI is unexistent or has been disabled via convar.
 	local DP = GetConVar("acf_enable_dp"):GetInt()
@@ -552,7 +553,7 @@ end
 hook.Add( "PlayerDisconnected", "ACF_PermissionDisconnect", onDisconnect )
 
 local function plyBySID(steamid)
-	for k, v in pairs(player.GetAll()) do
+	for _, v in pairs(player.GetAll()) do
 		if v:SteamID() == steamid then
 			return v
 		end
@@ -570,7 +571,7 @@ end
 -- http://www.facepunch.com/showthread.php?t=1221183
 util.AddNetworkString("ACF_dmgfriends")
 util.AddNetworkString("ACF_refreshfeedback")
-net.Receive("ACF_dmgfriends", function(len, ply)
+net.Receive("ACF_dmgfriends", function(_, ply)
 	--Msg("\nsv dmgfriends\n")
 	if not ply:IsValid() then return end
 
@@ -584,10 +585,8 @@ net.Receive("ACF_dmgfriends", function(len, ply)
 		changed = this.PermissionsRaw(ownerid, k, v)
 		--Msg(k, " has ", changed and "changed\n" or "not changed\n")
 
-		if ownerid == k then
-			if not v then
-				ply.HasDisabledPerms = true
-			end
+		if ownerid == k and not v then
+			ply.HasDisabledPerms = true
 		end
 
 		if changed then
@@ -597,8 +596,8 @@ net.Receive("ACF_dmgfriends", function(len, ply)
 				local note = v and "given you" or "removed your"
 				local MsgNote = v and "given" or "removed"
 				--Msg("Sending", targ, " ", note, "\n")
-				targ:SendLua( string.format( "GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC" ) )
-				print("[ACE | INFO]- The user "..ply:Nick().." has "..MsgNote.." permissions to damage objects with ACE "..(v and "to" or "from").." "..((targ == ply) and "himself" or targ:Nick()) )
+				targ:SendLua(string.format("GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC"))
+				print("[ACE | INFO]- The user " .. ply:Nick() .. " has " .. MsgNote .. " permissions to damage objects with ACE " .. (v and "to" or "from") .. " " .. ((targ == ply) and "himself" or targ:Nick()))
 			end
 		end
 	end
@@ -623,7 +622,7 @@ function this.RefreshPlyDPFriends(ply)
 	net.Send(ply)
 end
 util.AddNetworkString("ACF_refreshfriends")
-net.Receive("ACF_refreshfriends", function(len, ply) this.RefreshPlyDPFriends(ply) end)
+net.Receive("ACF_refreshfriends", function(_, ply) this.RefreshPlyDPFriends(ply) end)
 
 
 
@@ -640,7 +639,7 @@ function this.SendPermissionsState(ply)
 	net.Send(ply)
 end
 util.AddNetworkString("ACF_refreshpermissions")
-net.Receive("ACF_refreshpermissions", function(len, ply)
+net.Receive("ACF_refreshpermissions", function(_, ply)
 	ACE_SendDPStatus()
 	this.SendPermissionsState(ply)
 end)
@@ -649,7 +648,7 @@ end)
 
 
 function this.ResendPermissionsOnChanged()
-	for k, ply in pairs(player.GetAll()) do
+	for _, ply in pairs(player.GetAll()) do
 		this.SendPermissionsState(ply)
 	end
 end
@@ -663,8 +662,8 @@ hook.Add("ACF_ProtectionModeChanged", "ACF_ResendPermissionsOnChanged", this.Res
 do
 
 	local files = file.Find( "acf/server/permissionmodes/*.lua", "LUA" )
-	for k, data in pairs( files ) do
-		include( "acf/server/permissionmodes/"..data )
+	for _, data in pairs( files ) do
+		include( "acf/server/permissionmodes/" .. data )
 	end
 
 	local mode = table.KeyFromValue(this.Modes, this.DamagePermission)

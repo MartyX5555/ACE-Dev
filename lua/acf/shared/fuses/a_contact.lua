@@ -46,13 +46,13 @@ function this:IsArmed()
 end
 
 
-function this:Configure(missile, guidance)
+function this:Configure()
 	self.TimeStarted = CurTime()
 end
 
 
 -- Do nothing, projectiles auto-detonate on contact anyway.
-function this:GetDetonate(missile, guidance)
+function this:GetDetonate()
 	return false
 end
 
@@ -64,7 +64,7 @@ function this:PerformDetonation( missile, bdata, phys, pos )
 	bdata.NoOcc =	missile
 	bdata.Gun	=	missile
 
-	if bdata.Filter then bdata.Filter[#bdata.Filter+1] = missile else bdata.Filter = {missile} end
+	if bdata.Filter then bdata.Filter[#bdata.Filter + 1] = missile else bdata.Filter = {missile} end
 
 	bdata.RoundMass = bdata.RoundMass or bdata.ProjMass
 	bdata.ProjMass  = bdata.ProjMass or bdata.RoundMass

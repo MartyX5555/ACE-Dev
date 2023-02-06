@@ -14,7 +14,7 @@
 	local Class = Gun:GetNWString( "Class" )
 	local RoundType = ACF.IdRounds[data:GetSurfaceProp()]
 
-	if( CLIENT and not IsValidSound( Sound ) ) then
+	if CLIENT and not IsValidSound( Sound ) then
 		Sound = ACF.Classes["GunClass"][Class]["sound"]
 	end
 

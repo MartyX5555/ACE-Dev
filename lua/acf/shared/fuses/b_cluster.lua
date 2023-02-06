@@ -42,7 +42,7 @@ configs[#configs + 1] =
 
 
 -- Do nothing, projectiles auto-detonate on contact anyway.
-function this:GetDetonate(missile, guidance)
+function this:GetDetonate(missile)
 
 	if not self:IsArmed() then return false end
 
@@ -58,7 +58,7 @@ function this:GetDetonate(missile, guidance)
 	}
 	local trace = util.TraceHull(tracedata)
 
-	if IsValid(trace.Entity) and (trace.Entity:GetClass() == 'acf_missile' or trace.Entity:GetClass() == 'ace_missile_swep_guided') then return false end
+	if IsValid(trace.Entity) and (trace.Entity:GetClass() == "acf_missile" or trace.Entity:GetClass() == "ace_missile_swep_guided") then return false end
 
 	return trace.Hit
 
@@ -78,8 +78,8 @@ do
 		--Make cluster to fail. Allow with rounds on whitelist only.
 		if not WhiteList[RoundType] then return end
 
-		local Bomblets  = math.Clamp(math.Round(bdata.FillerMass*1.5),3,30)	--30 bomblets original
-		local MuzzlePos = missile:LocalToWorld(Vector(10,0,0))
+		local Bomblets  = math.Clamp(math.Round(bdata.FillerMass * 1.5),3,30)	--30 bomblets original
+		--local MuzzlePos = missile:LocalToWorld(Vector(10,0,0))
 		local MuzzleVec = missile:GetForward()
 
 		if bdata.Type == "HEAT" then
@@ -90,10 +90,10 @@ do
 
 		missile.BulletData["Accel"]			= Vector(0,0,-600)
 		missile.BulletData["BoomPower"]		= bdata.BoomPower
-		missile.BulletData["Caliber"]		= math.Clamp(bdata.Caliber/Bomblets*10,0.05,bdata.Caliber*0.8) --Controls visual size, does nothing else
+		missile.BulletData["Caliber"] 		= math.Clamp(bdata.Caliber / Bomblets * 10, 0.05, bdata.Caliber * 0.8) --Controls visual size, does nothing else
 		missile.BulletData["Crate"]			= bdata.Crate
-		missile.BulletData["DragCoef"]		= bdata.DragCoef/Bomblets/2
-		missile.BulletData["FillerMass"]	= bdata.FillerMass/Bomblets/2	--nan armor ocurrs when this value is > 1
+		missile.BulletData["DragCoef"]		= bdata.DragCoef / Bomblets / 2
+		missile.BulletData["FillerMass"]	= bdata.FillerMass / Bomblets / 2	--nan armor ocurrs when this value is > 1
 
 		--print(bdata.FillerMass)
 		--print(Bomblets)
@@ -108,12 +108,12 @@ do
 		missile.BulletData["Id"]			= bdata.Id
 		missile.BulletData["KETransfert"]	= bdata.KETransfert
 		missile.BulletData["LimitVel"]		= 700
-		missile.BulletData["MuzzleVel"]		= bdata.MuzzleVel*20
+		missile.BulletData["MuzzleVel"]		= bdata.MuzzleVel * 20
 		missile.BulletData["Owner"]			= bdata.Owner
 		missile.BulletData["PenArea"]		= bdata.PenArea
 		missile.BulletData["Pos"]			= bdata.Pos
-		missile.BulletData["ProjLength"]	= bdata.ProjLength/Bomblets/2
-		missile.BulletData["ProjMass"]		= bdata.ProjMass/Bomblets/2
+		missile.BulletData["ProjLength"]	= bdata.ProjLength / Bomblets / 2
+		missile.BulletData["ProjMass"]		= bdata.ProjMass / Bomblets / 2
 		missile.BulletData["PropLength"]	= bdata.PropLength
 		missile.BulletData["PropMass"]		= bdata.PropMass
 		missile.BulletData["Ricochet"]		= 90--bdata.Ricochet
@@ -129,15 +129,15 @@ do
 
 		if missile.BulletData.Type == "HEAT" then
 
-			missile.BulletData["SlugMass"]		= bdata.SlugMass/(Bomblets/6)
-			missile.BulletData["SlugCaliber"]	= bdata.SlugCaliber/(Bomblets/6)
-			missile.BulletData["SlugDragCoef"]	= bdata.SlugDragCoef/(Bomblets/6)
-			missile.BulletData["SlugMV"]		= bdata.SlugMV/(Bomblets/6)
-			missile.BulletData["SlugPenArea"]	= bdata.SlugPenArea/(Bomblets/6)
-			missile.BulletData["SlugRicochet"]	= bdata.SlugRicochet
-			missile.BulletData["ConeVol"]		= bdata.SlugMass*1000/7.9/(Bomblets/6)
-			missile.BulletData["CasingMass"]	= missile.BulletData.ProjMass + missile.BulletData.FillerMass + (missile.BulletData.ConeVol*1000/7.9)
-			missile.BulletData["BoomFillerMass"]	= missile.BulletData.FillerMass/1.5
+			missile.BulletData["SlugMass"] 		= bdata.SlugMass / (Bomblets / 6)
+			missile.BulletData["SlugCaliber"] 	= bdata.SlugCaliber / (Bomblets / 6)
+			missile.BulletData["SlugDragCoef"] 	= bdata.SlugDragCoef / (Bomblets / 6)
+			missile.BulletData["SlugMV"] 		= bdata.SlugMV / (Bomblets / 6)
+			missile.BulletData["SlugPenArea"] 	= bdata.SlugPenArea / (Bomblets / 6)
+			missile.BulletData["SlugRicochet"] 	= bdata.SlugRicochet
+			missile.BulletData["ConeVol"] 		= bdata.SlugMass * 1000 / 7.9 / (Bomblets / 6)
+			missile.BulletData["CasingMass"] 	= missile.BulletData.ProjMass + missile.BulletData.FillerMass + (missile.BulletData.ConeVol * 1000 / 7.9)
+			missile.BulletData["BoomFillerMass"] = missile.BulletData.FillerMass / 1.5
 
 			--local SlugEnergy = ACF_Kinetic( missile.BulletData.MuzzleVel*39.37 + missile.BulletData.SlugMV*39.37 , missile.BulletData.SlugMass, 999999 )
 			--local  MaxPen = (SlugEnergy.Penetration/missile.BulletData.SlugPenArea)*ACF.KEtoRHA
@@ -151,14 +151,14 @@ do
 		missile.BulletData["Crate"] = missile.FakeCrate:EntIndex()
 
 		local MuzzleVec = missile:GetForward()
-		for I=1,Bomblets do
+		for I = 1,Bomblets do
 
-			timer.Simple(0.01*I,function()
-				if(IsValid(missile)) then
-					Spread = ((missile:GetUp() * (2 * math.random() - 1)) + (missile:GetRight() * (2 * math.random() - 1)))*(I-1)/45
-					missile.BulletData["Flight"] = (MuzzleVec+(Spread * 2)):GetNormalized() * missile.BulletData["MuzzleVel"] * 39.37 + bdata.Flight
+			timer.Simple(0.01 * I, function()
+				if IsValid(missile) then
+					Spread = ((missile:GetUp() * (2 * math.random() - 1)) + (missile:GetRight() * (2 * math.random() - 1))) * (I - 1) / 45
+					missile.BulletData["Flight"] = (MuzzleVec + (Spread * 2)):GetNormalized() * missile.BulletData["MuzzleVel"] * 39.37 + bdata.Flight
 
-					local MuzzlePos = missile:LocalToWorld(Vector(100-(I*20),((Bomblets/2)-I)*2,0)*0.5)
+					local MuzzlePos = missile:LocalToWorld(Vector(100 - (I * 20), ((Bomblets / 2) - I) * 2, 0) * 0.5)
 					missile.BulletData.Pos = MuzzlePos
 					missile.CreateShell = ACF.RoundTypes[missile.BulletData.Type].create
 					missile:CreateShell( missile.BulletData )
@@ -167,7 +167,7 @@ do
 			end)
 		end
 
-		local Radius = (missile.BulletData.FillerMass)^0.33*8*39.37*2 --Explosion effect radius.
+		local Radius = missile.BulletData.FillerMass ^ 0.33 * 8 * 39.37 * 2 --Explosion effect radius.
 		local Flash = EffectData()
 			Flash:SetOrigin( missile:GetPos() )
 			Flash:SetNormal( missile:GetForward() )
@@ -177,7 +177,7 @@ do
 	end
 
 
-	function this:PerformDetonation( missile, bdata, phys, pos )
+	function this:PerformDetonation( missile, bdata)
 
 		missile:SetNoDraw(true)
 		CreateCluster(missile, bdata)

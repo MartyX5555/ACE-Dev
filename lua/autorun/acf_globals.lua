@@ -323,7 +323,7 @@ if CLIENT then
 
 	ACF.CustomToolCategory = CreateClientConVar( "acf_tool_category", 0, true, false );
 
-	if( ACF.CustomToolCategory:GetBool() ) then
+	if ACF.CustomToolCategory:GetBool() then
 
 		language.Add( "spawnmenu.tools.acf", "ACF" );
 
@@ -353,27 +353,27 @@ end )
 
 function ACF_CVarChangeCallback(CVar, Prev, New)
 
-	if( CVar == "acf_healthmod" ) then
+	if CVar == "acf_healthmod" then
 		ACF.Threshold = 264.7 / math.max(New, 0.01)
-	elseif( CVar == "acf_armormod" ) then
+	elseif CVar == "acf_armormod" then
 		ACF.ArmorMod = 1 * math.max(New, 0)
-	elseif( CVar == "acf_ammomod" ) then
+	elseif CVar == "acf_ammomod" then
 		ACF.AmmoMod = 1 * math.max(New, 0.01)
-	elseif( CVar == "acf_spalling" ) then
+	elseif CVar == "acf_spalling" then
 		ACF.Spalling = math.floor(math.Clamp(New, 0, 1))
-	elseif( CVar == "acf_spalling_multipler" ) then
+	elseif CVar == "acf_spalling_multipler" then
 		ACF.SpallMult = math.Clamp(New, 1, 5)
-	elseif( CVar == "acf_gunfire" ) then
+	elseif CVar == "acf_gunfire" then
 		ACF.GunfireEnabled = tobool( New )
-	elseif( CVar == "acf_debris_lifetime" ) then
+	elseif CVar == "acf_debris_lifetime" then
 		ACF.DebrisLifeTime = math.max( New,0)
-	elseif( CVar == "acf_debris_children" ) then
+	elseif CVar == "acf_debris_children" then
 		ACF.DebrisChance = math.Clamp(New,0,1)
-	elseif( CVar == "acf_explosions_scaled_he_max" ) then
+	elseif CVar == "acf_explosions_scaled_he_max" then
 		ACF.ScaledHEMax = math.max(New,50)
-	elseif( CVar == "acf_explosions_scaled_ents_max" ) then
+	elseif CVar == "acf_explosions_scaled_ents_max" then
 		ACF.ScaledEntsMax = math.max(New,1)
-	elseif( CVar == "acf_enable_dp" ) then
+	elseif CVar == "acf_enable_dp" then
 		if ACE_SendDPStatus then
 			ACE_SendDPStatus()
 		end

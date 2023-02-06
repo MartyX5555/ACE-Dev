@@ -22,7 +22,7 @@ Material.ArmorMul	= 0.334
 Material.NormMult	= 0.7
 
 if SERVER then
-	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
+	function Material.ArmorResolution( _, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
 		local HitRes = {}
 
@@ -39,7 +39,7 @@ if SERVER then
 
 			DamageModifier = Material.spallresist
 
-		elseif Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS" then
+		elseif Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
 
 			DamageModifier = Material.HEATMul
 
@@ -49,7 +49,7 @@ if SERVER then
 		local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 		-- Penetration probability
-		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * ( maxPenetration / losArmor/ effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
+		local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * ( maxPenetration / losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
 		if breachProb > math.random() and maxPenetration > armor then			-- Breach chance roll
 
@@ -64,7 +64,7 @@ if SERVER then
 
 			local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
-			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
+			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * DamageModifier * damageMult ) / resiliance
 			HitRes.Overkill = (maxPenetration - Penetration)
 			HitRes.Loss	= Penetration / maxPenetration
 
@@ -75,7 +75,7 @@ if SERVER then
 		-- Projectile did not breach nor penetrate armor
 		local Penetration = math.min( maxPenetration , losArmor * effectiveness)
 
-		HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea * DamageModifier * damageMult )/ resiliance
+		HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea * DamageModifier * damageMult ) / resiliance
 		HitRes.Overkill = 0
 		HitRes.Loss	= 1
 

@@ -41,7 +41,7 @@ configs[#configs + 1] =
 
 
 
-function this:GetDetonate(missile, guidance)
+function this:GetDetonate()
 	return self:IsArmed() and self.TimeStarted + self.Timer <= CurTime()
 end
 

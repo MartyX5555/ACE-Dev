@@ -717,17 +717,17 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
 	-- Custom BS for karbine. Per Rack ROF.
 	Rack.PGRoFmod = 1
-	if(gundef["rofmod"]) then
+	if gundef["rofmod"] then
 		Rack.PGRoFmod = math.max(0, gundef["rofmod"])
 	end
 
 	-- Custom BS for karbine. Magazine Size, Mag reload Time
 	Rack.MagSize = 1
-	if(gundef["magsize"]) then
+	if gundef["magsize"] then
 		Rack.MagSize = math.max(Rack.MagSize, gundef["magsize"] or 1)
 	end
 	Rack.MagReload = 0
-	if(gundef["magreload"]) then
+	if gundef["magreload"] then
 		Rack.MagReload = math.max(Rack.MagReload, gundef["magreload"])
 	end
 

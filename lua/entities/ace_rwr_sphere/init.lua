@@ -100,7 +100,7 @@ function ENT:Think()
 
 		for k, scanEnt in pairs(ScanArray) do
 
-			if(IsValid(scanEnt))then
+			if IsValid(scanEnt) then
 
 				local entpos = scanEnt:GetPos()
 				local difpos = (thisPos - entpos)

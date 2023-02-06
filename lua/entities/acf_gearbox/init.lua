@@ -560,7 +560,7 @@ function ENT:Calc( InputRPM, InputInertia )
 			if self.GearRatio ~= 0 and ( ( InputRPM > 0 and RPM < InputRPM ) or ( InputRPM < 0 and RPM > InputRPM ) ) then
 				local NTq = math.min( Clutch, ( InputRPM - RPM) * InputInertia)
 
-				if( self.SteerRate ~= 0 ) then
+				if self.SteerRate ~= 0 then
 					Sign = self.SteerRate / math.abs( self.SteerRate )
 				else
 					Sign = 0

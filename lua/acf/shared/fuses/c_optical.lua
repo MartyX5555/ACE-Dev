@@ -42,7 +42,7 @@ configs[#configs + 1] =
 
 
 -- Do nothing, projectiles auto-detonate on contact anyway.
-function this:GetDetonate(missile, guidance)
+function this:GetDetonate(missile)
 
 	if not self:IsArmed() then return false end
 
@@ -58,7 +58,7 @@ function this:GetDetonate(missile, guidance)
 	}
 	local trace = util.TraceHull(tracedata)
 
-	if IsValid(trace.Entity) and (trace.Entity:GetClass() == 'acf_missile' or trace.Entity:GetClass() == "ace_missile_swep_guided") then return false end
+	if IsValid(trace.Entity) and (trace.Entity:GetClass() == "acf_missile" or trace.Entity:GetClass() == "ace_missile_swep_guided") then return false end
 
 	return trace.Hit
 

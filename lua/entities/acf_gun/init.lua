@@ -206,7 +206,7 @@ do
 		Wire_TriggerOutput(Gun, "Entity", Gun)
 
 		Gun.MagReload = 0
-		if(Lookup.magreload) then
+		if Lookup.magreload then
 			Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
 		end
 
@@ -703,7 +703,7 @@ function ENT:Think()
 		Wire_TriggerOutput(self, "AmmoCount", Ammo)
 
 
-		if( self.MagSize ) then
+		if self.MagSize then
 			Wire_TriggerOutput(self, "Shots Left", self.MagSize - self.CurrentShot)
 		else
 			Wire_TriggerOutput(self, "Shots Left", 1)
@@ -745,7 +745,7 @@ function ENT:Think()
 end
 
 function ENT:ReloadMag()
-	if(self.IsUnderWeight == nil) then
+	if self.IsUnderWeight == nil then
 		self.IsUnderWeight = true
 	end
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
@@ -878,7 +878,7 @@ do
 				self.Ready = false
 				self.CurrentShot = math.min(self.CurrentShot + 1, self.MagSize)
 
-				if((self.CurrentShot >= self.MagSize) and (self.MagSize > 1)) then
+				if (self.CurrentShot >= self.MagSize) and (self.MagSize > 1) then
 					self:LoadAmmo(self.MagReload, false)
 					self:EmitSound("weapons/357/357_reload4.wav",500,100)
 					timer.Simple(self.LastLoadDuration, function() if IsValid(self) then self.CurrentShot = 0 end end)

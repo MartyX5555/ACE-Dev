@@ -27,7 +27,7 @@ Material.NormMult	= 0.5
 Material.Stopshock	= true
 
 if SERVER then
-	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
+	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, _, Type)
 
 		local HitRes = {}
 
@@ -38,7 +38,7 @@ if SERVER then
 		armor	= armor^curve
 		losArmor	= losArmor^curve
 
-		if(Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") then
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
 
 			local HEATeffectiveness = Material.HEATeffectiveness
 			local HEATresiliance = Material.HEATresiliance
@@ -47,7 +47,7 @@ if SERVER then
 			local breachProb = math.Clamp((caliber / Entity.ACF.Armour / HEATeffectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 			-- Penetration probability
-			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / HEATeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / HEATeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
 			if breachProb > math.random() and maxPenetration > armor * HEATeffectiveness then			-- Breach chance roll
 
@@ -62,7 +62,7 @@ if SERVER then
 
 				local Penetration = math.min( maxPenetration, losArmor * HEATeffectiveness )
 
-				HitRes.Damage	= ( Penetration / losArmorHealth / HEATeffectiveness )^2 * FrArea / HEATresiliance
+				HitRes.Damage	= ( Penetration / losArmorHealth / HEATeffectiveness ) ^ 2 * FrArea / HEATresiliance
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss	= Penetration / maxPenetration
 
@@ -73,7 +73,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * HEATeffectiveness )
 
-			HitRes.Damage	= ( Penetration / losArmor / HEATeffectiveness )^2 * FrArea / HEATresiliance
+			HitRes.Damage	= ( Penetration / losArmor / HEATeffectiveness ) ^ 2 * FrArea / HEATresiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
@@ -88,7 +88,7 @@ if SERVER then
 			local breachProb = math.Clamp((caliber / Entity.ACF.Armour / HEeffectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 			-- Penetration probability
-			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/losArmor / HEeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / HEeffectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
 			-- Breach chance roll
 			if breachProb > math.random() and maxPenetration > armor then
@@ -104,7 +104,7 @@ if SERVER then
 
 				local Penetration = math.min( maxPenetration, losArmor * HEeffectiveness )
 
-				HitRes.Damage	= ( Penetration / losArmorHealth / HEeffectiveness )^2 * FrArea / HEresiliance
+				HitRes.Damage	= ( Penetration / losArmorHealth / HEeffectiveness ) ^ 2 * FrArea / HEresiliance
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss	= Penetration / maxPenetration
 
@@ -115,7 +115,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * HEeffectiveness )
 
-			HitRes.Damage	= ( Penetration / losArmorHealth / HEeffectiveness )^2 * FrArea / HEresiliance
+			HitRes.Damage	= ( Penetration / losArmorHealth / HEeffectiveness ) ^ 2 * FrArea / HEresiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
@@ -124,7 +124,7 @@ if SERVER then
 		else
 
 			-- Breach probability
-			local breachProb = math.Clamp((caliber / Entity.ACF.Armour* effectiveness - 1.3) / (7 - 1.3), 0, 1)
+			local breachProb = math.Clamp((caliber / Entity.ACF.Armour * effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 			-- Penetration probability
 			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
@@ -143,7 +143,7 @@ if SERVER then
 
 	--		print("RubberBreach")
 				local Penetration = math.min( maxPenetration, losArmor * effectiveness )
-				HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness)^2 * FrArea / resiliance
+				HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness) ^ 2 * FrArea / resiliance
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss	= Penetration / maxPenetration
 	--		print("DmgPen: "..HitRes.Damage)
@@ -156,7 +156,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-			HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness )^2 * FrArea / resiliance
+			HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness ) ^ 2 * FrArea / resiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 	--		print("DmgNoPen: "..HitRes.Damage)

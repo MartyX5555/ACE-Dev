@@ -38,7 +38,7 @@ function ACF_CreateBullet( BulletData )
 	end
 
 	--Those are BulletData settings that are global and shouldn't change round to round
-	BulletData.Gravity		= GetConVar("sv_gravity"):GetInt()*-1
+	BulletData.Gravity		= GetConVar("sv_gravity"):GetInt() * -1
 	BulletData.Accel		= Vector(0,0,BulletData.Gravity)
 	BulletData.LastThink	= ACF.SysTime
 	BulletData.FlightTime	= 0
@@ -118,9 +118,9 @@ function ACF_CheckClips( Ent, HitPos )
 	local normal
 	local origin
 
-	for i=1, #Ent.ClipData do
+	for i = 1, #Ent.ClipData do
 	normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
-	origin = Ent:LocalToWorld(Ent:OBBCenter())+normal*Ent.ClipData[i]["d"]
+	origin = Ent:LocalToWorld(Ent:OBBCenter()) + normal * Ent.ClipData[i]["d"]
 	--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
 	if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
 	end
@@ -150,17 +150,17 @@ do
 	--actual motion of the bullet
 	local Drag		= Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
 	Bullet.NextPos	= Bullet.Pos + (Bullet.Flight * ACF.VelScale * Bullet.DeltaTime)																								-- Calculates the next shell position
-	Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag)*Bullet.DeltaTime
+	Bullet.Flight	= Bullet.Flight + (Bullet.Accel - Drag) * Bullet.DeltaTime
 
 	-- Used for trace
 	local Flightnorm  = Bullet.Flight:GetNormalized()
 
 	Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime )
-	Bullet.EndTrace	= Bullet.NextPos + Flightnorm*(PhysVel)
+	Bullet.EndTrace	= Bullet.NextPos + Flightnorm * PhysVel
 
 	debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255,32) ) --true start
 	debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, ColorRand() )
-	debugoverlay.Line(Bullet.StartTrace+Vector(0,0,5), Bullet.EndTrace+Vector(0,0,5), DebugTime, Color(0,255,0) )
+	debugoverlay.Line(Bullet.StartTrace + Vector(0, 0, 5), Bullet.EndTrace + Vector(0, 0, 5), DebugTime, Color(0, 255, 0))
 
 	--updating timestep timers
 	Bullet.LastThink = ACF.SysTime
@@ -186,9 +186,9 @@ do
 	FlightTr.mask	= Bullet.Caliber <= 0.3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 	--FlightTr.mask	= Bullet.Caliber <= 0.3 and (1174421507+16432) or (33570827+16432) --Experimental mask, including water hits
 
-	local TROffset	= 0.235*Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
-	FlightTr.maxs	= Vector( TROffset, TROffset, TROffset )
-	FlightTr.mins	= -FlightTr.maxs
+	local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
+	FlightTr.mins = -FlightTr.maxs
 
 	-- Table to hold temporary filter keys that should be removed after the below while loop is completed
 	if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
@@ -265,35 +265,32 @@ do
 	ACF_PerformTrace( Bullet )
 
 	--Fuse detonation. Note: Its possible that the bullet prefers to hit the incoming prop instead of detonate. Not a big concern.
-	if Bullet.FuseLength and Bullet.FuseLength > 0 then
+	if Bullet.FuseLength and Bullet.FuseLength > 0 and Bullet.FlightTime > Bullet.FuseLength then
 
-		if Bullet.FlightTime > Bullet.FuseLength then
+		local Diff		= Bullet.FlightTime - Bullet.FuseLength
+		local ratio	= 1 - (Diff / Bullet.DeltaTime)
+		local ScaledPos	= LerpVector(ratio, Bullet.Pos, Bullet.NextPos)
 
-			local Diff		= Bullet.FlightTime - Bullet.FuseLength
-			local ratio	= 1 - (Diff / Bullet.DeltaTime)
-			local ScaledPos	= LerpVector(ratio, Bullet.Pos, Bullet.NextPos)
-
-			if FlightRes.Hit and FlightRes.Fraction < ratio or Bullet.HasPenned then
-			ScaledPos = FlightRes.HitPos
-			end
-
-			if not util.IsInWorld(ScaledPos) then
-			ACF_RemoveBullet( Index )
-			else
-
-			if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, nil) end -- nil was flightres, garbage data this early in code
-
-			ACF_BulletClient( Index, Bullet, "Update" , 1 , ScaledPos  ) -- defined at bottom
-			ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
-			ACF_BulletEndFlight( Index, Bullet, ScaledPos, Bullet.Flight:GetNormalized() )
-
-			debugoverlay.Sphere(ScaledPos, 10, DebugTime, Color(255,100,0,255) )
-			debugoverlay.Text(ScaledPos, "Orange Sphere: Bullet Detonated here!", DebugTime )
-
-			end
-
-			return
+		if FlightRes.Hit and FlightRes.Fraction < ratio or Bullet.HasPenned then
+		ScaledPos = FlightRes.HitPos
 		end
+
+		if not util.IsInWorld(ScaledPos) then
+		ACF_RemoveBullet( Index )
+		else
+
+		if Bullet.OnEndFlight then Bullet.OnEndFlight(Index, Bullet, nil) end -- nil was flightres, garbage data this early in code
+
+		ACF_BulletClient( Index, Bullet, "Update" , 1 , ScaledPos  ) -- defined at bottom
+		ACF_BulletEndFlight = ACF.RoundTypes[Bullet.Type]["endflight"]
+		ACF_BulletEndFlight( Index, Bullet, ScaledPos, Bullet.Flight:GetNormalized() )
+
+		debugoverlay.Sphere(ScaledPos, 10, DebugTime, Color(255,100,0,255) )
+		debugoverlay.Text(ScaledPos, "Orange Sphere: Bullet Detonated here!", DebugTime )
+
+		end
+
+		return
 	end
 
 	--if we're out of skybox, keep calculating position.  If we have too long out of skybox, remove bullet
@@ -338,7 +335,7 @@ do
 		ACF_BulletPropImpact = ACF.RoundTypes[Bullet.Type]["propimpact"]
 
 		--Added to calculate change in shell velocity through air gaps. Required for HEAT jet dissipation since a HEAT jet can move through most tanks in 1 tick.
-		local DTImpact = ((FlightRes.HitPos-Bullet.Pos):Length()/((Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length())) * engine.TickInterval() --i would rather use tickinterval over deltatime
+		local DTImpact = ((FlightRes.HitPos - Bullet.Pos):Length() / (Bullet.Flight * ACF.VelScale * engine.TickInterval()):Length()) * engine.TickInterval() --i would rather use tickinterval over deltatime
 
 		--Gets the distance the bullet traveled and divides it by the distance the bullet should have traveled during deltatime. Used to calculate drag time.
 		local Drag = Bullet.Flight:GetNormalized() * (Bullet.DragCoef * Bullet.Flight:LengthSqr()) / ACF.DragDiv
@@ -466,7 +463,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 	local Effect = EffectData()
 
 		Effect:SetMaterialIndex( Index )	--Bulet Index
-		Effect:SetStart( Bullet.Flight/10 ) --Bullet Direction
+		Effect:SetStart( Bullet.Flight / 10 ) --Bullet Direction
 
 		if Hit > 0 then	-- If there is a hit then set the effect pos to the impact pos instead of the retry pos
 			Effect:SetOrigin( HitPos )	--Bullet Pos
@@ -487,7 +484,7 @@ function ACF_BulletClient( Index, Bullet, Type, Hit, HitPos )
 
 	local Effect = EffectData()
 		Effect:SetMaterialIndex( Index )	--Bullet Index
-		Effect:SetStart( Bullet.Flight/10 )	--Bullet Direction
+		Effect:SetStart( Bullet.Flight / 10 )	--Bullet Direction
 		Effect:SetOrigin( Bullet.Pos )
 		Effect:SetEntity( Entity(Bullet["Crate"]) )
 		Effect:SetScale( 0 )

@@ -73,7 +73,7 @@ if SERVER then
 		local resiliance	= Material.resiliance
 		local sensor		= Material.APSensorFactor
 
-		local blastArmor = effectiveness * losArmor * (Entity.ACF.Health/Entity.ACF.MaxHealth)
+		local blastArmor = effectiveness * losArmor * (Entity.ACF.Health / Entity.ACF.MaxHealth)
 
 		--ERA is more effective vs HEAT than vs kinetic
 		if Material.HEATList[Type] then
@@ -91,7 +91,7 @@ if SERVER then
 		end
 
 		--ERA detonates and shell is completely stopped
-		if not Material.HEList[Type] and maxPenetration > (blastArmor/sensor) or (Entity.ACF.Health/Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated
+		if not Material.HEList[Type] and maxPenetration > (blastArmor / sensor) or (Entity.ACF.Health / Entity.ACF.MaxHealth) < 0.15 then --ERA was penetrated
 
 			--Importart to remove the ent before the explosions begin
 			Entity:Remove()
@@ -113,7 +113,7 @@ if SERVER then
 
 			--print("----------------------------------------Boom")
 
-			local HEWeight  = math.Min(armor*0.25,100) -- #nonukespls
+			local HEWeight  = math.Min(armor * 0.25, 100) -- #nonukespls
 			local Radius	= ACE_CalculateHERadius( HEWeight )
 			local Owner	= (CPPI and Entity:CPPIGetOwner()) or NULL
 			local EntPos	= Entity:GetPos()
@@ -125,7 +125,7 @@ if SERVER then
 				local Flash = EffectData()
 					Flash:SetOrigin( EntPos )
 					Flash:SetNormal( -vector_up )
-					Flash:SetRadius( math.max( Radius*0.25, 1 ) )
+					Flash:SetRadius( math.max( Radius * 0.25, 1 ) )
 				util.Effect( "ACF_Scaled_Explosion", Flash )
 			end)
 
@@ -145,7 +145,7 @@ if SERVER then
 			local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)
 
 			-- Penetration probability
-			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration/ losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
+			local penProb = (math.Clamp(1 / (1 + math.exp(-43.9445 * (maxPenetration / losArmor / effectiveness - 1))), 0.0015, 0.9985) - 0.0015) / 0.997;
 
 			-- Breach chance roll
 			if breachProb > math.random() and maxPenetration > armor then
@@ -161,7 +161,7 @@ if SERVER then
 
 				local Penetration = math.min( maxPenetration, losArmor * effectiveness)
 
-				HitRes.Damage	= ( ( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )
+				HitRes.Damage	= ( ( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea / resiliance * damageMult )
 				HitRes.Overkill = ( maxPenetration - Penetration )
 				HitRes.Loss	= Penetration / maxPenetration
 
@@ -172,7 +172,7 @@ if SERVER then
 			-- Projectile did not breach nor penetrate armor
 			local Penetration = math.min( maxPenetration , losArmor * effectiveness )
 
-			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness )^2 * FrArea / resiliance * damageMult )/ resiliance
+			HitRes.Damage	= (( Penetration / losArmorHealth / effectiveness ) ^ 2 * FrArea / resiliance * damageMult ) / resiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 

@@ -54,7 +54,7 @@ cvars.AddChangeCallback("acf_legal_ignore_parent",ACF_LegalityCallBack)
 ACF.Legal.Min		= 5	-- min seconds between checks --5
 ACF.Legal.Max		= 25	-- max seconds between checks --25
 ACF.Legal.Lockout	= 35	-- lockout time on not legal  --35
-ACF.Legal.NextCheck  = function(self, Legal) return ACF.CurTime + (Legal and math.random(ACF.Legal.Min, ACF.Legal.Max) or ACF.Legal.Lockout) end
+ACF.Legal.NextCheck  = function(_, Legal) return ACF.CurTime + (Legal and math.random(ACF.Legal.Min, ACF.Legal.Max) or ACF.Legal.Lockout) end
 
 
 --[[
@@ -81,15 +81,15 @@ do
 	function ACF_CheckLegal(Ent, Model, MinMass, MinInertia, _, CanVisclip )
 
 	local problems = {} --problems table definition
-	if ACF.Legal.IsActivated == 0 then return (#problems == 0), table.concat(problems, ", ") end
+	if ACF.Legal.IsActivated == 0 then return #problems == 0, table.concat(problems, ", ") end
 
 	-- check it exists
-	if not ACF_Check( Ent ) then return { Legal=false, Problems ={"Invalid Ent"} } end
+	if not ACF_Check( Ent ) then return { Legal = false, Problems = {"Invalid Ent"} } end
 
 	local physobj = Ent:GetPhysicsObject()
 
 	-- check if physics is valid
-	if not IsValid(physobj) then return { Legal=false, Problems ={"Invalid Physics"} } end
+	if not IsValid(physobj) then return { Legal = false, Problems = {"Invalid Physics"} } end
 
 
 	-- make sure traces can hit it (fade door, propnotsolid)
@@ -98,10 +98,8 @@ do
 	end
 
 	-- check if the model matches
-	if Model ~= nil then
-		if ACF.Legal.Ignore.Model <= 0 and Ent:GetModel() ~= Model then
-			table.insert(problems,"Wrong model")
-		end
+	if Model ~= nil and ACF.Legal.Ignore.Model <= 0 and Ent:GetModel() ~= Model then
+		table.insert(problems,"Wrong model")
 	end
 
 	-- check mass
@@ -129,7 +127,7 @@ do
 
 	-- check inertia components
 	if ACF.Legal.Ignore.Inertia <= 0 and MinInertia ~= nil then
-		local inertia = physobj:GetInertia()/physobj:GetMass()
+		local inertia = physobj:GetInertia() / physobj:GetMass()
 		if (inertia.x < MinInertia.x) or (inertia.y < MinInertia.y) or (inertia.z < MinInertia.z) then
 			table.insert(problems,"Under min inertia")
 		end
@@ -151,7 +149,7 @@ do
 	end
 
 	-- legal if number of problems is 0
-	return (#problems == 0), table.concat(problems, ", ")
+	return #problems == 0, table.concat(problems, ", ")
 
 	end
 end

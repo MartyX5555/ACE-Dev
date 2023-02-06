@@ -31,7 +31,7 @@ function this:Init()
 end
 
 
-function this:Configure(missile)
+function this:Configure()
 
 end
 
@@ -59,12 +59,12 @@ function this:PreGuidance(missile)
 end
 
 
-function this:ApplyOverride(missile)
+function this:ApplyOverride()
 
 
 end
 
 
-function this:GetDisplayConfig(Type)
+function this:GetDisplayConfig()
 	return {}
 end

@@ -55,7 +55,7 @@ configs[#configs + 1] = {
 }
 
 -- Do nothing, projectiles auto-detonate on contact anyway.
-function this:GetDetonate(missile, guidance)
+function this:GetDetonate(missile)
 
 	if not self:IsArmed() then return false end
 
@@ -68,18 +68,15 @@ function this:GetDetonate(missile, guidance)
 	}
 	local trace = util.TraceLine(tracedata)
 
-	if trace.Hit and IsValid(trace.Entity) then
+	if trace.Hit and IsValid(trace.Entity) and not ACF.HEFilter[trace.Entity:GetClass()] then
 
-		if not ACF.HEFilter[trace.Entity:GetClass()] then
+		timer.Simple(self.Delay, function()
+			if not IsValid(missile) then return end
+			missile.PlungingDetonation = true
+			missile:Detonate()
+			return
+		end)
 
-			timer.Simple(self.Delay, function()
-				if not IsValid(missile) then return end
-				missile.PlungingDetonation = true
-				missile:Detonate()
-				return
-			end)
-
-		end
 	end
 
 	return false
