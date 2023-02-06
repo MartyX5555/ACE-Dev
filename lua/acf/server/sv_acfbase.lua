@@ -29,7 +29,7 @@ function ACF_UpdateVisualHealth(Entity)
 
     if not ACF_HealthUpdateList  then
         ACF_HealthUpdateList = {}
-        timer.Create("ACF_HealthUpdateList", 1, 1, function() // We should send things slowly to not overload traffic.
+        timer.Create("ACF_HealthUpdateList", 1, 1, function() -- We should send things slowly to not overload traffic.
             local Table = {}
             for k,v in pairs(ACF_HealthUpdateList) do
                 if IsValid( v ) then

@@ -848,7 +848,7 @@ end
 
 function ENT:PreEntityCopy()
 
-    //Link Saving
+    --Link Saving
     local info = {}
     local entids = {}
     for Key, Link in pairs( self.GearLink ) do                  --First clean the table of any invalid entities
@@ -898,14 +898,14 @@ function ENT:PreEntityCopy()
     end
 
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PreEntityCopy( self )
 
 end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
-    //Link Pasting
+    --Link Pasting
     if (Ent.EntityMods) and (Ent.EntityMods.GearLink) and (Ent.EntityMods.GearLink.entities) then
         local GearLink = Ent.EntityMods.GearLink
         if GearLink.entities and table.Count(GearLink.entities) > 0 then
@@ -953,7 +953,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 
 end

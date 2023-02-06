@@ -1,11 +1,11 @@
-// This file defines damage permission with all ACF weaponry
+-- This file defines damage permission with all ACF weaponry
 
 
 ACF = ACF or {}
 ACF.Permissions = {}
 local this = ACF.Permissions
 
-//TODO: make player-customizable
+--TODO: make player-customizable
 this.Selfkill = true
 
 this.Safezones = false
@@ -15,7 +15,7 @@ this.Modes = {}
 this.ModeDescs = {}
 this.ModeThinks = {}
 
-//TODO: convar this
+--TODO: convar this
 local mapSZDir = "acf/safezones/"
 local mapDPMDir = "acf/permissions/"
 file.CreateDir(mapDPMDir)
@@ -32,14 +32,14 @@ end
 local function resolveAABBs(mins, maxs)
 
 	/*
-	for xyz, val in pairs(mins) do	// ensuring points conform to AABB mins/maxs
+	for xyz, val in pairs(mins) do	-- ensuring points conform to AABB mins/maxs
 		if val > maxs.xyz then
 			local store = maxs.xyz
 			maxs.xyz = val
 			mins.xyz = store
 		end
 	end
-	//*/
+	--*/
 
 	local store
 	if mins.x > maxs.x then
@@ -63,7 +63,7 @@ local function resolveAABBs(mins, maxs)
 	return mins, maxs
 end
 
-//TODO: sanitize safetable instead of marking it all as bad
+--TODO: sanitize safetable instead of marking it all as bad
 local function validateSZs(safetable)
 	if type(safetable) ~= "table" then return false end
 
@@ -101,7 +101,7 @@ local function getMapSZs()
 	local safezones = util.JSONToTable(mapSZFile)
 
 	if not validateSZs(safezones) then
-		// TODO: generate default safezones around spawnpoints.
+		-- TODO: generate default safezones around spawnpoints.
 		return false
 	end
 
@@ -566,12 +566,12 @@ end
 
 -- -- -- -- -- Client sync -- -- -- -- --
 
-// All code below modified from the NADMOD client permissions menu, by Nebual
-// http://www.facepunch.com/showthread.php?t=1221183
+-- All code below modified from the NADMOD client permissions menu, by Nebual
+-- http://www.facepunch.com/showthread.php?t=1221183
 util.AddNetworkString("ACF_dmgfriends")
 util.AddNetworkString("ACF_refreshfeedback")
 net.Receive("ACF_dmgfriends", function(len, ply)
-	//Msg("\nsv dmgfriends\n")
+	--Msg("\nsv dmgfriends\n")
 	if not ply:IsValid() then return end
 
 	local perms = net.ReadTable()
@@ -582,7 +582,7 @@ net.Receive("ACF_dmgfriends", function(len, ply)
 	local changed
 	for k, v in pairs(perms) do
 		changed = this.PermissionsRaw(ownerid, k, v)
-		//Msg(k, " has ", changed and "changed\n" or "not changed\n")
+		--Msg(k, " has ", changed and "changed\n" or "not changed\n")
 
 		if ownerid == k then
 			if not v then
@@ -596,7 +596,7 @@ net.Receive("ACF_dmgfriends", function(len, ply)
 
 				local note = v and "given you" or "removed your"
 				local MsgNote = v and "given" or "removed"
-				//Msg("Sending", targ, " ", note, "\n")
+				--Msg("Sending", targ, " ", note, "\n")
 				targ:SendLua( string.format( "GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC" ) )
 				print("[ACE | INFO]- The user "..ply:Nick().." has "..MsgNote.." permissions to damage objects with ACE "..(v and "to" or "from").." "..((targ == ply) and "himself" or targ:Nick()) )
 			end
@@ -613,7 +613,7 @@ end)
 
 
 function this.RefreshPlyDPFriends(ply)
-	//Msg("\nsv refreshfriends\n")
+	--Msg("\nsv refreshfriends\n")
 	if not ply:IsValid() then return end
 
 	local perms = this.GetDamagePermissions(ply:SteamID())

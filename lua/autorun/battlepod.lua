@@ -23,12 +23,12 @@ local V =  {
 list.Set( "Vehicles", "acf_pod", V )
 
 local V = {
-	// Required information
+	-- Required information
 	Name = "Standard Pilot Seat",
 	Class = "prop_vehicle_prisoner_pod",
 	Category = Category,
 
-	// Optional information
+	-- Optional information
 	Author = "Lazermaniac",
 	Information = "A generic seat for accurate damage modelling.",
 	Model = "models/vehicles/pilot_seat.mdl",

@@ -51,7 +51,7 @@ if CLIENT then
 
 		local pnldef_ACFmenu = vgui.RegisterFile( "acf/client/cl_acfmenu_gui.lua" )
 
-		// create
+		-- create
 		local DPanel = vgui.CreateFromTable( pnldef_ACFmenu )
 		CPanel:AddPanel( DPanel )
 

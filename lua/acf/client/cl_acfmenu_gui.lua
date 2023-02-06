@@ -18,13 +18,13 @@ function PANEL:Init( )
 
    acfmenupanel = self.Panel
 
-   -- // height
+   -- -- height
    self:SetTall( surface.ScreenHeight() - 150 )
 
-   -- //Weapon Select
+   -- --Weapon Select
    self.WeaponSelect = vgui.Create( "DTree", self )
 
-    -- //Tables definition
+    -- --Tables definition
    self.WeaponData = ACFEnts
 
 

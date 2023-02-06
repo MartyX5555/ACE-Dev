@@ -296,7 +296,7 @@ e2function number entity:acfMaxPower()
 	return getMaxPower(this)
 end
 
--- Same as the two above just with fuel duhhh//
+-- Same as the two above just with fuel duhhh--
 
 e2function number entity:acfMaxTorqueWithFuel()
 	return getMaxTorque(this)*ACF.TorqueBoost or 0
@@ -308,7 +308,7 @@ e2function number entity:acfMaxPowerWithFuel()
 	return getMaxPower(this)*ACF.TorqueBoost or 0
 end
 
---//
+----
 
 -- Returns the idle rpm of an ACF engine
 e2function number entity:acfIdleRPM()

@@ -192,7 +192,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 				"ace_weapons/multi_sound/content/20hmg/close/close14.mp3",
 				"ace_weapons/multi_sound/content/20hmg/close/close15.mp3",
 				"ace_weapons/multi_sound/content/20hmg/close/close16.mp3",
-				"ace_weaponsmulti_sound/content//20hmg/close/close17.mp3"
+				"ace_weapons/multi_sound/content/20hmg/close/close17.mp3"
 			}
 		},
 		mid = {

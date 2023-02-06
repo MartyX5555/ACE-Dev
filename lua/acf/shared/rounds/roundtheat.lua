@@ -272,9 +272,9 @@ end
 --BUG: 2nd charge trace doesnt return a valid HitNormal res, which makes impacted prop returns an infinite effective armor. Not always happens but its possible.
 function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
-    -- DetCount = 0 // the bullet has impacted something, it still doesnt detonate. Here checks if it should ricochet or detonate.
-    -- DetCount = 1 // the bullet has detonated and has penetrated the next layers. If fails to, a 2nd charge is called.
-    -- DetCount = 2 // the bullet has detonated its 2nd charge. The last one of this round.
+    -- DetCount = 0 -- the bullet has impacted something, it still doesnt detonate. Here checks if it should ricochet or detonate.
+    -- DetCount = 1 -- the bullet has detonated and has penetrated the next layers. If fails to, a 2nd charge is called.
+    -- DetCount = 2 -- the bullet has detonated its 2nd charge. The last one of this round.
 
     local DetCount = Bullet.Detonated or 0
 

@@ -3,24 +3,24 @@
 		This mode enables safezones and battlefield.
 		All things within safezones are protected from all registered ACF damage.
 		All things in the battlefield are vulnerable to all ACF damage.
-//*/
+--*/
 if not ACF or not ACF.Permissions or not ACF.Permissions.RegisterMode then error("ACF: Tried to load the " .. modename .. " permission-mode before the permission-core has loaded!") return end
 local perms = ACF.Permissions
 
 
-// the name for this mode used in commands and identification
+-- the name for this mode used in commands and identification
 local modename = "battle"
 
-// a short description of what the mode does
+-- a short description of what the mode does
 local modedescription = "Enables safe-zones and battlefield.  No ACF damage can occur in a safe-zone."
 
 
-// battle-mode specifics: how much hp/armour should the players have?
+-- battle-mode specifics: how much hp/armour should the players have?
 local MAX_HP = 100
 local MAX_Armour = 50
 local ShouldDisableNoclip = false
 
-// if the attacker or victim can't be identified, what should we do?  true allows damage, false blocks it.
+-- if the attacker or victim can't be identified, what should we do?  true allows damage, false blocks it.
 local DefaultPermission = false
 
 
@@ -34,7 +34,7 @@ local DefaultPermission = false
 		ent			Entity:	The entity which may be damaged.
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
-//*/
+--*/
 local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
 

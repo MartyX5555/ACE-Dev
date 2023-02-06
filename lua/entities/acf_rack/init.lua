@@ -893,7 +893,7 @@ function ENT:PreEntityCopy()
 
     duplicator.StoreEntityModifier( self, "ACFRackInfo", {Id = self.Id} )
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PreEntityCopy( self )
 
 end
@@ -921,7 +921,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
     end
 
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 
 end

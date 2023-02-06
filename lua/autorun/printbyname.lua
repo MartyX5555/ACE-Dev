@@ -59,7 +59,7 @@ function printByNameTable(tbl, name)
 			Msg(name, "[\"", tostring(k), "\"]\t\t\t= ", vstr, "\n")
 		elseif typ == "number" then
 			Msg(name, "[", tostring(k), "]\t\t\t= ", vstr, "\n")
-		else	// can't really do these
+		else	-- can't really do these
 			Msg(name, ": ", tostring(k), "\t\t\t= ", vstr, "\n")
 		end
 	end

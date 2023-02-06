@@ -823,7 +823,7 @@ function ENT:PreEntityCopy()
         duplicator.StoreEntityModifier( self, "WheelLink", info )
     end
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PreEntityCopy( self )
 
 end
@@ -846,7 +846,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
         Ent.EntityMods.WheelLink = nil
     end
 
-    //Wire dupe info
+    --Wire dupe info
     self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 
 end

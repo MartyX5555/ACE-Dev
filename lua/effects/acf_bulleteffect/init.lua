@@ -223,7 +223,7 @@ function EFFECT:Render()
 
     if (Bullet) then
         self.Entity:SetModelScale( Bullet.Caliber/10 , 0 )
-        self.Entity:DrawModel()       // Draw the model.
+        self.Entity:DrawModel()       -- Draw the model.
     end
 
 end

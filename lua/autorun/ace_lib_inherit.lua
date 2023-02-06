@@ -58,7 +58,7 @@ function this.doInherit( child, baseClass )
 		print(new_class)
 		if baseClass then baseClass:printITree() end
 	end
-	//*/
+	--*/
 
     return new_class, class_mt
 end

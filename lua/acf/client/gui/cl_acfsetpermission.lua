@@ -1,14 +1,14 @@
 
 local Menu = {}
 
-// the category the menu goes under
+-- the category the menu goes under
 Menu.Category = "ACE"
 
 
-// the name of the item
+-- the name of the item
 Menu.Name = "Set Permission Mode"
 
-// the convar to execute when the player clicks on the tab
+-- the convar to execute when the player clicks on the tab
 Menu.Command = ""
 
 
