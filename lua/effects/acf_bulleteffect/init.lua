@@ -139,12 +139,12 @@ end
 function EFFECT:ApplyMovement( Bullet )
 
 	local setPos = Bullet.SimPos
-	if((math.abs(setPos.x) > 16380) or (math.abs(setPos.y) > 16380) or (setPos.z < -16380)) then
+	if (math.abs(setPos.x) > 16380) or (math.abs(setPos.y) > 16380) or (setPos.z < -16380) then
 		self.Alive = false
 
 		return
 	end
-	if( setPos.z < 16380 ) then
+	if setPos.z < 16380 then
 		self:SetPos( setPos )--Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 

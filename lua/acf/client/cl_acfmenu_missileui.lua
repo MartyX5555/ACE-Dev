@@ -17,11 +17,11 @@ function ACFMissiles_MenuSlider(config, controlGroup, combo, conCmd, min, max)
 			return math.Round(math.Clamp(slider:GetValue(), config.Min, config.Max), 3)
 		end
 
-		slider.OnValueChanged = function( slider, val )
+		slider.OnValueChanged = function()
 			ACFMissiles_SetCommand(combo, controlGroup, conCmd)
 		end
 
-		controlGroup[#controlGroup+1] = slider
+		controlGroup[#controlGroup + 1] = slider
 
 	return slider
 
@@ -43,7 +43,7 @@ function ACFMissiles_SetCommand(combo, controlGroup, conCmd)
 			repeat
 				local control = controlGroup[i]
 				kvString = kvString .. ":" .. control.Configurable.CommandName .. "=" .. tostring(control:GetConfigValue())
-				i = i+1
+				i = i + 1
 			until i > #controlGroup
 		end
 

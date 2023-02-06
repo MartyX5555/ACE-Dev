@@ -21,7 +21,7 @@ local MAX_Armour = 50
 local ShouldDisableNoclip = false
 
 -- if the attacker or victim can't be identified, what should we do?  true allows damage, false blocks it.
-local DefaultPermission = false
+--local DefaultPermission = false
 
 
 
@@ -35,7 +35,7 @@ local DefaultPermission = false
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 --*/
-local function modepermission(owner, attacker, ent)
+local function modepermission(_, attacker, ent)
 	local szs = perms.Safezones
 
 	if szs then
@@ -50,7 +50,7 @@ end
 
 
 
-function tellPlyAboutZones(ply, zone, oldzone)
+function tellPlyAboutZones(ply, zone)
 	if perms.DamagePermission ~= modepermission then return end
 	ply:SendLua("chat.AddText(Color(" .. (zone and "0,255,0" or "255,0,0") .. "),\"You have entered the " .. (zone and zone .. " safezone." or "battlefield!") .. "\")")
 end
@@ -61,14 +61,14 @@ hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAbout
 local function DisableNoclipPressInBattle( ply, wantsNoclipOn )
 	if not (ShouldDisableNoclip and wantsNoclipOn and table.KeyFromValue(perms.Modes, perms.DamagePermission) == modename) then return end
 
-	return (perms.IsInSafezone(ply:GetPos()) ~= false)
+	return perms.IsInSafezone(ply:GetPos()) ~= false
 end
 hook.Add( "PlayerNoClip", "ACF_DisableNoclipPressInBattle", DisableNoclipPressInBattle )
 
 
 
 local function modethink()
-	for k, ply in pairs(player.GetAll()) do
+	for _, ply in pairs(player.GetAll()) do
 		--print(ply:GetPos(), perms.IsInSafezone(ply:GetPos()))
 		if not perms.IsInSafezone(ply:GetPos()) then
 --			ply:GodDisable()

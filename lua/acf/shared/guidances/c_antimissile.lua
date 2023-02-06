@@ -71,7 +71,7 @@ end
 
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
-function this:GetSeekFilter(class)
+function this:GetSeekFilter()
 	if self.Filter == self.DefaultFilter then
 		self.Filter = table.Copy(self.DefaultFilter)
 	end
@@ -90,7 +90,7 @@ function this:GetNamedWireInputs(missile)
 	local names = {}
 
 	if outputs.Target and outputs.Target.Type == "ENTITY" then
-		names[#names+1] = "Target"
+		names[#names + 1] = "Target"
 	end
 
 	return names
@@ -125,8 +125,8 @@ function this:GetGuidance(missile)
 	end
 
 	local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local targetPhysObj = self.Target:GetPhysicsObject()
+	--local missileForward = missile:GetForward()
+	--local targetPhysObj = self.Target:GetPhysicsObject()
 	local targetPos = self.Target:GetPos()
 
 	-- this was causing radar to break in certain conditions, usually on parented props.
@@ -201,7 +201,7 @@ function this:GetWireTarget(missile)
 	end
 
 
-	for k, name in pairs(self.InputNames) do
+	for _, name in pairs(self.InputNames) do
 
 		local outTbl = outputs[name]
 
@@ -245,11 +245,11 @@ function this:GetWhitelistedEntsInCone(missile)
 	local found = JankCone(missilePos, missileForward, 50000, self.SeekCone)
 
 	local foundAnim = {}
-	local foundEnt
+	--local foundEnt
 	local minDistSqr = ( self.MinimumDistance * self.MinimumDistance )
 
-	local filter = self.Filter
-	for i, foundEnt in pairs(found) do
+	--local filter = self.Filter
+	for _, foundEnt in pairs(found) do
 
 		if (not IsValid(foundEnt)) or (not self.Filter[foundEnt:GetClass()]) then continue end
 		local foundLocalPos = foundEnt:GetPos() - missilePos
@@ -353,12 +353,12 @@ function this:AcquireLock(missile)
 
 	if not mostCentralEnt then return nil end
 
-	local mostCentralPos = mostCentralEnt:GetPos()
+	--local mostCentralPos = mostCentralEnt:GetPos()
 	local highestDot = (mostCentralEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)
 	local currentEnt
 	local currentDot
 
-	for k, ent in next, found, lastKey do
+	for _, ent in next, found, lastKey do
 
 		currentEnt = ent
 		currentDot = (currentEnt:GetPos() - missilePos):GetNormalized():Dot(missileForward)

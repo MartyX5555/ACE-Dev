@@ -85,11 +85,11 @@ function this.ClientPanel(Panel)
 
 	local Players = player.GetAll()
 	for _, tar in pairs(Players) do
-		if(IsValid(tar)) then
+		if IsValid(tar) then
 			local check = Panel:CheckBox(tar:Nick())
 			check.steamid = tar:SteamID()
 			--if tar == LocalPlayer() then check:SetChecked(true) end
-			checks[#checks+1] = check
+			checks[#checks + 1] = check
 		end
 	end
 	local button = Panel:Button("Give Damage Permission")

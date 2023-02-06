@@ -62,8 +62,8 @@ function this:GetGuidance(missile)
 	end
 
 	local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local targetPhysObj = self.Target:GetPhysicsObject()
+	--local missileForward = missile:GetForward()
+	--local targetPhysObj = self.Target:GetPhysicsObject()
 	local targetPos = self.Target:GetPos() + Vector(0,0,25)
 
 	local mfo	= missile:GetForward()
@@ -108,22 +108,22 @@ function this:CheckTarget(missile)
 
 end
 
- --Gets all valid targets, does not check angle
+--Gets all valid targets, does not check angle
 function this:GetWhitelistedEntsInCone(missile)
 
 	local missilePos = missile:GetPos()
-	local DPLRFAC = 65-((self.SeekCone)/2)
+	local DPLRFAC = 65 - (self.SeekCone / 2)
 	local foundAnim = {}
 
 	local ScanArray = ACE.contraptionEnts
 
-	for k, scanEnt in pairs(ScanArray) do
+	for _, scanEnt in pairs(ScanArray) do
 
 		-- skip any invalid entity
 		if not scanEnt:IsValid() then continue end
 
 		-- skip any flare from vision
-		if scanEnt:GetClass() == 'ace_flare' then continue end
+		if scanEnt:GetClass() == "ace_flare" then continue end
 
 		local entpos = scanEnt:GetPos()
 		local difpos = entpos - missilePos
@@ -144,7 +144,7 @@ function this:GetWhitelistedEntsInCone(missile)
 			--Trace did not hit world
 			if not LOStr.Hit then
 
-				local ConeInducedGCTRSize = dist/100 --2 meter wide tracehull for every 100m distance
+				local ConeInducedGCTRSize = dist / 100 --2 meter wide tracehull for every 100m distance
 				local GCtr = util.TraceHull( {
 					start = entpos,
 					endpos = entpos + difpos:GetNormalized() * 1000 ,
@@ -152,21 +152,21 @@ function this:GetWhitelistedEntsInCone(missile)
 					mins = Vector( -ConeInducedGCTRSize, -ConeInducedGCTRSize, -ConeInducedGCTRSize ),
 					maxs = Vector( ConeInducedGCTRSize, ConeInducedGCTRSize, ConeInducedGCTRSize ),
 					filter = function( ent ) if ( ent:GetClass() ~= "worldspawn" ) then return false end end
-					}) --Hits anything in the world.
+				}) --Hits anything in the world.
 
-					--Doppler testing fun
-					local entvel = scanEnt:GetVelocity()
+				--Doppler testing fun
+				local entvel = scanEnt:GetVelocity()
 
-					local DPLR = missile:WorldToLocal(missilePos+entvel*2)
-					local Dopplertest = math.min(math.abs( entvel:Length()/math.max(math.abs(DPLR.Y),0.01))*100,10000)
-					local Dopplertest2 = math.min(math.abs(entvel:Length()/math.max(math.abs(DPLR.Z),0.01))*100,10000)
+				local DPLR = missile:WorldToLocal(missilePos + entvel * 2)
+				local Dopplertest = math.min(math.abs(entvel:Length() / math.max(math.abs(DPLR.Y), 0.01)) * 100, 10000)
+				local Dopplertest2 = math.min(math.abs(entvel:Length() / math.max(math.abs(DPLR.Z), 0.01)) * 100, 10000)
 
-				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/entvel:Length()) > 0.3) or (not GCtr.Hit) ) then --Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+				--Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target.
+				if (Dopplertest < DPLRFAC or Dopplertest2 < DPLRFAC or (math.abs(DPLR.X) > 880)) and ((math.abs(DPLR.X / entvel:Length()) > 0.3) or (not GCtr.Hit)) then
 					--print("PassesDoppler")
 					--Valid target
 					--print(scanEnt)
 					table.insert(foundAnim, scanEnt)
-
 				end
 
 			end
@@ -197,13 +197,13 @@ function this:AcquireLock(missile)
 	local bestAng = math.huge
 	local bestent = nil
 
-	for k, classifyent in pairs(found) do
+	for _, classifyent in pairs(found) do
 
 
 
 		local entpos = classifyent:GetPos()
 		local ang = missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
-		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+		local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 		--print(absang.p)
 		--print(absang.y)

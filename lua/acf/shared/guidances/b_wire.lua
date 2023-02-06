@@ -25,7 +25,7 @@ function this:Init()
 end
 
 -- Use this to make sure you don't alter the shared default filter unintentionally
-function this:GetSeekFilter(class)
+function this:GetSeekFilter()
 	if self.Filter == self.DefaultFilter then
 		self.Filter = table.Copy(self.DefaultFilter)
 	end
@@ -75,14 +75,14 @@ function this:GetNamedWireInputs(missile)
 	-- If we have a Position output, we're in business.
 	if outputs.Position and outputs.Position.Type == "VECTOR" then
 
-		names[#names+1] = "Position"
+		names[#names + 1] = "Position"
 
 	end
 
 
 	if outputs.Target and outputs.Target.Type == "ENTITY" then
 
-		names[#names+1] = "Target"
+		names[#names + 1] = "Target"
 
 	end
 
@@ -165,7 +165,7 @@ function this:GetWireTarget()
 
 	local posVec
 
-	for k, name in pairs(self.InputNames) do
+	for _, name in pairs(self.InputNames) do
 
 		local outTbl = outputs[name]
 
@@ -188,6 +188,6 @@ function this:GetWireTarget()
 
 end
 
-function this:GetDisplayConfig(Type)
+function this:GetDisplayConfig()
 	return {["Wire Length"] = math.Round(self.WireLength / 39.37, 1) .. " m"}
 end

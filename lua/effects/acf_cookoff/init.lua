@@ -20,7 +20,7 @@ function EFFECT:Init( data )
 	self.Emitter = ParticleEmitter( self.Entity:GetPos())
 
 	local phys = self.Entity:GetPhysicsObject()
-	if( phys and phys:IsValid() )then
+	if phys and phys:IsValid()then
 		phys:Wake()
 		phys:ApplyForceCenter( VectorRand() * math.random( 500 , 800 ) * self.Scale )
 	else

@@ -114,7 +114,7 @@ function ENT:Think()
 
 		scanEnt = ACE.radarEntities[self.JamID]
 
-		if(IsValid( scanEnt )) then
+		if IsValid( scanEnt ) then
 
 			local radActive = scanEnt.Active
 			local entpos = scanEnt:GetPos()

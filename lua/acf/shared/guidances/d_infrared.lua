@@ -49,9 +49,9 @@ function this:Configure(missile)
 
 	self:super().Configure(self, missile)
 
-	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone)*1.2
-	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone)))*1.2
-	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone)*1.2
+	self.ViewCone		= (ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone) * 1.2
+	self.ViewConeCos		= (math.cos(math.rad(self.ViewCone))) * 1.2
+	self.SeekCone		= (ACF_GetGunValue(missile.BulletData, "seekcone") or this.SeekCone) * 1.2
 	self.SeekSensitivity	= ACF_GetGunValue(missile.BulletData, "seeksensitivity") or this.SeekSensitivity
 
 end
@@ -71,8 +71,8 @@ function this:GetGuidance(missile)
 	end
 
 	local missilePos = missile:GetPos()
-	local missileForward = missile:GetForward()
-	local targetPhysObj = self.Target:GetPhysicsObject()
+	--local missileForward = missile:GetForward()
+	--local targetPhysObj = self.Target:GetPhysicsObject()
 	local targetPos = self.Target:GetPos() + Vector(0,0,25)
 
 	local mfo	= missile:GetForward()
@@ -84,7 +84,7 @@ function this:GetGuidance(missile)
 		return {}
 	else
 		self.TargetPos = targetPos
-		return {TargetPos = targetPos, ViewCone = self.ViewCone*1.3}
+		return {TargetPos = targetPos, ViewCone = self.ViewCone * 1.3}
 	end
 
 end
@@ -128,7 +128,7 @@ function this:GetWhitelistedEntsInCone(missile)
 	local difpos		= Vector()
 	local dist		= 0
 
-	for k, scanEnt in ipairs(ScanArray) do
+	for _, scanEnt in ipairs(ScanArray) do
 
 		-- skip any invalid entity
 		if not IsValid(scanEnt) then continue end
@@ -187,7 +187,7 @@ function this:AcquireLock(missile)
 
 	local entpos		= Vector()
 	local difpos		= Vector()
-	local entvel		= Vector()
+	--local entvel		= Vector()
 	local dist		= 0
 
 	local physEnt	= NULL
@@ -196,7 +196,7 @@ function this:AcquireLock(missile)
 	local absang		= Angle()
 	local testang	= Angle()
 
-	for k, classifyent in ipairs(found) do
+	for _, classifyent in ipairs(found) do
 
 		entpos  = classifyent:WorldSpaceCenter()
 		difpos  = entpos - missilePos
@@ -214,11 +214,8 @@ function this:AcquireLock(missile)
 			physEnt = classifyent:GetPhysicsObject()
 
 			--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-			if IsValid(physEnt) then
-
-				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-				if not physEnt:IsMoveable() then continue end
-			end
+			--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
+			if IsValid(physEnt) and not physEnt:IsMoveable() then continue end
 
 			Heat = ACE_InfraredHeatFromProp( self, classifyent , dist )
 
@@ -228,7 +225,7 @@ function this:AcquireLock(missile)
 		if Heat <= ACE.AmbientTemp + self.HeatAboveAmbient then continue end
 
 		ang	= missile:WorldToLocalAngles((entpos - missilePos):Angle())	--Used for testing if inrange
-		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 		if absang.p < self.SeekCone and absang.y < self.SeekCone then --Entity is within missile cone
 

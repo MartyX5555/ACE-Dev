@@ -73,12 +73,12 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 	if AllowedEnts[ Ent:GetClass() ] then
 
 		-- include any ECM to this table
-		if Ent:GetClass() == 'ace_ecm' then
+		if Ent:GetClass() == "ace_ecm" then
 
 			table.insert( ACE.ECMPods , Ent)					--print('[ACE | INFO]- ECM registered count: '..table.Count( ACE.ECMPods ))
 
 		-- include any Tracking Radar to this table
-		elseif Ent:GetClass() == 'ace_trackingradar' then
+		elseif Ent:GetClass() == "ace_trackingradar" then
 
 			table.insert( ACE.radarEntities , Ent)			--print('[ACE | INFO]- Tracking radar registered count: '..table.Count( ACE.radarEntities ))
 
@@ -87,7 +87,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 			end
 
 		--Optical Computers go here
-		elseif Ent:GetClass() == 'acf_opticalcomputer' then
+		elseif Ent:GetClass() == "acf_opticalcomputer" then
 
 			table.insert( ACE.Opticals, Ent )				--print('[ACE | INFO]- GLATGM optical computer registered count: '..table.Count( ACE.Opticals ))
 
@@ -106,7 +106,7 @@ hook.Add("OnEntityCreated", "ACE_EntRegister" , function( Ent )
 			--print('Total Ents registered count: '..table.Count( ACE.contraptionEnts ))
 		end
 
-	elseif Ent:GetClass() == 'ace_debris' then
+	elseif Ent:GetClass() == "ace_debris" then
 		table.insert( ACE.Debris , Ent ) --print('Adding - Count: '..#ACE.Debris)
 	end
 
@@ -126,7 +126,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 			local MEnt = ACE.contraptionEnts[i]
 
 			-- Remove this ECM from list if deleted
-			if Ent:GetClass() == 'ace_ecm' then
+			if Ent:GetClass() == "ace_ecm" then
 				for i = 1, table.Count( ACE.ECMPods ) do
 					if ACE.ECMPods[i]:IsValid() and Ent:IsValid() then
 
@@ -143,7 +143,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 				end
 
 			-- Remove this Tracking Radar from list if deleted
-			elseif Ent:GetClass() == 'ace_trackingradar' then
+			elseif Ent:GetClass() == "ace_trackingradar" then
 				for i = 1, table.Count( ACE.radarEntities ) do
 					if ACE.radarEntities[i]:IsValid() and Ent:IsValid() then
 
@@ -160,7 +160,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 					end
 				end
 			-- Remove this GLATGM optical Computer from list if deleted
-			elseif Ent:GetClass() == 'acf_opticalcomputer' then
+			elseif Ent:GetClass() == "acf_opticalcomputer" then
 				for i = 1, table.Count( ACE.Opticals ) do
 					if ACE.Opticals[i]:IsValid() and Ent:IsValid() then
 
@@ -207,7 +207,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval" , function( Ent )
 
 		end
 
-	elseif Ent:GetClass() == 'ace_debris' then
+	elseif Ent:GetClass() == "ace_debris" then
 		for i = 1, #ACE.Debris do
 			if not IsValid(ACE.Debris[i]) then continue end
 
@@ -231,7 +231,7 @@ function ACE_refreshdata( Data )
 
 		local ContrId = math.random(1, 10000)
 
-		for i, ent in pairs(Entities) do
+		for _, ent in pairs(Entities) do
 			if not IsValid(ent) then continue end
 
 			ent.ACF = ent.ACF or {}
@@ -248,17 +248,14 @@ function ACE_refreshdata( Data )
 		if not IsValid(Ent) then continue end
 
 		-- check if it has parent
-		if Ent:GetParent():IsValid() then
+		-- if parented, check if it's not a Heat emitter
+		if Ent:GetParent():IsValid() and not Ent.Heat then
 
-			-- if parented, check if it's not a Heat emitter
-			if not Ent.Heat then
+			-- if not, remove it. Removing most of parented props will decrease cost of guidances
+			--print("[ACE | INFO]- Parented prop! removing. . .")
+			table.remove( ACE.contraptionEnts , index )
 
-				-- if not, remove it. Removing most of parented props will decrease cost of guidances
-				--print("[ACE | INFO]- Parented prop! removing. . .")
-				table.remove( ACE.contraptionEnts , index )
-
-				continue
-			end
+			continue
 		end
 
 

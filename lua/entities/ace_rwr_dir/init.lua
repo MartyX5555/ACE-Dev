@@ -112,7 +112,7 @@ function ENT:Think()
 			local entpos = scanEnt:GetPos()
 			local difpos = (thisPos - entpos)
 
-			if(IsValid(scanEnt)) then
+			if IsValid(scanEnt) then
 				local radActive = scanEnt.Active
 
 				if radActive then

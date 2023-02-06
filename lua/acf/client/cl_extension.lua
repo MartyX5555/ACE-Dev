@@ -134,9 +134,8 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 	local entply		= ply
 
 	local count		= 1
-	local countToFinish = nil
 	local Emitted	= false --Was the sound played?
-	local ide		= 'ACE_Explosion#'..math.random(1,100000)
+	local ide		= "ACE_Explosion#" .. math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
 	if timer.Exists( ide ) then return end
@@ -146,11 +145,11 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos	= entply.aceposoverride or  entply:GetPos()
-		local Dist	= math.abs((plyPos - HitPos):Length())
-		local Volume	= ( 1/(Dist/500)*Radius*0.2 )
-		local Pitch	=  math.Clamp(1000/Radius,25,130)
-		local Delay	= ( Dist/1500 ) * ACE.DelayMultipler
+		local plyPos = entply.aceposoverride or entply:GetPos()
+		local Dist = math.abs((plyPos - HitPos):Length())
+		local Volume = 1 / (Dist / 500) * Radius * 0.2
+		local Pitch = math.Clamp(1000 / Radius, 25, 130)
+		local Delay = (Dist / 1500) * ACE.DelayMultipler
 
 		if count > Delay then
 
@@ -169,7 +168,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					local CloseDist = Radius * 275 * ACE.DistanceMultipler
 
 					--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-					local MediumDist = CloseDist*4.25
+					local MediumDist = CloseDist * 4.25
 
 					--this variable fixes the vol for a better volume scale. It's possible to change it depending of the sound area below
 					local VolFix
@@ -275,24 +274,22 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--Tinnitus function
 					if ACE.EnableTinnitus and not ply.ACE_HasGodMode then
-						local TinZone = math.max(Radius*80,50)*ACE.TinnitusZoneMultipler
-						if Dist <= TinZone and ACE_SHasLOS( HitPos ) and entply == ply and not ply.aceposoverride then
+						local TinZone = math.max(Radius * 80, 50) * ACE.TinnitusZoneMultipler
 
+						if Dist <= TinZone and ACE_SHasLOS(HitPos) and entply == ply and not ply.aceposoverride then
 							timer.Simple(0.01, function()
-								entply:SetDSP( 33, true )
-								entply:StopSound( "acf_other/explosions/ring/tinnitus.mp3" ) --See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
-								entply:EmitSound( "acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1 )	--Disabled sound
-
+								entply:SetDSP(33, true)
+								entply:StopSound("acf_other/explosions/ring/tinnitus.mp3") --See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
+								entply:EmitSound("acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1) --Disabled sound
 							end)
 						end
-
 						--debugoverlay.Sphere(HitPos, TinZone, 15, Color(0,0,255,32), 1)
 					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol
 					if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
 						--print("Inside of building")
-						VolFix = VolFix*0.05
+						VolFix = VolFix * 0.05
 					end
 
 
@@ -301,13 +298,13 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 
 					--play dirt sounds
 					if Radius >= SmallEx and HitWorld then
-						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix), Volume * VolFix / 20)
+						sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, Pitch * PitchFix, Volume * VolFix / 20)
 						sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
 					end
 
 					--Underwater Explosions
 				else
-					entply:EmitSound( "ambient/water/water_splash"..math.random(1,3)..".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+					entply:EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
 					entply:EmitSound( "^weapons/underwater_explode3.wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
 				end
 			end
@@ -328,8 +325,8 @@ function ACE_SPen( HitPos, Velocity, Mass )
 	local entply	= ply
 
 	local count	= 1
-	local Emitted	= false --Was the sound played?
-	local ide	= 'ACE_Penetration#'..math.random(1,100000)
+	local Emitted   = false --Was the sound played?
+	local ide	= "ACE_Penetration#" .. math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
 	if timer.Exists( ide ) then return end
@@ -339,11 +336,11 @@ function ACE_SPen( HitPos, Velocity, Mass )
 
 		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos	= entply.aceposoverride or  entply:GetPos()
-		local Dist	= math.abs((plyPos - HitPos):Length())
-		local Volume	= ( 1/(Dist/500)*Mass/17.5 )
-		local Pitch	=  math.Clamp(Velocity*1,90,150)
-		local Delay	= ( Dist/1500 ) * ACE.DelayMultipler
+		local plyPos = entply.aceposoverride or entply:GetPos()
+		local Dist = math.abs((plyPos - HitPos):Length())
+		local Volume = 1 / (Dist / 500) * Mass / 17.5
+		local Pitch = math.Clamp(Velocity * 1, 90, 150)
+		local Delay = (Dist / 1500) * ACE.DelayMultipler
 
 		if count > Delay then
 
@@ -357,7 +354,7 @@ function ACE_SPen( HitPos, Velocity, Mass )
 				--If a wall is in front of the player and is indoor, reduces its vol at 50%
 				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
 					--print("Inside of building")
-					VolFix = VolFix*0.5
+					VolFix = VolFix * 0.5
 				end
 
 				entply:EmitSound( Sound or "", 75, Pitch, Volume * VolFix)
@@ -379,7 +376,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 	local count	= 1
 	local Emitted	= false --Was the sound played?
 
-	local ide	= 'ACE_Ricochet#'..math.random(1,100000)
+	local ide	= "ACE_Ricochet#" .. math.random(1,100000)
 
 	--Still it's possible to saturate this, prob you will need to be lucky to get the SAME id in both cases.
 	if timer.Exists( ide ) then return end
@@ -389,11 +386,11 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos	= entply.aceposoverride or  entply:GetPos()
-		local Dist	= math.abs((plyPos - HitPos):Length())
-		local Volume	= ( 1/(Dist/500)*Velocity/130000 )
-		local Pitch	=  math.Clamp(Velocity*0.001,90,150)
-		local Delay	= ( Dist/1500 ) * ACE.DelayMultipler
+		local plyPos = entply.aceposoverride or entply:GetPos()
+		local Dist = math.abs((plyPos - HitPos):Length())
+		local Volume = 1 / (Dist / 500) * Velocity / 130000
+		local Pitch = math.Clamp(Velocity * 0.001, 90, 150)
+		local Delay = (Dist / 1500) * ACE.DelayMultipler
 
 		if count > Delay then
 
@@ -424,7 +421,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 				else
 					--Small weapons sound
-					if Caliber <=2 then
+					if Caliber <= 2 then
 						Sound = ACE.Sounds["Ricochets"]["small"]["close"][math.random(1,#ACE.Sounds["Ricochets"]["small"]["close"])]
 						VolFix = 1.25
 
@@ -434,7 +431,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 				--If a wall is in front of the player and is indoor, reduces its vol at 50%
 				if not ACE_SHasLOS( HitPos ) and ACE_SIsInDoor() then
 					--print("Inside of building")
-					VolFix = VolFix*0.5
+					VolFix = VolFix * 0.5
 				end
 
 				if Sound ~= "" then
@@ -460,8 +457,8 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 	local entply	= ply
 
 	local count	= 1
-	local Emitted	= false
-	local ide	= 'ACEFire#'..math.random(1,100000)
+	local Emitted   = false
+	local ide	= "ACEFire#" .. math.random(1,100000)
 
 	local Pos	= Gun:GetPos()
 	local GunId	= Gun:EntIndex() -- Using Ids to ensure that code doesnt fuck up if the gun is removed from the map during sound late report.
@@ -474,25 +471,24 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 
 		if IsValid(ACE_SGetPOV( ply )) then entply = ACE_SGetPOV( ply ) end
 
-		local plyPos	= entply.aceposoverride or  entply:GetPos()
-		local Dist	= math.abs((plyPos - Pos):Length())
-		local Volume	= ( 1/(Dist/500)*Propellant/18 )
-		local Delay	= ( Dist/1500 ) * ACE.DelayMultipler
+		local plyPos = entply.aceposoverride or entply:GetPos()
+		local Dist = math.abs((plyPos - Pos):Length())
+		local Volume = 1 / (Dist / 500) * Propellant / 18
+		local Delay = (Dist / 1500) * ACE.DelayMultipler
 
 		if count > Delay then
 
 			if not Emitted then
 
 				Emitted = true
-				local RSound = Sound
 
 				--This defines the distance between areas for close, mid and far sounds
 				local CloseDist	= Propellant * 40 * ACE.DistanceMultipler
 
 				--Medium dist will be 4.25x times of closedist. So if closedist is 1000 units, then medium dist will be until 4250 units
-				local MediumDist	= CloseDist*4.25
+				local MediumDist	= CloseDist * 4.25
 
-				local FarDist	= MediumDist*2
+				--local FarDist	= MediumDist * 2
 
 				--this variable fixes the vol for a better volume scale. Overrided normally
 				local VolFix		= 1
@@ -531,7 +527,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 				--If a wall is in front of the player and is indoor, reduces its vol at 50%
 				if not ACE_SHasLOS( Pos ) and ACE_SIsInDoor() then
 					--print("Inside of building")
-					VolFix = VolFix*0.5
+					VolFix = VolFix * 0.5
 				end
 
 				sound.Play(Sound or "", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
@@ -556,7 +552,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 	local count	= 1
 	local Emitted	= false --Was the sound played?
 
-	local ide	= 'ACECrack#'..math.random(1,100000)
+	local ide	= "ACECrack#" .. math.random(1,100000)
 
 	if timer.Exists( ide ) then return end
 	timer.Create( ide , 0.1, 0, function()
@@ -568,10 +564,10 @@ function ACE_SBulletCrack( BulletData, Caliber )
 		local plyPos = entply.aceposoverride or entply:GetPos() --print(plyPos)
 
 		--Delayed event report.
-		local CrackPos  = BulletData.SimPos - BulletData.SimFlight:GetNormalized()*5000
-		local Dist	= math.abs((plyPos - CrackPos):Length())							--print('distance from bullet: '..Dist)
-		local Volume	= ( 10000/Dist)													--print('Vol: '..Volume)
-		local Delay	= ( Dist/1500 ) * ACE.DelayMultipler								--print('amount to match: '..Delay)
+		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
+		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: '..Dist)
+		local Volume = 10000 / Dist --print('Vol: '..Volume)
+		local Delay = (Dist / 1500) * ACE.DelayMultipler --print('amount to match: '..Delay)
 
 		if count > Delay then
 
@@ -606,7 +602,7 @@ function ACE_SBulletCrack( BulletData, Caliber )
 				--If a wall is in front of the player and is indoor, reduces its vol
 				if not ACE_SHasLOS( CrackPos ) and ACE_SIsInDoor() then
 					--print("Inside of building")
-					VolFix = VolFix*0.025
+					VolFix = VolFix * 0.025
 				end
 
 				entply:EmitSound( Sound or "" , 75, 100, Volume * VolFix )
