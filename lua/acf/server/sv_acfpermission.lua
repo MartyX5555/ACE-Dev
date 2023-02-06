@@ -31,7 +31,7 @@ end
 
 local function resolveAABBs(mins, maxs)
 
-	/*
+	--[[
 	for xyz, val in pairs(mins) do	-- ensuring points conform to AABB mins/maxs
 		if val > maxs.xyz then
 			local store = maxs.xyz
@@ -39,7 +39,7 @@ local function resolveAABBs(mins, maxs)
 			mins.xyz = store
 		end
 	end
-	--*/
+	----]]
 
 	local store
 	if mins.x > maxs.x then

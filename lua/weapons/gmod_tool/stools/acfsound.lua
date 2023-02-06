@@ -259,7 +259,7 @@ function TOOL.BuildCPanel(panel)
 		Min = "0.1",
 		Max = "2",
 	}):SetTooltip("Works only for engines.")
-	/*
+	--[[
 	local SoundPitch = vgui.Create("DNumSlider")
 	SoundPitch:SetMin( 0.1 )
 	SoundPitch:SetMax( 2 )
@@ -270,5 +270,5 @@ function TOOL.BuildCPanel(panel)
 	SoundPitch:SetConVar( "acfsound_pitch" )
 	SoundPitch:SetValue( 1 )
 	panel:AddItem(SoundPitch)
-	*/
+	--]]
 end

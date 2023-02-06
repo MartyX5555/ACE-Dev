@@ -44,9 +44,9 @@ if CLIENT then
 	language.Add( "SBoxLimit_acf_ammo", ACFTranslation.ACFMenuTool[13] )
 	language.Add( "SBoxLimit_acf_sensor", ACFTranslation.ACFMenuTool[14] )
 
-	/*------------------------------------
+	--[[------------------------------------
 		BuildCPanel
-	------------------------------------*/
+	--------------------------------------]]
 	function TOOL.BuildCPanel( CPanel )
 
 		local pnldef_ACFmenu = vgui.RegisterFile( "acf/client/cl_acfmenu_gui.lua" )

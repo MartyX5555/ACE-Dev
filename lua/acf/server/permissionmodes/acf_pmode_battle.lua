@@ -1,9 +1,9 @@
-/**
+--[[*
 	ACF Permission mode: Battle
 		This mode enables safezones and battlefield.
 		All things within safezones are protected from all registered ACF damage.
 		All things in the battlefield are vulnerable to all ACF damage.
---*/
+----]]
 if not ACF or not ACF.Permissions or not ACF.Permissions.RegisterMode then error("ACF: Tried to load the " .. modename .. " permission-mode before the permission-core has loaded!") return end
 local perms = ACF.Permissions
 
@@ -25,7 +25,7 @@ local ShouldDisableNoclip = false
 
 
 
-/*
+--[[
 	Defines the behaviour of ACF damage protection under this protection mode.
 	This function is called every time an entity can be affected by potential ACF damage.
 	Args;
@@ -34,7 +34,7 @@ local ShouldDisableNoclip = false
 		ent			Entity:	The entity which may be damaged.
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
---*/
+----]]
 local function modepermission(_, attacker, ent)
 	local szs = perms.Safezones
 
