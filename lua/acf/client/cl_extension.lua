@@ -190,84 +190,68 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 					--Close distance
 					if Dist < CloseDist then --NOTE: I KNOW ABOUT THIS CANCEROUS LONG NAME FOR THE STRING, JUST IGNORE FOR THIS TIME.
 
-						VolFix = 8
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
-
-						if Radius >= SmallEx then
+						if Radius >= HugeEx then
+							VolFix = 2000000  -- rip your ears
+							PitchFix = 3
+							Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
+						elseif Radius >= LargeEx then
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
+						elseif Radius >= MediumEx then
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
+						elseif Radius >= SmallEx then
 							VolFix = 8
 							PitchFix = 1
 							Sound = ACE.Sounds["Blasts"]["small"]["close"][math.random(1,#ACE.Sounds["Blasts"]["small"]["close"])]
-
-							if Radius >= MediumEx then
-								VolFix = 8
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["close"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["close"])]
-
-								if Radius >= LargeEx then
-									VolFix = 8
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["close"][math.random(1,#ACE.Sounds["Blasts"]["large"]["close"])]
-
-									if Radius >= HugeEx then
-										VolFix = 2000000  -- rip your ears
-										PitchFix = 3
-										Sound = ACE.Sounds["Blasts"]["huge"]["close"][math.random(1,#ACE.Sounds["Blasts"]["huge"]["close"])]
-									end
-								end
-							end
+						else
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["tiny"]["close"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["close"])]
 						end
 
 					--Medium distance
 					elseif Dist >= CloseDist and Dist < MediumDist then
 
-						VolFix = 8
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
-
-						if Radius >= SmallEx then
+						if Radius >= LargeEx then
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
+						elseif Radius >= MediumEx then
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
+						elseif Radius >= SmallEx then
 							VolFix = 8
 							PitchFix = 1
 							Sound = ACE.Sounds["Blasts"]["small"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["small"]["mid"])]
-
-							if Radius >= MediumEx then
-								VolFix = 8
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["mid"])]
-
-								if Radius >= LargeEx then
-									VolFix = 8
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["large"]["mid"])]
-
-								end
-							end
+						else
+							VolFix = 8
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["tiny"]["mid"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["mid"])]
 						end
 
 					--Far distance
 					elseif Dist >= MediumDist then
 
-						VolFix = 17
-						PitchFix = 1
-						Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
-
-						if Radius >= SmallEx then
+						if Radius >= LargeEx then
+							VolFix = 17
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
+						elseif Radius >= MediumEx then
+							VolFix = 17
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
+						elseif Radius >= SmallEx then
 							VolFix = 17
 							PitchFix = 1
 							Sound = ACE.Sounds["Blasts"]["small"]["far"][math.random(1,#ACE.Sounds["Blasts"]["small"]["far"])]
-
-							if Radius >= MediumEx then
-								VolFix = 17
-								PitchFix = 1
-								Sound = ACE.Sounds["Blasts"]["medium"]["far"][math.random(1,#ACE.Sounds["Blasts"]["medium"]["far"])]
-
-								if Radius >= LargeEx then
-									VolFix = 17
-									PitchFix = 1
-									Sound = ACE.Sounds["Blasts"]["large"]["far"][math.random(1,#ACE.Sounds["Blasts"]["large"]["far"])]
-
-								end
-							end
+						else
+							VolFix = 17
+							PitchFix = 1
+							Sound = ACE.Sounds["Blasts"]["tiny"]["far"][math.random(1,#ACE.Sounds["Blasts"]["tiny"]["far"])]
 						end
 
 					end
