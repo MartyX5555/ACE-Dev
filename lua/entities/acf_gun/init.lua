@@ -153,9 +153,7 @@ do
 		Gun:SetAngles(Angle)
 		Gun:SetPos(Pos)
 		Gun:Spawn()
-
-		Gun:SetPlayer(Owner)
-		Gun:SetOwner(Owner)
+		Gun:CPPISetOwner(Owner)
 		Gun.Id			= Id
 		Gun.Caliber		= Lookup.caliber
 		Gun.Model		= Lookup.model
@@ -518,7 +516,7 @@ function ENT:GetUser( inp )
 			end
 		end
 	end
-	return inp.Owner or inp:GetOwner()
+	return inp.Owner or inp:CPPIGetOwner()
 
 end
 
@@ -528,8 +526,8 @@ function ENT:TriggerInput( iname, value )
 		self:UnloadAmmo()
 	elseif ( iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire < CurTime() then
-			self.User = self:GetUser(self.Inputs.Fire.Src) or self:GetOwner()
-			if not IsValid(self.User) then self.User = self:GetOwner() end
+			self.User = self:GetUser(self.Inputs.Fire.Src) or self:CPPIGetOwner()
+			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
 			self:FireShell()
 			self:Think()
 		end
@@ -583,7 +581,7 @@ function ENT:Heat_Function()
 			Kinetic = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1)),
 			Momentum = 0,
 			Penetration = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1))
-		}, 2, 0, self:GetOwner())
+		}, 2, 0, self:CPPIGetOwner())
 
 		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)

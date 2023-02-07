@@ -164,8 +164,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2)
 	Tank:SetAngles(Angle)
 	Tank:SetPos(Pos)
 	Tank:Spawn()
-	Tank:SetPlayer(Owner)
-	Tank:SetOwner(Owner)
+	Tank:CPPISetOwner(Owner)
 
 	Tank.Id = Id
 	Tank.SizeId = Data1
@@ -306,7 +305,7 @@ function ENT:Update( ArgsTable )
 
 	local Feedback = ""
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then --Argtable[1] is the player that shot the tool
+	if not self:CPPICanTool(ArgsTable[1]) then --Argtable[1] is the player that shot the tool
 		return false, "You don't own that fuel tank!"
 	end
 

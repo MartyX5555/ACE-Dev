@@ -202,6 +202,8 @@ include("acf/shared/sh_ace_functions.lua")
 include("acf/shared/sh_ace_loader.lua")
 include("acf/shared/sh_ace_concommands.lua")
 include("acf/shared/sh_acfm_roundinject.lua")
+include("acf/shared/compatibility/cppiCompatibility.lua")
+AddCSLuaFile("acf/shared/compatibility/cppiCompatibility.lua")
 
 if SERVER then
 

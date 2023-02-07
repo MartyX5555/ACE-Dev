@@ -117,11 +117,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Radar:Spawn()
 	Radar:SetPlayer(Owner)
 
-	if CPPI then
-		Radar:CPPISetOwner(Owner)
-	end
-
-	Radar:SetOwner(Owner)
+	Radar:CPPISetOwner(Owner)
 
 	Radar:SetModelEasy(radar.model)
 

@@ -81,7 +81,7 @@ function ENT:Initialize()
 	self.Legal				= true
 	self.LegalIssues			= ""
 	self.LastSend			= 0
-	self:SetOwner(self)
+	self:CPPISetOwner(self)
 
 	self.IsMaster			= true
 	self.CurAmmo				= 1
@@ -259,14 +259,14 @@ function ENT:GetUser( inp )
 			return self:GetUser(inp.Inputs["Shoot"].Src)
 		elseif inp.Inputs then
 			for _,v in pairs(inp.Inputs) do
-				if not IsValid(v.Src) then return inp.Owner or inp:GetOwner() end
+				if not IsValid(v.Src) then return inp.Owner or inp:CPPIGetOwner() end
 				if table.HasValue(WireTable, v.Src:GetClass()) then
 					return self:GetUser(v.Src)
 				end
 			end
 		end
 	end
-	return inp.Owner or inp:GetOwner()
+	return inp.Owner or inp:CPPIGetOwner()
 
 end
 
@@ -275,7 +275,7 @@ function ENT:TriggerInput( iname , value )
 	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
 			self.User = self:GetUser(self.Inputs["Fire"].Src)
-			if not IsValid(self.User) then self.User = self:GetOwner() end
+			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
 			self:FireMissile()
 			self:Think()
 		end
@@ -581,10 +581,10 @@ function ENT:AddMissile()
 	local Crate = self:FindNextCrate(true)
 	if not IsValid(Crate) then return false end
 
-	local ply = self:GetOwner()
+	local ply = self:CPPIGetOwner()
 
 	local missile = ents.Create("acf_missile")
-	missile:SetOwner(ply)
+	missile:CPPISetOwner(ply)
 	missile.DoNotDuplicate  = true
 	missile.Launcher		= self
 	missile.ForceTdelay	= self.ForceTdelay
@@ -698,8 +698,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 
 	local gundef = RackTable[Id]
 
-	Rack:SetPlayer(Owner)
-	Rack:SetOwner(Owner)
+	Rack:CPPISetOwner(Owner)
 	Rack.Id	= Id
 
 	Rack.MinCaliber	= gundef.mincaliber
@@ -899,7 +898,7 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 	self.Id = Ent.EntityMods.ACFRackInfo.Id
 
-	MakeACF_Rack(self:GetOwner(), self:GetPos(), self:GetAngles(), self.Id, self)
+	MakeACF_Rack(self:CPPIGetOwner(), self:GetPos(), self:GetAngles(), self.Id, self)
 
 	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink

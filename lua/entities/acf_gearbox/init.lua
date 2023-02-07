@@ -74,8 +74,7 @@ do
 		Gearbox:SetPos(Pos)
 		Gearbox:Spawn()
 
-		Gearbox:SetPlayer(Owner)
-		Gearbox:SetOwner(Owner)
+		Gearbox:CPPISetOwner(Owner)
 		Gearbox.Id		= Id
 		Gearbox.Model	= GearboxData.model
 		Gearbox.Mass		= GearboxData.weight		or 1
@@ -214,7 +213,7 @@ function ENT:Update( ArgsTable )
 	-- That table is the player data, as sorted in the ACFCvars above, with player who shot,
 	-- and pos and angle of the tool trace inserted at the start
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then -- Argtable[1] is the player that shot the tool
+	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
 		return false, "You don't own that gearbox!"
 	end
 
@@ -744,7 +743,7 @@ function ENT:Link( Target )
 	end
 
 	local Rope = nil
-	if self:GetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
+	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
 		Rope = constraint.CreateKeyframeRope( OutPosWorld, 1, "cable/cable2", nil, self, OutPos, 0, Target, InPos, 0 )
 	end
 

@@ -291,7 +291,7 @@ do
 			end
 
 			Ammo.Id = Id
-			Ammo:SetOwner(Owner)
+			Ammo:CPPISetOwner(Owner)
 			Ammo.Model = Model
 			Ammo.Dimensions = Dimensions
 
@@ -326,7 +326,7 @@ function ENT:Update( ArgsTable )
 
 	local msg = "Ammo crate updated successfully!"
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then -- Argtable[1] is the player that shot the tool
+	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
 		return false, "You don't own that ammo crate!"
 	end
 
@@ -719,7 +719,7 @@ function ENT:Think()
 				self.BulletData.Pos = self:LocalToWorld(self:OBBCenter() + VectorRand() * (self:OBBMaxs() - self:OBBMins()) / 2)
 				self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
 
-				self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self:GetOwner()
+				self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self:CPPIGetOwner()
 				self.BulletData.Gun	= self.BulletData.Gun	or self
 				self.BulletData.Crate	= self.BulletData.Crate or self:EntIndex()
 

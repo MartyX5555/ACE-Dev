@@ -61,9 +61,7 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 
 	IRST:Spawn()
 
-	if CPPI then IRST:CPPISetOwner(Owner) end
-	IRST:SetPlayer(Owner)
-	IRST:SetOwner(Owner)
+	IRST:CPPISetOwner(Owner)
 
 	IRST:SetNWNetwork()
 	IRST:SetModelEasy(radar.model)
@@ -265,7 +263,7 @@ function ENT:AcquireLock()
 			local angerr = 1 + randanginac * (errorFromAng + errorFromHeat)
 
 			--For Owner table
-			table.insert(Owners, CPPI and (IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName()) or scanEnt:GetOwner():GetName() or "")
+			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
 			table.insert(Positions, entpos + randposinac * posErrorFromHeat * difpos:Length() / 500)
 			table.insert(Temperatures, Heat)
 			table.insert(posTable, nonlocang * angerr)

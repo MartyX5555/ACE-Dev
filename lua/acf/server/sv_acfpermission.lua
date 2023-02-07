@@ -458,7 +458,7 @@ function this.CanDamage(_, Entity, _, _, _, Inflictor, _, _)
 	local DP = GetConVar("acf_enable_dp"):GetInt()
 	if not CPPI or DP == 0 then return true end
 
-	local owner = (CPPI and Entity:CPPIGetOwner()) or Entity:GetOwner()
+	local owner = Entity:CPPIGetOwner()
 
 	if not (IsValid(owner) and owner:IsPlayer()) then
 

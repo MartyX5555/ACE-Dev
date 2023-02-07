@@ -89,8 +89,7 @@ do
 		Engine:SetAngles(Angle)
 		Engine:SetPos(Pos)
 		Engine:Spawn()
-		Engine:SetPlayer(Owner)
-		Engine:SetOwner(Owner)
+		Engine:CPPISetOwner(Owner)
 		Engine.Id = Id
 
 		Engine.Model			= Lookup.model
@@ -168,7 +167,7 @@ function ENT:Update( ArgsTable )
 		return false, "Turn off the engine before updating it!"
 	end
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then -- Argtable[1] is the player that shot the tool
+	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
 		return false, "You don't own that engine!"
 	end
 
@@ -618,7 +617,7 @@ function ENT:CalcRPM()
 				Kinetic = (1 + math.max(Mass / 2, 20) / 2.5) / self.Throttle * 100,
 				Momentum = 0,
 				Penetration = (1 + math.max(Mass / 2, 20) / 2.5) / self.Throttle * 100
-			}, 2, 0, self:GetOwner())
+			}, 2, 0, self:CPPIGetOwner())
 		else
 			--Turns Off due to massive damage
 			self:TriggerInput("Active", 0)
@@ -737,7 +736,7 @@ function ENT:Link( Target )
 	end
 
 	local Rope = nil
-	if self:GetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
+	if self:CPPIGetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
 		Rope = constraint.CreateKeyframeRope( OutPos, 1, "cable/cable2", nil, self, self.Out, 0, Target, Target.In, 0 )
 	end
 

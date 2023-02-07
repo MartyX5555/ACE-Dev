@@ -44,7 +44,7 @@ function ENT:Think()
 		end
 
 
-		MakeACF_Rack(self:GetOwner(), pos, ang, rackId)
+		MakeACF_Rack(self:CPPIGetOwner(), pos, ang, rackId)
 
 	end
 
@@ -73,7 +73,7 @@ function MakeACF_MissileToRack(owner, pos, ang, id, rackid)
 	converter:SetPos(pos)
 
 	converter.Id = id
-	converter:SetOwner(owner)
+	converter:CPPISetOwner(owner)
 	converter.RackID = rackid
 
 	converter:Spawn()

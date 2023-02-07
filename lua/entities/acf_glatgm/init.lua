@@ -58,7 +58,7 @@ function ENT:Initialize()
 			if not IsValid(Optical) then continue end
 
 			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
-			if Optical:GetPos():DistToSqr(self:GetPos()) < 250 ^ 2 and Optical:CPPIGetOwner() == self:GetOwner() then
+			if Optical:GetPos():DistToSqr(self:GetPos()) < 250 ^ 2 and Optical:CPPIGetOwner() == self:CPPIGetOwner() then
 
 				--print("Attaching Nearest Computer...")
 				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
@@ -72,9 +72,7 @@ function ENT:Initialize()
 		end
 	end
 
-	if CPPI then
-		self:CPPISetOwner(self.BulletData.Owner)
-	end
+	self:CPPISetOwner(self.BulletData.Owner)
 
 	--Rocket Trail effect
 	timer.Simple(0.1,function() ParticleEffectAttach("Rocket_Smoke_Trail",4, self,1)  end)

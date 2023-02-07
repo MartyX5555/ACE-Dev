@@ -17,8 +17,8 @@ function ENT:Initialize()
 
 	self.BaseClass.Initialize(self)
 
-	if not IsValid(self:GetOwner()) then
-		self:SetOwner(player.GetAll()[1])
+	if not IsValid(self:CPPIGetOwner()) then
+		self:CPPISetOwner(player.GetAll()[1])
 	end
 
 	self.DetonateOffset = nil

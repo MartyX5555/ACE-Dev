@@ -72,8 +72,6 @@ function ENT:Detonate()
 	local HEWeight = 4
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
-	--ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
-
 	self.FakeCrate = ents.Create("acf_fakecrate2")
 	self.FakeCrate:RegisterTo(self.Bulletdata)
 	self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
@@ -81,7 +79,7 @@ function ENT:Detonate()
 
 	self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
 	self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
-	self.Bulletdata.Owner = self:GetOwner()
+	self.Bulletdata.Owner = self:CPPIGetOwner()
 
 	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
 	self:CreateShell( self.Bulletdata )

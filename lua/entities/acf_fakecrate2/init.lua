@@ -36,7 +36,7 @@ function ENT:RegisterTo(bullet)
 
 		if bullet.BulletData then
 			self:SetNWString( "Sound", bullet.Primary and bullet.Primary.Sound or nil)
-			self:SetOwner(bullet:GetOwner())
+			self:CPPISetOwner(bullet:GetOwner())
 --			bullet = bullet.BulletData
 		end
 

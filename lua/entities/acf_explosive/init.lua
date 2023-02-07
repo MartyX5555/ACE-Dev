@@ -55,12 +55,7 @@ function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5,
 	Bomb:SetPos(Pos)
 	Bomb:Spawn()
 	Bomb:SetPlayer(Owner)
-
-	if CPPI then
-		Bomb:CPPISetOwner(Owner)
-	end
-
-	Bomb:SetOwner(Owner)
+	Bomb:CPPISetOwner(Owner)
 
 
 	Mdl = Mdl or ACF.Weapons.Guns[Id].model
@@ -162,7 +157,7 @@ function ENT:ConfigBulletDataShortForm(bdata)
 	self.BulletData = bdata
 	self.BulletData.Entity = self
 	self.BulletData.Crate = self:EntIndex()
-	self.BulletData.Owner = self.BulletData.Owner or self:GetOwner()
+	self.BulletData.Owner = self.BulletData.Owner or self:CPPIGetOwner()
 
 	local phys = self:GetPhysicsObject()
 	if (IsValid(phys)) then

@@ -22,10 +22,7 @@ function Round.create( Gun, BulletData )
 		ent.Life = (BulletData.FillerMass or 1) / (0.4 * ACFM.FlareBurnMultiplier)
 		ent:Spawn()
 		ent:SetOwner( Gun )
-
-		if CPPI then
-			ent:CPPISetOwner( Gun:GetOwner())
-		end
+		ent:CPPISetOwner( Gun:CPPIGetOwner())
 
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight )

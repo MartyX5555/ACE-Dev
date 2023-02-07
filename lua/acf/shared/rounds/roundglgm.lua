@@ -16,7 +16,7 @@ function Round.create( Gun, BulletData )
 		ACF_CreateBullet( BulletData )
 	else
 
-		local ply				= Gun:GetOwner()
+		local ply				= Gun:CPPIGetOwner()
 		local glatgm			= ents.Create("acf_glatgm")
 		glatgm:SetOwner(ply)
 		glatgm.DoNotDuplicate	= true
