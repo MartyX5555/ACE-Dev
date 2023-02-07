@@ -1,7 +1,7 @@
 
 include("shared.lua")
 
-local ACF_FuelInfoWhileSeated = CreateClientConVar("ACF_FuelInfoWhileSeated", 0, true, false)
+CreateClientConVar("ACF_FuelInfoWhileSeated", 0, true, false)
 
 -- copied from base_wire_entity: DoNormalDraw's notip arg isn't accessible from ENT:Draw defined there.
 function ENT:Draw()
@@ -38,8 +38,8 @@ function ACFFuelTankGUICreate( Table )
 	-- tank size dropbox
 	acfmenupanel.CData.TankSizeSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
 		acfmenupanel.CData.TankSizeSelect:SetSize(100, 30)
-		for k,v in ipairs(SortedTanks) do acfmenupanel.CData.TankSizeSelect:AddChoice( v ) end
-		acfmenupanel.CData.TankSizeSelect.OnSelect = function( index, value, data )
+		for _,v in ipairs(SortedTanks) do acfmenupanel.CData.TankSizeSelect:AddChoice( v ) end
+		acfmenupanel.CData.TankSizeSelect.OnSelect = function( _, _, data )
 			RunConsoleCommand( "acfmenu_data1", data )
 			acfmenupanel.FuelTankData.Id = data
 			ACFFuelTankGUIUpdate( Table )
@@ -51,10 +51,10 @@ function ACFFuelTankGUICreate( Table )
 	-- fuel type dropbox
 	acfmenupanel.CData.FuelSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
 		acfmenupanel.CData.FuelSelect:SetSize(100, 30)
-		for Key, Value in pairs( ACF.FuelDensity ) do
+		for Key in pairs( ACF.FuelDensity ) do
 			acfmenupanel.CData.FuelSelect:AddChoice( Key )
 		end
-		acfmenupanel.CData.FuelSelect.OnSelect = function( index, value, data )
+		acfmenupanel.CData.FuelSelect.OnSelect = function( _, _, data )
 			RunConsoleCommand( "acfmenu_data2", data )
 			acfmenupanel.FuelTankData.FuelID = data
 			ACFFuelTankGUIUpdate( Table )
@@ -69,7 +69,7 @@ function ACFFuelTankGUICreate( Table )
 
 end
 
-function ACFFuelTankGUIUpdate( Table )
+function ACFFuelTankGUIUpdate()
 
 	if not acfmenupanel.CustomDisplay then return end
 
@@ -82,7 +82,7 @@ function ACFFuelTankGUIUpdate( Table )
 	local Wall	= 0.03937											-- wall thickness in inches (1mm)
 	local Volume	= Dims.V - (Dims.S * Wall)							-- total volume of tank (cu in), reduced by wall thickness
 	local Capacity  = Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774  -- internal volume available for fuel in liters, with magic realism number
-	local EmptyMass = ((Dims.S * Wall) * 16.387) * (7.9/1000)				-- total wall volume * cu in to cc * density of steel (kg/cc)
+	local EmptyMass = ((Dims.S * Wall) * 16.387) * (7.9 / 1000)				-- total wall volume * cu in to cc * density of steel (kg/cc)
 	local Mass	= EmptyMass + Capacity * ACF.FuelDensity[FuelID]		-- weight of tank + weight of fuel
 
 	--fuel and tank info
@@ -90,13 +90,13 @@ function ACFFuelTankGUIUpdate( Table )
 		local kwh = Capacity * ACF.LiIonED
 		acfmenupanel:CPanelText("TankName", Tanks[TankID].name .. " Li-Ion Battery")
 		acfmenupanel:CPanelText("TankDesc", Tanks[TankID].desc .. "\n")
-		acfmenupanel:CPanelText("Cap", "Charge: " ..math.Round(kwh,1).. " kW hours / " ..math.Round(kwh * 3.6,1).. " MJ")
-		acfmenupanel:CPanelText("Mass", "Mass: " ..math.Round(Mass,1).. " kg")
+		acfmenupanel:CPanelText("Cap", "Charge: " .. math.Round(kwh, 1) .. " kW hours / " .. math.Round(kwh * 3.6, 1) .. " MJ")
+		acfmenupanel:CPanelText("Mass", "Mass: " .. math.Round(Mass, 1) .. " kg")
 	else
 		acfmenupanel:CPanelText("TankName", Tanks[TankID].name .. " fuel tank")
 		acfmenupanel:CPanelText("TankDesc", Tanks[TankID].desc .. "\n")
-		acfmenupanel:CPanelText("Cap", "Capacity: " ..math.Round(Capacity,1).. " liters / " ..math.Round(Capacity * 0.264172,1).. " gallons")
-		acfmenupanel:CPanelText("Mass", "Full mass: " ..math.Round(Mass,1).. " kg, Empty mass: " ..math.Round(EmptyMass,1).. " kg")
+		acfmenupanel:CPanelText("Cap", "Capacity: " .. math.Round(Capacity, 1) .. " liters / " .. math.Round(Capacity * 0.264172, 1) .. " gallons")
+		acfmenupanel:CPanelText("Mass", "Full mass: " .. math.Round(Mass, 1) .. " kg, Empty mass: " .. math.Round(EmptyMass, 1) .. " kg")
 	end
 
 	local text = "\n"
@@ -113,7 +113,7 @@ function ACFFuelTankGUIUpdate( Table )
 			acfmenupanel.CData.DisplayModel:SetLookAt( Vector( 0, 0, 0 ) )
 			acfmenupanel.CData.DisplayModel:SetFOV( 10 )
 			acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-			acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
+			acfmenupanel.CData.DisplayModel.LayoutEntity = function() end
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
 	end
 	acfmenupanel.CData.DisplayModel:SetModel( Tanks[TankID].model )

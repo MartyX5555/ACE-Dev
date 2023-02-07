@@ -24,7 +24,7 @@ function Round.create( Gun, BulletData )
 		ent:SetOwner( Gun )
 
 		if CPPI then
-			ent:CPPISetOwner( Gun.Owner)
+			ent:CPPISetOwner( Gun:GetOwner())
 		end
 
 		local phys = ent:GetPhysicsObject()

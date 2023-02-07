@@ -54,7 +54,7 @@ do
 
 	end
 
-	function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+	function MakeACF_Gearbox(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10)
 
 		if not Owner:CheckLimit("_acf_misc") then return false end
 
@@ -75,7 +75,7 @@ do
 		Gearbox:Spawn()
 
 		Gearbox:SetPlayer(Owner)
-		Gearbox.Owner	= Owner
+		Gearbox:SetOwner(Owner)
 		Gearbox.Id		= Id
 		Gearbox.Model	= GearboxData.model
 		Gearbox.Mass		= GearboxData.weight		or 1
@@ -180,7 +180,7 @@ do
 		local phys = Gearbox:GetPhysicsObject()
 		if IsValid( phys ) then
 			phys:SetMass( Gearbox.Mass )
-			Gearbox.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
+			Gearbox.ModelInertia = 0.99 * phys:GetInertia() / phys:GetMass() -- giving a little wiggle room
 		end
 
 		Gearbox.In = Gearbox:WorldToLocal(Gearbox:GetAttachment(Gearbox:LookupAttachment( "input" )).Pos)
@@ -214,7 +214,7 @@ function ENT:Update( ArgsTable )
 	-- That table is the player data, as sorted in the ACFCvars above, with player who shot,
 	-- and pos and angle of the tool trace inserted at the start
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self.Owner) then -- Argtable[1] is the player that shot the tool
+	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then -- Argtable[1] is the player that shot the tool
 		return false, "You don't own that gearbox!"
 	end
 
@@ -349,7 +349,7 @@ function ENT:UpdateOverlayText()
 		text = text .. "\nTarget: " .. math.Round( self.TargetMinRPM ) .. " - " .. math.Round( self.TargetMaxRPM ) .. " RPM\n"
 	elseif self.Auto then
 		for i = 1, self.Gears do
-			text = text .. "Gear " .. i .. ": " .. math.Round( self.GearTable[ i ], 2 ) .. ", Upshift @ ".. math.Round( self.ShiftPoints[i]/10.936, 1 ) .. " kph / " .. math.Round( self.ShiftPoints[i]/17.6 ,1 ) .. " mph\n"
+			text = text .. "Gear " .. i .. ": " .. math.Round( self.GearTable[ i ], 2 ) .. ", Upshift @ " .. math.Round( self.ShiftPoints[i] / 10.936, 1 ) .. " kph / " .. math.Round( self.ShiftPoints[i] / 17.6 ,1 ) .. " mph\n"
 		end
 	else
 		for i = 1, self.Gears do
@@ -373,7 +373,7 @@ end
 
 
 -- prevent people from changing bodygroup
-function ENT:CanProperty( ply, property )
+function ENT:CanProperty( _, property )
 
 	return property ~= "bodygroups"
 
@@ -387,13 +387,13 @@ function ENT:TriggerInput( iname, value )
 		else
 			self:ChangeGear(value)
 		end
-	elseif ( iname == "Gear Up" ) and not (value == 0) then
+	elseif ( iname == "Gear Up" ) and value ~= 0 then
 		if self.Auto then
 			self:ChangeDrive(self.Drive + 1)
 		else
 			self:ChangeGear(self.Gear + 1)
 		end
-	elseif ( iname == "Gear Down" ) and not (value == 0) then
+	elseif ( iname == "Gear Down" ) and value ~= 0 then
 		if self.Auto then
 			self:ChangeDrive(self.Drive - 1)
 		else
@@ -418,7 +418,7 @@ function ENT:TriggerInput( iname, value )
 	elseif ( iname == "Steer Rate" ) then
 		self.SteerRate = math.Clamp(value,-1,1)
 	elseif ( iname == "Hold Gear" ) then
-		self.Hold = not (value == 0)
+		self.Hold = value ~= 0
 	elseif ( iname == "Shift Speed Scale" ) then
 		self.ShiftScale = math.Clamp(value,0.1,1.5)
 	end
@@ -432,9 +432,7 @@ function ENT:Think()
 		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
 		self:UpdateOverlayText()
 
-		if self.Legal then
-			if self.Parentable then self.RootParent = ACF_GetPhysicalParent(self) end
-		end
+		if self.Legal and self.Parentable then self.RootParent = ACF_GetPhysicalParent(self) end
 	end
 
 	local Time = CurTime()
@@ -469,7 +467,7 @@ function ENT:CheckRopes()
 		end
 
 		-- make sure the angle is not excessive
-		local DrvAngle = ( OutPos - InPos ):GetNormalized():DotProduct( ( self:GetRight() * Link.Output.y ):GetNormalized() )
+		local DrvAngle = ( OutPos - InPos ):GetNormalized():Dot( ( self:GetRight() * Link.Output.y ):GetNormalized() )
 		if DrvAngle < 0.7 then
 			self:Unlink( Ent )
 		end
@@ -611,7 +609,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
 
 	if not self.Legal then self.LastActive = CurTime() return end
 	--internal torque loss from being damaged
-	local Loss = math.Clamp(((1 - 0.4) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, 0.4, 1)
+	local Loss = math.Clamp(((1 - 0.4) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, 0.4, 1)
 
 	--internal torque loss from inefficiency
 	local Slop = self.Auto and 0.9 or 1
@@ -623,7 +621,7 @@ function ENT:Act( Torque, DeltaTime, MassRatio )
 		AvailTq = math.min( math.abs( Torque ) / self.TotalReqTq, 1 ) / self.GearRatio * -( -Torque / math.abs( Torque ) ) * Loss * Slop
 	end
 
-	for Key, Link in pairs( self.WheelLink ) do
+	for _, Link in pairs( self.WheelLink ) do
 
 		if Link.Notvalid then continue end
 
@@ -719,7 +717,7 @@ function ENT:Link( Target )
 	end
 
 	-- Check if target is already linked
-	for Key, Link in pairs( self.WheelLink ) do
+	for _, Link in pairs( self.WheelLink ) do
 		if Link.Ent == Target then
 			return false, "That is already linked to this gearbox!"
 		end
@@ -740,13 +738,13 @@ function ENT:Link( Target )
 	end
 	local OutPosWorld = self:LocalToWorld( OutPos )
 
-	local DrvAngle = ( OutPosWorld - InPosWorld ):GetNormalized():DotProduct( ( self:GetRight() * OutPos.y ):GetNormalized() )
+	local DrvAngle = ( OutPosWorld - InPosWorld ):GetNormalized():Dot( ( self:GetRight() * OutPos.y ):GetNormalized() )
 	if DrvAngle < 0.7 then
 		return false, "Cannot link due to excessive driveshaft angle!"
 	end
 
 	local Rope = nil
-	if self.Owner:GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
+	if self:GetOwner():GetInfoNum( "ACF_MobilityRopeLinks", 1) == 1 then
 		Rope = constraint.CreateKeyframeRope( OutPosWorld, 1, "cable/cable2", nil, self, OutPos, 0, Target, InPos, 0 )
 	end
 
@@ -778,7 +776,7 @@ function ENT:Unlink( Target )
 		if Link.Ent == Target then
 
 			-- Remove any old physical ropes leftover from dupes
-			for Key, Rope in pairs( constraint.FindConstraints( Link.Ent, "Rope" ) ) do
+			for _, Rope in pairs( constraint.FindConstraints( Link.Ent, "Rope" ) ) do
 				if Rope.Ent1 == self or Rope.Ent2 == self then
 					Rope.Constraint:Remove()
 				end
@@ -814,7 +812,7 @@ function ENT:PreEntityCopy()
 	end
 
 	-- Then save it
-	for Key, Link in pairs( self.WheelLink ) do
+	for _, Link in pairs( self.WheelLink ) do
 		table.insert( entids, Link.Ent:EntIndex() )
 	end
 
@@ -853,11 +851,10 @@ end
 
 function ENT:OnRemove()
 
-	for Key,Value in pairs(self.Master) do	--Let's unlink ourselves from the engines properly
+	for Key in pairs(self.Master) do	--Let's unlink ourselves from the engines properly
 		if IsValid( self.Master[Key] ) then
 			self.Master[Key]:Unlink( self )
 		end
 	end
 
 end
-

@@ -9,7 +9,7 @@ function ENT:ConvertMeshToScale(MeshData, Scale)
 
 	local NewMesh = table.Copy(MeshData)
 
-	for i, vertexgroup in pairs(NewMesh) do
+	for _, vertexgroup in pairs(NewMesh) do
 
 		for k, vertex in pairs(vertexgroup) do
 			vertexgroup[k] = (istable(vertex) and vertex.pos or vertex) * Scale
@@ -29,7 +29,7 @@ do
 		proper_clipping_physicize = true,
 	}
 
-	function ENT:CanTool( ply, trace, mode, tool, button )
+	function ENT:CanTool( _, _, mode, _, _ )
 
 		if BlacklistedTools[mode] then return false end
 		return true

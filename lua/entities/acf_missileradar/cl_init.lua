@@ -38,13 +38,13 @@ function ACFRadarGUICreate( Table )
 		RadarMenu:SetLookAt( Vector( 0, 0, 0 ) )
 		RadarMenu:SetFOV( 20 )
 		RadarMenu:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-		RadarMenu.LayoutEntity = function( panel, entity ) end
+		RadarMenu.LayoutEntity = function() end
 	acfmenupanel.CustomDisplay:AddItem( RadarMenu )
 
 	acfmenupanel:CPanelText("ClassDesc", ACF.Classes.Radar[Table.class].desc)
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
 	acfmenupanel:CPanelText("ViewCone", "View cone : " .. ((Table.viewcone or 180) * 2) .. " degs")
-	acfmenupanel:CPanelText("ViewRange", "View range : ".. (Table.range and (math.Round(Table.range / 39.37, 1) .. " m") or "unlimited"))
+	acfmenupanel:CPanelText("ViewRange", "View range : " .. (Table.range and (math.Round(Table.range / 39.37, 1) .. " m") or "unlimited"))
 	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. " kg")
 
 	--acfmenupanel:CPanelText("GunParentable", "\nThis radar can be parented\n", "DermaDefaultBold")

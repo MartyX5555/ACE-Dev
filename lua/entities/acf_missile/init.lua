@@ -11,17 +11,16 @@ local FuseTable	= ACF.Fuse
 
 function ENT:Initialize()
 
-	self.PhysObj = self.Entity:GetPhysicsObject()
+	self.PhysObj = self:GetPhysicsObject()
 
 	if not IsValid(self.PhysObj) then self:Remove() return end --Prevent duping missiles (to stop errors)
 
 	self.BaseClass.Initialize(self)
 
-	if not IsValid(self.Entity.Owner) then
-		self.Owner = player.GetAll()[1]
+	if not IsValid(self:GetOwner()) then
+		self:SetOwner(player.GetAll()[1])
 	end
 
-	self.Entity:SetOwner(self.Entity.Owner)
 	self.DetonateOffset = nil
 
 	self.PhysObj:EnableGravity( false )
@@ -60,7 +59,7 @@ function ENT:SetBulletData(bdata) -- Called before to Initialize()
 
 	local roundWeight = ACF_GetGunValue(bdata, "weight") or 10
 
-	self.PhysObj = self.Entity:GetPhysicsObject()
+	self.PhysObj = self:GetPhysicsObject()
 
 	self.PhysObj:SetMass( roundWeight )
 
@@ -96,11 +95,9 @@ function ENT:CalcFlight()
 
 	if self.MissileDetonated then return end
 
-	local Ent	= self.Entity
 	local Pos	= self.CurPos
 	local Dir	= self.CurDir
 
-	local LastPos	= self.LastPos
 	local LastVel	= self.LastVel
 	local Flight	= self.FlightTime
 
@@ -220,7 +217,7 @@ function ENT:CalcFlight()
 
 		if self.Motor ~= 0 then
 			self.Motor = 0
-			self.Entity:StopParticles()
+			self:StopParticles()
 			self:SetNWFloat("LightSize", 0)
 		end
 	else
@@ -258,7 +255,7 @@ function ENT:CalcFlight()
 		--Becomes volumetric once ghosting is over. So we avoid most of expensive calculations below
 		if Time > self.GhostPeriod then
 
-			local MRadius = (self.BulletData.Caliber/2) * 0.5
+			local MRadius = (self.BulletData.Caliber / 2) * 0.5
 			local maxs = Vector(MRadius,MRadius,MRadius)
 			local mins = -maxs
 
@@ -313,7 +310,7 @@ function ENT:CalcFlight()
 						--Note: caching the filter once can be easily bypassed by putting a prop of your own vehicle in front to fill the filter, then not caching any other prop.
 						self.physentities = self.physentities or constraint.GetAllConstrainedEntities( RootTarget ) -- how expensive will be this with contraptions over 100 constrained ents?
 
-						for k, physEnt in pairs(self.physentities) do
+						for _, physEnt in pairs(self.physentities) do
 
 							if not IsValid(physEnt) then continue end
 
@@ -385,7 +382,7 @@ end
 --===========================================================================================
 function ENT:Launch()
 
-	if not IsValid(self.PhysObj) then self.PhysObj = self.Entity:GetPhysicsObject() end
+	if not IsValid(self.PhysObj) then self.PhysObj = self:GetPhysicsObject() end
 
 	if not self.Guidance then
 		self:SetGuidance(GuidanceTable.Dumb())
@@ -591,7 +588,7 @@ end
 --===========================================================================================
 function ENT:Detonate()
 
-	self.Entity:StopParticles()
+	self:StopParticles()
 	self.Motor = 0
 	self:SetNWFloat("LightSize", 0)
 
@@ -651,9 +648,6 @@ end
 ----- Skin/Bodygroup/effect/Sound functions
 --===========================================================================================
 function ENT:LaunchEffect()
-
-	local class = GunTable[self.BulletData.Id]
-
 	local sound = self.BulletData.Sound or ACF_GetGunValue(self.BulletData, "sound")
 
 	if sound then
@@ -681,7 +675,7 @@ function ENT:UpdateBodygroups()
 
 	local bodygroups = self:GetBodyGroups()
 
-	for idx, group in pairs(bodygroups) do
+	for _, group in pairs(bodygroups) do
 
 		if string.lower(group.name) == "guidance" and self.Guidance then
 
@@ -734,16 +728,16 @@ function ENT:ACF_Activate( Recalc )
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
 	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop Area gone
+	local Health = self.ACF.Volume / ACF.Threshold							--Setting the threshold of the prop Area gone
 	local Percent = 1
 
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
-		Percent = self.ACF.Health/self.ACF.MaxHealth
+		Percent = self.ACF.Health / self.ACF.MaxHealth
 	end
 
 	self.ACF.Health	= Health * Percent
 	self.ACF.MaxHealth  = Health
-	self.ACF.Armour	= Armour * (0.5 + Percent/2)
+	self.ACF.Armour	= Armour * (0.5 + Percent / 2)
 	self.ACF.MaxArmour  = Armour
 	self.ACF.Type	= nil
 	self.ACF.Mass	= self.Mass

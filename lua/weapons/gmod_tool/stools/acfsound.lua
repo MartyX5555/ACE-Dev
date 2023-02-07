@@ -106,7 +106,7 @@ ACF.SoundToolSupport = {
 	}
 }
 
-local function ReplaceSound( ply , Entity , data)
+local function ReplaceSound( _ , Entity , data)
 	if not IsValid( Entity ) then return end
 	local sound = data[1]
 	local pitch = data[2] or 1
@@ -129,9 +129,6 @@ duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
 
 
 local function IsReallyValid(trace, ply)
-
-	local isValid = true
-
 	if not trace.Entity:IsValid() then return false end
 	if trace.Entity:IsPlayer() then return false end
 	if SERVER and not trace.Entity:GetPhysicsObject():IsValid() then return false end

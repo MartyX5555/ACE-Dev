@@ -1,7 +1,7 @@
 
 include("shared.lua")
 
-local ACF_GearboxInfoWhileSeated = CreateClientConVar("ACF_GearboxInfoWhileSeated", 0, true, false)
+CreateClientConVar("ACF_GearboxInfoWhileSeated", 0, true, false)
 
 -- copied from base_wire_entity: DoNormalDraw's notip arg isn't accessible from ENT:Draw defined there.
 function ENT:Draw()
@@ -24,7 +24,7 @@ function ACFGearboxGUICreate( Table )
 	if not acfmenupanel.Serialize then
 		acfmenupanel.Serialize = function( tbl, factor )
 			local str = ""
-			for i=1,7 do
+			for i = 1,7 do
 				str = str .. math.Round(tbl[i] * factor,1) .. ","
 			end
 			RunConsoleCommand( "acfmenu_data9", str )
@@ -52,7 +52,7 @@ function ACFGearboxGUICreate( Table )
 		acfmenupanel.CData.DisplayModel:SetLookAt( Vector( 0, 0, 0 ) )
 		acfmenupanel.CData.DisplayModel:SetFOV( 20 )
 		acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-		acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
+		acfmenupanel.CData.DisplayModel.LayoutEntity = function() end
 	acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
 
 	acfmenupanel:CPanelText("Desc", Table.desc) --Description (Name, Desc)
@@ -67,7 +67,7 @@ function ACFGearboxGUICreate( Table )
 			acfmenupanel.CData.UnitsInput:AddChoice( "MPH", 17.6 )
 			acfmenupanel.CData.UnitsInput:AddChoice( "GMU", 1 )
 			acfmenupanel.CData.UnitsInput:SetDark( true )
-			acfmenupanel.CData.UnitsInput.OnSelect = function( panel, index, label, data )
+			acfmenupanel.CData.UnitsInput.OnSelect = function( panel, _, _, data )
 				acfmenupanel.Serialize( acfmenupanel.GearboxData[panel.ID].ShiftTable, data )  --dot intentional
 			end
 		acfmenupanel.CustomDisplay:AddItem(acfmenupanel.CData.UnitsInput)
@@ -95,7 +95,7 @@ function ACFGearboxGUICreate( Table )
 	end
 
 	acfmenupanel:CPanelText("Desc", Table.desc)
-	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : " .. (Table.maxtq) .. "n-m / " .. math.Round(Table.maxtq * 0.73) .. "ft-lb")
+	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : " .. Table.maxtq .. "n-m / " .. math.Round(Table.maxtq * 0.73) .. "ft-lb")
 	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. "kg")
 
 	if Table.auto then
@@ -115,9 +115,9 @@ function ACFGearboxGUICreate( Table )
 				--acfmenupanel.CData.ShiftGenPanel.Calc:SetWide( 80 )
 				acfmenupanel.CData.ShiftGenPanel.Calc:SetTall( 20 )
 				acfmenupanel.CData.ShiftGenPanel.Calc.DoClick = function()
-					local str, factor = acfmenupanel.CData.UnitsInput:GetSelected()
+					local _, factor = acfmenupanel.CData.UnitsInput:GetSelected()
 					local mul = math.pi * acfmenupanel.CData.ShiftGenPanel.RPM:GetValue() * acfmenupanel.CData.ShiftGenPanel.Ratio:GetValue() * acfmenupanel.CData[10]:GetValue() * acfmenupanel.CData.ShiftGenPanel.Wheel:GetValue() / (60 * factor)
-					for i=1,acfmenupanel.CData.ShiftGenPanel.Gears do
+					for i = 1,acfmenupanel.CData.ShiftGenPanel.Gears do
 						acfmenupanel.CData[10 + i].Input:SetValue( math.Round( math.abs( mul * acfmenupanel.CData[i]:GetValue() ), 2 ) )
 						acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable[i] = tonumber(acfmenupanel.CData[10 + i].Input:GetValue())
 					end
@@ -235,7 +235,7 @@ function ACF_ShiftPoint(Gear, Value, ID, Desc)
 			acfmenupanel.CData[Index].Input:SetWide( 45 )
 			acfmenupanel.CData[Index].Input.OnValueChanged = function( box, value )
 				acfmenupanel.GearboxData[box.ID].ShiftTable[box.Gear] = value
-				local str, factor = acfmenupanel.CData.UnitsInput:GetSelected()
+				local _, factor = acfmenupanel.CData.UnitsInput:GetSelected()
 				acfmenupanel.Serialize( acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable, factor )  --dot intentional
 			end
 			RunConsoleCommand( "acfmenu_data9", "10,20,30,40,50,60,70" )

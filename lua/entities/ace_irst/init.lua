@@ -61,7 +61,9 @@ function MakeACE_IRST(Owner, Pos, Angle, Id)
 
 	IRST:Spawn()
 
-	IRST.Owner = CPPI and IRST:CPPISetOwner(Owner) or IRST:SetPlayer(Owner)
+	if CPPI then IRST:CPPISetOwner(Owner) end
+	IRST:SetPlayer(Owner)
+	IRST:SetOwner(Owner)
 
 	IRST:SetNWNetwork()
 	IRST:SetModelEasy(radar.model)

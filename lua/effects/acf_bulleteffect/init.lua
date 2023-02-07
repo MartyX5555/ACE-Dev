@@ -151,17 +151,13 @@ function EFFECT:ApplyMovement( Bullet )
 		local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length())
 
 		--sonic crack sound
-		if not Bullet.CrackCreated and not Bullet.IsMissile then
-			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber * 100 * ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
-				if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
-
-					if not Bullet.Impacted then
-
-						ACE_SBulletCrack(Bullet, Bullet.Caliber)
-
-					end
-				end
-			end
+		--horribly long if condition please fix without making a pyramid
+		if
+			not Bullet.CrackCreated and not Bullet.IsMissile and
+			ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber * 100 * ACE.CrackDistanceMultipler,250) ) and
+			not ACE_SInDistance( Bullet.InitialPos, 750 ) and Speed > 100 and not Bullet.Impacted
+		then
+			ACE_SBulletCrack(Bullet, Bullet.Caliber)
 		end
 	end
 

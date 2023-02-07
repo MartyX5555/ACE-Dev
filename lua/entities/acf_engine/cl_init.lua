@@ -2,7 +2,7 @@
 
 include("shared.lua")
 
-local ACF_EngineInfoWhileSeated = CreateClientConVar("ACF_EngineInfoWhileSeated", 0, true, false)
+CreateClientConVar("ACF_EngineInfoWhileSeated", 0, true, false)
 
 -- copied from base_wire_entity: DoNormalDraw's notip arg isn't accessible from ENT:Draw defined there.
 function ENT:Draw()
@@ -150,7 +150,7 @@ function ACE_EngineGUI_Update( Table )
 		acfmenupanel.CData.DisplayModel:SetLookAt( Vector( 0, 0, 0 ) )
 		acfmenupanel.CData.DisplayModel:SetFOV( 20 )
 		acfmenupanel.CData.DisplayModel:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-		acfmenupanel.CData.DisplayModel.LayoutEntity = function( panel, entity ) end
+		acfmenupanel.CData.DisplayModel.LayoutEntity = function() end
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.DisplayModel )
 
 	end
@@ -170,14 +170,14 @@ function ACE_EngineGUI_Update( Table )
 		acfmenupanel:CPanelText("Torque", "Peak Torque : " .. math.Round(Table.torque * ACF.TorqueBoost) .. " n/m  / " .. math.Round(Table.torque * ACF.TorqueBoost * 0.73) .. " ft-lb @ " .. math.Round(peaktqrpm) .. " RPM")
 	else
 		acfmenupanel:CPanelText("Power", "\nPeak Power : " .. math.floor(peakkw) .. " kW / " .. math.Round(peakkw * 1.34) .. " HP @ " .. math.Round(peakkwrpm) .. " RPM")
-		acfmenupanel:CPanelText("Torque", "Peak Torque : " .. (Table.torque) .. " n/m  / " .. math.Round(Table.torque * 0.73) .. " ft-lb @ " .. math.Round(peaktqrpm) .. " RPM")
+		acfmenupanel:CPanelText("Torque", "Peak Torque : " .. Table.torque .. " n/m  / " .. math.Round(Table.torque * 0.73) .. " ft-lb @ " .. math.Round(peaktqrpm) .. " RPM")
 	end
 
-	acfmenupanel:CPanelText("RPM", "Idle : " .. (Table.idlerpm) .. " RPM\nPowerband : " .. (math.Round(pbmin / 10) * 10) .. "-" .. (math.Round(pbmax / 10) * 10) .. " RPM\nRedline : " .. (Table.limitrpm) .. " RPM")
-	acfmenupanel:CPanelText("Weight", "Weight : " .. (Table.weight) .. " kg")
+	acfmenupanel:CPanelText("RPM", "Idle : " .. Table.idlerpm .. " RPM\nPowerband : " .. (math.Round(pbmin / 10) * 10) .. "-" .. (math.Round(pbmax / 10) * 10) .. " RPM\nRedline : " .. Table.limitrpm .. " RPM")
+	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. " kg")
 
 
-	acfmenupanel:CPanelText("FuelType", "\nFuel Type : " .. (Table.fuel))
+	acfmenupanel:CPanelText("FuelType", "\nFuel Type : " .. Table.fuel)
 
 	if Table.fuel == "Electric" then
 		local cons = ACF.ElecRate * peakkw / ACF.Efficiency[Table.enginetype]
@@ -189,7 +189,7 @@ function ACE_EngineGUI_Update( Table )
 		acfmenupanel:CPanelText("FuelConsD", "Diesel Use at " .. math.Round(peakkwrpm) .. " rpm : " .. math.Round(dieselcons,2) .. " liters/min / " .. math.Round(0.264 * dieselcons,2) .. " gallons/min")
 	else
 		local fuelcons = ACF.FuelRate * ACF.Efficiency[Table.enginetype] * ACF.TorqueBoost * peakkw / (60 * ACF.FuelDensity[Table.fuel])
-		acfmenupanel:CPanelText("FuelCons", (Table.fuel) .. " Use at " .. math.Round(peakkwrpm) .. " rpm : " .. math.Round(fuelcons,2) .. " liters/min / " .. math.Round(0.264 * fuelcons,2) .. " gallons/min")
+		acfmenupanel:CPanelText("FuelCons", Table.fuel .. " Use at " .. math.Round(peakkwrpm) .. " rpm : " .. math.Round(fuelcons,2) .. " liters/min / " .. math.Round(0.264 * fuelcons,2) .. " gallons/min")
 	end
 
 	if Table.requiresfuel then

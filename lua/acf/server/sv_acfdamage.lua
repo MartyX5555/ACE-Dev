@@ -37,7 +37,7 @@ ACE.CritEnts = {
 function ACF_HEFind( Hitpos, Radius )
 
 	local Table = {}
-	for i, ent in pairs( ents.FindInSphere( Hitpos, Radius ) ) do
+	for _, ent in pairs( ents.FindInSphere( Hitpos, Radius ) ) do
 		--skip any undesired ent
 		if ACF.HEFilter[ent:GetClass()] then continue end
 		if not ent:IsSolid() then continue end
@@ -63,532 +63,503 @@ end
 		Handles ACF explosions
 ------------------------------------------------------------------------------]]
 
-do
+local PI = math.pi
 
-	local PI = 3.1415
+function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
-	function ACF_HE( Hitpos , HitNormal , FillerMass, FragMass, Inflictor, NoOcc, Gun )
+	local Power = FillerMass * ACF.HEPower -- Power in KiloJoules of the filler mass of  TNT
+	local Radius = ACE_CalculateHERadius(FillerMass) -- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
+	local MaxSphere = 4 * PI * (Radius * 2.54) ^ 2 -- Surface Area of the sphere at maximum radius
+	local Amp = math.min(Power / 2000, 50)
 
-		local Power		= FillerMass * ACF.HEPower			-- Power in KiloJoules of the filler mass of  TNT
-		local Radius		= ACE_CalculateHERadius( FillerMass )	-- Scalling law found on the net, based on 1PSI overpressure from 1 kg of TNT at 15m.
-		local MaxSphere	= (4 * PI * (Radius * 2.54 ) ^ 2)	-- Surface Area of the sphere at maximum radius
-		local Amp		= math.min(Power/2000,50)
+	local Fragments = math.max(math.floor((FillerMass / FragMass) * ACF.HEFrag), 2)
+	local FragWeight = FragMass / Fragments
+	local FragVel	= ( Power * 50000 / FragWeight / Fragments ) ^ 0.5
+	local FragArea = (FragWeight / 7.8) ^ 0.33
 
-		local Fragments	= math.max( math.floor( ( FillerMass / FragMass ) * ACF.HEFrag ), 2 )
-		local FragWeight	= FragMass / Fragments
-		local FragVel	= ( Power * 50000 / FragWeight / Fragments ) ^ 0.5
-		local FragArea	= ( FragWeight / 7.8 ) ^ 0.33
+	local OccFilter	= istable(NoOcc) and NoOcc or { NoOcc }
+	local LoopKill	= true
 
-		local OccFilter	= istable(NoOcc) and NoOcc or { NoOcc }
-		local LoopKill	= true
+	local Targets	= ACF_HEFind( Hitpos, Radius )		-- Will give tiny HE just a pinch of radius to help it hit the player
 
-		local Targets	= ACF_HEFind( Hitpos, Radius )		-- Will give tiny HE just a pinch of radius to help it hit the player
+	while LoopKill and Power > 0 do
 
-		while LoopKill and Power > 0 do
+		LoopKill			= false
 
-			LoopKill			= false
+		local PowerSpent	= 0
+		local Damage		= {}
+		local TotalArea	= 0
 
-			local PowerSpent	= 0
-			local Damage		= {}
-			local TotalArea	= 0
+		for i,Tar in ipairs(Targets) do
 
-			for i,Tar in ipairs(Targets) do
+			if not Tar:IsValid() then continue end
+			if Power <= 0 or Tar.Exploding then continue end
 
-				if not Tar:IsValid() then continue end
+			local Type = ACF_Check(Tar)
 
-				if Power > 0 and not Tar.Exploding then
+			if Type then
 
-					local Type = ACF_Check(Tar)
+				--Check if we have direct LOS with the victim prop. Laggiest part of HE
+				TraceInit.start	= Hitpos
+				TraceInit.endpos	= Tar:WorldSpaceCenter()
+				TraceInit.filter	= OccFilter
+				util.TraceLine( TraceInit )
 
-					if Type then
+				--if above failed getting the target. Try again by nearest point instead.
+				if not TraceRes.Hit then
 
-						--Check if we have direct LOS with the victim prop. Laggiest part of HE
-						TraceInit.start	= Hitpos
-						TraceInit.endpos	= Tar:WorldSpaceCenter()
-						TraceInit.filter	= OccFilter
-						util.TraceLine( TraceInit )
+					local Hitat = Tar:NearestPoint( Hitpos )
 
-						--if above failed getting the target. Try again by nearest point instead.
-						if not TraceRes.Hit then
+					--Done for dealing damage vs players and npcs
+					if Type == "Squishy" then
 
-							local Hitat = Tar:NearestPoint( Hitpos )
+						local hugenumber = 99999999999
 
-							--Done for dealing damage vs players and npcs
-							if Type == "Squishy" then
+						--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
+						--This is for scanning potential victims, damage goes later.
+						local cldist = Hitpos:Distance( Hitat ) or hugenumber
+						local Tpos
+						local Tdis = hugenumber
 
-								local hugenumber = 99999999999
+						local Eyes = Tar:LookupAttachment("eyes")
+						if Eyes then
 
-								--Modified to attack the feet, center, or eyes, whichever is closest to the explosion
-								--This is for scanning potential victims, damage goes later.
-								local cldist = Hitpos:Distance( Hitat ) or hugenumber
-								local Tpos
-								local Tdis = hugenumber
-
-								local Eyes = Tar:LookupAttachment("eyes")
-								if Eyes then
-
-									local Eyeat = Tar:GetAttachment( Eyes )
-									if Eyeat then
-										--Msg("Hitting Eyes\n")
-										Tpos = Eyeat.Pos
-										Tdis = Hitpos:Distance( Tpos ) or hugenumber
-										if Tdis < cldist then
-											Hitat = Tpos
-											cldist = cldist
-										end
-									end
-								end
-
-								Tpos = Tar:WorldSpaceCenter()
+							local Eyeat = Tar:GetAttachment( Eyes )
+							if Eyeat then
+								--Msg("Hitting Eyes\n")
+								Tpos = Eyeat.Pos
 								Tdis = Hitpos:Distance( Tpos ) or hugenumber
 								if Tdis < cldist then
 									Hitat = Tpos
 									cldist = cldist
 								end
 							end
-
-							--if hitpos is inside of hitbox of the victim prop, nearest point will not work as intended
-							if Hitat == Hitpos then Hitat = Tar:GetPos() end
-
-							TraceInit.endpos	= Hitat + (Hitat-Hitpos):GetNormalized() * 100
-							util.TraceHull( TraceInit )
 						end
 
-						--HE has direct view with the prop, so lets damage it
-						if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
-
-							Targets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
-							local Table		= {}
-
-							Table.Ent		= Tar
-
-							if ACE.CritEnts[Tar:GetClass()] then
-								Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), Tar:GetPos(), Tar:GetAngles())
-							end
-
-							Table.Dist		= Hitpos:Distance(Tar:GetPos())
-							Table.Vec		= (Tar:GetPos() - Hitpos):GetNormalized()
-
-							local Sphere		= math.max(4 * PI * (Table.Dist * 2.54 ) ^ 2,1) --Surface Area of the sphere at the range of that prop
-							local AreaAdjusted  = Tar.ACF.Area
-
-							--Project the Area of the prop to the Area of the shadow it projects at the explosion max radius
-							Table.Area = math.min(AreaAdjusted/Sphere,0.5) * MaxSphere
-							table.insert(Damage, Table) --Add it to the Damage table so we know to damage it once we tallied everything
-
-							-- is it adding it too late?
-							TotalArea = TotalArea + Table.Area
-
+						Tpos = Tar:WorldSpaceCenter()
+						Tdis = Hitpos:Distance( Tpos ) or hugenumber
+						if Tdis < cldist then
+							Hitat = Tpos
+							cldist = cldist
 						end
-
-					else
-						Targets[i] = NULL	--Target was invalid, so let's ignore it
-						table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 					end
+
+					--if hitpos is inside of hitbox of the victim prop, nearest point will not work as intended
+					if Hitat == Hitpos then Hitat = Tar:GetPos() end
+
+					TraceInit.endpos	= Hitat + (Hitat-Hitpos):GetNormalized() * 100
+					util.TraceHull( TraceInit )
 				end
 
+				--HE has direct view with the prop, so lets damage it
+				if TraceRes.Hit and TraceRes.Entity:EntIndex() == Tar:EntIndex() then
 
+					Targets[i]		= NULL  --Remove the thing we just hit from the table so we don't hit it again in the next round
+					local Table		= {}
+
+					Table.Ent		= Tar
+
+					if ACE.CritEnts[Tar:GetClass()] then
+						Table.LocalHitpos = WorldToLocal(Hitpos, Angle(0,0,0), Tar:GetPos(), Tar:GetAngles())
+					end
+
+					Table.Dist		= Hitpos:Distance(Tar:GetPos())
+					Table.Vec		= (Tar:GetPos() - Hitpos):GetNormalized()
+
+					local Sphere		= math.max(4 * PI * (Table.Dist * 2.54 ) ^ 2,1) --Surface Area of the sphere at the range of that prop
+					local AreaAdjusted  = Tar.ACF.Area
+
+					--Project the Area of the prop to the Area of the shadow it projects at the explosion max radius
+					Table.Area = math.min(AreaAdjusted / Sphere,0.5) * MaxSphere
+					table.insert(Damage, Table) --Add it to the Damage table so we know to damage it once we tallied everything
+
+					-- is it adding it too late?
+					TotalArea = TotalArea + Table.Area
+
+				end
+
+			else
+				Targets[i] = NULL	--Target was invalid, so let's ignore it
+				table.insert( OccFilter , Tar ) -- updates the filter in TraceInit too
 			end
 
-			--Now that we have the props to damage, apply it here
-			for i,Table in ipairs(Damage) do
+		end
 
-				local Tar		= Table.Ent
-				local Feathering	= (1-math.min(1,Table.Dist/Radius)) ^ ACF.HEFeatherExp
-				local AreaFraction  = Table.Area/TotalArea
-				local PowerFraction = Power * AreaFraction  --How much of the total power goes to that prop
-				local AreaAdjusted  = (Tar.ACF.Area / ACF.Threshold) * Feathering
+		--Now that we have the props to damage, apply it here
+		for _, Table in ipairs(Damage) do
 
-				--HE tends to pick some props where simply will not apply damage. So lets ignore it.
-				if AreaAdjusted <= 0 then continue end
+			local Tar		= Table.Ent
+			local Feathering	= (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
+			local AreaFraction  = Table.Area / TotalArea
+			local PowerFraction = Power * AreaFraction  --How much of the total power goes to that prop
+			local AreaAdjusted  = (Tar.ACF.Area / ACF.Threshold) * Feathering
 
-				local BlastRes
-				local Blast = {
-					Penetration = PowerFraction ^ ACF.HEBlastPen * AreaAdjusted
-				}
+			--HE tends to pick some props where simply will not apply damage. So lets ignore it.
+			if AreaAdjusted <= 0 then continue end
 
-				local FragRes
-				local FragHit	= Fragments * AreaFraction
-				local FragVel	= math.max(FragVel - ( (Table.Dist/FragVel) * FragVel ^ 2 * FragWeight ^ 0.33/10000 )/ACF.DragDiv,0)
-				local FragKE	= ACF_Kinetic( FragVel , FragWeight * FragHit, 1500 )
-				if FragHit < 0 then
-					if math.Rand(0,1) > FragHit then FragHit = 1 else FragHit = 0 end
-				end
+			local BlastRes
+			local Blast = {
+				Penetration = PowerFraction ^ ACF.HEBlastPen * AreaAdjusted
+			}
 
-				-- erroneous HE penetration bug workaround; retries trace on crit ents after a short delay to ensure a hit.
-				-- we only care about hits on critical ents, saves on processing power
-				-- not going to re-use tables in the timer, shouldn't make too much difference
+			local FragRes
+			local FragHit	= Fragments * AreaFraction
+			FragVel	= math.max(FragVel - ( (Table.Dist / FragVel) * FragVel ^ 2 * FragWeight ^ 0.33 / 10000 ) / ACF.DragDiv,0)
+			local FragKE	= ACF_Kinetic( FragVel , FragWeight * FragHit, 1500 )
+			if FragHit < 0 then
+				if math.Rand(0,1) > FragHit then FragHit = 1 else FragHit = 0 end
+			end
 
-				-- Really required?
+			-- erroneous HE penetration bug workaround; retries trace on crit ents after a short delay to ensure a hit.
+			-- we only care about hits on critical ents, saves on processing power
+			-- not going to re-use tables in the timer, shouldn't make too much difference
 
-				if ACE.CritEnts[Tar:GetClass()] then
-					timer.Simple(0.03, function()
-						if not IsValid(Tar) then return end
+			-- Really required?
 
-						--recreate the hitpos and hitat, add slight jitter to hitpos and move it away some
-						local NewHitpos = LocalToWorld(Table.LocalHitpos + Table.LocalHitpos:GetNormalized() * 3, Angle(math.random(),math.random(),math.random()), Tar:GetPos(), Tar:GetAngles())
-						local NewHitat  = Tar:NearestPoint( NewHitpos )
+			if ACE.CritEnts[Tar:GetClass()] then
+				timer.Simple(0.03, function()
+					if not IsValid(Tar) then return end
 
-						local Occlusion	= {}
+					--recreate the hitpos and hitat, add slight jitter to hitpos and move it away some
+					local NewHitpos = LocalToWorld(Table.LocalHitpos + Table.LocalHitpos:GetNormalized() * 3, Angle(math.random(),math.random(),math.random()), Tar:GetPos(), Tar:GetAngles())
+					local NewHitat  = Tar:NearestPoint( NewHitpos )
+
+					local Occlusion	= {}
+					Occlusion.start	= NewHitpos
+					Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100
+					Occlusion.filter	= NoOcc
+
+					local Occ	= util.TraceLine( Occlusion )
+
+					if not Occ.Hit and NewHitpos ~= NewHitat then
+						local NewHitat  = Tar:GetPos()
+
 						Occlusion.start	= NewHitpos
 						Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100
 						Occlusion.filter	= NoOcc
 
-						local Occ	= util.TraceLine( Occlusion )
+						Occ = util.TraceLine( Occlusion )
+					end
 
-						if not Occ.Hit and NewHitpos ~= NewHitat then
-							local NewHitat  = Tar:GetPos()
+					if not (Occ.Hit and Occ.Entity:EntIndex() ~= Tar:EntIndex()) and not (not Occ.Hit and NewHitpos ~= NewHitat) then
+						BlastRes = ACF_Damage ( Tar	, Blast  , AreaAdjusted , 0	, Inflictor , 0	, Gun , "HE" )
+						FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 
-							Occlusion.start	= NewHitpos
-							Occlusion.endpos	= NewHitat + (NewHitat-NewHitpos):GetNormalized() * 100
-							Occlusion.filter	= NoOcc
-
-							Occ = util.TraceLine( Occlusion )
-						end
-
-						if Occ.Hit and Occ.Entity:EntIndex() ~= Tar:EntIndex() then
-							--occluded, confirmed HE bug
-							--print("HE bug on " .. Tar:GetClass() .. ", occluded by " .. (Occ.Entity:GetModel()))
-							--debugoverlay.Sphere(Hitpos, 4, 20, Color(16,16,16,32), 1)
-							--debugoverlay.Sphere(NewHitpos,3,20,Color(0,255,0,32), true)
-							--debugoverlay.Sphere(NewHitat,3,20,Color(0,0,255,32), true)
-						elseif not Occ.Hit and NewHitpos ~= NewHitat then
-							--no hit, confirmed HE bug
-							--print("HE bug on " .. Tar:GetClass())
+						if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
+							ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
 						else
-							--confirmed proper hit, apply damage
-							--print("No HE bug on " .. Tar:GetClass())
-
-							BlastRes = ACF_Damage ( Tar	, Blast  , AreaAdjusted , 0	, Inflictor , 0	, Gun , "HE" )
-							FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
-
-							if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
-								local Debris = ACF_HEKill( Tar, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction , Hitpos)
-							else
-								ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVarNumber("acf_hepush") or 1) ) --0.333
-							end
+							ACF_KEShove(Tar, NewHitpos, (Tar:GetPos() - NewHitpos):GetNormalized(), PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) ) --0.333
 						end
-					end)
+					end
+				end)
 
-					--calculate damage that would be applied (without applying it), so HE deals correct damage to other props
-					BlastRes = ACF_CalcDamage( Tar, Blast, AreaAdjusted, 0 )
+				--calculate damage that would be applied (without applying it), so HE deals correct damage to other props
+				BlastRes = ACF_CalcDamage( Tar, Blast, AreaAdjusted, 0 )
+
+			else
+
+				BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
+				FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
+
+				if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
+
+					--Add the debris created to the ignore so we don't hit it in other rounds
+					local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
+					table.insert( OccFilter , Debris )
+
+					LoopKill = true --look for fresh targets since we blew a hole somewhere
 
 				else
 
-					BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
-					FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
+					--Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
+					ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 20 * (GetConVar("acf_hepush"):GetFloat() or 1) )
 
-					if (BlastRes and BlastRes.Kill) or (FragRes and FragRes.Kill) then
-
-						--Add the debris created to the ignore so we don't hit it in other rounds
-						local Debris = ACF_HEKill( Tar , Table.Vec , PowerFraction , Hitpos )
-						table.insert( OccFilter , Debris )
-
-						LoopKill = true --look for fresh targets since we blew a hole somewhere
-
-					else
-
-						--Assuming about 1/30th of the explosive energy goes to propelling the target prop (Power in KJ * 1000 to get J then divided by 33)
-						ACF_KEShove(Tar, Hitpos, Table.Vec, PowerFraction * 20 * (GetConVarNumber("acf_hepush") or 1) )
-
-					end
 				end
-
-				PowerSpent = PowerSpent + PowerFraction * BlastRes.Loss/2--Removing the energy spent killing props
-
-
 			end
 
-			Power = math.max(Power - PowerSpent,0)
+			PowerSpent = PowerSpent + PowerFraction * BlastRes.Loss / 2--Removing the energy spent killing props
+
+
 		end
 
-		util.ScreenShake( Hitpos, Amp, Amp, Amp/15, Radius * 10 )
-		--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see
-
+		Power = math.max(Power - PowerSpent,0)
 	end
-end
 
-do
-
-	local PI = 3.1415
-
-	--Handles normal spalling
-	function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor , Material)
-
-		--Don't use it if it's not allowed to
-		if not ACF.Spalling then return end
-
-		local Mat		= Material or "RHA"
-		local MatData	= ACE_GetMaterialData( Mat )
-
-		-- Spall damage
-		local SpallMul	= MatData.spallmult or 1
-
-		-- Spall armor factor bias
-		local ArmorMul	= MatData.ArmorMul or 1
-		local UsedArmor	= Armour * ArmorMul
-
-		if SpallMul > 0 and Caliber * 10 > UsedArmor and Caliber > 3 then
-
-			-- Normal spalling core
-			local TotalWeight	= PI * (Caliber/2) ^ 2 * math.max(UsedArmor,30) * 150
-			local Spall		= math.min(math.floor((Caliber-3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult,24)
-			local SpallWeight	= TotalWeight/Spall * SpallMul
-			local SpallVel	= (KE * 16/SpallWeight) ^ 0.5/Spall * SpallMul
-			local SpallArea	= (SpallWeight/7.8) ^ 0.33
-			local SpallEnergy	= ACF_Kinetic( SpallVel , SpallWeight, 800 )
-
-			for i = 1,Spall do
-
-				ACE.CurSpallIndex = ACE.CurSpallIndex + 1
-				if ACE.CurSpallIndex > ACE.SpallMax then
-					ACE.CurSpallIndex = 1
-				end
-
-				-- Normal Trace creation
-				local Index = ACE.CurSpallIndex
-
-				ACE.Spall[Index] = {}
-				ACE.Spall[Index].start  = HitPos
-				ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized() + VectorRand()/3):GetNormalized() * math.max( SpallVel * 10, math.random(450,600) ) --I got bored of spall not going across the tank
-				ACE.Spall[Index].filter = table.Copy(Filter)
-				ACE.Spall[Index].mins	= Vector(0,0,0)
-				ACE.Spall[Index].maxs	= Vector(0,0,0)
-
-				ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor)
-
-				--little sound optimization
-				if i < math.max(math.Round(Spall/2), 1) then
-					sound.Play(ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])], HitPos, 75, 100, 0.5)
-				end
-
-			end
-		end
-	end
+	util.ScreenShake( Hitpos, Amp, Amp, Amp / 15, Radius * 10 )
+	--debugoverlay.Sphere(Hitpos, Radius, 10, Color(255,0,0,32), 1) --developer 1	in console to see
 
 end
 
-do
 
-	--Dedicated function for HESH spalling
-	function ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
+--Handles normal spalling
+function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor , Material)
 
-		--Don't even bother at calculating something that doesn't exist
-		if table.IsEmpty(Filter) then return end
+	--Don't use it if it's not allowed to
+	if not ACF.Spalling then return end
 
-		--General
-		local FindEnd	= true			--marked for initial loop
-		local TraceBugged	= false			--Sometimes trace tends to bug itself and renders the loop useless, so we need to tag it
-		local iteration	= 0				--since while has not index
+	local Mat		= Material or "RHA"
+	local MatData	= ACE_GetMaterialData( Mat )
 
-		local EntsToHit	= Filter	--Used for the second tracer, where it tells what ents must hit
+	-- Spall damage
+	local SpallMul	= MatData.spallmult or 1
 
-		--HitPos
-		local HitFronts	= {}				--Any tracefronts hitpos will be stored here
-		local HitBacks	= {}				--Any traceback hitpos will be stored here
+	-- Spall armor factor bias
+	local ArmorMul	= MatData.ArmorMul or 1
+	local UsedArmor	= Armour * ArmorMul
 
-		--Distances. Store any distance
-		local FrontDists	= {}
-		local BackDists	= {}
+	if SpallMul > 0 and Caliber * 10 > UsedArmor and Caliber > 3 then
 
-		local Normals	= {}
+		-- Normal spalling core
+		local TotalWeight = PI * (Caliber / 2) ^ 2 * math.max(UsedArmor, 30) * 150
+		local Spall = math.min(math.floor((Caliber - 3) * ACF.KEtoSpall * SpallMul * 1.33) * ACF.SpallMult, 24)
+		local SpallWeight = TotalWeight / Spall * SpallMul
+		local SpallVel = (KE * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul
+		local SpallArea = (SpallWeight / 7.8) ^ 0.33
+		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
 
-		--Results
-		local fNormal	= Vector(0,0,0)
-		local finalpos
-		local TotalArmor	= {}
+		for i = 1,Spall do
 
-		--Tracefront general data--
-		local TrFront	= {}
-		TrFront.start	= HitPos
-		TrFront.endpos	= HitPos + HitVec:GetNormalized() * Caliber * 1.5
-		TrFront.ignoreworld = true
-		TrFront.filter	= {}
-
-		--Traceback general data--
-		local TrBack		= {}
-		TrBack.start		= HitPos + HitVec:GetNormalized() * Caliber * 1.5
-		TrBack.endpos	= HitPos
-		TrBack.ignoreworld  = true
-		TrBack.filter	= function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
-
-		while FindEnd do
-
-			iteration = iteration + 1
-			--print('iteration #' .. iteration)
-
-			--In case of total failure, this loop is limited to 1000 iterations, don't make me increase it even more.
-			if iteration >= 1000 then FindEnd = false end
-
-			--================-TRACEFRONT-==================-
-			local tracefront = util.TraceHull( TrFront )
-
-			--insert the hitpos here
-			local HitFront = tracefront.HitPos
-			table.insert( HitFronts, HitFront )
-
-			--distance between the initial hit and hitpos of front plate
-			local distToFront = math.abs( (HitPos - HitFront):Length() )
-			table.insert( FrontDists, distToFront)
-
-			--TraceFront's armor entity
-			local Armour = tracefront.Entity.ACF and tracefront.Entity.ACF.Armour or 0
-
-			--Code executed once its scanning the 2nd prop
-			if iteration > 1 then
-
-				--check if they are totally overlapped
-				if math.Round(FrontDists[iteration-1]) ~= math.Round(FrontDists[iteration] ) then
-
-					--distance between the start of ent1 and end of ent2
-					local space = math.abs( (HitFronts[iteration] - HitBacks[iteration - 1]):Length() )
-
-					--prop's material
-					local mat = tracefront.Entity.ACF and tracefront.Entity.ACF.Material or "RHA"
-					local MatData = ACE_GetMaterialData( mat )
-
-
-					local Hasvoid = false
-					local NotOverlap = false
-
-					--print("DATA TABLE - DONT FUCKING DELETE")
-					--print('distToFront: ' .. distToFront)
-					--print('BackDists[iteration - 1]: ' .. BackDists[iteration - 1])
-					--print('DISTS DIFF: ' .. distToFront - BackDists[iteration - 1])
-
-					--check if we have void
-					if space > 1 then
-						Hasvoid = true
-					end
-
-					--check if we dont have props semi-overlapped
-					if distToFront > BackDists[iteration - 1] then
-						NotOverlap = true
-					end
-
-					--check if we have spaced armor, spall liners ahead, if so, end here
-					if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACE.CritEnts[ tracefront.Entity:GetClass() ]) or MatData.Stopshock then
-						--print("stopping")
-						FindEnd	= false
-						finalpos	= HitBacks[iteration - 1] + HitVec:GetNormalized() * 0.1
-						fNormal	= Normals[iteration - 1]
-						--print("iteration #' .. iteration .. ' / FINISHED!")
-
-						break
-					end
-				end
-
-				--start inserting new ents to the table when iteration pass 1, so we don't insert the already inserted prop (first one)
-				table.insert( EntsToHit, tracefront.Entity)
-
+			ACE.CurSpallIndex = ACE.CurSpallIndex + 1
+			if ACE.CurSpallIndex > ACE.SpallMax then
+				ACE.CurSpallIndex = 1
 			end
 
-			--Filter this ent from being processed again in the next checks
-			table.insert( TrFront.filter, tracefront.Entity )
+			-- Normal Trace creation
+			local Index = ACE.CurSpallIndex
 
-			--Add the armor value to table
-			table.insert( TotalArmor, Armour )
+			ACE.Spall[Index] = {}
+			ACE.Spall[Index].start  = HitPos
+			ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized() + VectorRand() / 3):GetNormalized() * math.max( SpallVel * 10, math.random(450,600) ) --I got bored of spall not going across the tank
+			ACE.Spall[Index].filter = table.Copy(Filter)
+			ACE.Spall[Index].mins	= Vector(0,0,0)
+			ACE.Spall[Index].maxs	= Vector(0,0,0)
 
-			--================-TRACEBACK-==================
-			local traceback = util.TraceHull( TrBack )
+			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor)
 
-			--insert the hitpos here
-			local HitBack = traceback.HitPos
-			table.insert( HitBacks, HitBack )
-
-			--store the dist between the backhit and the hitvec
-			local distToBack = math.abs( (HitPos - HitBack):Length() )
-			table.insert( BackDists, distToBack)
-
-			table.insert( Normals, traceback.HitNormal )
-
-			--flag this iteration as lost
-			if not tracefront.Hit then
-
-				--print("[ACE|WARN]- TRACE HAS BROKEN!")
-
-				FindEnd	= false
-				finalpos	= HitBack + HitVec:GetNormalized() * 0.1
-				fNormal	= Normals[iteration]
-				--print("iteration #' .. iteration .. ' / FINISHED")
-
-				break
+			--little sound optimization
+			if i < math.max(math.Round(Spall / 2), 1) then
+				sound.Play(ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])], HitPos, 75, 100, 0.5)
 			end
 
-			--for red traceback
-			--debugoverlay.Line( traceback.StartPos + Vector(0,0,#EntsToHit * 0.1), traceback.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(math.random(100,255),0,0) )
-			--for green tracefront
-			--debugoverlay.Line( tracefront.StartPos + Vector(0,0,#EntsToHit * 0.1), tracefront.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(0,math.random(100,255),0) )
 		end
-
-		local ArmorSum = 0
-		for i=1, #TotalArmor do
-			--print("Armor prop count: ' .. i..", Armor value: ' .. TotalArmor[i])
-			ArmorSum = ArmorSum + TotalArmor[i]
-		end
-
-		--print(ArmorSum)
-		return finalpos, ArmorSum, TrFront.filter, fNormal
 	end
 end
 
-do
 
-	local PI = 3.1415
+--Dedicated function for HESH spalling
+function ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
 
-	--Handles HESH spalling
-	function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
+	--Don't even bother at calculating something that doesn't exist
+	if table.IsEmpty(Filter) then return end
 
-		local spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
+	--General
+	local FindEnd	= true			--marked for initial loop
+	local iteration	= 0				--since while has not index
 
-		local Mat		= Material or "RHA"
-		local MatData	= ACE_GetMaterialData( Mat )
+	local EntsToHit	= Filter	--Used for the second tracer, where it tells what ents must hit
 
-		-- Spall damage
-		local SpallMul	= MatData.spallmult or 1
+	--HitPos
+	local HitFronts	= {}				--Any tracefronts hitpos will be stored here
+	local HitBacks	= {}				--Any traceback hitpos will be stored here
 
-		-- Spall armor factor bias
-		local ArmorMul	= MatData.ArmorMul or 1
-		local UsedArmor	= Armour * ArmorMul
+	--Distances. Store any distance
+	local FrontDists	= {}
+	local BackDists	= {}
 
-		if SpallMul > 0 and HEFiller/1501 * 4 > UsedArmor then
+	local Normals	= {}
 
-			--era stops the spalling at the cost of being detonated
-			if MatData.IsExplosive then Filter[1].ACF.ERAexploding = true return end
+	--Results
+	local fNormal	= Vector(0,0,0)
+	local finalpos
+	local TotalArmor	= {}
 
-			-- HESH spalling core
-			local TotalWeight	= PI * (Caliber/2) ^ 2 * math.max(UsedArmor,30) * 2500
-			local Spall		= math.min(math.floor((Caliber-3)/3 * ACF.KEtoSpall * SpallMul),24) --24
-			local SpallWeight	= TotalWeight/Spall * SpallMul
-			local SpallVel	= (HEFiller * 16/SpallWeight) ^ 0.5/Spall * SpallMul
-			local SpallArea	= (SpallWeight/7.8) ^ 0.33
-			local SpallEnergy	= ACF_Kinetic( SpallVel , SpallWeight, 800 )
+	--Tracefront general data--
+	local TrFront	= {}
+	TrFront.start	= HitPos
+	TrFront.endpos	= HitPos + HitVec:GetNormalized() * Caliber * 1.5
+	TrFront.ignoreworld = true
+	TrFront.filter	= {}
 
-			for i = 1,Spall do
+	--Traceback general data--
+	local TrBack		= {}
+	TrBack.start		= HitPos + HitVec:GetNormalized() * Caliber * 1.5
+	TrBack.endpos	= HitPos
+	TrBack.ignoreworld  = true
+	TrBack.filter	= function( ent ) if ( ent:EntIndex() == EntsToHit[#EntsToHit]:EntIndex()) then return true end end
 
-				ACE.CurSpallIndex = ACE.CurSpallIndex + 1
-				if ACE.CurSpallIndex > ACE.SpallMax then
-					ACE.CurSpallIndex = 1
+	while FindEnd do
+
+		iteration = iteration + 1
+		--print('iteration #' .. iteration)
+
+		--In case of total failure, this loop is limited to 1000 iterations, don't make me increase it even more.
+		if iteration >= 1000 then FindEnd = false end
+
+		--================-TRACEFRONT-==================-
+		local tracefront = util.TraceHull( TrFront )
+
+		--insert the hitpos here
+		local HitFront = tracefront.HitPos
+		table.insert( HitFronts, HitFront )
+
+		--distance between the initial hit and hitpos of front plate
+		local distToFront = math.abs( (HitPos - HitFront):Length() )
+		table.insert( FrontDists, distToFront)
+
+		--TraceFront's armor entity
+		local Armour = tracefront.Entity.ACF and tracefront.Entity.ACF.Armour or 0
+
+		--Code executed once its scanning the 2nd prop
+		if iteration > 1 then
+
+			--check if they are totally overlapped
+			if math.Round(FrontDists[iteration-1]) ~= math.Round(FrontDists[iteration] ) then
+
+				--distance between the start of ent1 and end of ent2
+				local space = math.abs( (HitFronts[iteration] - HitBacks[iteration - 1]):Length() )
+
+				--prop's material
+				local mat = tracefront.Entity.ACF and tracefront.Entity.ACF.Material or "RHA"
+				local MatData = ACE_GetMaterialData( mat )
+
+
+				local Hasvoid = false
+				local NotOverlap = false
+
+				--print("DATA TABLE - DONT FUCKING DELETE")
+				--print('distToFront: ' .. distToFront)
+				--print('BackDists[iteration - 1]: ' .. BackDists[iteration - 1])
+				--print('DISTS DIFF: ' .. distToFront - BackDists[iteration - 1])
+
+				--check if we have void
+				if space > 1 then
+					Hasvoid = true
 				end
 
-				-- HESH trace creation
-				local Index = ACE.CurSpallIndex
-
-				ACE.Spall[Index]			= {}
-				ACE.Spall[Index].start	= spallPos
-				ACE.Spall[Index].endpos	= spallPos + ((fNormal * 2500 + HitVec):GetNormalized() + VectorRand()/3):GetNormalized() * math.max(SpallVel * 10,math.random(450,600)) --I got bored of spall not going across the tank
-				ACE.Spall[Index].filter	= table.Copy(PEnts)
-
-				ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor )
-
-				--little sound optimization
-				if i < math.max(math.Round(Spall/4), 1) then
-					sound.Play(ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])], spallPos, 75, 100, 0.5)
+				--check if we dont have props semi-overlapped
+				if distToFront > BackDists[iteration - 1] then
+					NotOverlap = true
 				end
+
+				--check if we have spaced armor, spall liners ahead, if so, end here
+				if (Hasvoid and NotOverlap) or (tracefront.Entity:IsValid() and ACE.CritEnts[ tracefront.Entity:GetClass() ]) or MatData.Stopshock then
+					--print("stopping")
+					FindEnd	= false
+					finalpos	= HitBacks[iteration - 1] + HitVec:GetNormalized() * 0.1
+					fNormal	= Normals[iteration - 1]
+					--print("iteration #' .. iteration .. ' / FINISHED!")
+
+					break
+				end
+			end
+
+			--start inserting new ents to the table when iteration pass 1, so we don't insert the already inserted prop (first one)
+			table.insert( EntsToHit, tracefront.Entity)
+
+		end
+
+		--Filter this ent from being processed again in the next checks
+		table.insert( TrFront.filter, tracefront.Entity )
+
+		--Add the armor value to table
+		table.insert( TotalArmor, Armour )
+
+		--================-TRACEBACK-==================
+		local traceback = util.TraceHull( TrBack )
+
+		--insert the hitpos here
+		local HitBack = traceback.HitPos
+		table.insert( HitBacks, HitBack )
+
+		--store the dist between the backhit and the hitvec
+		local distToBack = math.abs( (HitPos - HitBack):Length() )
+		table.insert( BackDists, distToBack)
+
+		table.insert( Normals, traceback.HitNormal )
+
+		--flag this iteration as lost
+		if not tracefront.Hit then
+
+			--print("[ACE|WARN]- TRACE HAS BROKEN!")
+
+			FindEnd	= false
+			finalpos	= HitBack + HitVec:GetNormalized() * 0.1
+			fNormal	= Normals[iteration]
+			--print("iteration #' .. iteration .. ' / FINISHED")
+
+			break
+		end
+
+		--for red traceback
+		--debugoverlay.Line( traceback.StartPos + Vector(0,0,#EntsToHit * 0.1), traceback.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(math.random(100,255),0,0) )
+		--for green tracefront
+		--debugoverlay.Line( tracefront.StartPos + Vector(0,0,#EntsToHit * 0.1), tracefront.HitPos + Vector(0,0,#EntsToHit * 0.1), 20 , Color(0,math.random(100,255),0) )
+	end
+
+	local ArmorSum = 0
+	for i = 1, #TotalArmor do
+		--print("Armor prop count: ' .. i..", Armor value: ' .. TotalArmor[i])
+		ArmorSum = ArmorSum + TotalArmor[i]
+	end
+
+	--print(ArmorSum)
+	return finalpos, ArmorSum, TrFront.filter, fNormal
+end
+
+
+--Handles HESH spalling
+function ACF_Spall_HESH( HitPos, HitVec, Filter, HEFiller, Caliber, Armour, Inflictor, Material )
+
+	local spallPos, Armour, PEnts, fNormal = ACF_PropShockwave( HitPos, HitVec, Filter, Caliber )
+
+	local Mat		= Material or "RHA"
+	local MatData	= ACE_GetMaterialData( Mat )
+
+	-- Spall damage
+	local SpallMul	= MatData.spallmult or 1
+
+	-- Spall armor factor bias
+	local ArmorMul	= MatData.ArmorMul or 1
+	local UsedArmor	= Armour * ArmorMul
+
+	if SpallMul > 0 and HEFiller / 1501 * 4 > UsedArmor then
+
+		--era stops the spalling at the cost of being detonated
+		if MatData.IsExplosive then Filter[1].ACF.ERAexploding = true return end
+
+		-- HESH spalling core
+		local TotalWeight = PI * (Caliber / 2) ^ 2 * math.max(UsedArmor, 30) * 2500
+		local Spall = math.min(math.floor((Caliber - 3) / 3 * ACF.KEtoSpall * SpallMul), 24) --24
+		local SpallWeight = TotalWeight / Spall * SpallMul
+		local SpallVel = (HEFiller * 16 / SpallWeight) ^ 0.5 / Spall * SpallMul
+		local SpallArea = (SpallWeight / 7.8) ^ 0.33
+		local SpallEnergy = ACF_Kinetic(SpallVel, SpallWeight, 800)
+
+		for i = 1,Spall do
+
+			ACE.CurSpallIndex = ACE.CurSpallIndex + 1
+			if ACE.CurSpallIndex > ACE.SpallMax then
+				ACE.CurSpallIndex = 1
+			end
+
+			-- HESH trace creation
+			local Index = ACE.CurSpallIndex
+
+			ACE.Spall[Index]			= {}
+			ACE.Spall[Index].start	= spallPos
+			ACE.Spall[Index].endpos	= spallPos + ((fNormal * 2500 + HitVec):GetNormalized() + VectorRand() / 3):GetNormalized() * math.max(SpallVel * 10,math.random(450,600)) --I got bored of spall not going across the tank
+			ACE.Spall[Index].filter	= table.Copy(PEnts)
+
+			ACF_SpallTrace(HitVec, Index , SpallEnergy , SpallArea , Inflictor )
+
+			--little sound optimization
+			if i < math.max(math.Round(Spall / 4), 1) then
+				sound.Play(ACE.Sounds["Penetrations"]["large"]["close"][math.random(1,#ACE.Sounds["Penetrations"]["large"]["close"])], spallPos, 75, 100, 0.5)
 			end
 		end
 	end
 end
+
 
 --Spall trace core. For HESH and normal spalling
 function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
@@ -619,7 +590,6 @@ function ACF_SpallTrace(HitVec, Index, SpallEnergy, SpallArea, Inflictor )
 		local MatData	= ACE_GetMaterialData( Mat )
 
 		local spallarmor	= MatData.spallarmor
-		local spallresist	= MatData.spallresist
 
 		SpallEnergy.Penetration = SpallEnergy.Penetration / spallarmor
 
@@ -706,11 +676,11 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 			ricoProb = 0
 
 		--Guarenteed to not richochet
-		elseif Bullet.Caliber * 3.33 > Target.ACF.Armour/math.max(math.sin(90-Angle),0.0001)  then
+		elseif Bullet.Caliber * 3.33 > Target.ACF.Armour / math.max(math.sin(90-Angle),0.0001)  then
 			ricoProb = 1
 
 		else
-			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0)/sigmoidCenter * 4),1)
+			ricoProb = math.min(1-(math.max(Angle - sigmoidCenter,0) / sigmoidCenter * 4),1)
 		end
 	end
 
@@ -741,7 +711,7 @@ function ACF_RoundImpact( Bullet, Speed, Energy, Target, HitPos, HitNormal , Bon
 
 	end
 
-	ACF_KEShove( Target, HitPos, Bullet["Flight"]:GetNormalized(), Energy.Kinetic * HitRes.Loss * 1000 * Bullet["ShovePower"] * (GetConVarNumber("acf_recoilpush") or 1))
+	ACF_KEShove( Target, HitPos, Bullet["Flight"]:GetNormalized(), Energy.Kinetic * HitRes.Loss * 1000 * Bullet["ShovePower"] * (GetConVar("acf_recoilpush"):GetFloat() or 1))
 
 	return HitRes
 end
@@ -751,12 +721,12 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 
 	Bullet.GroundRicos = Bullet.GroundRicos or 0
 
-	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA )/25.4
+	local MaxDig = (( Energy.Penetration * 1 / Bullet.PenArea ) * ACF.KEtoRHA / ACF.GroundtoRHA ) / 25.4
 
 	--print("Max Dig: ' .. MaxDig .. '\nEnergy Pen: ' .. Energy.Penetration .. '\n")
 
 	local HitRes = {Penetrated = false, Ricochet = false}
-	local TROffset = 0.235 * Bullet.Caliber/1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
+	local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 
 	local DigRes = util.TraceHull( {
 
@@ -781,10 +751,10 @@ function ACF_PenetrateGround( Bullet, Energy, HitPos, HitNormal )
 		local Ricochet  = 0
 		local Speed	= Bullet.Flight:Length() / ACF.VelScale
 		local Angle	= ACF_GetHitAngle( HitNormal, Bullet.Flight )
-		local MinAngle  = math.min(Bullet.Ricochet - Speed/39.37/30 + 20,89.9)  --Making the chance of a ricochet get higher as the speeds increase
+		local MinAngle  = math.min(Bullet.Ricochet - Speed / 39.37 / 30 + 20,89.9)  --Making the chance of a ricochet get higher as the speeds increase
 
 		if Angle > math.random(MinAngle,90) and Angle < 89.9 then	--Checking for ricochet
-			Ricochet = Angle/90 * 0.75
+			Ricochet = Angle / 90 * 0.75
 		end
 
 		if Ricochet > 0 and Bullet.GroundRicos < 2 then
@@ -806,11 +776,11 @@ end
 
 --helper function to replace ENT:ApplyForceOffset()
 --Gmod applyforce creates weird torque when moving https://github.com/Facepunch/garrysmod-issues/issues/5159
-local m_insq = 1/(39.37) ^ 2
+local m_insq = 1 / 39.37 ^ 2
 local function ACF_ApplyForceOffset(Phys, Force, Pos)
 	Phys:ApplyForceCenter(Force)
 	local off = Pos - Phys:LocalToWorld(Phys:GetMassCenter())
-	local angf = off:Cross(Force) * m_insq * 360/(2 * 3.1416)
+	local angf = off:Cross(Force) * m_insq * 360 / (2 * 3.1416)
 	Phys:ApplyTorqueCenter(angf)
 end
 
@@ -863,7 +833,7 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		local boom = {}
 
 		-- do an initial processing pass on children, separating out explodey things to handle last
-		for k, ent in pairs( children ) do --print('table children: ' .. table.Count( children ))
+		for _, ent in pairs( children ) do --print('table children: ' .. table.Count( children ))
 
 			--Removes the first impacted entity. This should avoid debris being duplicated there.
 			if Entity:EntIndex() == ent:EntIndex() then children[ent] = nil continue end
@@ -899,14 +869,14 @@ local function ACF_KillChildProps( Entity, BlastPos, Energy )
 		-- HE kill the children of this ent, instead of disappearing them by removing parent
 		if count > 0 then
 
-			local power = Energy/math.min(count,3)
+			local power = Energy / math.min(count,3)
 
-			for k, child in pairs( children ) do --print('table children#2: ' .. table.Count( children ))
+			for _, child in pairs( children ) do --print('table children#2: ' .. table.Count( children ))
 
 				--Skip any invalid entity
 				if not IsValid(child) then continue end
 
-				local rand = math.random(0,100)/100 --print(rand) print(ACF.DebrisChance)
+				local rand = math.random(0,100) / 100 --print(rand) print(ACF.DebrisChance)
 
 				-- ignore some of the debris props to save lag
 				if rand > ACF.DebrisChance then continue end
@@ -973,8 +943,6 @@ function ACF_HEKill( Entity , HitVector , Energy , BlastPos )
 	local physent = Entity:GetPhysicsObject()
 
 	if phys:IsValid() and physent:IsValid() then
-
-		local parent = ACF_GetPhysicalParent( obj )
 
 		phys:SetDragCoefficient( -50 )
 		phys:SetMass( physent:GetMass() )
@@ -1132,7 +1100,7 @@ do
 							local Propel  = Found.BulletData.PropMass	or 0
 							local Ammo	= Found.Ammo					or 0
 
-							FoundHEWeight = ( ( HE + Propel * ( ACF.PBase/ACF.HEPower)) * Ammo ) * AmmoExplosionScale
+							FoundHEWeight = ( ( HE + Propel * ( ACF.PBase / ACF.HEPower)) * Ammo ) * AmmoExplosionScale
 						end
 
 						table.insert( ExplodePos, Found:LocalToWorld(Found:OBBCenter()) )
@@ -1153,7 +1121,7 @@ do
 							if vFireInstalled then
 								Occ.Entity:Ignite( _, HEWeight )
 							else
-								Occ.Entity:Ignite( 120, HEWeight/10 )
+								Occ.Entity:Ignite( 120, HEWeight / 10 )
 							end
 
 						end
@@ -1209,6 +1177,6 @@ function ACF_GetHitAngle( HitNormal , HitVector )
 end
 
 function ACE_CalculateHERadius( HEWeight )
-	local Radius = HEWeight ^ 0.33 * 8*39.37
+	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 	return Radius
 end

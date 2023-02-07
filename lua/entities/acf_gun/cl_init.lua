@@ -48,7 +48,7 @@ function ENT:Think()
 
 end
 
-function ENT:Animate( Class, ReloadTime, LoadOnly )
+function ENT:Animate( _, ReloadTime, LoadOnly )
 
 	if self.CloseAnim and self.CloseAnim > 0 then
 		self.CloseTime = math.max(ReloadTime-0.75,ReloadTime * 0.75)
@@ -63,7 +63,7 @@ function ENT:Animate( Class, ReloadTime, LoadOnly )
 	if LoadOnly then
 		self.Rate = 1000000
 	else
-		self.Rate = 1/math.Clamp(self.CloseTime,0.1,1.5)	--Base anim time is 1s, rate is in 1/10 of a second
+		self.Rate = 1 / math.Clamp(self.CloseTime,0.1,1.5)	--Base anim time is 1s, rate is in 1/10 of a second
 	end
 	self:SetPlaybackRate( self.Rate )
 	self.LastFire = CurTime()
@@ -83,7 +83,7 @@ function ACFGunGUICreate( Table )
 	GunDisplay:SetLookAt( Vector( 0, 0, 0 ) )
 	GunDisplay:SetFOV( 20 )
 	GunDisplay:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-	GunDisplay.LayoutEntity = function( panel, entity ) end
+	GunDisplay.LayoutEntity = function() end
 	acfmenupanel.CustomDisplay:AddItem( GunDisplay )
 
 	local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
@@ -94,8 +94,8 @@ function ACFGunGUICreate( Table )
 	acfmenupanel:CPanelText("Year", "Year : " .. Table.year)
 
 	if Table.rack then
-		if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : " .. Table.seekcone .." degrees") end
-		if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : " .. Table.viewcone .." degrees") end
+		if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : " .. Table.seekcone .. " degrees") end
+		if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : " .. Table.viewcone .. " degrees") end
 
 		if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : " .. Table.guidelay .. " seconds")
 		else acfmenupanel:CPanelText("GuiDelay", "With a guidance, this ordnance will start to do maneuvers with no delays") end
@@ -104,7 +104,7 @@ function ACFGunGUICreate( Table )
 		if Table.guidance and #Table.guidance > 0 then
 
 			local guitxt = ""
-			for k, guidance in ipairs(Table.guidance) do
+			for _, guidance in ipairs(Table.guidance) do
 				if guidance ~= "Dumb" then
 					guitxt = guitxt .. "- " .. guidance .. "\n"
 				end
@@ -118,7 +118,7 @@ function ACFGunGUICreate( Table )
 		if Table.fuses and #Table.fuses > 0 then
 
 			local guitxt = ""
-			for k, fuses in ipairs(Table.fuses) do
+			for _, fuses in ipairs(Table.fuses) do
 				guitxt = guitxt .. "- " .. fuses .. "\n"
 			end
 
@@ -126,7 +126,7 @@ function ACFGunGUICreate( Table )
 		end
 
 	else
-		local RoundVolume = 3.1416 * (Table.caliber/2) ^ 2 * Table.round.maxlength
+		local RoundVolume = 3.1416 * (Table.caliber / 2) ^ 2 * Table.round.maxlength
 		local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
 		acfmenupanel:CPanelText("Firerate", "RoF : " .. math.Round(RoF,1) .. " rounds/min")
 		if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : " .. Table.magsize .. " rounds\nReload :	" .. Table.magreload .. " s") end

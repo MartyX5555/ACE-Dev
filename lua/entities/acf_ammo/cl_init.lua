@@ -68,7 +68,7 @@ function ACF_TrimInvalidRefillEffects(effectsTbl)
 
 end
 
---local ACF_AmmoInfoWhileSeated = CreateClientConVar("ACF_AmmoInfoWhileSeated", 0, true, false)
+CreateClientConVar("ACF_AmmoInfoWhileSeated", 0, true, false)
 
 function ENT:Draw()
 
@@ -91,9 +91,9 @@ function ENT:Draw()
 
 end
 
-usermessage.Hook("ACF_RefillEffect", function( msg )
+net.Receive("ACF_RefillEffect", function()
 
-	local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
+	local EntFrom, EntTo = ents.GetByIndex( net.ReadUInt(14) ), ents.GetByIndex( net.ReadUInt(14) )
 	if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 
 	local Mdl = "models/munitions/round_100mm_shot.mdl"
@@ -102,9 +102,9 @@ usermessage.Hook("ACF_RefillEffect", function( msg )
 	table.insert( EntFrom.RefillAmmoEffect, {EntFrom = EntFrom, EntTo = EntTo, Model = Mdl, StTime = SysTime()} )
 end)
 
-usermessage.Hook("ACF_StopRefillEffect", function( msg )
+net.Receive("ACF_StopRefillEffect", function()
 
-	local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
+	local EntFrom, EntTo = ents.GetByIndex( net.ReadUInt(14) ), ents.GetByIndex( net.ReadUInt(14) )
 	if not IsValid( EntFrom ) or not IsValid( EntTo ) or not EntFrom.RefillAmmoEffect then return end
 
 	for k,v in pairs( EntFrom.RefillAmmoEffect ) do

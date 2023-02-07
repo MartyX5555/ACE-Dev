@@ -18,7 +18,6 @@ function ENT:Initialize()
 	self.NextFire			= 0
 	self.LastSend			= 0
 	self.LastLoadDuration	= 0
-	self.Owner				= self
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
 	self.Legal				= true
 	self.LegalIssues			= ""
@@ -156,7 +155,7 @@ do
 		Gun:Spawn()
 
 		Gun:SetPlayer(Owner)
-		Gun.Owner		= Owner
+		Gun:SetOwner(Owner)
 		Gun.Id			= Id
 		Gun.Caliber		= Lookup.caliber
 		Gun.Model		= Lookup.model
@@ -184,7 +183,7 @@ do
 			Gun.MagSize = math.max(Gun.MagSize, Lookup.magsize)
 			local Cal = Gun.Caliber
 
-			if Cal >=2 and Cal <=14 then
+			if Cal >= 2 and Cal <= 14 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse )
@@ -194,7 +193,7 @@ do
 		else
 			local Cal = Gun.Caliber
 
-			if Cal>=2 and Cal<=14 then
+			if Cal >= 2 and Cal <= 14 then
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_Fuse_noreload )
 			else
 				Gun.Inputs = WireLib.CreateInputs( Gun, Inputs_NoFuse_noreload )
@@ -210,7 +209,7 @@ do
 			Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
 		end
 
-		Gun.MinLengthBonus = 0.5 * 3.1416 * (Gun.Caliber/2) ^ 2 * Lookup.round.maxlength
+		Gun.MinLengthBonus = 0.5 * 3.1416 * (Gun.Caliber / 2) ^ 2 * Lookup.round.maxlength
 
 		Gun.Muzzleflash	= Lookup.muzzleflash or ClassData.muzzleflash
 		Gun.RoFmod		= ClassData.rofmod
@@ -248,7 +247,7 @@ do
 		local phys = Gun:GetPhysicsObject()
 		if IsValid( phys ) then
 			phys:SetMass( Gun.Mass )
-			Gun.ModelInertia = 0.99 * phys:GetInertia()/phys:GetMass() -- giving a little wiggle room
+			Gun.ModelInertia = 0.99 * phys:GetInertia() / phys:GetMass() -- giving a little wiggle room
 		end
 
 		Gun:UpdateOverlayText()
@@ -287,7 +286,7 @@ function ENT:UpdateOverlayText()
 	text = text .. "\nTemp: " .. math.Round(self.Heat) .. " °C / 200 °C"
 
 	if #self.CrewLink > 0 then
-		text = text .. "\n\nHas Gunner: ".. (self.HasGunner and "Yes" or "No")
+		text = text .. "\n\nHas Gunner: " .. (self.HasGunner and "Yes" or "No")
 		text = text .. ( self.noloaders and "" or "\nTotal Loaders: " .. self.LoaderCount  )
 	end
 
@@ -314,7 +313,7 @@ function ENT:Link( Target )
 	if Target:GetClass() == "ace_crewseat_gunner" then
 
 		--Don't link if it's already linked
-		for k, v in pairs( self.CrewLink ) do
+		for _, v in pairs( self.CrewLink ) do
 			if v == Target then
 				return false, "That crewseat is already linked to this gun!"
 			end
@@ -341,7 +340,7 @@ function ENT:Link( Target )
 	elseif Target:GetClass() == "ace_crewseat_loader" then
 
 		-- Don't link if it's already linked
-		for k, v in pairs( self.CrewLink ) do
+		for _, v in pairs( self.CrewLink ) do
 			if v == Target then
 				return false, "That crewseat is already linked to this gun!"
 			end
@@ -397,7 +396,7 @@ function ENT:Link( Target )
 		end
 
 		-- Don't link if it's already linked
-		for k, v in pairs( self.AmmoLink ) do
+		for _, v in pairs( self.AmmoLink ) do
 			if v == Target then
 				return false, "That crate is already linked to this gun!"
 			end
@@ -461,7 +460,7 @@ function ENT:Unlink( Target )
 
 end
 
-function ENT:CanProperty( ply, property )
+function ENT:CanProperty( _, property )
 
 	if property == "bodygroups" then
 		local longbarrel = GunClasses[self.Class].longbarrel
@@ -513,10 +512,8 @@ function ENT:GetUser( inp )
 			return self:GetUser(inp.Inputs.Shoot.Src)
 		elseif inp.Inputs then
 			for _,v in pairs(inp.Inputs) do
-				if v.Src then
-					if table.HasValue(WireTable, v.Src:GetClass()) then
-						return self:GetUser(v.Src)
-					end
+				if v.Src and table.HasValue(WireTable, v.Src:GetClass()) then
+					return self:GetUser(v.Src)
 				end
 			end
 		end
@@ -531,8 +528,8 @@ function ENT:TriggerInput( iname, value )
 		self:UnloadAmmo()
 	elseif ( iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire < CurTime() then
-			self.User = self:GetUser(self.Inputs.Fire.Src) or self.Owner
-			if not IsValid(self.User) then self.User = self.Owner end
+			self.User = self:GetUser(self.Inputs.Fire.Src) or self:GetOwner()
+			if not IsValid(self.User) then self.User = self:GetOwner() end
 			self:FireShell()
 			self:Think()
 		end
@@ -551,7 +548,7 @@ function ENT:TriggerInput( iname, value )
 		end
 	elseif (iname == "ROFLimit") then
 		if value > 0 then
-			self.ROFLimit = math.min(1/(value/60),600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
+			self.ROFLimit = math.min(1 / (value / 60), 600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
 		else
 			self.ROFLimit = 0
 		end
@@ -573,7 +570,7 @@ function ENT:Heat_Function()
 	Wire_TriggerOutput(self, "Heat", math.Round(self.Heat))
 
 	-- TODO: instead of breaking the gun by heat, decrease accurancy and jam it
-	local OverHeat = math.max(self.Heat/200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
+	local OverHeat = math.max(self.Heat / 200,0) --overheat will start affecting the gun at 200° celcius. STILL unrealistic, weird
 	if OverHeat > 1 and self.Caliber < 10 then  --leave the low calibers to damage themselves only
 
 		self.IsOverheated = true
@@ -582,7 +579,11 @@ function ENT:Heat_Function()
 		local phys = self:GetPhysicsObject()
 		local Mass = phys:GetMass()
 
-		HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1 + math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1 * OverHeat)* (1 + math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
+		HitRes = ACF_Damage(self, {
+			Kinetic = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1)),
+			Momentum = 0,
+			Penetration = (1 * OverHeat) * (1 + math.max(Mass - 300, 0.1))
+		}, 2, 0, self:GetOwner())
 
 		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
@@ -597,26 +598,22 @@ end
 
 function ENT:TrimDistantCrates()
 
-	for Key, Crate in pairs(self.AmmoLink) do
-		if IsValid( Crate ) and Crate.Load then
-			if RetDist( self, Crate ) >= 512 then
-				self:Unlink( Crate )
-				soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-				self:EmitSound(soundstr, 500, 100)
-			end
+	for _, Crate in pairs(self.AmmoLink) do
+		if IsValid( Crate ) and Crate.Load and RetDist( self, Crate ) >= 512 then
+			self:Unlink( Crate )
+			soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr, 500, 100)
 		end
 	end
 
 end
 
 function ENT:TrimDistantCrewSeats()
-	for Key, Seat in pairs(self.CrewLink) do
-		if IsValid( Seat ) then --Legality check missing atm
-			if RetDist( self, Seat ) > 100 then
-				self:Unlink( Seat )
-				soundstr =  "physics/metal/metal_canister_impact_hard" .. tostring(math.random(1, 3)) .. ".wav"
-				self:EmitSound(soundstr,500,100)
-			end
+	for _, Seat in pairs(self.CrewLink) do
+		if IsValid( Seat ) and RetDist( self, Seat ) > 100 then
+			self:Unlink( Seat )
+			soundstr =  "physics/metal/metal_canister_impact_hard" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr,500,100)
 		end
 	end
 end
@@ -664,9 +661,7 @@ function ENT:Think()
 
 		self:UpdateOverlayText()
 
-		if not self.Legal then
-			if self.Firing then self:TriggerInput("Fire",0) end
-		end
+		if not self.Legal and self.Firing then self:TriggerInput("Fire",0) end
 
 	end
 
@@ -683,7 +678,7 @@ function ENT:Think()
 
 		local Ammo		= 0
 
-		for Key, Crate in pairs(self.AmmoLink) do --UnlinkDistance
+		for _, Crate in pairs(self.AmmoLink) do --UnlinkDistance
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
 				if RetDist( self, Crate ) < 512 * self.LinkRangeMul then
 					Ammo = Ammo + (Crate.Ammo or 0)
@@ -778,7 +773,7 @@ do
 		local IaccMult = 1
 
 		if self.ACF.Health and self.ACF.MaxHealth then
-			IaccMult = math.Clamp(((1 - SpreadScale) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, 1, SpreadScale)
+			IaccMult = math.Clamp(((1 - SpreadScale) / 0.5) * ((self.ACF.Health / self.ACF.MaxHealth) - 1) + 1, 1, SpreadScale)
 		end
 
 		-- Increased FS accuracy. Hardcoded.
@@ -847,7 +842,7 @@ do
 				local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity() + GPos)
 
 				--Traceback component
-				TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
+				TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z)) - GPos
 
 				self.BulletData.Pos = MuzzlePos + TestVel * self.DeltaTime * 5 --Less clipping on fast vehicles, especially moving perpindicular since traceback doesnt compensate for that. A multiplier of 3 is semi-reliable. A multiplier of 5 guarentees it doesnt happen.
 				self.BulletData.Flight = ShootVec * self.BulletData.MuzzleVel * 39.37 + TestVel
@@ -856,22 +851,16 @@ do
 
 				local Cal = self.Caliber
 
-				if Cal < 14 then
-
-					if FusedRounds[self.BulletData.Type]  then
-
-						--using fusetime via wire will override the ammo fusetime!
-						if self.OverrideFuse then
-							self.BulletData.FuseLength = self.FuseTime
-						end
-					end
+				--using fusetime via wire will override the ammo fusetime!
+				if Cal < 14 and FusedRounds[self.BulletData.Type] and FusedRounds[self.BulletData.Type] and self.OverrideFuse then
+					self.BulletData.FuseLength = self.FuseTime
 				end
 
 				self.CreateShell = ACF.RoundTypes[self.BulletData.Type].create
 				self:CreateShell( self.BulletData )
 
 				local Dir = -self:GetForward()
-				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVarNumber("acf_recoilpush") or 1)
+				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVar("acf_recoilpush"):GetFloat() or 1)
 
 				ACF_KEShove(self, self:GetPos() , Dir , KE )
 
@@ -900,7 +889,7 @@ end
 
 function ENT:FindNextCrate()
 
-	local MaxAmmo = table.getn(self.AmmoLink)
+	local MaxAmmo = #self.AmmoLink
 	local AmmoEnt = nil
 	local i = 0
 
@@ -943,7 +932,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus * Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 
-		self.RateOfFire = (60/self.ReloadTime)
+		self.RateOfFire = (60 / self.ReloadTime)
 		Wire_TriggerOutput(self, "Fire Rate", self.RateOfFire)
 		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
 		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
@@ -1001,7 +990,7 @@ function ENT:UnloadAmmo()
 	Wire_TriggerOutput(self, "Ready", 0)
 	self:EmitSound("weapons/shotgun/shotgun_empty.wav",500,100)
 
-	local unloadtime = self.ReloadTime/2 -- base time to swap a fully loaded shell out
+	local unloadtime = self.ReloadTime / 2 -- base time to swap a fully loaded shell out
 	if self.NextFire < CurTime() then -- unloading in middle of reload
 		unloadtime = math.min(unloadtime, math.max(self.ReloadTime - (self.NextFire - CurTime()),0) )
 	end
@@ -1040,20 +1029,20 @@ function ENT:PreEntityCopy()
 
 	local info = {}
 	local entids = {}
-	for Key, Value in pairs(self.AmmoLink) do				--First clean the table of any invalid entities
+	for _, Value in pairs(self.AmmoLink) do				--First clean the table of any invalid entities
 		if not Value:IsValid() then
 			table.remove(self.AmmoLink, Value)
 		end
 	end
-	for Key, Value in pairs(self.AmmoLink) do				--Then save it
+	for _, Value in pairs(self.AmmoLink) do				--Then save it
 		table.insert(entids, Value:EntIndex())
 	end
-	for Key, Value in pairs(self.CrewLink) do				--First clean the table of any invalid entities
+	for _, Value in pairs(self.CrewLink) do				--First clean the table of any invalid entities
 		if not Value:IsValid() then
 			table.remove(self.CrewLink, Value)
 		end
 	end
-	for Key, Value in pairs(self.CrewLink) do				--Then save it
+	for _, Value in pairs(self.CrewLink) do				--Then save it
 		table.insert(entids, Value:EntIndex())
 	end
 	info.entities = entids
@@ -1068,7 +1057,7 @@ end
 
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
-	if (Ent.EntityMods) and (Ent.EntityMods.ACFAmmoLink) and (Ent.EntityMods.ACFAmmoLink.entities) then
+	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
 

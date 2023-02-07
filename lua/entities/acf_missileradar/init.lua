@@ -37,7 +37,7 @@ function ENT:Initialize()
 
 	self.Active				= false
 
-	self:CreateRadar((self.ACFName or "Missile Radar"), (self.ConeDegs or 180))
+	self:CreateRadar(self.ACFName or "Missile Radar", self.ConeDegs or 180)
 
 	self:EnableClientInfo(true)
 
@@ -121,7 +121,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 		Radar:CPPISetOwner(Owner)
 	end
 
-	Radar.Owner = Owner
+	Radar:SetOwner(Owner)
 
 	Radar:SetModelEasy(radar.model)
 
@@ -249,7 +249,7 @@ function ENT:ScanForMissiles()
 
 	local thisPos = self:GetPos()
 
-	for k, missile in pairs(missiles) do
+	for _, missile in pairs(missiles) do
 
 		i = i + 1
 
@@ -314,9 +314,6 @@ function ENT:GetOverlayText()
 	local range	= self.Range
 	local status	= self.Status or "Off"
 	local detected  = self.Outputs.Detected.Value
-
-
-	local ret = {}
 
 	local txt = "Status: " .. status
 

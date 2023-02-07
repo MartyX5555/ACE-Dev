@@ -56,7 +56,9 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 
 	Radar:Spawn()
 
-	Radar.Owner = CPPI and Radar:CPPISetOwner(Owner) or Radar:SetPlayer(Owner)
+	if CPPI then Radar:CPPISetOwner(Owner) end
+	Radar:SetPlayer(Owner)
+	Radar:SetOwner(Owner)
 
 	Radar:SetModelEasy(radar.model)
 

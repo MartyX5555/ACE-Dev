@@ -17,7 +17,7 @@ if CLIENT then
 	language.Add( "Tool.acfcopy.desc", ACFTranslation.CopyToolText[3] );
 	language.Add( "Tool.acfcopy.0", ACFTranslation.CopyToolText[4] );
 
-	function TOOL.BuildCPanel( CPanel )
+	function TOOL.BuildCPanel()
 
 	end
 

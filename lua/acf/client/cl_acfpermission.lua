@@ -9,14 +9,14 @@ local getPanelChecks = function() return {} end
 
 
 
-net.Receive("ACF_refreshfriends", function(len)
+net.Receive("ACF_refreshfriends", function()
 	--Msg("\ncl refreshfriends\n")
 	local perms = net.ReadTable()
 	local checks = getPanelChecks()
 
 	--PrintTable(perms)
 
-	for k, check in pairs(checks) do
+	for _, check in pairs(checks) do
 		if perms[check.steamid] then
 			check:SetChecked(true)
 		else
@@ -28,7 +28,7 @@ end)
 
 
 
-net.Receive("ACF_refreshfeedback", function(len)
+net.Receive("ACF_refreshfeedback", function()
 	local success = net.ReadBit()
 	local str, notify
 
@@ -49,7 +49,7 @@ end)
 function this.ApplyPermissions(checks)
 	perms = {}
 
-	for k, check in pairs(checks) do
+	for _, check in pairs(checks) do
 		if not check.steamid then Error("Encountered player checkbox without an attached SteamID!") end
 		perms[check.steamid] = check:GetChecked()
 	end

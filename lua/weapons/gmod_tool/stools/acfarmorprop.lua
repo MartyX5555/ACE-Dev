@@ -66,7 +66,7 @@ if CLIENT then
 
 	--Looks like client convars are not initialized very quickly, so we will wait a bit until they become valid.
 	timer.Simple(0.1, function()
-		ACE_MaterialCheck( GetConVarString("acfarmorprop_material") )
+		ACE_MaterialCheck( GetConVar("acfarmorprop_material"):GetString() )
 	end )
 
 	--Replicated from PANEL:CPanelText(Name, Desc, Font). No idea why this doesnt work with this function out of this file
@@ -92,12 +92,12 @@ if CLIENT then
 	end
 
 	-- Material ComboBox creation
-	local function MaterialTable( panel, tool )
+	local function MaterialTable( panel )
 
 		local MaterialTypes = ACE.Armors
 		if not MaterialTypes then return end
 
-		local Material = GetConVarString("acfarmorprop_material")
+		local Material = GetConVar("acfarmorprop_material"):GetString()
 		local MaterialData  = MaterialTypes[Material] or MaterialTypes["RHA"]
 
 		ArmorPanelText( "ComboBox", panel, "Material" )
@@ -112,7 +112,7 @@ if CLIENT then
 			ToolPanel.ComboMat:SetValue( MaterialData.sname )
 			ToolPanel.panel:AddItem(ToolPanel.ComboMat)
 
-			for k, Mat  in pairs(MaterialTypes) do
+			for _, Mat  in pairs(MaterialTypes) do
 				if ACF.Year >= Mat.year then
 					ToolPanel.ComboMat:AddChoice(Mat.sname, Mat.id )
 				end
@@ -121,13 +121,13 @@ if CLIENT then
 			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
 			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
 
-			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. (MaterialData.curve) )
-			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : " .. (MaterialData.massMod) .."x RHA" )
-			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. (MaterialData.effectiveness ) .."x RHA" )
-			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MaterialData.curve )
+			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : " .. MaterialData.massMod .. "x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MaterialData.effectiveness .. "x RHA" )
+			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .. "x RHA" )
 			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MaterialData.year or "unknown") )
 
-			function ToolPanel.ComboMat:OnSelect(self, index, value )
+			function ToolPanel.ComboMat:OnSelect(self, _, value )
 
 				RunConsoleCommand( "acfarmorprop_material", value )
 			end
@@ -136,8 +136,6 @@ if CLIENT then
 
 	--Main menu building
 	function TOOL.BuildCPanel( panel )
-
-		local MatTitle, MatDesc
 		local Presets = vgui.Create( "ControlPresets" )
 
 		Presets:AddConVar( "acfarmorprop_thickness" )
@@ -153,21 +151,21 @@ if CLIENT then
 		panel:NumSlider( ACFTranslation.ArmorPropertiesText[6], "acfarmorprop_ductility", -80, 80 )
 		panel:ControlHelp( ACFTranslation.ArmorPropertiesText[7] )
 
-		MaterialTable( panel , self )
+		MaterialTable(panel)
 
 	end
 
 	-- clamp thickness if the change in ductility puts mass out of range
-	cvars.AddChangeCallback( "acfarmorprop_ductility", function( cvar, oldvalue, value )
+	cvars.AddChangeCallback( "acfarmorprop_ductility", function( _, _, value )
 
-		local area = GetConVarNumber( "acfarmorprop_area" )
+		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
 
 		-- don't bother recalculating if we don't have a valid ent
 		if area == 0 then return end
 
 		local ductility = math.Clamp( ( tonumber( value ) or 0 ) / 100, -0.8, 0.8 )
-		local thickness = math.Clamp( GetConVarNumber( "acfarmorprop_thickness" ), 0.1, 5000 )
-		local material  = GetConVarString( "acfarmorprop_material" ) or "RHA"
+		local thickness = math.Clamp( GetConVar( "acfarmorprop_thickness" ):GetFloat(), 0.1, 5000 )
+		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
 
 		local mass		= CalcArmor( area, ductility, thickness , material )
 
@@ -185,16 +183,16 @@ if CLIENT then
 	end )
 
 	-- clamp ductility if the change in thickness puts mass out of range
-	cvars.AddChangeCallback( "acfarmorprop_thickness", function( cvar, oldvalue, value )
+	cvars.AddChangeCallback( "acfarmorprop_thickness", function( _, _, value )
 
-		local area = GetConVarNumber( "acfarmorprop_area" )
+		local area = GetConVar( "acfarmorprop_area" ):GetFloat()
 
 		-- don't bother recalculating if we don't have a valid ent
 		if area == 0 then return end
 
 		local thickness = math.Clamp( tonumber( value ) or 0, 0.1, 5000 )
-		local ductility = math.Clamp( GetConVarNumber( "acfarmorprop_ductility" ) / 100, -0.8, 0.8 )
-		local material  = GetConVarString( "acfarmorprop_material" ) or "RHA"
+		local ductility = math.Clamp( GetConVar( "acfarmorprop_ductility" ):GetFloat() / 100, -0.8, 0.8 )
+		local material  = GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
 
 		local mass		= CalcArmor( area, ductility, thickness , material )
 
@@ -212,7 +210,7 @@ if CLIENT then
 	end )
 
 	-- Refresh Armor material info on menu
-	cvars.AddChangeCallback( "acfarmorprop_material", function( cvar, oldvalue, value )
+	cvars.AddChangeCallback( "acfarmorprop_material", function( _, _, value )
 
 			if ToolPanel.panel then
 
@@ -227,10 +225,10 @@ if CLIENT then
 				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
 				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc .. "\n" )
 
-				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. (MatData.curve) )
-				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: " .. (MatData.massMod ) .."x RHA")
-				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. (MatData.effectiveness ) .."x RHA" )
-				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
+				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. MatData.curve )
+				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: " .. MatData.massMod .. "x RHA")
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. MatData.effectiveness .. "x RHA" )
+				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MatData.HEATeffectiveness or MatData.effectiveness) .. "x RHA" )
 				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MatData.year or "unknown") )
 
 			end
@@ -238,7 +236,7 @@ if CLIENT then
 end
 
 -- Apply settings to prop and store dupe info
-local function ApplySettings( ply, ent, data )
+local function ApplySettings( _, ent, data )
 
 	if not SERVER then return end
 
@@ -364,7 +362,7 @@ if CLIENT then
 		local fuel		= math.Round( net.ReadFloat(), 1 )
 		local bonus		= (fuel > 0 and 1.25 or 1)
 
-		local hpton		= math.Round( power * bonus / (total/1000), 1 )
+		local hpton		= math.Round( power * bonus / (total / 1000), 1 )
 		local hasfuel	= fuel == 1 and " with fuel (25% boost)" or fuel == 2 and "" or " (no fuel)"
 		local Compressed	= net.ReadData(640)
 		local Decompress	= util.Decompress(Compressed)
@@ -375,7 +373,7 @@ if CLIENT then
 		local Tabletxt	= {}
 
 		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>" .. Sep }
-		local TMass		= { Color4, "- Total Mass: ", Color3, "" .. total, Color4, " kgs / @ ", Color3, "" .. math.Truncate(total/1000,2), Color4, " tons" .. Sep }
+		local TMass		= { Color4, "- Total Mass: ", Color3, "" .. total, Color4, " kgs / @ ", Color3, "" .. math.Truncate(total / 1000,2), Color4, " tons" .. Sep }
 		local TMass2		= { Color4, "- Mass Ratio: ",Color3, "" .. phystotal, Color4, " kgs physical, ", Color3, "" .. parenttotal, Color4, " kgs parented / ", Color3, physratio .. "%", Color4, " physical )" .. Sep }
 		local Engine		= { Color4, "- Total Power: ", Color3, "" .. math.Round(power * bonus, 1), Color4," hp / ",Color3, "" .. hpton, Color4, " hp/ton" .. hasfuel .. Sep }
 		local ArmorComp1	= { Color4, "- Composition: " .. Sep }
@@ -456,10 +454,10 @@ function TOOL:DrawHUD()
 	local curhealth	= self.Weapon:GetNWFloat( "MaxHP" )
 	local material	= self.Weapon:GetNWString( "Material" )
 
-	local area		= GetConVarNumber( "acfarmorprop_area" )
-	local ductility	= GetConVarNumber( "acfarmorprop_ductility" )
-	local thickness	= GetConVarNumber( "acfarmorprop_thickness" )
-	local mat		= GetConVarString( "acfarmorprop_material" ) or "RHA"
+	local area		= GetConVar( "acfarmorprop_area" ):GetFloat()
+	local ductility	= GetConVar( "acfarmorprop_ductility" ):GetFloat()
+	local thickness	= GetConVar( "acfarmorprop_thickness" ):GetFloat()
+	local mat		= GetConVar( "acfarmorprop_material" ):GetString() or "RHA"
 
 	local MatData	= ACE_GetMaterialData( mat )
 
@@ -482,7 +480,7 @@ function TOOL:DrawHUD()
 
 end
 
-function TOOL:DrawToolScreen( w, h )
+function TOOL:DrawToolScreen()
 
 	if not CLIENT then return end
 

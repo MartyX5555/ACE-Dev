@@ -21,7 +21,7 @@ end
 
 do
 
-	local function SendBoolToClient( ply, seat, bool )
+	local function SendBoolToClient( _, seat, bool )
 
 		net.Start("ACE_CamOverride")
 			net.WriteEntity( seat )
@@ -76,7 +76,7 @@ do
 			return true
 		end
 
-		function TOOL:RightClick( trace )
+		function TOOL:RightClick()
 			if CLIENT then return false end
 
 			return false

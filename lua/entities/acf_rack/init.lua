@@ -81,7 +81,7 @@ function ENT:Initialize()
 	self.Legal				= true
 	self.LegalIssues			= ""
 	self.LastSend			= 0
-	self.Owner				= self
+	self:SetOwner(self)
 
 	self.IsMaster			= true
 	self.CurAmmo				= 1
@@ -157,7 +157,7 @@ function ENT:CanLinkCrate(crate)
 
 
 	-- Don't link if it's already linked
-	for k, v in pairs( self.AmmoLink ) do
+	for _, v in pairs( self.AmmoLink ) do
 		if v == crate then
 			return false, "That crate is already linked to this rack!"
 		end
@@ -275,7 +275,7 @@ function ENT:TriggerInput( iname , value )
 	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
 			self.User = self:GetUser(self.Inputs["Fire"].Src)
-			if not IsValid(self.User) then self.User = self.Owner end
+			if not IsValid(self.User) then self.User = self:GetOwner() end
 			self:FireMissile()
 			self:Think()
 		end
@@ -345,13 +345,11 @@ end
 
 function ENT:TrimDistantCrates()
 
-	for Key, Crate in pairs(self.AmmoLink) do
-		if IsValid( Crate ) and Crate.Load then
-			if RetDist( self, Crate ) >= 512 then
-				self:Unlink( Crate )
-				soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
-				self:EmitSound(soundstr, 500, 100)
-			end
+	for _, Crate in pairs(self.AmmoLink) do
+		if IsValid( Crate ) and Crate.Load and RetDist( self, Crate ) >= 512 then
+			self:Unlink( Crate )
+			soundstr =  "physics/metal/metal_box_impact_bullet" .. tostring(math.random(1, 3)) .. ".wav"
+			self:EmitSound(soundstr, 500, 100)
 		end
 	end
 
@@ -366,7 +364,7 @@ function ENT:UpdateRefillBonus()
 	local minFullEfficiency	= 50000 * Efficiency	-- The minimum crate volume to provide full efficiency bonus all by itself.
 	local maxDist			= ACF.RefillDistance
 
-	for k, crate in pairs(ACF.AmmoCrates or {}) do
+	for _, crate in pairs(ACF.AmmoCrates or {}) do
 
 		if crate.RoundType ~= "Refill" then
 			continue
@@ -507,7 +505,7 @@ end
 
 function ENT:FindNextCrate( doSideEffect )
 
-	local MaxAmmo = table.getn(self.AmmoLink)
+	local MaxAmmo = #self.AmmoLink
 	local AmmoEnt = nil
 	local i = 0
 
@@ -545,7 +543,6 @@ function ENT:CanReload()
 	local Crate = self:FindNextCrate()
 	if not IsValid(Crate) then return false end
 
-	local curtime = CurTime()
 	if self.NextFire < 1 then return false end
 
 	return true
@@ -559,9 +556,7 @@ function ENT:SetLoadedWeight()
 
 	self:TrimNullMissiles()
 
-	local baseWeight = self.Mass
-
-	for k, missile in pairs(self.Missiles) do
+	for _, missile in pairs(self.Missiles) do
 
 		local phys = missile:GetPhysicsObject()
 		if (IsValid(phys)) then
@@ -586,10 +581,10 @@ function ENT:AddMissile()
 	local Crate = self:FindNextCrate(true)
 	if not IsValid(Crate) then return false end
 
-	local ply = self.Owner
+	local ply = self:GetOwner()
 
 	local missile = ents.Create("acf_missile")
-	missile.Owner		= ply
+	missile:SetOwner(ply)
 	missile.DoNotDuplicate  = true
 	missile.Launcher		= self
 	missile.ForceTdelay	= self.ForceTdelay
@@ -615,7 +610,7 @@ function ENT:AddMissile()
 	local NextIdx = #self.Missiles
 	timer.Simple(0.02, function()
 		if IsValid(missile) then
-			local attach, inverted, muzzle = self:GetMuzzle( NextIdx , missile )
+			local _, _, muzzle = self:GetMuzzle( NextIdx , missile )
 
 			debugoverlay.Cross(muzzle.Pos, 5, 10, Color(255,255,255,255), true)
 
@@ -646,7 +641,7 @@ end
 
 
 
-function ENT:LoadAmmo( Reload )
+function ENT:LoadAmmo()
 
 	self:TrimDistantCrates()
 
@@ -665,7 +660,7 @@ function ENT:LoadAmmo( Reload )
 	end
 
 	self.NextFire = 0
-	self.PostReloadWait = CurTime()-- + 5 --CurTime() + 4.5
+	self.PostReloadWait = CurTime() -- + 5 --CurTime() + 4.5
 	self.WaitFunction = self.GetReloadTime
 
 	self.Ready = false
@@ -704,7 +699,7 @@ function MakeACF_Rack (Owner, Pos, Angle, Id, UpdateRack)
 	local gundef = RackTable[Id]
 
 	Rack:SetPlayer(Owner)
-	Rack.Owner  = Owner
+	Rack:SetOwner(Owner)
 	Rack.Id	= Id
 
 	Rack.MinCaliber	= gundef.mincaliber
@@ -803,7 +798,6 @@ function ENT:FireMissile()
 
 			local attach, inverted, muzzle = self:GetMuzzle(curShot - 1, missile)
 
-			local MuzzlePos		= self:WorldToLocal(muzzle.Pos)
 			local MuzzleVec		= muzzle.Ang:Forward()
 
 			local coneAng		= math.tan(math.rad(self:GetInaccuracy()))
@@ -812,7 +806,7 @@ function ENT:FireMissile()
 			local ShootVec		= (MuzzleVec + spread):GetNormalized()
 
 			local filter = {}
-			for k, v in pairs(self.Missiles) do
+			for _, v in pairs(self.Missiles) do
 				filter[#filter + 1] = v
 			end
 			filter[#filter + 1] = self
@@ -870,7 +864,7 @@ function ENT:FireMissile()
 
 end
 
-function ENT:MuzzleEffect( attach, bdata )
+function ENT:MuzzleEffect()
 	self:EmitSound( "phx/epicmetal_hard.wav", 500, 100 )
 end
 
@@ -878,12 +872,12 @@ function ENT:PreEntityCopy()
 
 	local info = {}
 	local entids = {}
-	for Key, Value in pairs(self.AmmoLink) do				--First clean the table of any invalid entities
+	for _, Value in pairs(self.AmmoLink) do				--First clean the table of any invalid entities
 		if not Value:IsValid() then
 			table.remove(self.AmmoLink, Value)
 		end
 	end
-	for Key, Value in pairs(self.AmmoLink) do				--Then save it
+	for _, Value in pairs(self.AmmoLink) do				--Then save it
 		table.insert(entids, Value:EntIndex())
 	end
 	info.entities = entids
@@ -905,9 +899,9 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 
 	self.Id = Ent.EntityMods.ACFRackInfo.Id
 
-	MakeACF_Rack(self.Owner, self:GetPos(), self:GetAngles(), self.Id, self)
+	MakeACF_Rack(self:GetOwner(), self:GetPos(), self:GetAngles(), self.Id, self)
 
-	if (Ent.EntityMods) and (Ent.EntityMods.ACFAmmoLink) and (Ent.EntityMods.ACFAmmoLink.entities) then
+	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
 		if AmmoLink.entities and table.Count(AmmoLink.entities) > 0 then
 			for _,AmmoID in pairs(AmmoLink.entities) do
@@ -929,7 +923,7 @@ end
 
 
 
-function ACF_Rack_OnPhysgunDrop(ply, ent)
+function ACF_Rack_OnPhysgunDrop(_, ent)
 	if ent:GetClass() == "acf_rack" then
 		timer.Simple(0.01, function() if IsValid(ent) then ent:SetLoadedWeight() end end)
 	end
@@ -938,11 +932,11 @@ end
 hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
 function ENT:OnRemove()
-	Wire_Remove(self.Entity)
+	Wire_Remove(self)
 end
 
 function ENT:OnRestore()
-	Wire_Restored(self.Entity)
+	Wire_Restored(self)
 end
 
 --New Overlay text that is shown when you are looking at the rack.
@@ -954,30 +948,28 @@ function ENT:GetOverlayText()
 	local ReloadBonus	= self.ReloadMultiplierBonus or 0  -- the word explains by itself
 	local Status		= self.RackStatus				-- this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
 
-	local txt = '-  ' .. Status .. '  -'
+	local txt = "-  " .. Status .. "  -"
 
-		if Ammo > 0  then
-			if Ammo == 1 then
-				txt = txt .. '\n' .. Ammo .. ' Launch left'
-			else
-				txt = txt .. '\n' .. Ammo .. ' Launches left'
-			end
-
-			txt = txt .. '\n\nFire Rate: ' .. (math.Round(FireRate,2)) .. ' secs'
-			txt = txt .. '\nReload Time: ' .. (math.Round(Reload,2)) .. ' secs'
-
-			if ReloadBonus > 0 then
-			txt = txt .. '\n' .. math.floor(ReloadBonus * 100) .. '% Reload Time Decreased'
-			end
-
+	if Ammo > 0 then
+		if Ammo == 1 then
+			txt = txt .. "\n" .. Ammo .. " Launch left"
 		else
-
-			if #self.AmmoLink ~= 0 then
-			txt = txt .. '\n\nProvided with ammo.\n'
-			else
-			txt = txt .. '\n\nAmmo not found!\n'
-			end
+			txt = txt .. "\n" .. Ammo .. " Launches left"
 		end
+
+		txt = txt .. "\n\nFire Rate: " .. math.Round(FireRate, 2) .. " secs"
+		txt = txt .. "\nReload Time: " .. math.Round(Reload, 2) .. " secs"
+
+		if ReloadBonus > 0 then
+			txt = txt .. "\n" .. math.floor(ReloadBonus * 100) .. "% Reload Time Decreased"
+		end
+	else
+		if #self.AmmoLink ~= 0 then
+			txt = txt .. "\n\nProvided with ammo.\n"
+		else
+			txt = txt .. "\n\nAmmo not found!\n"
+		end
+	end
 
 	if not self.Legal then
 		txt = txt .. "\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues

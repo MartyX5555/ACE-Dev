@@ -46,7 +46,7 @@ function ACE_ReceiveDPStatus()
 end
 net.Receive( "ACE_DPStatus", ACE_ReceiveDPStatus )
 
-net.Receive("ACF_refreshpermissions", function(len)
+net.Receive("ACF_refreshpermissions", function()
 
 	PermissionModes	= net.ReadTable()
 	CurrentPermission	= net.ReadString()
@@ -55,12 +55,6 @@ net.Receive("ACF_refreshpermissions", function(len)
 	Permissions:Update()
 
 end)
-
-local function CheckCPPI()
-	if not CPPI then return false end
-	return true
-end
-
 
 function Menu.MakePanel(Panel)
 
@@ -105,7 +99,7 @@ function Menu.MakePanel(Panel)
 		list:SetMultiSelect(false)
 		list:SetSize(30,100)
 
-		for permission,desc in pairs(PermissionModes) do
+		for permission in pairs(PermissionModes) do
 			list:AddLine(permission, "", "")
 		end
 

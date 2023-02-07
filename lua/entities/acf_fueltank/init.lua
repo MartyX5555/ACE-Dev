@@ -74,16 +74,16 @@ function ENT:ACF_Activate( Recalc )
 	end
 
 	local Armour = self.EmptyMass * 1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
-	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop Area gone
+	local Health = self.ACF.Volume / ACF.Threshold							--Setting the threshold of the prop Area gone
 
 	local Percent = 1
 	if Recalc and self.ACF.Health and self.ACF.MaxHealth then
-		Percent = self.ACF.Health/self.ACF.MaxHealth
+		Percent = self.ACF.Health / self.ACF.MaxHealth
 	end
 
 	self.ACF.Health = Health * Percent
 	self.ACF.MaxHealth = Health
-	self.ACF.Armour = Armour * (0.5 + Percent/2)
+	self.ACF.Armour = Armour * (0.5 + Percent / 2)
 	self.ACF.MaxArmour = Armour
 	self.ACF.Type = nil
 	self.ACF.Mass = self.Mass
@@ -98,12 +98,12 @@ function ENT:ACF_Activate( Recalc )
 
 end
 
-function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type )	--This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	--This function needs to return HitRes
 
-	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS") and ACF.HEATMulFuel) or 1) --Heat penetrators deal bonus damage to fuel
+	local Mul = (((Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS") and ACF.HEATMulFuel) or 1) --Heat penetrators deal bonus damage to fuel
 	local HitRes = ACF_PropDamage( Entity, Energy, FrArea * Mul, Angle, Inflictor ) --Calling the standard damage prop function
 
-	local NoExplode = self.FuelType == "Diesel" and not (Type == "HE" or Type == "HEAT" or Type == "THEAT" or Type == "HEATFS"or Type == "THEATFS")
+	local NoExplode = self.FuelType == "Diesel" and not (Type == "HE" or Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS")
 	if self.Exploding or NoExplode or not self.IsExplosive then return HitRes end
 
 	if HitRes.Kill then
@@ -121,8 +121,8 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 		return HitRes
 	end
 
-	local Ratio = (HitRes.Damage/self.ACF.Health) ^ 0.75 --chance to explode from sheer damage, small shots = small chance
-	local ExplodeChance = (1-(self.Fuel/self.Capacity)) ^ 0.75 --chance to explode from fumes in tank, less fuel = more explodey
+	local Ratio = (HitRes.Damage / self.ACF.Health) ^ 0.75 --chance to explode from sheer damage, small shots = small chance
+	local ExplodeChance = (1-(self.Fuel / self.Capacity)) ^ 0.75 --chance to explode from fumes in tank, less fuel = more explodey
 
 	--it's gonna blow
 	if math.Rand(0,1) < (ExplodeChance + Ratio) then
@@ -140,14 +140,14 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 
 	else												--spray some fuel around
 		self:NextThink( CurTime() + 0.1 )
-		self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage/self.ACF.Health) ^ 1.5) * 0.25
+		self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage / self.ACF.Health) ^ 1.5) * 0.25
 	end
 
 	return HitRes
 
 end
 
-function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2)
 
 	if IsValid(Owner) and not Owner:CheckLimit("_acf_misc") then return false end
 
@@ -165,7 +165,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 	Tank:SetPos(Pos)
 	Tank:Spawn()
 	Tank:SetPlayer(Owner)
-	Tank.Owner = Owner
+	Tank:SetOwner(Owner)
 
 	Tank.Id = Id
 	Tank.SizeId = Data1
@@ -179,7 +179,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 	Tank.LastMass = 1
 	Tank:UpdateFuelTank(Id, Data1, Data2)
 
-	local electric = (Data2 == 'Electric') and TankData.name .. ' Li-Ion Battery'
+	local electric = (Data2 == "Electric") and TankData.name .. " Li-Ion Battery"
 	local gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
 
 	local name = "ACE " .. (electric or gas)
@@ -199,13 +199,13 @@ end
 list.Set( "ACFCvars", "acf_fueltank", {"id", "data1", "data2"} )
 duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle", "Id", "SizeId", "FuelType" )
 
-function ENT:UpdateFuelTank(Id, Data1, Data2)
+function ENT:UpdateFuelTank(_, Data1, Data2)
 	--print("updated!")
 
 	local TankData = TankTable[Data1]
 	local pct = 1 --how full is the tank?
 
-	if self.Capacity and not (self.Capacity == 0) then --if updating existing tank, keep fuel level
+	if self.Capacity and self.Capacity ~= 0 then --if updating existing tank, keep fuel level
 		pct = self.Fuel / self.Capacity
 	end
 
@@ -215,7 +215,7 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 
 	self.Volume		= PhysObj:GetVolume() - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
 	self.Capacity	= self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
-	self.EmptyMass	= (Area * Wall) * 16.387 * (7.9/1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
+	self.EmptyMass	= (Area * Wall) * 16.387 * (7.9 / 1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
 
 	self.FuelType	= Data2
 	self.IsExplosive	= self.FuelType ~= "Electric" and TankData.explosive ~= false
@@ -231,7 +231,7 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 
 	self:UpdateFuelMass()
 
-	local electric = (Data2 == 'Electric') and TankData.name .. ' Li-Ion Battery'
+	local electric = (Data2 == "Electric") and TankData.name .. " Li-Ion Battery"
 	local gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
 
 	local name = "ACE " .. (electric or gas)
@@ -249,24 +249,24 @@ function ENT:UpdateOverlayText()
 	local Stats
 
 	if self.Active then
-		Stats = 'In use'
+		Stats = "In use"
 	else
-		Stats = 'Not In use'
+		Stats = "Not In use"
 	end
 
-	local text = '- ' .. Stats ..' -\n'
+	local text = "- " .. Stats .. " -\n"
 
 	if self.FuelType == "Electric" then
 
-		text = text .. '\nCurrent Charge Levels:'
-		text = text .. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " kWh"
-		text = text .. '\n-  ' .. math.Round( self.Fuel * 3.6, 1 ) ..' / ' .. math.Round( self.Capacity * 3.6, 1) .. ' MJ'
+		text = text .. "\nCurrent Charge Levels:"
+		text = text .. "\n-  " .. math.Round( self.Fuel, 1 ) .. " / " .. math.Round( self.Capacity, 1 ) .. " kWh"
+		text = text .. "\n-  " .. math.Round( self.Fuel * 3.6, 1 ) .. " / " .. math.Round( self.Capacity * 3.6, 1) .. " MJ"
 
 	else
 
-		text = text .. '\nCurrent Fuel Remaining:'
-		text = text .. '\n-  ' .. math.Round( self.Fuel, 1 ) .. " / " ..math.Round( self.Capacity, 1 ) .. " liters"
-		text = text .. '\n-  ' .. math.Round( self.Fuel * 0.264172, 1 ) ..' / ' .. math.Round( self.Capacity * 0.264172, 1 ) .. ' gallons'
+		text = text .. "\nCurrent Fuel Remaining:"
+		text = text .. "\n-  " .. math.Round( self.Fuel, 1 ) .. " / " .. math.Round( self.Capacity, 1 ) .. " liters"
+		text = text .. "\n-  " .. math.Round( self.Fuel * 0.264172, 1 ) .. " / " .. math.Round( self.Capacity * 0.264172, 1 ) .. " gallons"
 
 		--text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
 	end
@@ -306,12 +306,12 @@ function ENT:Update( ArgsTable )
 
 	local Feedback = ""
 
-	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self.Owner) then --Argtable[1] is the player that shot the tool
+	if (CPPI and not self:CPPICanTool(ArgsTable[1])) or (not CPPI and ArgsTable[1] ~= self:GetOwner()) then --Argtable[1] is the player that shot the tool
 		return false, "You don't own that fuel tank!"
 	end
 
 	if ( ArgsTable[6] ~= self.FuelType ) then
-		for Key, Engine in pairs( self.Master ) do
+		for _, Engine in pairs( self.Master ) do
 			if Engine:IsValid() then
 				Engine:Unlink( self )
 			end
@@ -327,13 +327,13 @@ end
 function ENT:TriggerInput( iname, value )
 
 	if (iname == "Active") then
-		if not (value == 0) then
+		if value ~= 0 then
 			self.Active = true
 		else
 			self.Active = false
 		end
 	elseif iname == "Refuel Duty" then
-		if not (value == 0) then
+		if value ~= 0 then
 			self.SupplyFuel = true
 		else
 			self.SupplyFuel = false
@@ -368,17 +368,15 @@ function ENT:Think()
 		for _,Tank in pairs(ACF.FuelTanks) do
 			if self.FuelType == Tank.FuelType and not Tank.SupplyFuel and Tank.Legal then --don't refuel the refuellers, otherwise it'll be one big circlejerk
 				local dist = self:GetPos():Distance(Tank:GetPos())
-				if dist < ACF.RefillDistance then
-					if Tank.Capacity - Tank.Fuel > 0.1 then
-						local exchange = (CurTime() - self.LastThink) * ACF.RefillSpeed * (((self.FuelType == "Electric") and ACF.ElecRate) or ACF.FuelRate) / 1750 --3500
-						exchange = math.min(exchange, self.Fuel, Tank.Capacity - Tank.Fuel)
-						self.Fuel = self.Fuel - exchange
-						Tank.Fuel = Tank.Fuel + exchange
-						if Tank.FuelType == "Electric" then
-							sound.Play("ambient/energy/newspark04.wav",Tank:GetPos(),75,100,0.5)
-						else
-							sound.Play("vehicles/jetski/jetski_no_gas_start.wav",Tank:GetPos(),75,120,0.5)
-						end
+				if dist < ACF.RefillDistance and (Tank.Capacity - Tank.Fuel > 0.1) then
+					local exchange = (CurTime() - self.LastThink) * ACF.RefillSpeed * (((self.FuelType == "Electric") and ACF.ElecRate) or ACF.FuelRate) / 1750 --3500
+					exchange = math.min(exchange, self.Fuel, Tank.Capacity - Tank.Fuel)
+					self.Fuel = self.Fuel - exchange
+					Tank.Fuel = Tank.Fuel + exchange
+					if Tank.FuelType == "Electric" then
+						sound.Play("ambient/energy/newspark04.wav",Tank:GetPos(),75,100,0.5)
+					else
+						sound.Play("vehicles/jetski/jetski_no_gas_start.wav",Tank:GetPos(),75,120,0.5)
 					end
 				end
 			end
@@ -397,7 +395,7 @@ end
 
 function ENT:OnRemove()
 
-	for Key,Value in pairs(self.Master) do
+	for Key in pairs(self.Master) do
 		if IsValid( self.Master[Key] ) then
 			self.Master[Key]:Unlink( self )
 		end

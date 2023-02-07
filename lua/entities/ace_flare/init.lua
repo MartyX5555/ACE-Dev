@@ -14,8 +14,6 @@ function ENT:Initialize()
 	self.Heat		= self.Heat or 1
 	self.Life		= self.Life or 0.1
 
-	--self.Owner		= self:GetOwner()
-
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(3)
 	phys:EnableDrag( true )

@@ -291,7 +291,7 @@ do
 			end
 
 			Ammo.Id = Id
-			Ammo.Owner = Owner
+			Ammo:SetOwner(Owner)
 			Ammo.Model = Model
 			Ammo.Dimensions = Dimensions
 
@@ -789,19 +789,20 @@ function ENT:Think()
 
 end
 
+util.AddNetworkString("ACF_RefillEffect")
 function ENT:RefillEffect( Target )
-	umsg.Start("ACF_RefillEffect")
-		umsg.Float( self:EntIndex() )
-		umsg.Float( Target:EntIndex() )
-		umsg.String( Target.BulletData.Type )
-	umsg.End()
+	net.Start("ACF_RefillEffect")
+		net.WriteUInt( self:EntIndex(), 14 )
+		net.WriteUInt( Target:EntIndex(), 14 )
+	net.Broadcast()
 end
 
+util.AddNetworkString("ACF_StopRefillEffect")
 function ENT:StopRefillEffect( TargetID )
-	umsg.Start("ACF_StopRefillEffect")
-		umsg.Float( self:EntIndex() )
-		umsg.Float( TargetID )
-	umsg.End()
+	net.Start("ACF_StopRefillEffect")
+		net.WriteUInt( self:EntIndex(), 14 )
+		net.WriteUInt( TargetID, 14 )
+	net.Broadcast()
 end
 
 function ENT:OnRemove()

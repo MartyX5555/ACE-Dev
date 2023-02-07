@@ -7,7 +7,6 @@ include("shared.lua")
 function ENT:Initialize()
 
 	self.SpecialDamage = true
-	self.Owner = self:GetOwner()
 
 	--print("hi from fakecrate")
 
@@ -17,7 +16,7 @@ end
 
 
 local nullhit = {Damage = 0, Overkill = 0, Loss = 0, Kill = false}
-function ENT:ACF_OnDamage( Entity , Energy , FrArea , Angle , Inflictor )
+function ENT:ACF_OnDamage()
 	return table.Copy(nullhit)
 end
 
@@ -37,7 +36,6 @@ function ENT:RegisterTo(bullet)
 
 		if bullet.BulletData then
 			self:SetNWString( "Sound", bullet.Primary and bullet.Primary.Sound or nil)
-			self.Owner = bullet:GetOwner()
 			self:SetOwner(bullet:GetOwner())
 --			bullet = bullet.BulletData
 		end

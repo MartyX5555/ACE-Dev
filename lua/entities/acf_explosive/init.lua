@@ -47,7 +47,7 @@ function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5,
 	if not Owner:CheckLimit("_acf_explosive") then return false end
 
 
-	local weapon = ACF.Weapons.Guns[Data1]
+	--local weapon = ACF.Weapons.Guns[Data1]
 
 	local Bomb = ents.Create("acf_explosive")
 	if not Bomb:IsValid() then return false end
@@ -60,7 +60,7 @@ function MakeACF_Explosive(Owner, Pos, Angle, Data1, Data2, Data3, Data4, Data5,
 		Bomb:CPPISetOwner(Owner)
 	end
 
-	Bomb.Owner = Owner
+	Bomb:SetOwner(Owner)
 
 
 	Mdl = Mdl or ACF.Weapons.Guns[Id].model
@@ -98,8 +98,8 @@ function ENT:CreateBomb(Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, 
 
 	local PlayerData = bdata or ACFM_CompactBulletData(self)
 
-	local guntable = ACF.Weapons.Guns
-	local gun = guntable[self.RoundId] or {}
+	--local guntable = ACF.Weapons.Guns
+	--local gun = guntable[self.RoundId] or {}
 	self:ConfigBulletDataShortForm(PlayerData)
 
 end
@@ -120,7 +120,7 @@ function ENT:SetModelEasy(mdl)
 	self:SetSolid( SOLID_VPHYSICS )
 	self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 
-	local phys = self.Entity:GetPhysicsObject()
+	local phys = self:GetPhysicsObject()
 	if (IsValid(phys)) then
 		phys:Wake()
 		phys:EnableMotion(true)
@@ -162,9 +162,9 @@ function ENT:ConfigBulletDataShortForm(bdata)
 	self.BulletData = bdata
 	self.BulletData.Entity = self
 	self.BulletData.Crate = self:EntIndex()
-	self.BulletData.Owner = self.BulletData.Owner or self.Owner
+	self.BulletData.Owner = self.BulletData.Owner or self:GetOwner()
 
-	local phys = self.Entity:GetPhysicsObject()
+	local phys = self:GetPhysicsObject()
 	if (IsValid(phys)) then
 		phys:SetMass( bdata.ProjMass or bdata.RoundMass or bdata.Mass or 10 )
 	end
