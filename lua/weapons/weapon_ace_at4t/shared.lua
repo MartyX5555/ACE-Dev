@@ -101,8 +101,8 @@ function SWEP:InitBulletData()
 	self.BulletData.SlugMV = (self.BulletData.FillerMass / 2 * (1 - self.BulletData.HEAllocation) * ACF.HEPower * math.sin(math.rad(10 + self.BulletData.Data6) / 2) / self.BulletData.SlugMass) ^ ACF.HEATMVScale
 	self.BulletData.SlugCaliber2 = self.BulletData.Caliber - self.BulletData.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 	self.BulletData.SlugMV2 = (self.BulletData.FillerMass / 2 * self.BulletData.HEAllocation * ACF.HEPower * math.sin(math.rad(10 + self.BulletData.Data6) / 2) / self.BulletData.SlugMass) ^ ACF.HEATMVScale
-	--		print("SlugMV: "..self.BulletData.SlugMV)
-	--		print("SlugMV2: "..self.BulletData.SlugMV2)
+	--		print("SlugMV: " .. self.BulletData.SlugMV)
+	--		print("SlugMV2: " .. self.BulletData.SlugMV2)
 	self.BulletData.Detonated = 0
 	local SlugFrArea = 3.1416 * (self.BulletData.SlugCaliber / 2) ^ 2
 	local SlugFrArea2 = 3.1416 * (self.BulletData.SlugCaliber2 / 2) ^ 2
@@ -127,13 +127,13 @@ function SWEP:InitBulletData()
 	self.BulletData.Ricochet = 999
 	self.BulletData.Flight = Vector(0, 0, 0)
 	self.BulletData.BoomPower = self.BulletData.PropMass + self.BulletData.FillerMass
-	--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
+	--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37 , self.BulletData.SlugMass, 999999 )
 	local SlugEnergy = ACF_Kinetic(self.BulletData.SlugMV * 39.37, self.BulletData.SlugMass, 999999)
 	self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenArea) * ACF.KEtoRHA
-	--		print("SlugPen: "..self.BulletData.MaxPen)
+	--		print("SlugPen: " .. self.BulletData.MaxPen)
 	local SlugEnergy = ACF_Kinetic(self.BulletData.SlugMV2 * 39.37, self.BulletData.SlugMass2, 999999)
 	self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenArea2) * ACF.KEtoRHA
-	--		print("SlugPen2: "..self.BulletData.MaxPen)
+	--		print("SlugPen2: " .. self.BulletData.MaxPen)
 	--For Fake Crate
 	self.BoomFillerMass = self.BulletData.BoomFillerMass
 	self.Type = self.BulletData.Type

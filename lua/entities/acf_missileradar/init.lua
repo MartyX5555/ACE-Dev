@@ -25,7 +25,7 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 
 	self.Inputs				= WireLib.CreateInputs( self, { "Active" } )
-	self.Outputs				= WireLib.CreateOutputs( self, {"Detected ("..RadarWireDescs["Detected"]..")", "ClosestDistance", "Entities ("..RadarWireDescs["Entities"]..") [ARRAY]", "Position ("..RadarWireDescs["Position"]..") [ARRAY]", "Velocity ("..RadarWireDescs["Velocity"]..") [ARRAY]"} )
+	self.Outputs				= WireLib.CreateOutputs( self, {"Detected (" .. RadarWireDescs["Detected"] .. ")", "ClosestDistance", "Entities (" .. RadarWireDescs["Entities"] .. ") [ARRAY]", "Position (" .. RadarWireDescs["Position"] .. ") [ARRAY]", "Velocity (" .. RadarWireDescs["Velocity"] .. ") [ARRAY]"} )
 
 	self.ThinkDelay			= 0.1
 	self.StatusUpdateDelay	= 0.5
@@ -318,14 +318,14 @@ function ENT:GetOverlayText()
 
 	local ret = {}
 
-	local txt = "Status: "..status
+	local txt = "Status: " .. status
 
-	txt = txt.."\n\nView Cone: "..math.Round(cone * 2, 2).." deg"
+	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
 
-	txt = txt.."\nMax Range: "..(isnumber(range) and math.Round(range / 39.37 , 2).." m" or "Unlimited" )
+	txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
 
 	if detected and detected > 0 then
-		txt = txt.."\n\nMissiles detected: "..detected
+		txt = txt .. "\n\nMissiles detected: " .. detected
 	end
 
 	if not self.Legal then

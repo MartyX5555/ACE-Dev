@@ -48,8 +48,8 @@ do
 
 		self.LastDamageTime=CurTime()
 
-		self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle ("..EngineWireDescs["Throttle"]..")" } ) --use fuel input?
-		self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM ("..EngineWireDescs["RPM"]..")", "Torque ("..EngineWireDescs["Torque"]..")", "Power ("..EngineWireDescs["Power"]..")", "Fuel Use ("..EngineWireDescs["Fuel Use"]..")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat ("..EngineWireDescs["EngineHeat"]..")"},
+		self.Inputs = Wire_CreateInputs( self, { "Active", "Throttle (" .. EngineWireDescs["Throttle"] .. ")" } ) --use fuel input?
+		self.Outputs = WireLib.CreateSpecialOutputs( self,  { "RPM (" .. EngineWireDescs["RPM"] .. ")", "Torque (" .. EngineWireDescs["Torque"] .. ")", "Power (" .. EngineWireDescs["Power"] .. ")", "Fuel Use (" .. EngineWireDescs["Fuel Use"] .. ")", "Total Fuel" , "Entity", "Mass", "Physical Mass" , "EngineHeat (" .. EngineWireDescs["EngineHeat"] .. ")"},
 														{ "NORMAL","NORMAL","NORMAL", "NORMAL", "NORMAL", "ENTITY", "NORMAL", "NORMAL", "NORMAL" } )
 
 		Wire_TriggerOutput( self, "Entity", self )
@@ -104,7 +104,7 @@ do
 		Engine.PeakMinRPM	= Lookup.peakminrpm
 		Engine.PeakMaxRPM	= Lookup.peakmaxrpm
 		Engine.LimitRPM		= Lookup.limitrpm
-		Engine.Inertia		= Lookup.flywheelmass*(3.1416)^2
+		Engine.Inertia		= Lookup.flywheelmass * (3.1416) ^ 2
 		Engine.iselec		= Lookup.iselec
 		Engine.FlywheelOverride = Lookup.flywheeloverride
 		Engine.IsTrans		= Lookup.istrans -- driveshaft outputs to the side
@@ -200,7 +200,7 @@ function ENT:Update( ArgsTable )
 	self.PeakMinRPM		= Lookup.peakminrpm
 	self.PeakMaxRPM		= Lookup.peakmaxrpm
 	self.LimitRPM		= Lookup.limitrpm
-	self.Inertia			= Lookup.flywheelmass*(3.1416)^2
+	self.Inertia			= Lookup.flywheelmass * (3.1416) ^ 2
 	self.iselec			= Lookup.iselec -- is the engine electric?
 	self.FlywheelOverride	= Lookup.flywheeloverride -- modifies rpm drag on iselec==true
 	self.IsTrans			= Lookup.istrans
@@ -236,7 +236,7 @@ function ENT:Update( ArgsTable )
 
 	ACF_Activate( self, 1 )
 
-	return true, "Engine updated successfully!"..Feedback
+	return true, "Engine updated successfully!" .. Feedback
 end
 
 function ENT:UpdateOverlayText()
@@ -252,7 +252,7 @@ function ENT:UpdateOverlayText()
 	text = text .. "Temp: " .. math.Round(self.Heat) .. " °C / ".. math.Round(((self.Heat * (9/5)) + 32 )) .. " °F\n"
 
 	if self.FuelLink and #self.FuelLink > 0 then
-		text = text .. "\nSupplied with "..(self.EngineType == "Electric" and "Batteries" or "fuel")
+		text = text .. "\nSupplied with " .. (self.EngineType == "Electric" and "Batteries" or "fuel")
 	end
 
 	if self.HasDriver > 0 then
@@ -331,7 +331,7 @@ function ENT:ACF_Activate()
 	else
 		local Size = Entity.OBBMaxs(Entity) - Entity.OBBMins(Entity)
 		if not Entity.ACF.Area then
-			Entity.ACF.Area = ((Size.x * Size.y)+(Size.x * Size.z)+(Size.y * Size.z)) * 6.45
+			Entity.ACF.Area = ((Size.x * Size.y) + (Size.x * Size.z) + (Size.y * Size.z)) * 6.45
 		end
 
 	end
@@ -339,7 +339,7 @@ function ENT:ACF_Activate()
 	Entity.ACF.Ductility = Entity.ACF.Ductility or 0
 
 	local Area = (Entity.ACF.Area)
-	local Armour = (Entity:GetPhysicsObject():GetMass()*1000 / Area / 0.78)
+	local Armour = (Entity:GetPhysicsObject():GetMass() * 1000 / Area / 0.78)
 	local Health = (Area/ACF.Threshold)
 
 	local Percent = 1
@@ -354,7 +354,7 @@ function ENT:ACF_Activate()
 	Entity.ACF.MaxArmour = Armour * ACF.ArmorMod
 	Entity.ACF.Type = nil
 	Entity.ACF.Mass = PhysObj:GetMass()
-	--Entity.ACF.Density = (PhysObj:GetMass()*1000)/Entity.ACF.Volume
+	--Entity.ACF.Density = (PhysObj:GetMass() * 1000)/Entity.ACF.Volume
 
 	Entity.ACF.Type = "Prop"
 	--print(Entity.ACF.Health)
@@ -481,7 +481,7 @@ function ENT:CalcMassRatio()
 
 	self.MassRatio = PhysMass / Mass
 	--self.MassRatio = 1 / (Tmass/10000)
-	--self.MassRatio = (PhysMass^0.9225) / Mass
+	--self.MassRatio = (PhysMass ^ 0.9225) / Mass
 
 	Wire_TriggerOutput( self, "Mass", math.Round( Mass, 2 ) )
 	Wire_TriggerOutput( self, "Physical Mass", math.Round( PhysMass, 2 ) )
@@ -517,7 +517,7 @@ function ENT:CalcRPM()
 
 	local PhysObj = self:GetPhysicsObject()
 	local DeltaTime = CurTime() - self.LastThink
-	-- local AutoClutch = math.min(math.max(self.FlyRPM-self.IdleRPM,0)/(self.IdleRPM+self.LimitRPM/10),1)
+	-- local AutoClutch = math.min(math.max(self.FlyRPM-self.IdleRPM,0)/(self.IdleRPM + self.LimitRPM/10),1)
 	--local ClutchRatio = math.min(Clutch/math.max(TorqueDiff,0.05),1)
 
 	--find next active tank with fuel
@@ -526,7 +526,7 @@ function ENT:CalcRPM()
 	local MaxTanks = #self.FuelLink
 
 	for i = 1, MaxTanks do
-		Tank = self.FuelLink[self.FuelTank+1]
+		Tank = self.FuelLink[self.FuelTank + 1]
 		self.FuelTank = (self.FuelTank + 1) % MaxTanks
 		if IsValid(Tank) and Tank.Fuel > 0 and Tank.Active and Tank.Legal then
 			break --return Tank
@@ -546,7 +546,7 @@ function ENT:CalcRPM()
 		end
 		Tank.Fuel = math.max(Tank.Fuel - Consumption,0)
 		boost = ACF.TorqueBoost
-		Wire_TriggerOutput(self, "Fuel Use", math.Round(60*Consumption/DeltaTime,3))
+		Wire_TriggerOutput(self, "Fuel Use", math.Round(60 * Consumption/DeltaTime,3))
 	elseif self.RequiresFuel then
 		self:TriggerInput( "Active", 0 ) --shut off if no fuel and requires it
 		return 0
@@ -556,7 +556,7 @@ function ENT:CalcRPM()
 
 	--adjusting performance based on damage
 	self.TorqueMult = math.Clamp(((1 - self.TorqueScale) / (0.5)) * ((self.ACF.Health/self.ACF.MaxHealth) - 1) + 1, self.TorqueScale, 1)
-	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1+self.HasDriver*ACF.DriverTorqueBoost)
+	self.PeakTorque = self.PeakTorqueHeld * self.TorqueMult * (1 + self.HasDriver * ACF.DriverTorqueBoost)
 
 	-- Calculate the current torque from flywheel RPM
 	local perc = math.Remap(self.FlyRPM, self.IdleRPM, self.LimitRPM, 0, 1)
@@ -615,7 +615,7 @@ function ENT:CalcRPM()
 	if HealthRatio < 0.95 then
 
 		if HealthRatio > 0.025 then
-			HitRes = ACF_Damage ( self , {Kinetic = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100,Momentum = 0,Penetration = (1+math.max(Mass/2,20)/2.5)/self.Throttle*100} , 2 , 0 , self.Owner )
+			HitRes = ACF_Damage ( self , {Kinetic = (1 + math.max(Mass/2,20)/2.5)/self.Throttle * 100,Momentum = 0,Penetration = (1 + math.max(Mass/2,20)/2.5)/self.Throttle * 100} , 2 , 0 , self.Owner )
 		else
 
 			--Turns Off due to massive damage

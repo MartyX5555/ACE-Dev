@@ -17,20 +17,20 @@
 
 	self.Cal = self.Ent:GetNWFloat("Caliber", 2 )
 
-	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1)^0.3
+	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1) ^ 0.3
 
 	local Tr = {}
-	Tr.start = self.Origin - self.DirVec*10
-	Tr.endpos = self.Origin + self.DirVec*10
+	Tr.start = self.Origin - self.DirVec * 10
+	Tr.endpos = self.Origin + self.DirVec * 10
 	Tr.mins = Vector(0,0,0)
 	Tr.maxs = Vector(0,0,0)
 
 	local SurfaceTr = util.TraceHull( Tr )
 
-	util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec*10 )
+	util.Decal("Impact.Concrete", SurfaceTr.StartPos, self.Origin + self.DirVec * 10 )
 
 	--debugoverlay.Cross( SurfaceTr.StartPos, 10, 3, Color(math.random(100,255),0,0) )
-	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec*10, 2 , Color(math.random(100,255),0,0) )
+	--debugoverlay.Line( SurfaceTr.StartPos, self.Origin + self.DirVec * 10, 2 , Color(math.random(100,255),0,0) )
 
 	--this is crucial for subcaliber, this will boost the dust's size.
 	self.SubCalBoost = {
@@ -131,30 +131,30 @@ function EFFECT:Dust( SmokeColor )
 	local Mass		= self.Mass
 
 	local HalfArea	= ( self.SubCalBoost[self.Id] and 0.75) or 1
-	local ShellArea	= 3.141*(self.Cal/2) * HalfArea
+	local ShellArea	= 3.141 * (self.Cal/2) * HalfArea
 
 	--print(ShellArea)
 
 	--KE main formula
-	local Energy	= math.Clamp( (((Mass*(Vel^2))/2)/2 ) * ShellArea, 4 ,math.max(ShellArea^0.95,4) )
+	local Energy	= math.Clamp( (((Mass * (Vel ^ 2))/2)/2 ) * ShellArea, 4 ,math.max(ShellArea ^ 0.95,4) )
 
 	--print(Energy)
 
 	for i=1, 3 do
 
-	local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin - self.DirVec*5 )
+	local Dust = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin - self.DirVec * 5 )
 	if (Dust) then
-		Dust:SetVelocity(VectorRand() * math.random( 20,30*Energy) )
+		Dust:SetVelocity(VectorRand() * math.random( 20,30 * Energy) )
 		Dust:SetLifeTime( 0 )
-		Dust:SetDieTime( math.Rand( 1 , 2 )*(Energy/3)  )
+		Dust:SetDieTime( math.Rand( 1 , 2 ) * (Energy/3)  )
 		Dust:SetStartAlpha( math.Rand( math.max(SmokeColor.a-20,10), SmokeColor.a ) )
 		Dust:SetEndAlpha( 0 )
-		Dust:SetStartSize( 5*Energy )
-		Dust:SetEndSize( 30*Energy )
+		Dust:SetStartSize( 5 * Energy )
+		Dust:SetEndSize( 30 * Energy )
 		Dust:SetRoll( math.Rand(150, 360) )
 		Dust:SetRollDelta( math.Rand(-0.2, 0.2) )
 		Dust:SetAirResistance( 350 )
-		Dust:SetGravity( Vector( math.random(-5,5)*Energy, math.random(-5,5)*Energy, -70 ) )
+		Dust:SetGravity( Vector( math.random(-5,5) * Energy, math.random(-5,5) * Energy, -70 ) )
 
 		Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )
 	end
@@ -164,7 +164,7 @@ end
 
 function EFFECT:Metal( SmokeColor )
 
-	SmokeColor.a = SmokeColor.a*0.5
+	SmokeColor.a = SmokeColor.a * 0.5
 
 	local PMul = self.ParticleMul
 	local Vel = self.Velocity/2500
@@ -174,23 +174,23 @@ function EFFECT:Metal( SmokeColor )
 	local Boost = ( self.SubCalBoost[self.Id] and 2) or 1
 
 	--KE main formula
-	local Energy = math.max(((Mass*(Vel^2))/2)*0.005 * Boost ,2)
+	local Energy = math.max(((Mass * (Vel ^ 2))/2) * 0.005 * Boost ,2)
 
 	for i=0, math.max(self.Caliber/3,1) do
 
-	local Dust = self.Emitter:Add( "particle/smokesprites_000"..math.random(1,9), self.Origin - self.DirVec*5 )
+	local Dust = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin - self.DirVec * 5 )
 	if (Dust) then
-		Dust:SetVelocity(VectorRand() * math.random( 25,35*Energy) )
+		Dust:SetVelocity(VectorRand() * math.random( 25,35 * Energy) )
 		Dust:SetLifeTime( 0 )
-		Dust:SetDieTime( math.Rand( 0.1 , 4 )*math.max(Energy,2)/3  )
+		Dust:SetDieTime( math.Rand( 0.1 , 4 ) * math.max(Energy,2)/3  )
 		Dust:SetStartAlpha( math.Rand( math.max(SmokeColor.a-25,10), SmokeColor.a ) )
 		Dust:SetEndAlpha( 0 )
-		Dust:SetStartSize( 5*Energy )
-		Dust:SetEndSize( 15*Energy )
+		Dust:SetStartSize( 5 * Energy )
+		Dust:SetEndSize( 15 * Energy )
 		Dust:SetRoll( math.Rand(150, 360) )
 		Dust:SetRollDelta( math.Rand(-0.2, 0.2) )
 		Dust:SetAirResistance( 100 )
-		Dust:SetGravity( Vector( math.random(-5,5)*Energy, math.random(-5,5)*Energy, -70 ) )
+		Dust:SetGravity( Vector( math.random(-5,5) * Energy, math.random(-5,5) * Energy, -70 ) )
 
 		Dust:SetColor( SmokeColor.r,SmokeColor.g,SmokeColor.b )
 	end
@@ -198,7 +198,7 @@ function EFFECT:Metal( SmokeColor )
 
 	local Sparks = EffectData()
 	Sparks:SetOrigin( self.Origin )
-	Sparks:SetNormal( self.DirVec+VectorRand()*1.5)
+	Sparks:SetNormal( self.DirVec + VectorRand() * 1.5)
 	Sparks:SetMagnitude( self.Scale/1.75 )
 	Sparks:SetScale( self.Scale/1.75 )
 	Sparks:SetRadius( self.Scale/1.75 )

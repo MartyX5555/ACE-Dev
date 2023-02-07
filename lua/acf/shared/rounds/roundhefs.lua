@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.HEFS =  { "AC", "SA","C","MG", "AL","HMG" ,"RAC", "SC","ATR" ,
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "[HE-FS] - "..ACFTranslation.ShellHEFS[1] --Human readable name
+Round.name = "[HE-FS] - " .. ACFTranslation.ShellHEFS[1] --Human readable name
 Round.model = "models/munitions/round_100mm_mortar_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellHEFS[2]
 Round.netid = 19 --Unique ammotype ID for network transmission
@@ -35,9 +35,9 @@ function Round.convert( Crate, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
+	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
 
 	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 	GUIData.MinFillerVol = 0
@@ -45,12 +45,12 @@ function Round.convert( Crate, PlayerData )
 	GUIData.FillerVol = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
 	Data.FillerMass = 1.75 *GUIData.FillerVol * ACF.HEDensity/1000
 
-	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0)*7.9/1000 + Data.FillerMass
+	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0) * 7.9/1000 + Data.FillerMass
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 
 	--Random bullshit left
 	Data.ShovePower = 0.1
-	Data.PenArea = Data.FrArea^ACF.PenAreaMod
+	Data.PenArea = Data.FrArea ^ ACF.PenAreaMod
 	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
@@ -75,11 +75,11 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	GUIData.BlastRadius = (Data.FillerMass)^0.33*8
+	GUIData.BlastRadius = (Data.FillerMass) ^ 0.33 * 8
 	local FragMass = Data.ProjMass - Data.FillerMass
-	GUIData.Fragments = math.max(math.floor((Data.FillerMass/FragMass)*ACF.HEFrag),2)
+	GUIData.Fragments = math.max(math.floor((Data.FillerMass/FragMass) * ACF.HEFrag),2)
 	GUIData.FragMass = FragMass/GUIData.Fragments
-	GUIData.FragVel = (Data.FillerMass*ACF.HEPower*1000/GUIData.FragMass/GUIData.Fragments)^0.5
+	GUIData.FragVel = (Data.FillerMass * ACF.HEPower * 1000/GUIData.FragMass/GUIData.Fragments) ^ 0.5
 	return GUIData
 end
 
@@ -138,14 +138,14 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 
-	ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
+	ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3, HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner, nil, Bullet.Gun )
 	ACF_RemoveBullet( Index )
 
 end
 
 function Round.endeffect( Effect, Bullet )
 
-	local Radius = (Bullet.FillerMass)^0.33*8*39.37
+	local Radius = (Bullet.FillerMass) ^ 0.33 * 8*39.37
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
 		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
@@ -166,12 +166,12 @@ function Round.pierceeffect( Effect, Bullet )
 		BulletEffect.Damage = 0
 	LocalPlayer():FireBullets(BulletEffect)
 
-	util.Decal("ExplosiveGunshot", Bullet.SimPos + Bullet.SimFlight*10, Bullet.SimPos - Bullet.SimFlight*10)
+	util.Decal("ExplosiveGunshot", Bullet.SimPos + Bullet.SimFlight * 10, Bullet.SimPos - Bullet.SimFlight * 10)
 
 	local Spall = EffectData()
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
-		Spall:SetScale( math.max(((Bullet.RoundMass * (Bullet.SimFlight:Length()/39.37)^2)/2000)/10000,1) )
+		Spall:SetScale( math.max(((Bullet.RoundMass * (Bullet.SimFlight:Length()/39.37) ^ 2)/2000)/10000,1) )
 	util.Effect( "AP_Hit", Spall )
 
 end
@@ -239,21 +239,21 @@ function Round.guiupdate( Panel, Table )
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
 	-------------------------------------------------------------------------------
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength+(Data.Caliber*4.5),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength + (Data.Caliber * 4.5),Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "HE Filler Volume", "HE Filler Mass : " .. (math.floor(Data.FillerMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_Checkboxes( Data )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
-	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)
-	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : "..(math.floor(Data.BlastRadius*100)/100).." m")	--Proj muzzle velocity (Name, Desc)
-	acfmenupanel:CPanelText("FragDisplay", "Fragments : "..(Data.Fragments).."\n Average Fragment Weight : "..(math.floor(Data.FragMass*10000)/10).." g \n Average Fragment Velocity : "..math.floor(Data.FragVel).." m/s")	--Proj muzzle penetration (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + (math.floor(Data.Tracer * 5)/10)) * 100)/100) .. "/" .. (Data.MaxTotalLength) .. " cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : " .. math.floor(Data.MuzzleVel * ACF.VelScale) .. " m/s")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("BlastDisplay", "Blast Radius : " .. (math.floor(Data.BlastRadius * 100)/100) .. " m")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("FragDisplay", "Fragments : " .. (Data.Fragments) .. "\n Average Fragment Weight : " .. (math.floor(Data.FragMass * 10000)/10) .. " g \n Average Fragment Velocity : " .. math.floor(Data.FragVel) .. " m/s")	--Proj muzzle penetration (Name, Desc)
 
 	---------------------------Chance of Ricochet table----------------------------
 
-	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: '..Data.DetonatorAngle..'°')
+	acfmenupanel:CPanelText("RicoDisplay", 'Max Detonation angle: ' .. Data.DetonatorAngle .. '°')
 
 	-------------------------------------------------------------------------------
 end

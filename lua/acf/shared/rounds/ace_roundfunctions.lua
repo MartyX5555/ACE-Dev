@@ -27,8 +27,8 @@ do
 		print(Data.Tracer)
 		print(Data.TwoPiece)
 ]]
-		--print('Prop Before: '..PlayerData["PropLength"])
-		--print('Proj Before: '..PlayerData["ProjLength"])
+		--print('Prop Before: ' .. PlayerData["PropLength"])
+		--print('Proj Before: ' .. PlayerData["ProjLength"])
 
 		local Type = PlayerData.Type or ""
 
@@ -55,10 +55,10 @@ do
 			end
 		end
 
-		--print('MaxLenght: '..GUIData["MaxTotalLength"])
-		--print('Remain for Proj: '..GUIData["MaxTotalLength"] - PlayerData["PropLength"])
-		--print('Prop After: '..PlayerData["PropLength"])
-		--print('Proj After: '..PlayerData["ProjLength"])
+		--print('MaxLenght: ' .. GUIData["MaxTotalLength"])
+		--print('Remain for Proj: ' .. GUIData["MaxTotalLength"] - PlayerData["PropLength"])
+		--print('Prop After: ' .. PlayerData["PropLength"])
+		--print('Proj After: ' .. PlayerData["ProjLength"])
 
 		local PropMax = (BulletMax.propweight * 1000 / ACF.PDensity) / Data.FrArea	--Current casing absolute max propellant capacity
 		local CurLength = (PlayerData.ProjLength + math.min(PlayerData.PropLength,PropMax) + Data.Tracer )

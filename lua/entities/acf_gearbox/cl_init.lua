@@ -25,7 +25,7 @@ function ACFGearboxGUICreate( Table )
 		acfmenupanel.Serialize = function( tbl, factor )
 			local str = ""
 			for i=1,7 do
-				str = str..math.Round(tbl[i] * factor,1)..","
+				str = str .. math.Round(tbl[i] * factor,1) .. ","
 			end
 			RunConsoleCommand( "acfmenu_data9", str )
 		end
@@ -84,7 +84,7 @@ function ACFGearboxGUICreate( Table )
 			if ID > 0 and not (Table.auto and ID == 8) then
 				ACF_GearsSlider(ID, Value, Table.id)
 				if Table.auto then
-					ACF_ShiftPoint(ID, acfmenupanel.GearboxData[Table.id].ShiftTable[ID], Table.id, "Gear "..ID.." upshift speed: ")
+					ACF_ShiftPoint(ID, acfmenupanel.GearboxData[Table.id].ShiftTable[ID], Table.id, "Gear " .. ID .. " upshift speed: ")
 				end
 			elseif Table.auto and (ID == -2 or ID == 8) then
 				ACF_GearsSlider(8, Value, Table.id, "Reverse")
@@ -95,8 +95,8 @@ function ACFGearboxGUICreate( Table )
 	end
 
 	acfmenupanel:CPanelText("Desc", Table.desc)
-	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : "..(Table.maxtq).."n-m / "..math.Round(Table.maxtq*0.73).."ft-lb")
-	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
+	acfmenupanel:CPanelText("MaxTorque", "Clutch Maximum Torque Rating : " .. (Table.maxtq) .. "n-m / " .. math.Round(Table.maxtq * 0.73) .. "ft-lb")
+	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. "kg")
 
 	if Table.auto then
 		acfmenupanel:CPanelText( "ShiftPointGen", "\nShift Point Generator:" )
@@ -118,8 +118,8 @@ function ACFGearboxGUICreate( Table )
 					local str, factor = acfmenupanel.CData.UnitsInput:GetSelected()
 					local mul = math.pi * acfmenupanel.CData.ShiftGenPanel.RPM:GetValue() * acfmenupanel.CData.ShiftGenPanel.Ratio:GetValue() * acfmenupanel.CData[10]:GetValue() * acfmenupanel.CData.ShiftGenPanel.Wheel:GetValue() / (60 * factor)
 					for i=1,acfmenupanel.CData.ShiftGenPanel.Gears do
-						acfmenupanel.CData[10+i].Input:SetValue( math.Round( math.abs( mul * acfmenupanel.CData[i]:GetValue() ), 2 ) )
-						acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable[i] = tonumber(acfmenupanel.CData[10+i].Input:GetValue())
+						acfmenupanel.CData[10 + i].Input:SetValue( math.Round( math.abs( mul * acfmenupanel.CData[i]:GetValue() ), 2 ) )
+						acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable[i] = tonumber(acfmenupanel.CData[10 + i].Input:GetValue())
 					end
 					acfmenupanel.Serialize( acfmenupanel.GearboxData[acfmenupanel.CData.UnitsInput.ID].ShiftTable, factor )  --dot intentional
 				end
@@ -196,7 +196,7 @@ function ACF_GearsSlider(Gear, Value, ID, Desc, CVT)
 
 	if Gear and not acfmenupanel.CData[Gear] then
 		acfmenupanel.CData[Gear] = vgui.Create( "DNumSlider", acfmenupanel.CustomDisplay )
-			acfmenupanel.CData[Gear]:SetText( Desc or "Gear "..Gear )
+			acfmenupanel.CData[Gear]:SetText( Desc or "Gear " .. Gear )
 			acfmenupanel.CData[Gear].Label:SizeToContents()
 			acfmenupanel.CData[Gear]:SetDark( true )
 			acfmenupanel.CData[Gear]:SetMin( CVT and 1 or -2 )
@@ -205,10 +205,10 @@ function ACF_GearsSlider(Gear, Value, ID, Desc, CVT)
 			acfmenupanel.CData[Gear].Gear = Gear
 			acfmenupanel.CData[Gear].ID = ID
 			acfmenupanel.CData[Gear]:SetValue(Value)
-			RunConsoleCommand( "acfmenu_data"..Gear, Value )
+			RunConsoleCommand( "acfmenu_data" .. Gear, Value )
 			acfmenupanel.CData[Gear].OnValueChanged = function( slider, val )
 				acfmenupanel.GearboxData[slider.ID].GearTable[slider.Gear] = val
-				RunConsoleCommand( "acfmenu_data"..Gear, val )
+				RunConsoleCommand( "acfmenu_data" .. Gear, val )
 			end
 		acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData[Gear] )
 	end

@@ -56,8 +56,8 @@ function ENT:Think()
 			} )
 
 			if groundRanger.Hit and groundRanger.HitWorld then
-				self:SetPos(groundRanger.HitPos+Vector(0,0,-2.5))
-				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
+				self:SetPos(groundRanger.HitPos + Vector(0,0,-2.5))
+				self:SetAngles(groundRanger.HitNormal:Angle() + Angle(90,0,0))
 				self.MineState = 1
 				self.phys:EnableMotion(false)
 			end
@@ -77,9 +77,9 @@ function ENT:Think()
 			if triggerRanger.Hit and not triggerRanger.Entity:IsPlayer() then
 
 				local HEWeight=250
-				local Radius = (HEWeight)^0.33*8*39.37
+				local Radius = (HEWeight) ^ 0.33 * 8*39.37
 
-				ACF_HE( self:GetPos() + self:GetUp() * 3, Vector(0,0,-1) , HEWeight , HEWeight*0.2 , self:GetOwner(), self, self) --0.5 is standard antipersonal mine
+				ACF_HE( self:GetPos() + self:GetUp() * 3, Vector(0,0,-1) , HEWeight , HEWeight * 0.2 , self:GetOwner(), self, self) --0.5 is standard antipersonal mine
 
 				local Flash = EffectData()
 					Flash:SetOrigin( self:GetPos() + self:GetUp() * 3 )

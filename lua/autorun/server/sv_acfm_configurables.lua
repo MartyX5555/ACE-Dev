@@ -34,7 +34,7 @@ function ACFM_CreateConfigurable_Raw(str, configurables, bdata, wlistPath)
 
 	local parts = {}
 	-- split parts delimited by ':'
-	for part in string.gmatch(str, "[^:]+") do parts[#parts+1] = part end
+	for part in string.gmatch(str, "[^:]+") do parts[#parts + 1] = part end
 
 	if #parts <= 0 then return end
 
@@ -61,7 +61,7 @@ function ACFM_CreateConfigurable_Raw(str, configurables, bdata, wlistPath)
 			if not cmd then continue end
 
 			-- get VAL from 'CMD=VAL'
-			local val = string.match(arg, "[^=]+$")
+			local val = string.match(arg, "[^=] + $")
 			if not val then continue end
 
 			args[string.lower(cmd)] = val

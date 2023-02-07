@@ -41,7 +41,7 @@ ACF_defineGun("WalleyeGBU", {						-- id
 		armour		= 13,							-- effective armour thickness of casing, in mm
 		propweight	= 1,							-- motor mass - motor casing
 		thrust		= 1,
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.005,						-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,						-- drag coefficient of the missile
@@ -86,8 +86,8 @@ ACF_defineGun("227kgGBU", {						-- id
 		casing		= 0.5,							-- thickness of missile casing, cm
 		armour		= 12,							-- effective armour thickness of casing, in mm
 		propweight	= 0,							-- motor mass - motor casing
-		thrust		= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust		= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.005,						-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,						-- drag coefficient of the missile
@@ -131,8 +131,8 @@ ACF_defineGun("454kgGBU", {						-- id
 		casing		= 0.5,							-- thickness of missile casing, cm
 		armour		= 14,							-- effective armour thickness of casing, in mm
 		propweight	= 0,							-- motor mass - motor casing
-		thrust		= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust		= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.005,						-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,						-- drag coefficient of the missile
@@ -176,8 +176,8 @@ ACF_defineGun("909kgGBU", {						-- id
 		casing		= 0.5,							-- thickness of missile casing, cm
 		armour		= 28,							-- effective armour thickness of casing, in mm
 		propweight	= 0,							-- motor mass - motor casing
-		thrust		= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust		= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.005,						-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,						-- drag coefficient of the missile

@@ -37,8 +37,8 @@ ACF_defineGun("BGM-71E ASM", {								-- id
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.2,								-- motor mass - motor casing
-		thrust		= 10000,								-- average thrust - kg*in/s^2
-		burnrate		= 200,								-- cm^3/s at average chamber pressure
+		thrust		= 10000,								-- average thrust - kg * in/s ^ 2
+		burnrate		= 200,								-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.2,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 2000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.003,								-- drag coefficient while falling
@@ -86,8 +86,8 @@ ACF_defineGun("9M133 ASM", {									-- id
 		casing		= 0.2,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1,									-- motor mass - motor casing
-		thrust		= 3500,								-- average thrust - kg*in/s^2									--was 7000
-		burnrate		= 125,								-- cm^3/s at average chamber pressure							--was 40
+		thrust		= 3500,								-- average thrust - kg * in/s ^ 2									--was 7000
+		burnrate		= 125,								-- cm ^ 3/s at average chamber pressure							--was 40
 		starterpct	= 0.2,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 500,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.0075,							-- drag coefficient while falling								--was 0.001
@@ -138,8 +138,8 @@ ACF_defineGun("AT-3 ASM", { --id
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.2,								-- motor mass - motor casing
-		thrust		= 1500,								-- average thrust - kg*in/s^2
-		burnrate		= 200,								-- cm^3/s at average chamber pressure
+		thrust		= 1500,								-- average thrust - kg * in/s ^ 2
+		burnrate		= 200,								-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.5,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 2000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.015,								-- drag coefficient while falling
@@ -191,8 +191,8 @@ ACF_defineGun("Ataka ASM", { --id
 		casing		= 0.12,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.7,								-- motor mass - motor casing
-		thrust		= 24000,								-- average thrust - kg*in/s^2							--was 18500
-		burnrate		= 500,								-- cm^3/s at average chamber pressure						--was 130
+		thrust		= 24000,								-- average thrust - kg * in/s ^ 2							--was 18500
+		burnrate		= 500,								-- cm ^ 3/s at average chamber pressure						--was 130
 		starterpct	= 0.3,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 5000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.01,								-- drag coefficient while falling							--was 0.001
@@ -244,8 +244,8 @@ ACF_defineGun("AT-2 ASM", { --id
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.2,								-- motor mass - motor casing
-		thrust		= 1250,								-- average thrust - kg*in/s^2
-		burnrate		= 250,								-- cm^3/s at average chamber pressure
+		thrust		= 1250,								-- average thrust - kg * in/s ^ 2
+		burnrate		= 250,								-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.5,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 1500,								-- minimum speed beyond which the fins work at 100% efficiency	--was 500
 		dragcoef		= 0.015,								-- drag coefficient while falling								--was 0.001
@@ -296,8 +296,8 @@ ACF_defineGun("FGM-148 ASM", {
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1,									-- motor mass - motor casing
-		thrust		= 2500,								-- average thrust - kg*in/s^2		--was 3000
-		burnrate		= 160,								-- cm^3/s at average chamber pressure --100
+		thrust		= 2500,								-- average thrust - kg * in/s ^ 2		--was 3000
+		burnrate		= 160,								-- cm ^ 3/s at average chamber pressure --100
 		starterpct	= 0.15,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 1000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.015,								-- drag coefficient while falling			--was 0.01

@@ -37,8 +37,8 @@ ACF_defineGun("FIM-92 SAM", {								-- id
 		casing		= 0.5,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.5,								-- motor mass - motor casing
-		thrust		= 7000,								-- average thrust - kg*in/s^2		--was 120000
-		burnrate		= 1000,		--1000					-- cm^3/s at average chamber pressure
+		thrust		= 7000,								-- average thrust - kg * in/s ^ 2		--was 120000
+		burnrate		= 1000,		--1000					-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.1,								-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 10000,								-- minimum speed beyond which the fins work at 100% efficiency  --was 15000
 		dragcoef		= 0.005,								-- drag coefficient while falling						--was 0.001
@@ -89,8 +89,8 @@ ACF_defineGun("Mistral SAM", {								-- id
 		casing		= 0.01,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 1.5,								-- motor mass - motor casing
-		thrust		= 9000,								-- average thrust - kg*in/s^2		--was 120000
-		burnrate		= 850,	-- 850							-- cm^3/s at average chamber pressure
+		thrust		= 9000,								-- average thrust - kg * in/s ^ 2		--was 120000
+		burnrate		= 850,	-- 850							-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.1,								-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 17000,								-- minimum speed beyond which the fins work at 100% efficiency  --was 15000
 		dragcoef		= 0.0035,								-- drag coefficient while falling
@@ -138,8 +138,8 @@ ACF_defineGun("Strela-1 SAM", {								-- id
 		casing		= 0.05,								-- thickness of missile casing, cm
 		armour		= 10,								-- effective armour thickness of casing, in mm
 		propweight	= 1,									-- motor mass - motor casing
-		thrust		= 4900,								-- average thrust - kg*in/s^2									--was 3800
-		burnrate		= 250,								-- cm^3/s at average chamber pressure						--was 400
+		thrust		= 4900,								-- average thrust - kg * in/s ^ 2									--was 3800
+		burnrate		= 250,								-- cm ^ 3/s at average chamber pressure						--was 400
 		starterpct	= 0.05,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 10000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.01,								-- drag coefficient while falling
@@ -190,8 +190,8 @@ ACF_defineGun("9M311 SAM", {										-- id
 		casing		= 0.1,								-- thickness of missile casing, cm
 		armour		= 5,									-- effective armour thickness of casing, in mm
 		propweight	= 0.8,								-- motor mass - motor casing
-		thrust		= 17000,								-- average thrust - kg*in/s^2
-		burnrate		= 400,								-- cm^3/s at average chamber pressure
+		thrust		= 17000,								-- average thrust - kg * in/s ^ 2
+		burnrate		= 400,								-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.2,								-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 17000,								-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.011,								-- drag coefficient while falling

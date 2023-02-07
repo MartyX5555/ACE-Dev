@@ -29,8 +29,8 @@ if SERVER then
 		local effectiveness = Material.effectiveness
 		local resiliance	= Material.resiliance
 
-		armor = armor^curve
-		losArmor = losArmor^curve
+		armor = armor ^ curve
+		losArmor = losArmor ^ curve
 
 		local slopeDmg = ( losArmor / armor ) --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
 

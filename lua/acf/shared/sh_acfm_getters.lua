@@ -140,7 +140,7 @@ function ACF_GetCompatibleRacks(ammoId)
 
 	for rackId, data in pairs(ACF.Weapons.Racks) do
 		if ACF_CanLinkRack(rackId, ammoId) then
-			ret[#ret+1] = rackId
+			ret[#ret + 1] = rackId
 		end
 	end
 

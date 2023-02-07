@@ -43,9 +43,9 @@ do
 		self.Legal		= true
 		self.LegalIssues	= ""
 
-		self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty ("..FueltankWireDescs["Refuel"]..")" } )
+		self.Inputs = Wire_CreateInputs( self, { "Active", "Refuel Duty (" .. FueltankWireDescs["Refuel"] .. ")" } )
 		self.Outputs = WireLib.CreateSpecialOutputs( self,
-			{ "Fuel ("..FueltankWireDescs["Fuel"]..")", "Capacity ("..FueltankWireDescs["Capacity"]..")", "Leaking ("..FueltankWireDescs["Leaking"]..")", "Entity" },
+			{ "Fuel (" .. FueltankWireDescs["Fuel"] .. ")", "Capacity (" .. FueltankWireDescs["Capacity"] .. ")", "Leaking (" .. FueltankWireDescs["Leaking"] .. ")", "Entity" },
 			{ "NORMAL", "NORMAL", "NORMAL", "ENTITY" }
 		)
 		Wire_TriggerOutput( self, "Leaking", 0 )
@@ -73,7 +73,7 @@ function ENT:ACF_Activate( Recalc )
 		self.ACF.Volume = PhysObj:GetVolume() * 1
 	end
 
-	local Armour = self.EmptyMass*1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = self.EmptyMass * 1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop Area gone
 
 	local Percent = 1
@@ -87,7 +87,7 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.MaxArmour = Armour
 	self.ACF.Type = nil
 	self.ACF.Mass = self.Mass
-	self.ACF.Density = (PhysObj:GetMass()*1000) / self.ACF.Volume
+	self.ACF.Density = (PhysObj:GetMass() * 1000) / self.ACF.Volume
 	self.ACF.Type = "Prop"
 
 	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
@@ -121,8 +121,8 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 		return HitRes
 	end
 
-	local Ratio = (HitRes.Damage/self.ACF.Health)^0.75 --chance to explode from sheer damage, small shots = small chance
-	local ExplodeChance = (1-(self.Fuel/self.Capacity))^0.75 --chance to explode from fumes in tank, less fuel = more explodey
+	local Ratio = (HitRes.Damage/self.ACF.Health) ^ 0.75 --chance to explode from sheer damage, small shots = small chance
+	local ExplodeChance = (1-(self.Fuel/self.Capacity)) ^ 0.75 --chance to explode from fumes in tank, less fuel = more explodey
 
 	--it's gonna blow
 	if math.Rand(0,1) < (ExplodeChance + Ratio) then
@@ -140,7 +140,7 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, Bone, Type 
 
 	else												--spray some fuel around
 		self:NextThink( CurTime() + 0.1 )
-		self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage/self.ACF.Health)^1.5) * 0.25
+		self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage/self.ACF.Health) ^ 1.5) * 0.25
 	end
 
 	return HitRes
@@ -179,10 +179,10 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Dat
 	Tank.LastMass = 1
 	Tank:UpdateFuelTank(Id, Data1, Data2)
 
-	local electric = (Data2 == 'Electric') and TankData.name..' Li-Ion Battery'
-	local gas	= Data2.." "..TankData.name..( not TankData.notitle and " Fuel Tank" or "")
+	local electric = (Data2 == 'Electric') and TankData.name .. ' Li-Ion Battery'
+	local gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
 
-	local name = "ACE "..(electric or gas)
+	local name = "ACE " .. (electric or gas)
 
 	Tank:SetNWString( "WireName", name )
 
@@ -215,7 +215,7 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 
 	self.Volume		= PhysObj:GetVolume() - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
 	self.Capacity	= self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
-	self.EmptyMass	= (Area*Wall)*16.387*(7.9/1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
+	self.EmptyMass	= (Area * Wall) * 16.387 * (7.9/1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
 
 	self.FuelType	= Data2
 	self.IsExplosive	= self.FuelType ~= "Electric" and TankData.explosive ~= false
@@ -231,10 +231,10 @@ function ENT:UpdateFuelTank(Id, Data1, Data2)
 
 	self:UpdateFuelMass()
 
-	local electric = (Data2 == 'Electric') and TankData.name..' Li-Ion Battery'
-	local gas	= Data2.." "..TankData.name..( not TankData.notitle and " Fuel Tank" or "")
+	local electric = (Data2 == 'Electric') and TankData.name .. ' Li-Ion Battery'
+	local gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
 
-	local name = "ACE "..(electric or gas)
+	local name = "ACE " .. (electric or gas)
 
 	self:SetNWString( "WireName", name )
 
@@ -291,7 +291,7 @@ function ENT:UpdateFuelMass()
 	--reduce superflous engine calls, update fuel tank mass every 5 kgs change or every 10s-15s
 	if math.abs(self.LastMass - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
 		self.LastMass = self.Mass
-		self.NextMassUpdate = CurTime()+math.Rand(10,15)
+		self.NextMassUpdate = CurTime() + math.Rand(10,15)
 		local phys = self:GetPhysicsObject()
 		if (phys:IsValid()) then
 			phys:SetMass( self.Mass )
@@ -321,7 +321,7 @@ function ENT:Update( ArgsTable )
 
 	self:UpdateFuelTank(ArgsTable[4], ArgsTable[5], ArgsTable[6]) --Id, SizeId, FuelType
 
-	return true, "Fuel tank successfully updated."..Feedback
+	return true, "Fuel tank successfully updated." .. Feedback
 end
 
 function ENT:TriggerInput( iname, value )
@@ -357,7 +357,7 @@ function ENT:Think()
 	if self.Leaking > 0 then
 		self:NextThink( CurTime() + 0.25 )
 		self.Fuel = math.max(self.Fuel - self.Leaking,0)
-		self.Leaking = math.Clamp(self.Leaking - (1 / math.max(self.Fuel,1))^0.5, 0, self.Fuel) --fuel tanks are self healing
+		self.Leaking = math.Clamp(self.Leaking - (1 / math.max(self.Fuel,1)) ^ 0.5, 0, self.Fuel) --fuel tanks are self healing
 		Wire_TriggerOutput(self, "Leaking", (self.Leaking > 0) and 1 or 0)
 	else
 		self:NextThink( CurTime() + 2 )

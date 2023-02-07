@@ -8,14 +8,14 @@ function EFFECT:Init( data )
 	self.Origin = data:GetOrigin()
 	self.DirVec = data:GetNormal()
 	self.Colour = data:GetStart()
-	self.Radius = math.min(math.log(1+data:GetRadius())/0.02303,350) --smoke filler (long lasting, slow deploy)
-	self.Magnitude = math.min(math.log(1+data:GetMagnitude())/0.02303,350) --WP filler (fast deploy, short duration)
-	--print(self.Radius.." "..self.Magnitude)
+	self.Radius = math.min(math.log(1 + data:GetRadius())/0.02303,350) --smoke filler (long lasting, slow deploy)
+	self.Magnitude = math.min(math.log(1 + data:GetMagnitude())/0.02303,350) --WP filler (fast deploy, short duration)
+	--print(self.Radius .. " " .. self.Magnitude)
 	self.Emitter = ParticleEmitter( self.Origin )
 
 	local ImpactTr = { }
-		ImpactTr.start = self.Origin - self.DirVec*20
-		ImpactTr.endpos = self.Origin + self.DirVec*20
+		ImpactTr.start = self.Origin - self.DirVec * 20
+		ImpactTr.endpos = self.Origin + self.DirVec * 20
 		ImpactTr.mins = Vector(0,0,0)
 		ImpactTr.maxs = Vector(0,0,0)
 	local Impact = util.TraceHull(ImpactTr)										--Trace to see if it will hit anything
@@ -23,7 +23,7 @@ function EFFECT:Init( data )
 
 	local GroundTr = { }
 		GroundTr.start = self.Origin + Vector(0,0,1)
-		GroundTr.endpos = self.Origin - Vector(0,0,1)*self.Radius
+		GroundTr.endpos = self.Origin - Vector(0,0,1) * self.Radius
 		GroundTr.mask = 131083
 		GroundTr.mins = Vector(0,0,0)
 		GroundTr.maxs = Vector(0,0,0)
@@ -34,11 +34,11 @@ function EFFECT:Init( data )
 
 	--if adjusting, update display data / crate text in smoke round
 	if self.Magnitude > 0 then
-		self:SmokeFiller( Ground, SmokeColor, self.Magnitude*1.25, 1.0, 6+self.Magnitude/10 ) --quick build and dissipate
+		self:SmokeFiller( Ground, SmokeColor, self.Magnitude * 1.25, 1.0, 6 + self.Magnitude/10 ) --quick build and dissipate
 	end
 
 	if self.Radius > 0 then
-		self:SmokeFiller( Ground, SmokeColor, self.Radius*1.25, 0.15, 20+self.Radius/4 ) --slow build but long lasting
+		self:SmokeFiller( Ground, SmokeColor, self.Radius * 1.25, 0.15, 20 + self.Radius/4 ) --slow build but long lasting
 	end
 
 	self.Emitter:Finish()
@@ -79,7 +79,7 @@ function EFFECT:SmokeFiller( Ground, SmokeColor, Radius, DeploySpeed, Lifetime )
 	local Angle = Ground.HitNormal:Angle()
 	local wind = ACF.SmokeWind or 0
 	local ShootVector = Ground.HitNormal * 0.5
-	--print(Radius..", "..Density)
+	--print(Radius .. ", " .. Density)
 
 	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, Density, 0, wind, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
 	for i=0, math.floor(Density) do

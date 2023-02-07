@@ -163,7 +163,7 @@ do
 		Gun.Mass			= Lookup.weight
 		Gun.Class		= Lookup.gunclass
 		Gun.Heat			= ACE.AmbientTemp
-		Gun.LinkRangeMul	= math.max(Gun.Caliber / 10,1)^1.2
+		Gun.LinkRangeMul	= math.max(Gun.Caliber / 10,1) ^ 1.2
 
 		Gun.noloaders	= ClassData.noloader or nil
 
@@ -210,7 +210,7 @@ do
 			Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
 		end
 
-		Gun.MinLengthBonus = 0.5 * 3.1416*(Gun.Caliber/2)^2 * Lookup.round.maxlength
+		Gun.MinLengthBonus = 0.5 * 3.1416 * (Gun.Caliber/2) ^ 2 * Lookup.round.maxlength
 
 		Gun.Muzzleflash	= Lookup.muzzleflash or ClassData.muzzleflash
 		Gun.RoFmod		= ClassData.rofmod
@@ -288,7 +288,7 @@ function ENT:UpdateOverlayText()
 
 	if #self.CrewLink > 0 then
 		text = text .. "\n\nHas Gunner: ".. (self.HasGunner and "Yes" or "No")
-		text = text .. ( self.noloaders and "" or "\nTotal Loaders: "..self.LoaderCount  )
+		text = text .. ( self.noloaders and "" or "\nTotal Loaders: " .. self.LoaderCount  )
 	end
 
 	if self.IsOverheated then
@@ -412,7 +412,7 @@ function ENT:Link( Target )
 
 		local ReloadBuff = 1
 		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-			ReloadBuff = 1.25-(self.LoaderCount*0.25)
+			ReloadBuff = 1.25-(self.LoaderCount * 0.25)
 		end
 
 
@@ -582,7 +582,7 @@ function ENT:Heat_Function()
 		local phys = self:GetPhysicsObject()
 		local Mass = phys:GetMass()
 
-		HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1+math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1*OverHeat)* (1+math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
+		HitRes = ACF_Damage ( self , {Kinetic = (1 * OverHeat)* (1 + math.max(Mass-300,0.1)),Momentum = 0,Penetration = (1 * OverHeat)* (1 + math.max(Mass-300,0.1))} , 2 , 0 , self.Owner )
 
 		if HitRes.Kill then
 			ACF_HEKill( self, VectorRand() , 0)
@@ -679,7 +679,7 @@ function ENT:Think()
 	self:Heat_Function()
 
 	local Time = CurTime()
-	if self.LastSend+1 <= Time then
+	if self.LastSend + 1 <= Time then
 
 		local Ammo		= 0
 
@@ -712,8 +712,8 @@ function ENT:Think()
 		self:SetNWString("GunType",self.Id)
 		self:SetNWInt("Ammo",Ammo)
 		self:SetNWString("Type",self.BulletData.Type)
-		self:SetNWFloat("Mass",self.BulletData.ProjMass*100)
-		self:SetNWFloat("Propellant",self.BulletData.PropMass*1000)
+		self:SetNWFloat("Mass",self.BulletData.ProjMass * 100)
+		self:SetNWFloat("Propellant",self.BulletData.PropMass * 1000)
 		self:SetNWFloat("FireRate",self.RateOfFire)
 
 		self.LastSend = Time
@@ -783,12 +783,12 @@ do
 
 		-- Increased FS accuracy. Hardcoded.
 		if FSTable[self.BulletData.Type] then
-			IaccMult = IaccMult*0.25
+			IaccMult = IaccMult * 0.25
 		end
 
 		-- No gunner = more inaccuracy
 		if not self.HasGunner then
-			IaccMult = IaccMult*1.5
+			IaccMult = IaccMult * 1.5
 		end
 
 		local coneAng = self.Inaccuracy * ACF.GunInaccuracyScale * IaccMult
@@ -844,7 +844,7 @@ do
 				self:MuzzleEffect( MuzzlePos, MuzzleVec )
 
 				local GPos = self:GetPos()
-				local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity()+GPos)
+				local TestVel = self:WorldToLocal(ACF_GetPhysicalParent(self):GetVelocity() + GPos)
 
 				--Traceback component
 				TestVel = self:LocalToWorld(Vector(math.max(TestVel.x,-0.1),TestVel.y,TestVel.z))-GPos
@@ -871,7 +871,7 @@ do
 				self:CreateShell( self.BulletData )
 
 				local Dir = -self:GetForward()
-				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37)*(GetConVarNumber("acf_recoilpush") or 1)
+				local KE = (self.BulletData.ProjMass * self.BulletData.MuzzleVel * 39.37 + self.BulletData.PropMass * 3500 * 39.37) * (GetConVarNumber("acf_recoilpush") or 1)
 
 				ACF_KEShove(self, self:GetPos() , Dir , KE )
 
@@ -937,16 +937,16 @@ function ENT:LoadAmmo( AddTime, Reload )
 		local CrewReload = 1
 
 		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-			CrewReload = 1.25-(self.LoaderCount*0.25)
+			CrewReload = 1.25-(self.LoaderCount * 0.25)
 		end
 
-		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus*Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
+		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus * Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 
 		self.RateOfFire = (60/self.ReloadTime)
 		Wire_TriggerOutput(self, "Fire Rate", self.RateOfFire)
-		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass*1000) )
-		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel*ACF.VelScale) )
+		Wire_TriggerOutput(self, "Muzzle Weight", math.floor(self.BulletData.ProjMass * 1000) )
+		Wire_TriggerOutput(self, "Muzzle Velocity", math.floor(self.BulletData.MuzzleVel * ACF.VelScale) )
 
 		self.NextFire = curTime + self.ReloadTime
 		local reloadTime = self.ReloadTime
@@ -994,7 +994,7 @@ function ENT:UnloadAmmo()
 
 	local Crate = Entity( self.BulletData.Crate )
 	if Crate and Crate:IsValid() and self.BulletData.Type == Crate.BulletData.Type then
-		Crate.Ammo = math.min(Crate.Ammo+1, Crate.Capacity)
+		Crate.Ammo = math.min(Crate.Ammo + 1, Crate.Capacity)
 	end
 
 	self.Ready = false

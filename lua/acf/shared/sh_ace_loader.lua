@@ -219,7 +219,7 @@ local function GetAllInTableExcept(tbl, list)
 	local ret = {}
 	for name, _ in pairs(tbl) do
 		if not list[name] then
-			ret[#ret+1] = name
+			ret[#ret + 1] = name
 		end
 	end
 	return ret
@@ -229,7 +229,7 @@ function ACF_GetAllGuidanceNames()
 
 	local ret = {}
 	for name, _ in pairs(ACF.Guidance) do
-		ret[#ret+1] = name
+		ret[#ret + 1] = name
 	end
 	return ret
 end
@@ -243,7 +243,7 @@ function ACF_GetAllFuseNames()
 
 	local ret = {}
 	for name, _ in pairs(ACF.Fuse) do
-		ret[#ret+1] = name
+		ret[#ret + 1] = name
 	end
 	return ret
 end
@@ -273,10 +273,10 @@ do
 
 	for k, folder in ipairs(folders) do
 
-		local folderData = file.Find( Gpath..folder.."/*.lua", "LUA" )
+		local folderData = file.Find( Gpath .. folder .. "/*.lua", "LUA" )
 		for k, v in pairs( folderData ) do
-			AddCSLuaFile( "acf/shared/"..folder.."/" .. v )
-			include( "acf/shared/"..folder.."/" .. v )
+			AddCSLuaFile( "acf/shared/" .. folder .. "/" .. v )
+			include( "acf/shared/" .. folder .. "/" .. v )
 		end
 
 	end

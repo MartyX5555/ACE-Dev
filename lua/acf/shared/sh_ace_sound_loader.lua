@@ -44,17 +44,17 @@ for k, Data in pairs(TableTypes) do
 
 		Iteration = Iteration + 1
 		if Iteration > 1000 then break end	--if the while becomes dumb
-		--print("Iteration: "..Iteration)
+		--print("Iteration: " .. Iteration)
 
 		--Check for Distance
 		while Iteration2 < #Distance do
 
 			Iteration2 = Iteration2 + 1
 			if Iteration2 > 1000 then break end		--if the while becomes dumb
-			--print("Iteration2: "..Iteration2)
+			--print("Iteration2: " .. Iteration2)
 
 			-- Look for sounds in the designated path
-			local TxtToFind = "sound/acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/*.mp3"	--print( "\n"..TxtToFind.."\n" )
+			local TxtToFind = "sound/acf_other/" .. Path .. "/" .. Category[Iteration] .. "/" .. Distance[Iteration2] .. "/*.mp3"	--print( "\n" .. TxtToFind .. "\n" )
 			local ExSounds = file.Find( TxtToFind, "GAME" )
 
 			--if table.IsEmpty(ExSounds) then print("No se encontro nada!") end
@@ -66,7 +66,7 @@ for k, Data in pairs(TableTypes) do
 
 			for i,Sound in pairs(ExSounds) do
 
-				local Str = "acf_other/"..Path.."/"..Category[Iteration].."/"..Distance[Iteration2].."/"..Sound	--print('Loading sound: '..Str)
+				local Str = "acf_other/" .. Path .. "/" .. Category[Iteration] .. "/" .. Distance[Iteration2] .. "/" .. Sound	--print('Loading sound: ' .. Str)
 
 				table.insert(ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]], Str )
 
@@ -80,7 +80,7 @@ end
 timer.Simple(2, function()
 
 	local tableToTest = ACE.Sounds["Penetrations"]["large"]["close"]
-	local MaxCount = #tableToTest --print("Table total entries: "..#tableToTest)
+	local MaxCount = #tableToTest --print("Table total entries: " .. #tableToTest)
 
 	--print("Test if we have something in this sample table")
 	--print(tableToTest[math.random(1, MaxCount)] )

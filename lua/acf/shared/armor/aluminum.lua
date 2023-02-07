@@ -30,8 +30,8 @@ if SERVER then
 		local effectiveness = Material.effectiveness
 		local resiliance	= Material.resiliance
 
-		armor = armor^curve
-		losArmor = losArmor^curve
+		armor = armor ^ curve
+		losArmor = losArmor ^ curve
 
 		local DamageModifier = 1
 

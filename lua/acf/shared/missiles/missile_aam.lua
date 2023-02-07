@@ -38,8 +38,8 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 		casing		= 0.1,							-- thickness of missile casing, cm
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 1,								-- motor mass - motor casing
-		thrust		= 25000,							-- average thrust - kg*in/s^2	--was 100000
-		burnrate		= 700,							-- cm^3/s at average chamber pressure	--was 650
+		thrust		= 25000,							-- average thrust - kg * in/s ^ 2	--was 100000
+		burnrate		= 700,							-- cm ^ 3/s at average chamber pressure	--was 650
 		starterpct	= 0.1,							-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 12000,							-- minimum speed beyond which the fins work at 100% efficiency. Affects how agility is applied only
 		dragcoef		= 0.002,							-- drag coefficient while falling
@@ -91,8 +91,8 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 		casing		= 0.1,							-- thickness of missile casing, cm
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 1,								-- motor mass - motor casing
-		thrust		= 50000,							-- average thrust - kg*in/s^2	--was 25000
-		burnrate		= 700,							-- cm^3/s at average chamber pressure	--was 450
+		thrust		= 50000,							-- average thrust - kg * in/s ^ 2	--was 25000
+		burnrate		= 700,							-- cm ^ 3/s at average chamber pressure	--was 450
 		starterpct	= 0.02,							-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 23000,							-- minimum speed beyond which the fins work at 100% efficiency	--was 3000
 		dragcoef		= 0.002,							-- drag coefficient while falling
@@ -143,8 +143,8 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 		casing		= 0.1,							-- thickness of missile casing, cm
 		armour		= 10,							-- effective armour thickness of casing, in mm
 		propweight	= 5,								-- motor mass - motor casing
-		thrust		= 140000,						-- average thrust - kg*in/s^2	--was 10000
-		burnrate		= 200,							-- cm^3/s at average chamber pressure	--was 800
+		thrust		= 140000,						-- average thrust - kg * in/s ^ 2	--was 10000
+		burnrate		= 200,							-- cm ^ 3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 32000,							-- minimum speed beyond which the fins work at 100% efficiency  --was 1000
 		dragcoef		= 0.01,							-- drag coefficient while falling

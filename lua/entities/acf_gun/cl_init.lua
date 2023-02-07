@@ -51,7 +51,7 @@ end
 function ENT:Animate( Class, ReloadTime, LoadOnly )
 
 	if self.CloseAnim and self.CloseAnim > 0 then
-		self.CloseTime = math.max(ReloadTime-0.75,ReloadTime*0.75)
+		self.CloseTime = math.max(ReloadTime-0.75,ReloadTime * 0.75)
 	else
 		self.CloseTime = ReloadTime
 		self.CloseAnim = nil
@@ -89,15 +89,15 @@ function ACFGunGUICreate( Table )
 	local GunClass = list.Get("ACFClasses").GunClass[Table.gunclass]
 	acfmenupanel:CPanelText("ClassDesc", GunClass.desc)
 	acfmenupanel:CPanelText("GunDesc", Table.desc)
-	acfmenupanel:CPanelText("Caliber", "Caliber : "..(Table.caliber*10).."mm")
-	acfmenupanel:CPanelText("Weight", "Weight : "..Table.weight.."kg")
-	acfmenupanel:CPanelText("Year", "Year : "..Table.year)
+	acfmenupanel:CPanelText("Caliber", "Caliber : " .. (Table.caliber * 10) .. "mm")
+	acfmenupanel:CPanelText("Weight", "Weight : " .. Table.weight .. "kg")
+	acfmenupanel:CPanelText("Year", "Year : " .. Table.year)
 
 	if Table.rack then
-		if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : "..Table.seekcone .." degrees") end
-		if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : "..Table.viewcone .." degrees") end
+		if Table.seekcone then acfmenupanel:CPanelText("SeekCone", "Seek Cone : " .. Table.seekcone .." degrees") end
+		if Table.viewcone then acfmenupanel:CPanelText("ViewCone", "View Cone : " .. Table.viewcone .." degrees") end
 
-		if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : "..Table.guidelay.." seconds")
+		if Table.guidelay then acfmenupanel:CPanelText("GuiDelay", "Minimum delay to start maneuvers : " .. Table.guidelay .. " seconds")
 		else acfmenupanel:CPanelText("GuiDelay", "With a guidance, this ordnance will start to do maneuvers with no delays") end
 
 
@@ -106,12 +106,12 @@ function ACFGunGUICreate( Table )
 			local guitxt = ""
 			for k, guidance in ipairs(Table.guidance) do
 				if guidance ~= "Dumb" then
-					guitxt = guitxt.."- "..guidance.."\n"
+					guitxt = guitxt .. "- " .. guidance .. "\n"
 				end
 			end
 
 			if guitxt ~= "" then
-				acfmenupanel:CPanelText("Guidances", "\nAvailable guidances : \n"..guitxt )
+				acfmenupanel:CPanelText("Guidances", "\nAvailable guidances : \n" .. guitxt )
 			end
 		end
 
@@ -119,19 +119,19 @@ function ACFGunGUICreate( Table )
 
 			local guitxt = ""
 			for k, fuses in ipairs(Table.fuses) do
-				guitxt = guitxt.."- "..fuses.."\n"
+				guitxt = guitxt .. "- " .. fuses .. "\n"
 			end
 
-			acfmenupanel:CPanelText("Fuses", "Available fuses : \n"..guitxt )
+			acfmenupanel:CPanelText("Fuses", "Available fuses : \n" .. guitxt )
 		end
 
 	else
-		local RoundVolume = 3.1416 * (Table.caliber/2)^2 * Table.round.maxlength
+		local RoundVolume = 3.1416 * (Table.caliber/2) ^ 2 * Table.round.maxlength
 		local RoF = 60 / (((RoundVolume / 500 ) ^ 0.60 ) * GunClass.rofmod * (Table.rofmod or 1)) --class and per-gun use same var name
-		acfmenupanel:CPanelText("Firerate", "RoF : "..math.Round(RoF,1).." rounds/min")
-		if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : "..Table.magsize.." rounds\nReload :	"..Table.magreload.." s") end
-		acfmenupanel:CPanelText("Spread", "Spread : "..(GunClass.spread * 1.5).." degrees")
-		acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : "..GunClass.spread.." degrees")
+		acfmenupanel:CPanelText("Firerate", "RoF : " .. math.Round(RoF,1) .. " rounds/min")
+		if Table.magsize then acfmenupanel:CPanelText("Magazine", "Magazine : " .. Table.magsize .. " rounds\nReload :	" .. Table.magreload .. " s") end
+		acfmenupanel:CPanelText("Spread", "Spread : " .. (GunClass.spread * 1.5) .. " degrees")
+		acfmenupanel:CPanelText("Spread_Gunner", "Spread with gunner : " .. GunClass.spread .. " degrees")
 
 		--acfmenupanel:CPanelText("GunParentable", "\nThis weapon can be parented.\n", "DermaDefaultBold")
 	end

@@ -42,8 +42,8 @@ ACF_defineGun("RS82 ASR", { --id
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 5,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
-		thrust	= 15000,		-- average thrust - kg*in/s^2
-		burnrate	= 800,		-- cm^3/s at average chamber pressure
+		thrust	= 15000,		-- average thrust - kg * in/s ^ 2
+		burnrate	= 800,		-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.15,
 		minspeed	= 6000,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient while falling
@@ -89,8 +89,8 @@ ACF_defineGun("HVAR ASR", { --id
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 8,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
-		thrust	= 25000,		-- average thrust - kg*in/s^2
-		burnrate	= 600,		-- cm^3/s at average chamber pressure
+		thrust	= 25000,		-- average thrust - kg * in/s ^ 2
+		burnrate	= 600,		-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.15,
 		minspeed	= 5000,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,		-- drag coefficient while falling
@@ -134,8 +134,8 @@ ACF_defineGun("SPG-9 ASR", { --id
 		casing	= 0.08,		-- thickness of missile casing, cm
 		armour	= 4,			-- effective armour thickness of casing, in mm
 		propweight  = 0.5,		-- motor mass - motor casing
-		thrust	= 120000,	-- average thrust - kg*in/s^2 very high but only burns a brief moment, most of which is in the tube
-		burnrate	= 1200,		-- cm^3/s at average chamber pressure
+		thrust	= 120000,	-- average thrust - kg * in/s ^ 2 very high but only burns a brief moment, most of which is in the tube
+		burnrate	= 1200,		-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.72,
 		minspeed	= 900,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoefflight  = 0.05,				-- drag coefficient during flight
@@ -180,8 +180,8 @@ ACF_defineGun("S-24 ASR", { --id
 		casing	= 0.3,					-- thickness of missile casing, cm
 		armour	= 10,					-- effective armour thickness of casing, in mm
 		propweight  = 20,					-- motor mass - motor casing
-		thrust	= 9000,					-- average thrust - kg*in/s^2
-		burnrate	= 2000,					-- cm^3/s at average chamber pressure
+		thrust	= 9000,					-- average thrust - kg * in/s ^ 2
+		burnrate	= 2000,					-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.15,
 		minspeed	= 10000,					-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,					-- drag coefficient while falling

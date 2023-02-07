@@ -36,9 +36,9 @@ function ACF_DrawRefillAmmo( Table )
 		local Time = (SysTime() - v.StTime)
 		local En2, St2 = En + Vector(0,0,100), St + ((En-St):GetNormalized() * 10)
 		local vectab = { St, St2, En2, En}
-		local center = (St+En)/2
+		local center = (St + En)/2
 		for I = 1, Amount do
-			local point = BezPoint(((((I+Time)%Amount))/Amount), vectab)
+			local point = BezPoint(((((I + Time)%Amount))/Amount), vectab)
 			local ang = (point - center):Angle()
 			local MdlTbl = {
 				model = v.Model,

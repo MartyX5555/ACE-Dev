@@ -41,7 +41,7 @@ ACF_DefineGearbox( "9Gear-L-S", {
 
 ACF_DefineGearbox( "9Gear-L-M", {
 	name = "9-Speed, Inline, Medium",
-	desc = "A medium duty 9 speed gearbox..",
+	desc = "A medium duty 9 speed gearbox .. ",
 	model = "models/engines/linear_m.mdl",
 	category = "9-Speed",
 	weight = Gear9MW,
@@ -168,7 +168,7 @@ ACF_DefineGearbox( "9Gear-LD-L", {
 
 ACF_DefineGearbox( "9Gear-T-S", {
 	name = "9-Speed, Transaxial, Small",
-	desc = "A small and light 9 speed gearbox..",
+	desc = "A small and light 9 speed gearbox .. ",
 	model = "models/engines/transaxial_s.mdl",
 	category = "9-Speed",
 	weight = Gear9SW,
@@ -192,7 +192,7 @@ ACF_DefineGearbox( "9Gear-T-S", {
 
 ACF_DefineGearbox( "9Gear-T-M", {
 	name = "9-Speed, Transaxial, Medium",
-	desc = "A medium duty 9 speed gearbox..",
+	desc = "A medium duty 9 speed gearbox .. ",
 	model = "models/engines/transaxial_m.mdl",
 	category = "9-Speed",
 	weight = Gear9MW,

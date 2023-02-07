@@ -61,9 +61,9 @@ if SERVER then
 	-- Possible Complications: When an explosion occurs in an ERA corner and average explosion pos is inside of contraption.
 	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
-		--print("\narmor: "..armor.."mm")
-		--print("losArmor: "..losArmor.."mm")
-		--print("angle effectiveness: "..math.Round( ((losArmor/armor)*100 - 100) ).."%" )
+		--print("\narmor: " .. armor .. "mm")
+		--print("losArmor: " .. losArmor .. "mm")
+		--print("angle effectiveness: " .. math.Round( ((losArmor/armor) * 100 - 100) ) .. "%" )
 
 		local HitRes = {}
 
@@ -104,7 +104,7 @@ if SERVER then
 
 			if not timer.Exists("ACE_ERA_Reset") then
 				timer.Create("ACE_ERA_Reset", 0.01, 1, function()
-					ACE.ERABoomPerTick = 0						-- print("Max ERA boom per tick: "..ACE.ERABoomPerTick)
+					ACE.ERABoomPerTick = 0						-- print("Max ERA boom per tick: " .. ACE.ERABoomPerTick)
 				end )
 			end
 
@@ -138,8 +138,8 @@ if SERVER then
 
 			----- Deal it as RHA in its 25% effectiveness
 
-			armor	= armor^curve
-			losArmor	= losArmor^curve
+			armor	= armor ^ curve
+			losArmor	= losArmor ^ curve
 
 			-- Breach probability
 			local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)

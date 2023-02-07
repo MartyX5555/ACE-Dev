@@ -37,8 +37,8 @@ if SERVER then
 		local effectiveness = Material.effectiveness
 		local resiliance	= Material.resiliance
 
-		armor	= armor^curve
-		losArmor	= losArmor^curve
+		armor	= armor ^ curve
+		losArmor	= losArmor ^ curve
 
 		--=========================================================================================================\
 		--------------------------------------------------------- For HEAT shells & Spall -------------------------->
@@ -171,7 +171,7 @@ if SERVER then
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss	= Penetration / maxPenetration
 
-				--print('Damage applied: '..HitRes.Damage)
+				--print('Damage applied: ' .. HitRes.Damage)
 				return HitRes
 
 			end

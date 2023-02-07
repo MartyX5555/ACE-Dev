@@ -18,7 +18,7 @@ function EFFECT:Init( data )
 	if (Hit > 0 and Bullet) then
 
 		--print("Updating Bullet Effect")
-		Bullet.SimFlight = data:GetStart()*10	--Updating old effect with new values
+		Bullet.SimFlight = data:GetStart() * 10	--Updating old effect with new values
 		Bullet.SimPos = data:GetOrigin()
 
 		--Bullet has reached end of flight, remove old effect
@@ -64,7 +64,7 @@ function EFFECT:Init( data )
 
 		BulletData.IsMissile	= BulletData.IsMissile or (data:GetAttachment() == 1)
 
-		BulletData.SimFlight	= data:GetStart()*10
+		BulletData.SimFlight	= data:GetStart() * 10
 		BulletData.SimPos	= data:GetOrigin()
 		BulletData.SimPosLast	= BulletData.SimPos
 		BulletData.Caliber	= BulletData.Crate:GetNWFloat( "Caliber", 10 )
@@ -152,7 +152,7 @@ function EFFECT:ApplyMovement( Bullet )
 
 		--sonic crack sound
 		if not Bullet.CrackCreated and not Bullet.IsMissile then
-			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber*100*ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
+			if ACE_SInDistance( Bullet.SimPos, math.max(Bullet.Caliber * 100 * ACE.CrackDistanceMultipler,250) ) and not ACE_SInDistance( Bullet.InitialPos, 750 ) then
 				if Speed > 100 then --Note: when the client has lag, this could throw higher velocities even if bullet is slower
 
 					if not Bullet.Impacted then
@@ -173,11 +173,11 @@ function EFFECT:ApplyMovement( Bullet )
 
 		local DeltaTime = ACF.CurTime - Bullet.LastThink
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
-		local Length =  math.min(-DeltaPos:Length()*value,-1)
+		local Length =  math.min(-DeltaPos:Length() * value,-1)
 
 		local MaxSprites = 2
 
-		local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos + Bullet.SimFlight*0.01 )
+		local Light = Bullet.Tracer:Add( "sprites/acf_tracer.vmt", setPos + Bullet.SimFlight * 0.01 )
 
 		--debugoverlay.Cross(setPos,3,1,Color(255,255,255,10), true)
 
@@ -188,8 +188,8 @@ function EFFECT:ApplyMovement( Bullet )
 			Light:SetDieTime( math.Clamp(ACF.CurTime-self.CreateTime,0.1,0.2) ) -- 0.075, 0.1
 			Light:SetStartAlpha( 180 )
 			Light:SetEndAlpha( 0 )
-			Light:SetStartSize( 30*Bullet.Caliber ) -- 5
-			Light:SetEndSize( 1*Bullet.Caliber ) --15*Bullet.Caliber
+			Light:SetStartSize( 30 * Bullet.Caliber ) -- 5
+			Light:SetEndSize( 1 * Bullet.Caliber ) --15 * Bullet.Caliber
 			Light:SetStartLength( Length )
 			Light:SetEndLength( 1 ) --Length
 		end
@@ -197,16 +197,16 @@ function EFFECT:ApplyMovement( Bullet )
 		if MaxSprites > 0 then
 
 			for i=1, MaxSprites do
-				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000"..math.random(1,9), setPos - (DeltaPos*i/MaxSprites) )
+				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos - (DeltaPos * i/MaxSprites) )
 				if (Smoke) then
 					Smoke:SetAngles( Bullet.SimFlight:Angle() )
-					Smoke:SetVelocity( Bullet.SimFlight*0.05 )
+					Smoke:SetVelocity( Bullet.SimFlight * 0.05 )
 					Smoke:SetColor( 200 , 200 , 200 )
 					Smoke:SetDieTime( 0.6 ) -- 1.2
 					Smoke:SetStartAlpha( 10 )
 					Smoke:SetEndAlpha( 0 )
 					Smoke:SetStartSize( 1 )
-					Smoke:SetEndSize( Length/400*Bullet.Caliber )
+					Smoke:SetEndSize( Length/400 * Bullet.Caliber )
 					Smoke:SetRollDelta( 0.1 )
 					Smoke:SetAirResistance( 150 )
 					Smoke:SetGravity( Vector(0,0,20) )

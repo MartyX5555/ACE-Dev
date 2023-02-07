@@ -34,7 +34,7 @@ function ENT:Initialize()
 	self:SetActive(false)
 
 	self.LegalTick = 0
-	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+	self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
 	self.IsLegal = true
 end
 
@@ -86,7 +86,7 @@ function ENT:Think()
 	if	self.LegalTick >= (self.checkLegalIn or 0) then
 
 		self.LegalTick = 0
-		self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+		self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
 		self:isLegal()
 
 	end

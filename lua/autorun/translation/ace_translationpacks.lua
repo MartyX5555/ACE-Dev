@@ -9,7 +9,7 @@ ACFTranslation.ArmorPropertiesText = {
 
 	----------/Menu Panel--------/--
 
-	--*IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
+	-- * IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
 
 	"Thickness",--Armor Thickness Slider Name (4)
 	"Set the desired armor thickness (in mm) and the mass will be adjusted accordingly.",--Armor Thickness Slider Desc (5)
@@ -26,7 +26,7 @@ ACFTranslation.ArmorPropertiesText = {
 
 	----------/Armor Update Display Text--------/--
 
-	--*IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
+	-- * IMPORTANT* MAKE SURE TO PRESERVE THE \n's they tell the reader to move to the next line.
 
 	"Current:\nMass: ", --Mass display (14)
 	"\nArmor: ", --Armor display (15)

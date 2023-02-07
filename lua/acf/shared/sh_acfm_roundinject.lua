@@ -86,7 +86,7 @@ local function configConcat(tbl, sep)
 	local toConcat = {}
 
 	for k, v in pairs(tbl) do
-		toConcat[#toConcat+1] = tostring(k) .. " = " .. tostring(v)
+		toConcat[#toConcat + 1] = tostring(k) .. " = " .. tostring(v)
 	end
 
 	return table.concat(toConcat, sep)
@@ -134,22 +134,22 @@ function ACFM_ModifyCrateTextFuncs()
 				if guidance then
 					guidance = ACFM_CreateConfigurable(guidance, ACF.Guidance, bdata, "guidance")
 					if guidance and guidance.Name ~= "Dumb" then
-						str[#str+1] = "\n\n"
-						str[#str+1] = guidance.Name
-						str[#str+1] = " guidance\n("
-						str[#str+1] = configConcat(guidance:GetDisplayConfig(Type), ", ")
-						str[#str+1] = ")"
+						str[#str + 1] = "\n\n"
+						str[#str + 1] = guidance.Name
+						str[#str + 1] = " guidance\n("
+						str[#str + 1] = configConcat(guidance:GetDisplayConfig(Type), ", ")
+						str[#str + 1] = ")"
 					end
 				end
 
 				if fuse then
 					fuse = ACFM_CreateConfigurable(fuse, ACF.Fuse, bdata, "fuses")
 					if fuse then
-						str[#str+1] = "\n\n"
-						str[#str+1] = fuse.Name
-						str[#str+1] = " fuse\n("
-						str[#str+1] = configConcat(fuse:GetDisplayConfig(), ", ")
-						str[#str+1] = ")"
+						str[#str + 1] = "\n\n"
+						str[#str + 1] = fuse.Name
+						str[#str + 1] = " fuse\n("
+						str[#str + 1] = configConcat(fuse:GetDisplayConfig(), ", ")
+						str[#str + 1] = ")"
 					end
 				end
 

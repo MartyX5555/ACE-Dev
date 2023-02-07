@@ -97,7 +97,7 @@ function SWEP:InitBulletData()
 	local Rad = math.rad(self.BulletData.Data6 / 2)
 	self.BulletData.SlugCaliber = self.BulletData.Caliber - self.BulletData.Caliber * (math.sin(Rad) * 0.5 + math.cos(Rad) * 1.5) / 2
 	self.BulletData.SlugMV = (self.BulletData.FillerMass / 2 * ACF.HEPower * math.sin(math.rad(10 + self.BulletData.Data6) / 2) / self.BulletData.SlugMass) ^ ACF.HEATMVScale
-	--		print("SlugMV: "..self.BulletData.SlugMV)
+	--		print("SlugMV: " .. self.BulletData.SlugMV)
 	local SlugFrArea = 3.1416 * (self.BulletData.SlugCaliber / 2) ^ 2
 	self.BulletData.SlugPenArea = SlugFrArea ^ ACF.PenAreaMod
 	self.BulletData.SlugDragCoef = ((SlugFrArea / 10000) / self.BulletData.SlugMass) * 1000
@@ -118,10 +118,10 @@ function SWEP:InitBulletData()
 	self.BulletData.Ricochet = 999
 	self.BulletData.Flight = Vector(0, 0, 0)
 	self.BulletData.BoomPower = self.BulletData.PropMass + self.BulletData.FillerMass
-	--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel*39.37 + self.BulletData.SlugMV*39.37 , self.BulletData.SlugMass, 999999 )
+	--		local SlugEnergy = ACF_Kinetic( self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37 , self.BulletData.SlugMass, 999999 )
 	local SlugEnergy = ACF_Kinetic(self.BulletData.MuzzleVel * 39.37 + self.BulletData.SlugMV * 39.37, self.BulletData.SlugMass, 999999)
 	self.BulletData.MaxPen = (SlugEnergy.Penetration / self.BulletData.SlugPenArea) * ACF.KEtoRHA
-	--		print("SlugPen: "..self.BulletData.MaxPen)
+	--		print("SlugPen: " .. self.BulletData.MaxPen)
 	--For Fake Crate
 	self.BoomFillerMass = self.BulletData.BoomFillerMass
 	self.Type = self.BulletData.Type

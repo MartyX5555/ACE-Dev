@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.SM = { "MG", "GL", "HMG", "AC", "RAC", "SA" , "GL", "ATR", "FG
 local Round = {}
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "[SM] - "..ACFTranslation.ShellSm[1] --Human readable name
+Round.name = "[SM] - " .. ACFTranslation.ShellSm[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.ShellSm[2]
 Round.netid = 6 --Unique ammotype ID for network transmission
@@ -36,9 +36,9 @@ function Round.convert( Crate, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0)*7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume)*ACF.HEDensity/2000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
+	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity/2000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
 
 	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 	GUIData.MinFillerVol = 0
@@ -48,18 +48,18 @@ function Round.convert( Crate, PlayerData )
 	GUIData.MaxWPVol = math.max(GUIData.MaxFillerVol-PlayerData.Data5,GUIData.MinFillerVol)
 
 	local Ratio = math.min( GUIData.MaxFillerVol/(PlayerData.Data5 + PlayerData.Data6), 1 )
-	GUIData.FillerVol = math.min(PlayerData.Data5*Ratio,GUIData.MaxSmokeVol)
-	GUIData.WPVol = math.min(PlayerData.Data6*Ratio,GUIData.MaxWPVol)
+	GUIData.FillerVol = math.min(PlayerData.Data5 * Ratio,GUIData.MaxSmokeVol)
+	GUIData.WPVol = math.min(PlayerData.Data6 * Ratio,GUIData.MaxWPVol)
 
 	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/2000
 	Data.WPMass = GUIData.WPVol * ACF.HEDensity/2000
 
-	Data.ProjMass = math.max(GUIData.ProjVolume-(GUIData.FillerVol+GUIData.WPVol),0)*7.9/1000 + Data.FillerMass + Data.WPMass
+	Data.ProjMass = math.max(GUIData.ProjVolume-(GUIData.FillerVol + GUIData.WPVol),0) * 7.9/1000 + Data.FillerMass + Data.WPMass
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 
 	--Random bullshit left
 	Data.ShovePower = 0.1
-	Data.PenArea = Data.FrArea^ACF.PenAreaMod
+	Data.PenArea = Data.FrArea ^ ACF.PenAreaMod
 	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel = 100										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
@@ -111,15 +111,15 @@ function Round.getDisplayData(Data)
 
 	local GUIData = {}
 
-	GUIData.SMFiller = math.min(math.log(1+Data.FillerMass*8*39.37)/0.02303,350) --smoke filler
-	GUIData.SMLife = math.Round(20+GUIData.SMFiller/4,1)
-	GUIData.SMRadiusMin = math.Round(GUIData.SMFiller*1.25*0.15*0.0254,1)
-	GUIData.SMRadiusMax = math.Round(GUIData.SMFiller*1.25*2*0.0254,1)
+	GUIData.SMFiller = math.min(math.log(1 + Data.FillerMass * 8*39.37)/0.02303,350) --smoke filler
+	GUIData.SMLife = math.Round(20 + GUIData.SMFiller/4,1)
+	GUIData.SMRadiusMin = math.Round(GUIData.SMFiller * 1.25 * 0.15 * 0.0254,1)
+	GUIData.SMRadiusMax = math.Round(GUIData.SMFiller * 1.25 * 2*0.0254,1)
 
-	GUIData.WPFiller = math.min(math.log(1+Data.WPMass*8*39.37)/0.02303,350) --wp filler
-	GUIData.WPLife = math.Round(6+GUIData.WPFiller/10,1)
-	GUIData.WPRadiusMin = math.Round(GUIData.WPFiller*1.25*0.0254,1)
-	GUIData.WPRadiusMax = math.Round(GUIData.WPFiller*1.25*2*0.0254,1)
+	GUIData.WPFiller = math.min(math.log(1 + Data.WPMass * 8*39.37)/0.02303,350) --wp filler
+	GUIData.WPLife = math.Round(6 + GUIData.WPFiller/10,1)
+	GUIData.WPRadiusMin = math.Round(GUIData.WPFiller * 1.25 * 0.0254,1)
+	GUIData.WPRadiusMax = math.Round(GUIData.WPFiller * 1.25 * 2*0.0254,1)
 
 	return GUIData
 
@@ -140,7 +140,7 @@ function Round.cratetxt( BulletData )
 		}
 
 		for i=1,#temp do
-			str[#str+1] = temp[i]
+			str[#str + 1] = temp[i]
 		end
 	end
 
@@ -151,7 +151,7 @@ function Round.cratetxt( BulletData )
 		}
 
 		for i=1,#temp do
-			str[#str+1] = temp[i]
+			str[#str + 1] = temp[i]
 		end
 	end
 
@@ -161,7 +161,7 @@ function Round.cratetxt( BulletData )
 		}
 
 		for i=1,#temp do
-			str[#str+1] = temp[i]
+			str[#str + 1] = temp[i]
 		end
 	end
 
@@ -191,7 +191,7 @@ end
 
 function Round.endflight( Index, Bullet, HitPos, HitNormal )
 
-	--ACF_HE( HitPos - Bullet.Flight:GetNormalized()*3 , HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner )
+	--ACF_HE( HitPos - Bullet.Flight:GetNormalized() * 3 , HitNormal, Bullet.FillerMass, Bullet.ProjMass - Bullet.FillerMass, Bullet.Owner )
 	ACF_RemoveBullet( Index )
 
 end
@@ -201,8 +201,8 @@ function Round.endeffect( Effect, Bullet )
 	local Flash = EffectData()
 		Flash:SetOrigin( Bullet.SimPos )
 		Flash:SetNormal( Bullet.SimFlight:GetNormalized() )
-		Flash:SetRadius( math.max( Bullet.FillerMass*8*39.37, 0 ) ) --(Bullet.FillerMass)^0.33*8*39.37
-		Flash:SetMagnitude( math.max( Bullet.WPMass*8*39.37, 0 ) )
+		Flash:SetRadius( math.max( Bullet.FillerMass * 8*39.37, 0 ) ) --(Bullet.FillerMass) ^ 0.33 * 8*39.37
+		Flash:SetMagnitude( math.max( Bullet.WPMass * 8*39.37, 0 ) )
 
 		local vec = Vector(255,255,255)
 		if IsValid(Bullet.Crate) then vec = Bullet.Crate:GetNWVector( "TracerColour", Bullet.Crate:GetColor() ) end
@@ -223,12 +223,12 @@ function Round.pierceeffect( Effect, Bullet )
 		BulletEffect.Damage = 0
 	LocalPlayer():FireBullets(BulletEffect)
 
-	util.Decal("ExplosiveGunshot", Bullet.SimPos + Bullet.SimFlight*10, Bullet.SimPos - Bullet.SimFlight*10)
+	util.Decal("ExplosiveGunshot", Bullet.SimPos + Bullet.SimFlight * 10, Bullet.SimPos - Bullet.SimFlight * 10)
 
 	local Spall = EffectData()
 		Spall:SetOrigin( Bullet.SimPos )
 		Spall:SetNormal( (Bullet.SimFlight):GetNormalized() )
-		Spall:SetScale( math.max(((Bullet.RoundMass * (Bullet.SimFlight:Length()/39.37)^2)/2000)/10000,1) )
+		Spall:SetScale( math.max(((Bullet.RoundMass * (Bullet.SimFlight:Length()/39.37) ^ 2)/2000)/10000,1) )
 	util.Effect( "AP_Hit", Spall )
 
 end
@@ -302,17 +302,17 @@ function Round.guiupdate( Panel, Table )
 	---------------------------Ammo Capacity-------------------------------------
 	ACE_AmmoCapacityDisplay( Data )
 	-------------------------------------------------------------------------------
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Smoke Filler Volume", "Smoke Filler Mass : "..(math.floor(Data.FillerMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("WPVol",Data.WPVol,Data.MinFillerVol,Data.MaxFillerVol,3, "WP Filler Volume", "WP Filler Mass : "..(math.floor(Data.WPMass*1000)).." g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FuseLength",Data.FuseLength,0,10,1, "Fuse Time", (Data.FuseLength).." s")
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Smoke Filler Volume", "Smoke Filler Mass : " .. (math.floor(Data.FillerMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("WPVol",Data.WPVol,Data.MinFillerVol,Data.MaxFillerVol,3, "WP Filler Volume", "WP Filler Mass : " .. (math.floor(Data.WPMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FuseLength",Data.FuseLength,0,10,1, "Fuse Time", (Data.FuseLength) .. " s")
 
 	ACE_Checkboxes( Data )
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
-	acfmenupanel:CPanelText("LengthDisplay", "Round Length : "..(math.floor((Data.PropLength+Data.ProjLength+(math.floor(Data.Tracer*5)/10))*100)/100).."/"..(Data.MaxTotalLength).." cm")	--Total round length (Name, Desc)
-	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : "..math.floor(Data.MuzzleVel*ACF.VelScale).." m/s")	--Proj muzzle velocity (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + (math.floor(Data.Tracer * 5)/10)) * 100)/100) .. "/" .. (Data.MaxTotalLength) .. " cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : " .. math.floor(Data.MuzzleVel * ACF.VelScale) .. " m/s")	--Proj muzzle velocity (Name, Desc)
 
 end
 

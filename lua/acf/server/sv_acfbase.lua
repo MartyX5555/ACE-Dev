@@ -160,7 +160,7 @@ end
 
 
 
-function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x+b
+function ACF_CalcDamage( Entity , Energy , FrArea , Angle , Type) --y=-5/16x + b
 
 	local HitRes			= {}
 
@@ -253,7 +253,7 @@ function ACF_VehicleDamage(Entity, Energy, FrArea, Angle, Inflictor, _, Gun, Typ
 
 		if Type == "Spall" then
 			dmg = 40
-			--print(HitRes.Damage*dmg)
+			--print(HitRes.Damage * dmg)
 		end
 
 		Driver:TakeDamage( HitRes.Damage * dmg , Inflictor, Gun )
@@ -420,7 +420,7 @@ function ACF_GetLinkedWheels( MobilityEnt )
 
 	local links = MobilityEnt.GearLink or MobilityEnt.WheelLink -- handling for usage on engine or gearbox
 
-	--print('total links: '..#links)
+	--print('total links: ' .. #links)
 	--print(MobilityEnt:GetClass())
 
 	for _, link in pairs( links ) do
@@ -428,9 +428,9 @@ function ACF_GetLinkedWheels( MobilityEnt )
 		table.insert(ToCheck, link.Ent)
 	end
 
-	--print("max checks: "..#ToCheck)
+	--print("max checks: " .. #ToCheck)
 
-	--print('total ents to check: '..#ToCheck)
+	--print('total ents to check: ' .. #ToCheck)
 
 	-- use a stack to traverse the link tree looking for wheels at the end
 	while #ToCheck > 0 do
@@ -459,7 +459,7 @@ function ACF_GetLinkedWheels( MobilityEnt )
 		end
 	end
 
-	--print('Wheels found: '..table.Count(Wheels))
+	--print('Wheels found: ' .. table.Count(Wheels))
 
 	return Wheels
 end

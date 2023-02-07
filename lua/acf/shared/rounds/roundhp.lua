@@ -7,7 +7,7 @@ local Round = RoundTypes.AP -- inherit from AP
 ACF.AmmoBlacklist.HP = ACF.AmmoBlacklist.AP
 
 Round.type = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name = "[HP] - "..ACFTranslation.HP[1] --Human readable name
+Round.name = "[HP] - " .. ACFTranslation.HP[1] --Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl" --Shell flight model
 Round.desc = ACFTranslation.HP[2]
 Round.netid = 3 --Unique ammotype ID for network transmission
@@ -28,21 +28,21 @@ function Round.convert( Crate, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume*0.5,0)*7.9/1000  --(Volume of the projectile as a cylinder - Volume of the cavity) * density of steel
+	Data.ProjMass = math.max(GUIData.ProjVolume * 0.5,0) * 7.9/1000  --(Volume of the projectile as a cylinder - Volume of the cavity) * density of steel
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
 
 	local MaxVol = ACF_RoundShellCapacity( Energy.Momentum, Data.FrArea, Data.Caliber, Data.ProjLength )
 	GUIData.MinCavVol = 0
 	GUIData.MaxCavVol = math.min(GUIData.ProjVolume,MaxVol)
 	Data.CavVol = math.Clamp(PlayerData.Data5,GUIData.MinCavVol,GUIData.MaxCavVol)
 
-	Data.ProjMass = ( (Data.FrArea * Data.ProjLength) - Data.CavVol )*7.9/1000 --Volume of the projectile as a cylinder * fraction missing due to hollow point (Data5) * density of steel
+	Data.ProjMass = ( (Data.FrArea * Data.ProjLength) - Data.CavVol ) * 7.9/1000 --Volume of the projectile as a cylinder * fraction missing due to hollow point (Data5) * density of steel
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local ExpRatio = (Data.CavVol/GUIData.ProjVolume)
 	Data.ShovePower = 0.2 + ExpRatio/2
-	Data.ExpCaliber = Data.Caliber + ExpRatio*Data.ProjLength
-	Data.PenArea = (3.1416 * Data.ExpCaliber/2)^2^ACF.PenAreaMod
+	Data.ExpCaliber = Data.Caliber + ExpRatio * Data.ProjLength
+	Data.PenArea = (3.1416 * Data.ExpCaliber/2) ^ 2 ^ ACF.PenAreaMod
 	Data.DragCoef = ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel = 400										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
@@ -66,9 +66,9 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxKETransfert = Energy.Kinetic*Data.ShovePower
-	GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
+	GUIData.MaxKETransfert = Energy.Kinetic * Data.ShovePower
+	GUIData.MaxPen = (Energy.Penetration/Data.PenArea) * ACF.KEtoRHA
 	return GUIData
 end
 
@@ -148,9 +148,9 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
-	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("CavVol",Data.CavVol,Data.MinCavVol,Data.MaxCavVol,2, "Hollow Point Cavity Volume", "Expanded caliber : "..(math.floor(Data.ExpCaliber*10)).." mm")--Hollow Point Cavity Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength",Data.PropLength,Data.MinPropLength,Data.MaxTotalLength,3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" )	--Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength",Data.ProjLength,Data.MinProjLength,Data.MaxTotalLength,3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g")	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("CavVol",Data.CavVol,Data.MinCavVol,Data.MaxCavVol,2, "Hollow Point Cavity Volume", "Expanded caliber : " .. (math.floor(Data.ExpCaliber * 10)) .. " mm")--Hollow Point Cavity Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_UpperCommonDataDisplay( Data, PlayerData )
 	ACE_CommonDataDisplay( Data )

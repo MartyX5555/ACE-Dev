@@ -148,7 +148,7 @@ function this:ApplyToAll()
 		local guidance = missile.Guidance
 
 		if self:ApplyChance(missile, guidance) then
-			ret[#ret+1] = missile
+			ret[#ret + 1] = missile
 		end
 
 	end

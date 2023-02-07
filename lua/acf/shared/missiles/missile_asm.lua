@@ -37,8 +37,8 @@ ACF_defineGun("AGM-114 ASM", {						--id
 		casing		= 0.2,						-- thickness of missile casing, cm
 		armour		= 10,						-- effective armour thickness of casing, in mm
 		propweight	= 1,							-- motor mass - motor casing
-		thrust		= 15000,						-- average thrust - kg*in/s^2	--was 12000
-		burnrate		= 100,						-- cm^3/s at average chamber pressure
+		thrust		= 15000,						-- average thrust - kg * in/s ^ 2	--was 12000
+		burnrate		= 100,						-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.25,						-- percentage of the propellant consumed in the starter motor.	--was 0.25
 		minspeed		= 4000,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.001,						-- drag coefficient while falling
@@ -87,8 +87,8 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		casing		= 0.15,						-- thickness of missile casing, cm
 		armour		= 10,						-- effective armour thickness of casing, in mm
 		propweight	= 3,							-- motor mass - motor casing
-		thrust		= 2000,						-- average thrust - kg*in/s^2		--was 600
-		burnrate		= 300,						-- cm^3/s at average chamber pressure
+		thrust		= 2000,						-- average thrust - kg * in/s ^ 2		--was 600
+		burnrate		= 300,						-- cm ^ 3/s at average chamber pressure
 		starterpct	= 0.05,						-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 4000,						-- minimum speed beyond which the fins work at 100% efficiency	--was 4000
 		dragcoef		= 0.004,						-- drag coefficient while falling								--was 0.001
@@ -141,8 +141,8 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		casing		= 0.1,						-- thickness of missile casing, cm
 		armour		= 5,							-- effective armour thickness of casing, in mm
 		propweight	= 4,							-- motor mass - motor casing
-		thrust		= 8500,						-- average thrust - kg*in/s^2	--was 4000
-		burnrate		= 1600,						-- cm^3/s at average chamber pressure	--was 1400
+		thrust		= 8500,						-- average thrust - kg * in/s ^ 2	--was 4000
+		burnrate		= 1600,						-- cm ^ 3/s at average chamber pressure	--was 1400
 		starterpct	= 0.4,						-- percentage of the propellant consumed in the starter motor.  --was 0.2
 		minspeed		= 12000,						-- minimum speed beyond which the fins work at 100% efficiency	--was 5000
 		dragcoef		= 0.005,						-- drag coefficient while falling								--0.001
@@ -193,8 +193,8 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		casing		= 0.2,						-- thickness of missile casing, cm
 		armour		= 10,						-- effective armour thickness of casing, in mm
 		propweight	= 5,							-- motor mass - motor casing
-		thrust		= 18000,						-- average thrust - kg*in/s^2	--was 10000
-		burnrate		= 200,						-- cm^3/s at average chamber pressure	--was 800
+		thrust		= 18000,						-- average thrust - kg * in/s ^ 2	--was 10000
+		burnrate		= 200,						-- cm ^ 3/s at average chamber pressure	--was 800
 		starterpct	= 0.1,						-- percentage of the propellant consumed in the starter motor.
 		minspeed		= 1000,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef		= 0.01,						-- drag coefficient while falling

@@ -4,7 +4,7 @@ AddCSLuaFile()
 local Round = {}
 
 Round.type  = "Ammo"										-- Tells the spawn menu what entity to spawn
-Round.name  = "[APCBC] - "..ACFTranslation.ShellAPCBC[1]	-- Human readable name
+Round.name  = "[APCBC] - " .. ACFTranslation.ShellAPCBC[1]	-- Human readable name
 Round.model = "models/munitions/round_100mm_shot.mdl"	-- Shell flight model
 Round.desc  = ACFTranslation.ShellAPCBC[2]
 Round.netid = 19											-- Unique ammotype ID for network transmission
@@ -29,9 +29,9 @@ function Round.convert( Crate, PlayerData )
 
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
-	Data.ProjMass	= Data.FrArea * (Data.ProjLength*7.9/1000) --Volume of the projectile as a cylinder * density of steel
+	Data.ProjMass	= Data.FrArea * (Data.ProjLength * 7.9/1000) --Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower	= 0.2
-	Data.PenArea		= Data.FrArea^ACF.PenAreaMod
+	Data.PenArea		= Data.FrArea ^ ACF.PenAreaMod
 	Data.DragCoef	= ((Data.FrArea/10000)/Data.ProjMass)
 	Data.LimitVel	= 800									--Most efficient penetration speed in m/s
 	Data.KETransfert	= 0.1								--Kinetic energy transfert to the target for movement purposes
@@ -58,8 +58,8 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
+	GUIData.MaxPen = (Energy.Penetration/Data.PenArea) * ACF.KEtoRHA
 	return GUIData
 end
 
@@ -111,7 +111,7 @@ function Round.normalize( Index, Bullet, HitPos, HitNormal, Target)
 	Bullet.Flight = FlightNormal * Speed
 
 	local DeltaTime = SysTime() - Bullet.LastThink
-	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized()*math.min(ACF.PhysMaxVel*DeltaTime,Bullet.FlightTime*Bullet.Flight:Length())
+	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized() * math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length())
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
 
 end
@@ -128,8 +128,8 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 			if HitRes.Overkill > 0 then
 				table.insert( Bullet.Filter , Target )				--"Penetrate" (Ingoring the prop for the retry trace)
-				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
-				Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+				ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+				Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic * (1-HitRes.Loss) * 2000/Bullet.ProjMass) ^ 0.5 * 39.37
 				Bullet.Normalize = false
 				return "Penetrated"
 			elseif HitRes.Ricochet then
@@ -246,8 +246,8 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
-	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_UpperCommonDataDisplay( Data, PlayerData )
 	ACE_CommonDataDisplay( Data )

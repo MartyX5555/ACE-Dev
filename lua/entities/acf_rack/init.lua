@@ -21,7 +21,7 @@ function ENT:GetReloadTime(nextMsl)
 	local reloadBonus = (self.ReloadMultiplierBonus or 0)
 	local mag = (self.MagSize or 1)
 
-	reloadMul = (reloadMul - (reloadMul - 1) * reloadBonus) / (mag^1.1)
+	reloadMul = (reloadMul - (reloadMul - 1) * reloadBonus) / (mag ^ 1.1)
 
 	local ret = math.max(self:GetFireDelay(nextMsl) * reloadMul, 0.5)
 	self:SetNWFloat(	"Reload",	ret)
@@ -96,10 +96,10 @@ function ENT:Initialize()
 	self.ForceTdelay			= 0
 	self.Inaccuracy			= 1
 
-	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload ("..RackWireDescs["Reload"]..")", "Track Delay ("..RackWireDescs["Delay"]..")",	"Target Pos ("..RackWireDescs["TargetPos"]..")" },
+	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")", "Track Delay (" .. RackWireDescs["Delay"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")" },
 													{ "NORMAL", "NORMAL", "NORMAL", "VECTOR" } )
 
-	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready ("..RackWireDescs["Ready"]..")",	"Entity",	"Shots Left",  "Position" },
+	self.Outputs = WireLib.CreateSpecialOutputs( self,  { "Ready (" .. RackWireDescs["Ready"] .. ")",	"Entity",	"Shots Left",  "Position" },
 														{ "NORMAL", "ENTITY", "NORMAL", "VECTOR" } )
 
 	Wire_TriggerOutput(self, "Entity", self)
@@ -633,7 +633,7 @@ function ENT:AddMissile()
 
 	missile:Spawn()
 
-	self.Missiles[NextIdx+1] = missile
+	self.Missiles[NextIdx + 1] = missile
 
 	Crate.Ammo = Crate.Ammo - 1
 
@@ -813,10 +813,10 @@ function ENT:FireMissile()
 
 			local filter = {}
 			for k, v in pairs(self.Missiles) do
-				filter[#filter+1] = v
+				filter[#filter + 1] = v
 			end
-			filter[#filter+1] = self
-			filter[#filter+1] = missile
+			filter[#filter + 1] = self
+			filter[#filter + 1] = missile
 
 			missile.Filter = filter
 
@@ -827,7 +827,7 @@ function ENT:FireMissile()
 			local bdata = missile.BulletData
 
 			bdata.Pos = muzzle.Pos
-			bdata.Flight = (self:GetAngles():Forward()+spread):GetNormalized() * (bdata.MuzzleVel or missile.MinimumSpeed or 1) * (inverted and -1 or 1)
+			bdata.Flight = (self:GetAngles():Forward() + spread):GetNormalized() * (bdata.MuzzleVel or missile.MinimumSpeed or 1) * (inverted and -1 or 1)
 
 			if missile.RackModelApplied then
 				local model = ACF_GetGunValue(bdata.Id, "model")
@@ -954,28 +954,28 @@ function ENT:GetOverlayText()
 	local ReloadBonus	= self.ReloadMultiplierBonus or 0  -- the word explains by itself
 	local Status		= self.RackStatus				-- this was used to show ilegality issues before. Now this shows about rack state (reloading?, ready?, empty and so on...)
 
-	local txt = '-  '..Status..'  -'
+	local txt = '-  ' .. Status .. '  -'
 
 		if Ammo > 0  then
 			if Ammo == 1 then
-				txt = txt..'\n'..Ammo..' Launch left'
+				txt = txt .. '\n' .. Ammo .. ' Launch left'
 			else
-				txt = txt..'\n'..Ammo..' Launches left'
+				txt = txt .. '\n' .. Ammo .. ' Launches left'
 			end
 
-			txt = txt..'\n\nFire Rate: '..(math.Round(FireRate,2))..' secs'
-			txt = txt..'\nReload Time: '..(math.Round(Reload,2))..' secs'
+			txt = txt .. '\n\nFire Rate: ' .. (math.Round(FireRate,2)) .. ' secs'
+			txt = txt .. '\nReload Time: ' .. (math.Round(Reload,2)) .. ' secs'
 
 			if ReloadBonus > 0 then
-			txt = txt..'\n'..math.floor(ReloadBonus * 100)..'% Reload Time Decreased'
+			txt = txt .. '\n' .. math.floor(ReloadBonus * 100) .. '% Reload Time Decreased'
 			end
 
 		else
 
 			if #self.AmmoLink ~= 0 then
-			txt = txt..'\n\nProvided with ammo.\n'
+			txt = txt .. '\n\nProvided with ammo.\n'
 			else
-			txt = txt..'\n\nAmmo not found!\n'
+			txt = txt .. '\n\nAmmo not found!\n'
 			end
 		end
 

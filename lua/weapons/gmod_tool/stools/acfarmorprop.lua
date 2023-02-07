@@ -74,20 +74,20 @@ if CLIENT then
 
 		if not PanelTxt then PanelTxt = {} end
 
-		if not PanelTxt[name.."_aText"] then
-			PanelTxt[name.."_aText"] = panel:Help(desc)
-			PanelTxt[name.."_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
-			PanelTxt[name.."_aText"]:SetAutoStretchVertical(true)
-			if font then PanelTxt[name.."_aText"]:SetFont( font ) end
-			PanelTxt[name.."_aText"]:SizeToContents()
+		if not PanelTxt[name .. "_aText"] then
+			PanelTxt[name .. "_aText"] = panel:Help(desc)
+			PanelTxt[name .. "_aText"]:SetContentAlignment( TEXT_ALIGN_CENTER )
+			PanelTxt[name .. "_aText"]:SetAutoStretchVertical(true)
+			if font then PanelTxt[name .. "_aText"]:SetFont( font ) end
+			PanelTxt[name .. "_aText"]:SizeToContents()
 
-			panel:AddItem(PanelTxt[name.."_aText"])
+			panel:AddItem(PanelTxt[name .. "_aText"])
 
 		end
 
-		PanelTxt[name.."_aText"]:SetText( desc )
-		PanelTxt[name.."_aText"]:SetSize( panel:GetWide(), 10 )
-		PanelTxt[name.."_aText"]:SizeToContentsY()
+		PanelTxt[name .. "_aText"]:SetText( desc )
+		PanelTxt[name .. "_aText"]:SetSize( panel:GetWide(), 10 )
+		PanelTxt[name .. "_aText"]:SizeToContentsY()
 
 	end
 
@@ -119,13 +119,13 @@ if CLIENT then
 			end
 
 			ArmorPanelText( "ComboTitle", ToolPanel.panel, MaterialData.name , "DermaDefaultBold" )
-			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc.."\n" )
+			ArmorPanelText( "ComboDesc" , ToolPanel.panel, MaterialData.desc .. "\n" )
 
-			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MaterialData.curve) )
-			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : "..(MaterialData.massMod) .."x RHA" )
-			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MaterialData.effectiveness ) .."x RHA" )
-			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : "..(MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
-			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : "..(MaterialData.year or "unknown") )
+			ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. (MaterialData.curve) )
+			ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass : " .. (MaterialData.massMod) .."x RHA" )
+			ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. (MaterialData.effectiveness ) .."x RHA" )
+			ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MaterialData.HEATeffectiveness or MaterialData.effectiveness) .."x RHA" )
+			ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MaterialData.year or "unknown") )
 
 			function ToolPanel.ComboMat:OnSelect(self, index, value )
 
@@ -225,13 +225,13 @@ if CLIENT then
 				ToolPanel.ComboMat:SetText(MatData.sname)
 
 				ArmorPanelText( "ComboTitle", ToolPanel.panel, MatData.name , "DermaDefaultBold" )
-				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc.."\n" )
+				ArmorPanelText( "ComboDesc" , ToolPanel.panel, MatData.desc .. "\n" )
 
-				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : "..(MatData.curve) )
-				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: "..(MatData.massMod ) .."x RHA")
-				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : "..(MatData.effectiveness ) .."x RHA" )
-				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : "..(MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
-				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : "..(MatData.year or "unknown") )
+				ArmorPanelText( "ComboCurve", ToolPanel.panel, "Curve : " .. (MatData.curve) )
+				ArmorPanelText( "ComboMass" , ToolPanel.panel, "Mass scale: " .. (MatData.massMod ) .."x RHA")
+				ArmorPanelText( "ComboKE"	, ToolPanel.panel, "KE protection : " .. (MatData.effectiveness ) .."x RHA" )
+				ArmorPanelText( "ComboCHE"  , ToolPanel.panel, "CHEMICAL protection : " .. (MatData.HEATeffectiveness or MatData.effectiveness) .."x RHA" )
+				ArmorPanelText( "ComboYear" , ToolPanel.panel, "Year : " .. (MatData.year or "unknown") )
 
 			end
 	end )
@@ -374,11 +374,11 @@ if CLIENT then
 
 		local Tabletxt	= {}
 
-		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>"..Sep }
-		local TMass		= { Color4, "- Total Mass: ", Color3, ""..total, Color4, " kgs / @ ", Color3, ""..math.Truncate(total/1000,2), Color4, " tons"..Sep }
-		local TMass2		= { Color4, "- Mass Ratio: ",Color3, ""..phystotal, Color4, " kgs physical, ", Color3, ""..parenttotal, Color4, " kgs parented / ", Color3, physratio.."%", Color4, " physical )"..Sep }
-		local Engine		= { Color4, "- Total Power: ", Color3, ""..math.Round(power * bonus, 1), Color4," hp / ",Color3, ""..hpton, Color4, " hp/ton"..hasfuel..Sep }
-		local ArmorComp1	= { Color4, "- Composition: "..Sep }
+		local Title		= { Color2, "<|",Color1, "|============|", Color2, "[- Contraption Summary -]", Color1, "|============|",Color2, "|>" .. Sep }
+		local TMass		= { Color4, "- Total Mass: ", Color3, "" .. total, Color4, " kgs / @ ", Color3, "" .. math.Truncate(total/1000,2), Color4, " tons" .. Sep }
+		local TMass2		= { Color4, "- Mass Ratio: ",Color3, "" .. phystotal, Color4, " kgs physical, ", Color3, "" .. parenttotal, Color4, " kgs parented / ", Color3, physratio .. "%", Color4, " physical )" .. Sep }
+		local Engine		= { Color4, "- Total Power: ", Color3, "" .. math.Round(power * bonus, 1), Color4," hp / ",Color3, "" .. hpton, Color4, " hp/ton" .. hasfuel .. Sep }
+		local ArmorComp1	= { Color4, "- Composition: " .. Sep }
 
 		Tabletxt = table.Add(Tabletxt, Title)
 		Tabletxt = table.Add(Tabletxt,TMass)
@@ -389,7 +389,7 @@ if CLIENT then
 		for material, mass in pairs( FromJSON[1] ) do
 
 			local Percent	=  math.Round( FromJSON[2][material] * 100 ,1)
-			local TbStr	= { Color4, "> "..material.." @ ", Color3, ""..math.Round(mass,1), Color4, " kgs (", Color3, Percent.."%", Color4, ")"..Sep }
+			local TbStr	= { Color4, "> " .. material .. " @ ", Color3, "" .. math.Round(mass,1), Color4, " kgs (", Color3, Percent .. "%", Color4, ")" .. Sep }
 
 			Tabletxt = table.Add(Tabletxt,TbStr)
 

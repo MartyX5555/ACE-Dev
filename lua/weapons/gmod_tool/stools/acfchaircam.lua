@@ -126,7 +126,7 @@ do
 			local class = seat:GetClass()
 			if not string.StartWith(class, "prop_vehicle_") then return false end
 
-			local text = "Override: "..(seat.ACE_CamOverride and "Yes" or "No")
+			local text = "Override: " .. (seat.ACE_CamOverride and "Yes" or "No")
 			local pos = seat:WorldSpaceCenter()
 
 			AddWorldTip( nil, text, nil, pos, nil )

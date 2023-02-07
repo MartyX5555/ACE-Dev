@@ -216,7 +216,7 @@ function ENT:CalcFlight()
 	local DragCoef = 0
 	if Time > self.CutoutTime or (self:WaterLevel() == 3 and self.NotDrownable ) then
 
-		DragCoef = (self:WaterLevel() == 3 and self.NotDrownable ) and self.DragCoef*5 or self.DragCoef --5 times extra drag underwater
+		DragCoef = (self:WaterLevel() == 3 and self.NotDrownable ) and self.DragCoef * 5 or self.DragCoef --5 times extra drag underwater
 
 		if self.Motor ~= 0 then
 			self.Motor = 0
@@ -258,7 +258,7 @@ function ENT:CalcFlight()
 		--Becomes volumetric once ghosting is over. So we avoid most of expensive calculations below
 		if Time > self.GhostPeriod then
 
-			local MRadius = (self.BulletData.Caliber/2)*0.5
+			local MRadius = (self.BulletData.Caliber/2) * 0.5
 			local maxs = Vector(MRadius,MRadius,MRadius)
 			local mins = -maxs
 
@@ -447,7 +447,7 @@ do
 				if self.Motor > 0 or self.MotorLength > 0.1 then --Ignition -- must not be called here
 					self.MissileIgnited = true
 					self.CacheParticleEffect = CurTime() + 0.1
-					self:SetNWFloat("LightSize", BulletData.Caliber*3)
+					self:SetNWFloat("LightSize", BulletData.Caliber * 3)
 					self.CutoutTime	= Time + self.MotorLength -- must not be called here
 				end
 
@@ -470,7 +470,7 @@ do
 			if self.Motor > 0 or self.MotorLength > 0.1 then
 				self.MissileIgnited = true
 				self.CacheParticleEffect = CurTime() + 0.1
-				self:SetNWFloat("LightSize", BulletData.Caliber*3)
+				self:SetNWFloat("LightSize", BulletData.Caliber * 3)
 				self.CutoutTime	= Time + self.MotorLength
 			end
 
@@ -733,7 +733,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass*1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume/ACF.Threshold							--Setting the threshold of the prop Area gone
 	local Percent = 1
 
@@ -747,7 +747,7 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.MaxArmour  = Armour
 	self.ACF.Type	= nil
 	self.ACF.Mass	= self.Mass
-	self.ACF.Density	= (self.PhysObj:GetMass()*1000) / self.ACF.Volume
+	self.ACF.Density	= (self.PhysObj:GetMass() * 1000) / self.ACF.Volume
 	self.ACF.Type	= "Prop"
 
 	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"

@@ -37,7 +37,7 @@ function ENT:Initialize()
 	self.Cone = 45
 
 	self.LegalTick = 0
-	self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+	self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
 	self.IsLegal = true
 end
 
@@ -93,7 +93,7 @@ function ENT:Think()
 	if	self.LegalTick >= (self.checkLegalIn or 0) then
 
 		self.LegalTick = 0
-		self.checkLegalIn = 50+math.random(0,50) --Random checks every 5-10 seconds
+		self.checkLegalIn = 50 + math.random(0,50) --Random checks every 5-10 seconds
 		self:isLegal()
 	end
 
@@ -105,7 +105,7 @@ function ENT:Think()
 		local detected = 0
 		local radIDs = {}
 		local detAngs = {}
-		local randinac = Angle(1+math.Rand(-0.15,0.15),1+math.Rand(-0.05,0.05),0)
+		local randinac = Angle(1 + math.Rand(-0.15,0.15),1 + math.Rand(-0.05,0.05),0)
 
 		for k, scanEnt in pairs(ScanArray) do
 

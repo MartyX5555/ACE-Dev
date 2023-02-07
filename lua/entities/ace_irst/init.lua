@@ -223,7 +223,7 @@ function ENT:AcquireLock()
 		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.01*(absang.y/90)^2+0.01*(absang.y/90)^2+0.01*(absang.p/90)^2
+		errorFromAng = 0.01 * (absang.y/90) ^ 2 + 0.01 * (absang.y/90) ^ 2 + 0.01 * (absang.p/90) ^ 2
 
 		if absang.p < self.Cone and absang.y < self.Cone then --Entity is within seeker cone
 
@@ -340,14 +340,14 @@ function ENT:UpdateOverlayText()
 	local detected  = status ~= "Off" and self.ClosestToBeam ~= -1 or false
 	local range	= self.MaximumDistance or 0
 
-	local txt = "Status: "..status
+	local txt = "Status: " .. status
 
-	txt = txt.."\n\nView Cone: "..math.Round(cone * 2, 2).." deg"
+	txt = txt .. "\n\nView Cone: " .. math.Round(cone * 2, 2) .. " deg"
 
-	txt = txt.."\nMax Range: "..(isnumber(range) and math.Round(range / 39.37 , 2).." m" or "Unlimited" )
+	txt = txt .. "\nMax Range: " .. (isnumber(range) and math.Round(range / 39.37 , 2) .. " m" or "Unlimited" )
 
 	if detected then
-		txt = txt.."\n\nTarget Detected!"
+		txt = txt .. "\n\nTarget Detected!"
 	end
 
 	if not self.Legal then

@@ -507,7 +507,7 @@ function PANEL:PerformLayout()
 
 	--Selection Tree panel
 	acfmenupanel.WeaponSelect:SetPos( 0, ypos )
-	acfmenupanel.WeaponSelect:SetSize( acfmenupanel:GetWide(), ScrH()*0.4 )
+	acfmenupanel.WeaponSelect:SetSize( acfmenupanel:GetWide(), ScrH() * 0.4 )
 	ypos = acfmenupanel.WeaponSelect.Y + acfmenupanel.WeaponSelect:GetTall() + vspacing
 
 	if acfmenupanel.CustomDisplay then
@@ -543,7 +543,7 @@ function ACFHomeGUICreate( Table )
 	color = Color(225,0,0,255)
 	end
 
-	versiontext = "GitHub Version: "..ACF.CurrentVersion.."\nCurrent Version: "..ACF.Version
+	versiontext = "GitHub Version: " .. ACF.CurrentVersion .. "\nCurrent Version: " .. ACF.Version
 
 	acfmenupanel["CData"]["VersionInit"] = vgui.Create( "DLabel" )
 	acfmenupanel["CData"]["VersionInit"]:SetText(versiontext)
@@ -555,7 +555,7 @@ function ACFHomeGUICreate( Table )
 	acfmenupanel["CData"]["VersionText"] = vgui.Create( "DLabel" )
 
 	acfmenupanel["CData"]["VersionText"]:SetFont("Trebuchet18")
-	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is "..versionstring.."!\n\n")
+	acfmenupanel["CData"]["VersionText"]:SetText("ACE Is " .. versionstring .. "!\n\n")
 	acfmenupanel["CData"]["VersionText"]:SetTextColor( Color( 0, 0, 0) )
 	acfmenupanel["CData"]["VersionText"]:SizeToContents()
 
@@ -575,7 +575,7 @@ function ACFHomeGUICreate( Table )
 
 		local k = table.maxn(acfmenupanel.Changelog)-i
 
-		local Node = acfmenupanel["CData"]["Changelist"]:AddNode( "Rev "..k )
+		local Node = acfmenupanel["CData"]["Changelist"]:AddNode( "Rev " .. k )
 			Node.mytable = {}
 			Node.mytable["rev"] = k
 				function Node:DoClick()
@@ -626,7 +626,7 @@ function ACFHomeGUIUpdate( Table )
 	local txt
 
 	if ACF.CurrentVersion > 0 then
-	txt = "ACE Is "..versionstring.."!\n\n"
+	txt = "ACE Is " .. versionstring .. "!\n\n"
 	else
 	txt = versionstring
 	end
@@ -655,7 +655,7 @@ function ACFChangelogHTTPCallBack(contents , size)
 	table.SortByKey(acfmenupanel.Changelog,true)
 
 
-	--print('1.-'..acfmenupanel.Changelog[100]..'\n2.-'..acfmenupanel.Changelog[101]..'\n3.-'..acfmenupanel.Changelog[102])
+	--print('1.-' .. acfmenupanel.Changelog[100] .. '\n2.-' .. acfmenupanel.Changelog[101] .. '\n3.-' .. acfmenupanel.Changelog[102])
 
 	local Table = {}
 	Table.guicreate = (function( Panel, Table ) ACFHomeGUICreate( Table ) end or nil)
@@ -874,7 +874,7 @@ do
 		local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
 		local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
-		local Id = X..":"..Y..":"..Z
+		local Id = X .. ":" .. Y..":" .. Z
 
 		acfmenupanel.AmmoData["Id"] = Id
 		RunConsoleCommand( "acfmenu_id", Id )
@@ -1175,11 +1175,11 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 	acfmenupanel["CData"][Name]:SetDark( true )
 	acfmenupanel["CData"][Name]:SetDecimals( Decimals )
 
-	acfmenupanel["CData"][Name.."_label"] = vgui.Create( "DLabel", acfmenupanel["CData"][Name]) -- recreating the label
-	acfmenupanel["CData"][Name.."_label"]:SetPos( 0, 0)
-	acfmenupanel["CData"][Name.."_label"]:SetText( Title )
-	acfmenupanel["CData"][Name.."_label"]:SizeToContents()
-	acfmenupanel["CData"][Name.."_label"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_label"] = vgui.Create( "DLabel", acfmenupanel["CData"][Name]) -- recreating the label
+	acfmenupanel["CData"][Name .. "_label"]:SetPos( 0, 0)
+	acfmenupanel["CData"][Name .. "_label"]:SetText( Title )
+	acfmenupanel["CData"][Name .. "_label"]:SizeToContents()
+	acfmenupanel["CData"][Name .. "_label"]:SetTextColor( Color( 0, 0, 0) )
 
 	if acfmenupanel.AmmoData[Name] then
 			acfmenupanel["CData"][Name]:SetValue(acfmenupanel.AmmoData[Name])
@@ -1203,19 +1203,19 @@ function PANEL:AmmoSlider(Name, Value, Min, Max, Decimals, Title, Desc) --Variab
 	acfmenupanel["CData"][Name]:SetMax( Max )
 	acfmenupanel["CData"][Name]:SetValue( Value )
 
-	if not acfmenupanel["CData"][Name.."_text"] and Desc then
+	if not acfmenupanel["CData"][Name .. "_text"] and Desc then
 
-	acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
-	acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
-	acfmenupanel["CData"][Name.."_text"]:SetTall( 20 )
-	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
+	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
+	acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_text"]:SetTall( 20 )
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 
 	end
 
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc )
-	acfmenupanel["CData"][Name.."_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 14 )
-	acfmenupanel["CData"][Name.."_text"]:SizeToContentsX()
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc )
+	acfmenupanel["CData"][Name .. "_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 14 )
+	acfmenupanel["CData"][Name .. "_text"]:SizeToContentsX()
 
 end
 
@@ -1252,19 +1252,19 @@ function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip )
 
 	acfmenupanel["CData"][Name]:SetText( Title )
 
-	if not acfmenupanel["CData"][Name.."_text"] and Desc then
+	if not acfmenupanel["CData"][Name .. "_text"] and Desc then
 
-	acfmenupanel["CData"][Name.."_text"] = acfmenupanel["CData"][Name.."_text"]
-	acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
-	acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
-	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
+	acfmenupanel["CData"][Name .. "_text"] = acfmenupanel["CData"][Name .. "_text"]
+	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
+	acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 
 	end
 
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc )
-	acfmenupanel["CData"][Name.."_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 10 )
-	acfmenupanel["CData"][Name.."_text"]:SizeToContentsX()
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc )
+	acfmenupanel["CData"][Name .. "_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 10 )
+	acfmenupanel["CData"][Name .. "_text"]:SizeToContentsX()
 
 end
 
@@ -1278,29 +1278,29 @@ end
 ]]---------------------------------------
 function PANEL:CPanelText(Name, Desc, Font, Panel)
 
-	if not acfmenupanel["CData"][Name.."_text"] then
+	if not acfmenupanel["CData"][Name .. "_text"] then
 
-	acfmenupanel["CData"][Name.."_text"] = vgui.Create( "DLabel" )
+	acfmenupanel["CData"][Name .. "_text"] = vgui.Create( "DLabel" )
 
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc or "" )
-	acfmenupanel["CData"][Name.."_text"]:SetTextColor( Color( 0, 0, 0) )
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc or "" )
+	acfmenupanel["CData"][Name .. "_text"]:SetTextColor( Color( 0, 0, 0) )
 
-	if Font then acfmenupanel["CData"][Name.."_text"]:SetFont( Font ) end
+	if Font then acfmenupanel["CData"][Name .. "_text"]:SetFont( Font ) end
 
-	acfmenupanel["CData"][Name.."_text"]:SetWrap(true)
-	acfmenupanel["CData"][Name.."_text"]:SetAutoStretchVertical( true )
+	acfmenupanel["CData"][Name .. "_text"]:SetWrap(true)
+	acfmenupanel["CData"][Name .. "_text"]:SetAutoStretchVertical( true )
 
 	if IsValid(Panel) then
 		if Panel.AddItem then
-			Panel:AddItem( acfmenupanel["CData"][Name.."_text"] )
+			Panel:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 		end
 	else
-		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name.."_text"] )
+		acfmenupanel.CustomDisplay:AddItem( acfmenupanel["CData"][Name .. "_text"] )
 	end
 	end
 
-	acfmenupanel["CData"][Name.."_text"]:SetText( Desc )
-	acfmenupanel["CData"][Name.."_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 10 )
-	acfmenupanel["CData"][Name.."_text"]:SizeToContentsY()
+	acfmenupanel["CData"][Name .. "_text"]:SetText( Desc )
+	acfmenupanel["CData"][Name .. "_text"]:SetSize( acfmenupanel.CustomDisplay:GetWide(), 10 )
+	acfmenupanel["CData"][Name .. "_text"]:SizeToContentsY()
 
 end

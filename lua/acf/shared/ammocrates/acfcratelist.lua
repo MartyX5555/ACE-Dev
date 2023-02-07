@@ -16,7 +16,7 @@ local Ammo1x1x1 = {}											--Definition. The new ammocrate must have this fi
 	Ammo1x1x1.Lenght = 10										--X dimension of this ammocrate.
 	Ammo1x1x1.Width = 10										--Y dimension of this ammocrate.
 	Ammo1x1x1.Height = 10										--Z dimension of this ammocrate.
-	Ammo1x1x1.volume = 1000									--Volume of this ammocrate. Looks deprecated since you can get the volume by multipling X*Y*Z
+	Ammo1x1x1.volume = 1000									--Volume of this ammocrate. Looks deprecated since you can get the volume by multipling X * Y*Z
 AmmoTable["Ammo1x1x1"] = Ammo1x1x1							--Putting the ammocrate on the AmmoTable
 
 

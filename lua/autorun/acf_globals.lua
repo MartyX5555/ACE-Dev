@@ -106,7 +106,7 @@ ACF.AmmoMod			= 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul	= 1
 ACF.AmmoWidthMul		= 1
 ACF.ArmorMod			= 1
-ACF.SlopeEffectFactor	= 1.1					-- Sloped armor effectiveness: armor / cos(angle)^factor
+ACF.SlopeEffectFactor	= 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
 ACF.Spalling			= 1
 ACF.SpallMult		= 1
 
@@ -151,7 +151,7 @@ ACF.DragDiv			= 80						-- Drag fudge factor
 ACF.VelScale			= 1						-- Scale factor for the shell velocities in the game world
 
 ACF.PhysMaxVel		= 8000
-ACF.SmokeWind		= 5 + math.random()*35	-- affects the ability of smoke to be used for screening effect
+ACF.SmokeWind		= 5 + math.random() * 35	-- affects the ability of smoke to be used for screening effect
 
 ACF.PBase			= 1050					-- 1KG of propellant produces this much KE at the muzzle, in kj
 ACF.PScale			= 1						-- Gun Propellant power expotential

@@ -12,7 +12,7 @@ function ENT:Initialize()
 		self:SetModel( "models/missiles/glatgm/mgm51.mdl" )
 	else
 		self:SetModel( "models/missiles/glatgm/9m117.mdl" )
-		self:SetModelScale(self.BulletData.Caliber*10/100,0)
+		self:SetModelScale(self.BulletData.Caliber * 10/100,0)
 	end
 
 	self:SetMoveType(MOVETYPE_VPHYSICS);
@@ -33,7 +33,7 @@ function ENT:Initialize()
 	ACF_ActiveMissiles[self] = true
 
 	--Missile stuff
-	self.KillTime			= CurTime()+20
+	self.KillTime			= CurTime() + 20
 	self.Time				= CurTime()
 	self.Filter			= {self,self.Entity,self.Guidance}
 	self.velocity			= 5000						-- self.velocity of the missile per second
@@ -44,7 +44,7 @@ function ENT:Initialize()
 	if self.Sub then
 		self.velocity = 2500
 		self.secondsOffset = 0.25
-		self.SpiralAm = (10-self.BulletData.Caliber)*0.25 -- amount of artifical spiraling for <100 shells, caliber in acf is in cm
+		self.SpiralAm = (10-self.BulletData.Caliber) * 0.25 -- amount of artifical spiraling for <100 shells, caliber in acf is in cm
 	end
 
 	-- how far off the forward offset is for the targeting position
@@ -58,7 +58,7 @@ function ENT:Initialize()
 			if not IsValid(Optical) then continue end
 
 			--Range: 250. Note im using squared distance. So 250 ^ 2 means distance is 250
-			if Optical:GetPos():DistToSqr(self:GetPos()) < 250^2 and Optical:CPPIGetOwner() == self.Owner then
+			if Optical:GetPos():DistToSqr(self:GetPos()) < 250 ^ 2 and Optical:CPPIGetOwner() == self.Owner then
 
 				--print("Attaching Nearest Computer...")
 				--debugoverlay.Cross(Optical:GetPos(), 10, 10, Color(255,100,0), true)
@@ -88,22 +88,22 @@ function ENT:Think()
 		local TimeNew = CurTime()
 
 		local d = Vector(0,0,0)
-		local dir = AngleRand()*0.01
+		local dir = AngleRand() * 0.01
 		local Dist = 0.01--100/10000
 
 		if IsValid(self.Guidance) and self.Guidance:GetPos():Distance(self:GetPos())<self.Distance then
 
 			local di = self.Guidance:WorldToLocalAngles((self:GetPos() - self.Guidance:GetPos()):Angle())
 			if di.p<15 and di.p>-15 and di.y<15 and di.y>-15 then
-				local glpos = self.Guidance:GetPos()+self.Guidance:GetForward()
+				local glpos = self.Guidance:GetPos() + self.Guidance:GetForward()
 				if not self.Optic then
-					glpos = self.Guidance:GetAttachment(1).Pos+self.Guidance:GetForward()*20
+					glpos = self.Guidance:GetAttachment(1).Pos + self.Guidance:GetForward() * 20
 				end
 
-				local tr = util.QuickTrace( glpos, self.Guidance:GetForward()*(self.Guidance:GetPos():Distance(self:GetPos())+self.offsetLength), {self.Guidance,self,self.Entity})
+				local tr = util.QuickTrace( glpos, self.Guidance:GetForward() * (self.Guidance:GetPos():Distance(self:GetPos()) + self.offsetLength), {self.Guidance,self,self.Entity})
 
 				d = ( tr.HitPos - self:GetPos())
-				dir = self:WorldToLocalAngles(d:Angle())*0.02 --0.01 controls agility but is not scaled to timestep; bug poly
+				dir = self:WorldToLocalAngles(d:Angle()) * 0.02 --0.01 controls agility but is not scaled to timestep; bug poly
 				Dist = self.Guidance:GetPos():Distance(self:GetPos())/39.37/10000
 			end
 		end
@@ -111,13 +111,13 @@ function ENT:Think()
 		local Spiral = d:Length()/39370 or 0.5
 
 		if self.Sub then
-			Spiral = self.SpiralAm + (math.random(-self.SpiralAm*0.5,self.SpiralAm) )--Spaghett
+			Spiral = self.SpiralAm + (math.random(-self.SpiralAm * 0.5,self.SpiralAm) )--Spaghett
 		end
 
-		local Inacc = math.random(-1,1)*Dist
-		self:SetAngles(self:LocalToWorldAngles(dir+Angle(Inacc,-Inacc,5)))
-		self:SetPos(self:LocalToWorld(Vector((self.velocity)*(TimeNew - self.Time),Spiral,0)))
-		local tr = util.QuickTrace( self:GetPos()+self:GetForward()*-28, self:GetForward()*((self.velocity)*(TimeNew - self.Time)+300), self.Filter)
+		local Inacc = math.random(-1,1) * Dist
+		self:SetAngles(self:LocalToWorldAngles(dir + Angle(Inacc,-Inacc,5)))
+		self:SetPos(self:LocalToWorld(Vector((self.velocity) * (TimeNew - self.Time),Spiral,0)))
+		local tr = util.QuickTrace( self:GetPos() + self:GetForward() * -28, self:GetForward() * ((self.velocity) * (TimeNew - self.Time) + 300), self.Filter)
 
 		self.Time = TimeNew
 
@@ -202,7 +202,7 @@ function ENT:Detonate()
 		local Flash = EffectData()
 			Flash:SetOrigin( self:GetPos() )
 			Flash:SetNormal( self:GetForward() )
-			Flash:SetRadius((self.BulletData.FillerMass)^0.33*8*39.37 )
+			Flash:SetRadius((self.BulletData.FillerMass) ^ 0.33 * 8*39.37 )
 		util.Effect( "ACF_Scaled_Explosion", Flash )
 
 	end

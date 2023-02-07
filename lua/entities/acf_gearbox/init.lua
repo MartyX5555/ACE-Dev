@@ -90,7 +90,7 @@ do
 
 		if Gearbox.CVT then
 			Gearbox.TargetMinRPM = Data3
-			Gearbox.TargetMaxRPM = math.max(Data4,Data3+100)
+			Gearbox.TargetMaxRPM = math.max(Data4,Data3 + 100)
 			Gearbox.CVTRatio = nil
 		end
 
@@ -122,9 +122,9 @@ do
 
 		if Gearbox.Auto then
 			Gearbox.ShiftPoints = {}
-			for part in string.gmatch(Data9, "[^,]+") do Gearbox.ShiftPoints[#Gearbox.ShiftPoints+1] = tonumber(part) end
+			for part in string.gmatch(Data9, "[^,]+") do Gearbox.ShiftPoints[#Gearbox.ShiftPoints + 1] = tonumber(part) end
 			Gearbox.ShiftPoints[0] = -1
-			Gearbox.Reverse = Gearbox.Gears+1
+			Gearbox.Reverse = Gearbox.Gears + 1
 			Gearbox.GearTable[Gearbox.Reverse] = Data8
 			Gearbox.Drive = 1
 			Gearbox.ShiftScale = 1
@@ -132,7 +132,7 @@ do
 
 		Gearbox:SetModel( Gearbox.Model )
 
-		local Inputs = {"Gear ("..GearboxWireDescs["Gear"]..")","Gear Up ("..GearboxWireDescs["GearUp"]..")","Gear Down ("..GearboxWireDescs["GearDown"]..")"}
+		local Inputs = {"Gear (" .. GearboxWireDescs["Gear"] .. ")","Gear Up (" .. GearboxWireDescs["GearUp"] .. ")","Gear Down (" .. GearboxWireDescs["GearDown"] .. ")"}
 		if Gearbox.CVT then
 			table.insert(Inputs,"CVT Ratio")
 		elseif Gearbox.DoubleDiff then
@@ -149,8 +149,8 @@ do
 			table.insert(Inputs, "Left Brake")
 			table.insert(Inputs, "Right Brake")
 		else
-			table.insert(Inputs, "Clutch ("..GearboxWireDescs["Clutch"]..")")
-			table.insert(Inputs, "Brake ("..GearboxWireDescs["Brake"]..")")
+			table.insert(Inputs, "Clutch (" .. GearboxWireDescs["Clutch"] .. ")")
+			table.insert(Inputs, "Brake (" .. GearboxWireDescs["Brake"] .. ")")
 		end
 
 		local Outputs = { "Ratio", "Entity", "Current Gear" }
@@ -279,7 +279,7 @@ function ENT:Update( ArgsTable )
 
 	if self.CVT then
 		self.TargetMinRPM = ArgsTable[7]
-		self.TargetMaxRPM = math.max(ArgsTable[8],ArgsTable[7]+100)
+		self.TargetMaxRPM = math.max(ArgsTable[8],ArgsTable[7] + 100)
 		self.CVTRatio = nil
 		Wire_TriggerOutput(self, "Min Target RPM", self.TargetMinRPM)
 		Wire_TriggerOutput(self, "Max Target RPM", self.TargetMaxRPM)
@@ -308,13 +308,13 @@ function ENT:Update( ArgsTable )
 	self.Gear8 = ArgsTable[12]
 	self.Gear9 = ArgsTable[13]
 
-	self.GearRatio = (self.GearTable[0] or 0)*self.GearTable.Final
+	self.GearRatio = (self.GearTable[0] or 0) * self.GearTable.Final
 
 	if self.Auto then
 		self.ShiftPoints = {}
-		for part in string.gmatch(ArgsTable[13], "[^,]+") do self.ShiftPoints[#self.ShiftPoints+1] = tonumber(part) end
+		for part in string.gmatch(ArgsTable[13], "[^,]+") do self.ShiftPoints[#self.ShiftPoints + 1] = tonumber(part) end
 		self.ShiftPoints[0] = -1
-		self.Reverse = self.Gears+1
+		self.Reverse = self.Gears + 1
 		self.GearTable[self.Reverse] = ArgsTable[12]
 		self.Drive = 1
 		self.ShiftScale = 1
@@ -322,7 +322,7 @@ function ENT:Update( ArgsTable )
 
 	--self:ChangeGear(1) -- fails on updating because func exits on detecting same gear
 	self.Gear = 1
-	self.GearRatio = (self.GearTable[self.Gear] or 0)*self.GearTable.Final
+	self.GearRatio = (self.GearTable[self.Gear] or 0) * self.GearTable.Final
 	self.ChangeFinished = CurTime() + self.SwitchTime
 	self.InGear = false
 
@@ -357,7 +357,7 @@ function ENT:UpdateOverlayText()
 		end
 	end
 	if self.Auto then
-		text = text.."Reverse gear: "..math.Round( self.GearTable[ self.Reverse ], 2 ).."\n"
+		text = text .. "Reverse gear: " .. math.Round( self.GearTable[ self.Reverse ], 2 ) .. "\n"
 	end
 
 	text = text .. "Final Drive: " .. math.Round( self.Gear0, 2 ) .. "\n"
@@ -400,8 +400,8 @@ function ENT:TriggerInput( iname, value )
 			self:ChangeGear(self.Gear - 1)
 		end
 	elseif ( iname == "Clutch" ) then
-		self.LClutch = math.Clamp(1-value,0,1)*self.MaxTorque
-		self.RClutch = math.Clamp(1-value,0,1)*self.MaxTorque
+		self.LClutch = math.Clamp(1-value,0,1) * self.MaxTorque
+		self.RClutch = math.Clamp(1-value,0,1) * self.MaxTorque
 	elseif ( iname == "Brake" ) then
 		self.LBrake = math.Clamp(value,0,100)
 		self.RBrake = math.Clamp(value,0,100)
@@ -410,9 +410,9 @@ function ENT:TriggerInput( iname, value )
 	elseif ( iname == "Right Brake" ) then
 		self.RBrake = math.Clamp(value,0,100)
 	elseif ( iname == "Left Clutch" ) then
-		self.LClutch = math.Clamp(1-value,0,1)*self.MaxTorque
+		self.LClutch = math.Clamp(1-value,0,1) * self.MaxTorque
 	elseif ( iname == "Right Clutch" ) then
-		self.RClutch = math.Clamp(1-value,0,1)*self.MaxTorque
+		self.RClutch = math.Clamp(1-value,0,1) * self.MaxTorque
 	elseif ( iname == "CVT Ratio" ) then
 		self.CVTRatio = math.Clamp(value,0,1)
 	elseif ( iname == "Steer Rate" ) then
@@ -522,7 +522,7 @@ function ENT:Calc( InputRPM, InputInertia )
 		else
 			self.GearTable[1] = math.Clamp((InputRPM - self.TargetMinRPM) / ((self.TargetMaxRPM - self.TargetMinRPM) or 1),0.05,1)
 		end
-		self.GearRatio = (self.GearTable[1] or 0)*self.GearTable.Final
+		self.GearRatio = (self.GearTable[1] or 0) * self.GearTable.Final
 		Wire_TriggerOutput(self, "Ratio", self.GearRatio)
 	end
 
@@ -680,7 +680,7 @@ function ENT:ChangeGear(value)
 	if self.Gear == new then return end
 
 	self.Gear = new
-	self.GearRatio = (self.GearTable[self.Gear] or 0)*self.GearTable.Final
+	self.GearRatio = (self.GearTable[self.Gear] or 0) * self.GearTable.Final
 	self.ChangeFinished = CurTime() + self.SwitchTime
 	self.InGear = false
 
@@ -699,7 +699,7 @@ function ENT:ChangeDrive(value)
 	self.Drive = new
 	if self.Drive == 2 then
 		self.Gear = self.Reverse
-		self.GearRatio = (self.GearTable[self.Gear] or 0)*self.GearTable.Final
+		self.GearRatio = (self.GearTable[self.Gear] or 0) * self.GearTable.Final
 		self.ChangeFinished = CurTime() + self.SwitchTime
 		self.InGear = false
 

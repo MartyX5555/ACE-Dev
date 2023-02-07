@@ -207,9 +207,9 @@ function CreateRackSelectGUI(node)
 				acfmenupanel:CPanelText("RackTitle", (rack.name or "Missing Name"),"DermaDefaultBold")
 				acfmenupanel:CPanelText("RackDesc", (rack.desc or "Missing Desc") .. "\n")
 
-				acfmenupanel:CPanelText("RackEweight", "Weight when empty : "..(rack.weight or "Missing weight").. "kg")
-				acfmenupanel:CPanelText("RackFweight", "Weight when fully loaded : "..( (rack.weight or 0) + (table.Count(rack.mountpoints)*node.mytable.weight) ).. "kg")
-				acfmenupanel:CPanelText("Rack_Year", "Year : "..rack.year.."\n")
+				acfmenupanel:CPanelText("RackEweight", "Weight when empty : " .. (rack.weight or "Missing weight").. "kg")
+				acfmenupanel:CPanelText("RackFweight", "Weight when fully loaded : " .. ( (rack.weight or 0) + (table.Count(rack.mountpoints) * node.mytable.weight) ).. "kg")
+				acfmenupanel:CPanelText("Rack_Year", "Year : " .. rack.year .. "\n")
 			end
 		end
 

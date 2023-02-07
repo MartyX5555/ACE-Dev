@@ -1297,7 +1297,7 @@ function ents_methods:acfFlyMass ()
 
 	if not isEngine( this ) then return nil end
 	if restrictInfo( this ) then return 0 end
-	return this.Inertia / 3.1416 ^2 or 0
+	return this.Inertia / 3.1416 ^ 2 or 0
 end
 
 --- Returns the current power of an ACF engine
@@ -2159,7 +2159,7 @@ function ents_methods:acfBlastRadius ()
 	if restrictInfo( this ) then return 0 end
 	local Type = this.BulletData[ "Type" ] or ""
 	if Type == "HE" or Type == "APHE" then
-		return math.Round( this.BulletData[ "FillerMass" ]^0.33 * 8, 3 )
+		return math.Round( this.BulletData[ "FillerMass" ] ^ 0.33 * 8, 3 )
 	elseif Type == "HEAT" then
 		return math.Round( ( this.BulletData[ "FillerMass" ] / 3) ^ 0.33 * 8, 3 )
 	end

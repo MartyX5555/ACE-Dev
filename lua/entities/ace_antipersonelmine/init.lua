@@ -58,8 +58,8 @@ function ENT:Think()
 
 			if groundRanger.Hit and groundRanger.HitWorld then
 
-				self:SetPos(groundRanger.HitPos+Vector(0,0,-1.05))
-				self:SetAngles(groundRanger.HitNormal:Angle()+Angle(90,0,0))
+				self:SetPos(groundRanger.HitPos + Vector(0,0,-1.05))
+				self:SetAngles(groundRanger.HitNormal:Angle() + Angle(90,0,0))
 				self.MineState = 1
 				self.phys:EnableMotion(false)
 			end
@@ -79,16 +79,16 @@ function ENT:Think()
 
 			if triggerRanger.Hit then
 
-				self:SetPos(self:GetPos() + self:GetUp()*10)
+				self:SetPos(self:GetPos() + self:GetUp() * 10)
 				self:Remove()
 
 				local HEWeight=2
-				local Radius = (HEWeight)^0.33*8*39.37
+				local Radius = (HEWeight) ^ 0.33 * 8*39.37
 
-				ACF_HE( self:GetPos() , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
+				ACF_HE( self:GetPos() , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 				local Flash = EffectData()
-					Flash:SetOrigin( self:GetPos() + self:GetUp()*10 )
+					Flash:SetOrigin( self:GetPos() + self:GetUp() * 10 )
 					Flash:SetNormal( Vector(0,0,-1) )
 					Flash:SetRadius( Radius )
 				util.Effect( "ACF_Scaled_Explosion", Flash )

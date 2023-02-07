@@ -39,7 +39,7 @@ function ENT:GetMunitionAngPos(missile, attach, attachname)
 		angpos.Pos = mountpoint.pos
 	end
 
-	angpos.Pos = self:LocalToWorld(angpos.Pos + mountpoint.offset + (mountpoint.scaledir)*offset)
+	angpos.Pos = self:LocalToWorld(angpos.Pos + mountpoint.offset + (mountpoint.scaledir) * offset)
 
 	return inverted, angpos
 end

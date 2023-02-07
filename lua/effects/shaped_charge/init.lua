@@ -11,10 +11,10 @@
 	local Scale = data:GetScale()
 	local Emitter = ParticleEmitter( Origin )
 
-	for i=0, 80*Scale do
-		local particle = Emitter:Add( "particles/flamelet"..math.random(1,5) , Origin)
+	for i=0, 80 * Scale do
+		local particle = Emitter:Add( "particles/flamelet" .. math.random(1,5) , Origin)
 		if (particle) then
-			particle:SetVelocity( ( Direction * math.random(500,2000) + VectorRand()*150 ) * Scale )
+			particle:SetVelocity( ( Direction * math.random(500,2000) + VectorRand() * 150 ) * Scale )
 			particle:SetLifeTime( 0 )
 			particle:SetDieTime( 0.5 )
 			particle:SetStartAlpha( 255 )
@@ -26,13 +26,13 @@
 		end
 	end
 
-	for i=0, 20*Scale do
+	for i=0, 20 * Scale do
 
-		local Debris = Emitter:Add( "effects/fleck_tile"..math.random(1,2), Origin )
+		local Debris = Emitter:Add( "effects/fleck_tile" .. math.random(1,2), Origin )
 		if (Debris) then
-			Debris:SetVelocity ( VectorRand() * math.random(400*Scale,600*Scale) )
+			Debris:SetVelocity ( VectorRand() * math.random(400 * Scale,600 * Scale) )
 			Debris:SetLifeTime( 0 )
-			Debris:SetDieTime( math.Rand( 2 , 4 )*Scale )
+			Debris:SetDieTime( math.Rand( 2 , 4 ) * Scale )
 			Debris:SetStartAlpha( 255 )
 			Debris:SetEndAlpha( 0 )
 			Debris:SetStartSize( 2 )
@@ -45,13 +45,13 @@
 		end
 	end
 
-	for i=0, 20*Scale do
+	for i=0, 20 * Scale do
 
-		local Embers = Emitter:Add( "particles/flamelet"..math.random(1,5), Origin )
+		local Embers = Emitter:Add( "particles/flamelet" .. math.random(1,5), Origin )
 		if (Embers) then
-			Embers:SetVelocity ( VectorRand() * math.random(250*Scale,400*Scale) )
+			Embers:SetVelocity ( VectorRand() * math.random(250 * Scale,400 * Scale) )
 			Embers:SetLifeTime( 0 )
-			Embers:SetDieTime( math.Rand( 2 , 4 )*Scale )
+			Embers:SetDieTime( math.Rand( 2 , 4 ) * Scale )
 			Embers:SetStartAlpha( 255 )
 			Embers:SetEndAlpha( 0 )
 			Embers:SetStartSize( 5 )
@@ -64,13 +64,13 @@
 		end
 	end
 
-	for i=0, 20*Scale do
+	for i=0, 20 * Scale do
 
 		local Smoke = Emitter:Add( "particles/smokey", Origin )
 		if (Smoke) then
-			Smoke:SetVelocity ( VectorRand() * math.random(150*Scale,200*Scale) )
+			Smoke:SetVelocity ( VectorRand() * math.random(150 * Scale,200 * Scale) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 2 , 4 )*Scale )
+			Smoke:SetDieTime( math.Rand( 2 , 4 ) * Scale )
 			Smoke:SetStartAlpha( 150 )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 20 )

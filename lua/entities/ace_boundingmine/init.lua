@@ -61,7 +61,7 @@ function ENT:Think()
 
 				if groundRanger.Hit and groundRanger.HitWorld then
 
-					self:SetPos(groundRanger.HitPos+Vector(0,0,7.1))
+					self:SetPos(groundRanger.HitPos + Vector(0,0,7.1))
 					self:SetAngles(groundRanger.HitNormal:Angle()-Angle(90,0,0))
 					self.MineState = 1
 					self.phys:EnableMotion(false)
@@ -80,10 +80,10 @@ function ENT:Think()
 				} )
 
 				if triggerRanger.Hit then
-					self:SetPos(self:GetPos() + self:GetUp()*-20)
+					self:SetPos(self:GetPos() + self:GetUp() * -20)
 					self.MineState = 2
 					self.phys:EnableMotion(true)
-					self.phys:ApplyForceCenter(self:GetUp()*self.phys:GetMass()*-230)
+					self.phys:ApplyForceCenter(self:GetUp() * self.phys:GetMass() * -230)
 					self.LastTime = CurTime()
 					self:EmitSound("weapons/amr/sniper_fire.wav", 75, 190, 1, CHAN_WEAPON )
 				end
@@ -102,7 +102,7 @@ function ENT:Think()
 			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
 			local Flash = EffectData()
-				Flash:SetOrigin( self:GetPos() - self:GetUp()*6 )
+				Flash:SetOrigin( self:GetPos() - self:GetUp() * 6 )
 				Flash:SetNormal( Vector(0,0,-1) )
 				Flash:SetRadius( math.max( 0.2, 1 ) )
 			util.Effect( "ACF_Scaled_Explosion", Flash )

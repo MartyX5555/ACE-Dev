@@ -67,7 +67,7 @@ function ENT:ACF_Activate( Recalc )
 		self.ACF.Volume = PhysObj:GetVolume() * 16.38
 	end
 
-	local Armour	= EmptyMass*1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour	= EmptyMass * 1000 / self.ACF.Area / 0.78 --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health	= self.ACF.Volume/ACF.Threshold						--Setting the threshold of the prop Area gone
 	local Percent	= 1
 
@@ -81,7 +81,7 @@ function ENT:ACF_Activate( Recalc )
 	self.ACF.MaxArmour  = Armour
 	self.ACF.Type	= nil
 	self.ACF.Mass	= self.Mass
-	self.ACF.Density	= (self:GetPhysicsObject():GetMass()*1000) / self.ACF.Volume
+	self.ACF.Density	= (self:GetPhysicsObject():GetMass() * 1000) / self.ACF.Volume
 	self.ACF.Type	= "Prop"
 
 	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
@@ -138,7 +138,7 @@ do
 			self:Remove()
 		else
 
-			local Ratio	= ( HitRes.Damage/self.BulletData.RoundVolume )^0.2
+			local Ratio	= ( HitRes.Damage/self.BulletData.RoundVolume ) ^ 0.2
 			local CMul	= 1  --30% Chance to detonate, 5% chance to cookoff
 			local DetRand	= 0
 
@@ -159,7 +159,7 @@ do
 			if DetRand >= 0.95 then
 
 				self.Inflictor  = Inflictor
-				self.Damaged	= ACF.CurTime + (5 - Ratio*3)
+				self.Damaged	= ACF.CurTime + (5 - Ratio * 3)
 
 			--Boom
 			elseif DetRand >= 0.7 then
@@ -356,7 +356,7 @@ function ENT:Update( ArgsTable )
 
 	self:CreateAmmo(ArgsTable[4], ArgsTable[5], ArgsTable[6], ArgsTable[7], ArgsTable[8], ArgsTable[9], ArgsTable[10], ArgsTable[11], ArgsTable[12], ArgsTable[13], ArgsTable[14], ArgsTable[15], ArgsTable[16], ArgsTable[17], ArgsTable[18], ArgsTable[19])
 
-	self.Ammo = math.floor(self.Capacity*AmmoPercent)
+	self.Ammo = math.floor(self.Capacity * AmmoPercent)
 
 	self.LastMass = 1 -- force update of mass
 	self:UpdateMass()
@@ -375,10 +375,10 @@ function ENT:UpdateOverlayText()
 
 	if self.BulletData.Type == "Refill" then
 
-		text = " - "..roundType.." - "
+		text = " - " .. roundType .. " - "
 
 		if self.SupplyingTo and not table.IsEmpty(self.SupplyingTo) then
-			text = text.."\nSupplying "..#self.SupplyingTo.." Ammo Crates"
+			text = text .. "\nSupplying " .. #self.SupplyingTo .. " Ammo Crates"
 		end
 
 	else
@@ -538,9 +538,9 @@ do
 			local cap3 = Floor(Dimensions.z/shellLength) * Floor(Dimensions.x/width) * Floor(Dimensions.y/width)
 
 			--Split the shell in 2, leave the other piece next to it.
-			local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width*2)) * Floor(Dimensions.z/width)
-			local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
-			local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width*2)) * Floor(Dimensions.z/width)
+			local piececap1 = Floor(Dimensions.x/(shellLength/2)) * Floor(Dimensions.y/(width * 2)) * Floor(Dimensions.z/width)
+			local piececap2 = Floor(Dimensions.y/(shellLength/2)) * Floor(Dimensions.x/(width * 2)) * Floor(Dimensions.z/width)
+			local piececap3 = Floor(Dimensions.z/(shellLength/2)) * Floor(Dimensions.x/(width * 2)) * Floor(Dimensions.z/width)
 
 			local FCap	= MaxValue(cap1,cap2,cap3)
 			local FpieceCap = MaxValue(piececap1,piececap2,piececap3)
@@ -557,10 +557,10 @@ do
 			Capacity	= FCap
 			AmmoMaxMass = ( (self.BulletData.ProjMass + self.BulletData.PropMass) * Capacity ) or 1
 
-			debugoverlay.Box(self:GetPos()+Vector(0,0,50),-Vector(shellLength/2,width/2,width/2), Vector(shellLength/2,width/2,width/2), 20, Color(255,0,0,100))
-			debugoverlay.Text(self:GetPos()+Vector(0,0,50), "Bullet Dimensions", 20)
-			debugoverlay.Text(self:GetPos()+Vector(0,0,15), "Mass per Round: "..(self.BulletData.ProjMass + self.BulletData.PropMass).."kgs", 20 )
-			debugoverlay.Text(self:GetPos()+Vector(0,0,10), "Total Ammo Mass: "..self.AmmoMassMax.."kgs", 20 )
+			debugoverlay.Box(self:GetPos() + Vector(0,0,50),-Vector(shellLength/2,width/2,width/2), Vector(shellLength/2,width/2,width/2), 20, Color(255,0,0,100))
+			debugoverlay.Text(self:GetPos() + Vector(0,0,50), "Bullet Dimensions", 20)
+			debugoverlay.Text(self:GetPos() + Vector(0,0,15), "Mass per Round: " .. (self.BulletData.ProjMass + self.BulletData.PropMass) .. "kgs", 20 )
+			debugoverlay.Text(self:GetPos() + Vector(0,0,10), "Total Ammo Mass: " .. self.AmmoMassMax .. "kgs", 20 )
 
 			WireName = AmmoGunData.name .. " Ammo"
 
@@ -587,7 +587,7 @@ end
 
 function ENT:UpdateMass()
 
-	self.Mass = self.EmptyMass + math.Round( self.AmmoMassMax*(self.Ammo/math.max(self.Capacity,1)) )
+	self.Mass = self.EmptyMass + math.Round( self.AmmoMassMax * (self.Ammo/math.max(self.Capacity,1)) )
 
 	--reduce superflous engine calls, update crate mass every 5 kgs change or every 10s-15s
 	if math.abs((self.LastMass or 0) - self.Mass) > 5 or ACF.CurTime > self.NextMassUpdate then
@@ -682,7 +682,7 @@ function ENT:Think()
 	self:SetNWVector("TracerColour", Vector( color.r, color.g, color.b ) )
 
 	local cvarGrav = GetConVar("sv_gravity")
-	local vec = Vector(0,0,cvarGrav:GetInt()*-1)
+	local vec = Vector(0,0,cvarGrav:GetInt() * -1)
 
 	self:SetNWVector("Accel", vec)
 
@@ -713,12 +713,12 @@ function ENT:Think()
 
 		else
 
-			if math.Rand(0,150) > self.BulletData.RoundVolume^0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
+			if math.Rand(0,150) > self.BulletData.RoundVolume ^ 0.5 and math.Rand(0,1) < self.Ammo/math.max(self.Capacity,1) and ACF.RoundTypes[CrateType] then
 
-				self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass*100,60)  )
+				self:EmitSound( "ambient/explosions/explode_4.wav", 350, math.max(255 - self.BulletData.PropMass * 100,60)  )
 				self.BulletCookSpeed	= self.BulletCookSpeed or ACF_MuzzleVelocity( self.BulletData.PropMass, self.BulletData.ProjMass/2, self.Caliber )
 
-				self.BulletData.Pos	= self:LocalToWorld(self:OBBCenter() + VectorRand()*(self:OBBMaxs()-self:OBBMins())/2)
+				self.BulletData.Pos	= self:LocalToWorld(self:OBBCenter() + VectorRand() * (self:OBBMaxs()-self:OBBMins())/2)
 				self.BulletData.Flight  = (VectorRand()):GetNormalized() * self.BulletCookSpeed * 39.37 + self:GetVelocity()
 
 				self.BulletData.Owner	= self.BulletData.Owner or self.Inflictor or self.Owner
@@ -732,7 +732,7 @@ function ENT:Think()
 
 			end
 
-			self:NextThink( CurTime() + self.ExplosionInterval + self.BulletData.RoundVolume^0.5/100 )
+			self:NextThink( CurTime() + self.ExplosionInterval + self.BulletData.RoundVolume ^ 0.5/100 )
 
 		end
 
@@ -758,12 +758,12 @@ function ENT:Think()
 
 						end
 
-						local Supply	= math.ceil((1/((Ammo.BulletData.ProjMass+Ammo.BulletData.PropMass)*5000))*self:GetPhysicsObject():GetMass()^1.2)
+						local Supply	= math.ceil((1/((Ammo.BulletData.ProjMass + Ammo.BulletData.PropMass) * 5000)) * self:GetPhysicsObject():GetMass() ^ 1.2)
 						local Transfert = math.min(Supply, Ammo.Capacity - Ammo.Ammo)
 						Ammo.Ammo	= Ammo.Ammo + Transfert
 
 						Ammo.Supplied = true
-						Ammo.Entity:EmitSound( "weapons/shotgun/shotgun_reload"..math.random(1,3)..".wav", 350, 100, 0.30 )
+						Ammo.Entity:EmitSound( "weapons/shotgun/shotgun_reload" .. math.random(1,3) .. ".wav", 350, 100, 0.30 )
 
 					end
 				end

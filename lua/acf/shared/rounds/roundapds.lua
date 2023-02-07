@@ -6,7 +6,7 @@ ACF.AmmoBlacklist.APDS =  { "MG", "MO", "RM", "SL", "GL", "HW", "SC", "BOMB" , "
 local Round = {}
 
 Round.type  = "Ammo" --Tells the spawn menu what entity to spawn
-Round.name  = "[APDS] - "..ACFTranslation.ShellAPDS[1] --Human readable name
+Round.name  = "[APDS] - " .. ACFTranslation.ShellAPDS[1] --Human readable name
 Round.model = "models/munitions/dart_100mm.mdl" --Shell flight model
 Round.desc  = ACFTranslation.ShellAPDS[2]
 Round.netid = 9 --Unique ammotype ID for network transmission
@@ -96,16 +96,16 @@ function Round.convert( Crate, PlayerData )
 	PlayerData.Data5	= math.Clamp(PlayerData.Data5,Data.MinCalMult,Data.MaxCalMult)
 
 	Data.SCalMult	= PlayerData.Data5
-	Data.SubFrArea	= Data.FrArea * math.min(PlayerData.Data5,Data.MaxCalMult)^2
-	Data.ProjMass	= Data.SubFrArea * (Data.ProjLength*7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
+	Data.SubFrArea	= Data.FrArea * math.min(PlayerData.Data5,Data.MaxCalMult) ^ 2
+	Data.ProjMass	= Data.SubFrArea * (Data.ProjLength * 7.9/1000) * 2.5 --Volume of the projectile as a cylinder * density of steel
 	Data.ShovePower	= 0.2
-	Data.PenArea		= (Data.PenModifier*Data.SubFrArea)^ACF.PenAreaMod
+	Data.PenArea		= (Data.PenModifier * Data.SubFrArea) ^ ACF.PenAreaMod
 
 	Data.DragCoef	= ((Data.SubFrArea/10000)/Data.ProjMass)
-	Data.CaliberMod	= Data.Caliber*math.min(PlayerData.Data5,Data.MaxCalMult)
+	Data.CaliberMod	= Data.Caliber * math.min(PlayerData.Data5,Data.MaxCalMult)
 	Data.LimitVel	= 1000										--Most efficient penetration speed in m/s
 	Data.KETransfert	= 0.2								--Kinetic energy transfert to the target for movement purposes
-	Data.MuzzleVel	= ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass*2.5, Data.Caliber )* Data.VelModifier
+	Data.MuzzleVel	= ACF_MuzzleVelocity( Data.PropMass * 0.5 , Data.ProjMass * 2.5, Data.Caliber )* Data.VelModifier
 	Data.BoomPower	= Data.PropMass
 
 	--Only the crates need this part
@@ -126,8 +126,8 @@ end
 
 function Round.getDisplayData(Data)
 	local GUIData = {}
-	local Energy = ACF_Kinetic( Data.MuzzleVel*39.37 , Data.ProjMass, Data.LimitVel )
-	GUIData.MaxPen = (Energy.Penetration/Data.PenArea)*ACF.KEtoRHA
+	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
+	GUIData.MaxPen = (Energy.Penetration/Data.PenArea) * ACF.KEtoRHA
 	return GUIData
 end
 
@@ -174,9 +174,9 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 
 			table.insert( Bullet.Filter , Target )				--"Penetrate" (Ingoring the prop for the retry trace)
 
-			ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic*HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
+			ACF_Spall( HitPos , Bullet.Flight , Bullet.Filter , Energy.Kinetic * HitRes.Loss , Bullet.Caliber , Target.ACF.Armour , Bullet.Owner , Target.ACF.Material) --Do some spalling
 
-			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic*(1-HitRes.Loss)*2000/Bullet.ProjMass)^0.5 * 39.37
+			Bullet.Flight = Bullet.Flight:GetNormalized() * (Energy.Kinetic * (1-HitRes.Loss) * 2000/Bullet.ProjMass) ^ 0.5 * 39.37
 
 			return "Penetrated"
 		elseif HitRes.Ricochet then
@@ -293,9 +293,9 @@ function Round.guiupdate( Panel, Table )
 	RunConsoleCommand( "acfmenu_data10", Data.Tracer )
 	RunConsoleCommand( "acfmenu_data11", Data.TwoPiece )
 
-	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : "..(math.floor(Data.PropMass*1000)).." g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : "..(math.floor(Data.ProjMass*1000)).." g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("SCalMult",Data.SCalMult,Data.MinCalMult,Data.MaxCalMult,2, "Subcaliber Size Multiplier", "Caliber : "..math.floor(Data.Caliber * math.min(PlayerData.Data5,Data.MaxCalMult)*10).." mm")--Subcaliber round slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("PropLength", Data.PropLength, Data.MinPropLength, Data.MaxTotalLength, 3, "Propellant Length", "Propellant Mass : " .. (math.floor(Data.PropMass * 1000)) .. " g" .. "/ ".. (math.Round(Data.PropMass, 1)) .." kg" )  --Propellant Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("ProjLength", Data.ProjLength, Data.MinProjLength, Data.MaxTotalLength, 3, "Projectile Length", "Projectile Mass : " .. (math.floor(Data.ProjMass * 1000)) .. " g" .. "/ ".. (math.Round(Data.ProjMass, 1)) .." kg")  --Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)	--Projectile Length Slider (Name, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("SCalMult",Data.SCalMult,Data.MinCalMult,Data.MaxCalMult,2, "Subcaliber Size Multiplier", "Caliber : " .. math.floor(Data.Caliber * math.min(PlayerData.Data5,Data.MaxCalMult) * 10) .. " mm")--Subcaliber round slider (Name, Min, Max, Decimals, Title, Desc)
 
 	ACE_UpperCommonDataDisplay( Data, PlayerData )
 	ACE_CommonDataDisplay( Data )

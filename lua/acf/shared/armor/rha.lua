@@ -29,8 +29,8 @@ if SERVER then
 		local effectiveness = Material.effectiveness
 		local resiliance	= Material.resiliance
 
-		armor	= armor^curve
-		losArmor	= losArmor^curve
+		armor	= armor ^ curve
+		losArmor	= losArmor ^ curve
 
 		-- Breach probability
 		local breachProb = math.Clamp((caliber / armor / effectiveness - 1.3) / (7 - 1.3), 0, 1)

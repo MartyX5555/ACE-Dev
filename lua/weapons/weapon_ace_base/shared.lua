@@ -164,9 +164,9 @@ function VECTOR:RotateAroundAxis(axis, degrees, radians)
 	local length = (x * x + y * y + z * z) ^ 0.5
 	x, y, z = x / length, y / length, z / length
 
-	return Vector( (ca + (x^2) * (1-ca)) * x2 + (x * y * (1-ca) - z * sa) * y2 + (x * z * (1-ca) + y * sa) * z2,
-			(y * x * (1-ca) + z * sa) * x2 + (ca + (y^2) * (1-ca)) * y2 + (y * z * (1-ca) - x * sa) * z2,
-			(z * x * (1-ca) - y * sa) * x2 + (z * y * (1-ca) + x * sa) * y2 + (ca + (z^2) * (1-ca)) * z2 )
+	return Vector( (ca + (x ^ 2) * (1-ca)) * x2 + (x * y * (1-ca) - z * sa) * y2 + (x * z * (1-ca) + y * sa) * z2,
+			(y * x * (1-ca) + z * sa) * x2 + (ca + (y ^ 2) * (1-ca)) * y2 + (y * z * (1-ca) - x * sa) * z2,
+			(z * x * (1-ca) - y * sa) * x2 + (z * y * (1-ca) + x * sa) * y2 + (ca + (z ^ 2) * (1-ca)) * z2 )
 end
 
 --Need unique names for the shared random number generators

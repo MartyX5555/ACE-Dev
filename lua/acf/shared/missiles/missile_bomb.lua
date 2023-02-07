@@ -35,8 +35,8 @@ ACF_defineGun("50kgBOMB", {						-- id
 		casing	= 0.05,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,						-- drag coefficient of the missile
@@ -80,8 +80,8 @@ ACF_defineGun("100kgBOMB", {						-- id
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,						-- drag coefficient of the missile
@@ -124,8 +124,8 @@ ACF_defineGun("250kgBOMB", {						-- id
 		casing	= 0.15,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,						-- drag coefficient of the missile
@@ -168,8 +168,8 @@ ACF_defineGun("500kgBOMB", {						-- id
 		casing	= 0.2,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,						-- drag coefficient of the missile
@@ -209,8 +209,8 @@ ACF_defineGun("1000kgBOMB", {					-- id
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 1,							-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.003,						-- drag coefficient of the missile
@@ -250,8 +250,8 @@ ACF_defineGun("100kgGBOMB", {					-- id
 		casing	= 0.1,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,						-- drag coefficient of the missile
@@ -295,8 +295,8 @@ ACF_defineGun("250kgGBOMB", {					-- id
 		casing	= 0.2,						-- thickness of missile casing, cm
 		armour	= 25,						-- effective armour thickness of casing, in mm
 		propweight  = 0,							-- motor mass - motor casing
-		thrust	= 1,							-- average thrust - kg*in/s^2
-		burnrate	= 1,							-- cm^3/s at average chamber pressure
+		thrust	= 1,							-- average thrust - kg * in/s ^ 2
+		burnrate	= 1,							-- cm ^ 3/s at average chamber pressure
 		starterpct  = 1,							-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 500,						-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.002,						-- drag coefficient of the missile

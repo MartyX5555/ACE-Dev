@@ -39,8 +39,8 @@ ACF_defineGun("40mmFFAR", { --id
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 5,			-- effective armour thickness of casing, in mm
 		propweight  = 0.2,		-- motor mass - motor casing
-		thrust	= 10000,		-- average thrust - kg*in/s^2
-		burnrate	= 120,		-- cm^3/s at average chamber pressure
+		thrust	= 10000,		-- average thrust - kg * in/s ^ 2
+		burnrate	= 120,		-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.15,		-- percentage of the propellant consumed in the starter motor.
 		minspeed	= 5000,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling
@@ -84,8 +84,8 @@ ACF_defineGun("70mmFFAR", { --id
 		casing	= 0.2,		-- thickness of missile casing, cm
 		armour	= 8,			-- effective armour thickness of casing, in mm
 		propweight  = 0.7,		-- motor mass - motor casing
-		thrust	= 15000,		-- average thrust - kg*in/s^2
-		burnrate	= 300,		-- cm^3/s at average chamber pressure
+		thrust	= 15000,		-- average thrust - kg * in/s ^ 2
+		burnrate	= 300,		-- cm ^ 3/s at average chamber pressure
 		starterpct  = 0.15,
 		minspeed	= 4000,		-- minimum speed beyond which the fins work at 100% efficiency
 		dragcoef	= 0.001,		-- drag coefficient while falling

@@ -46,7 +46,7 @@ local function modepermission(owner, attacker)
 
 	-- Disallow the damage if the attacker has not any way to receive damage to him.
 	--if attacker.HasDisabledPerms then
-		--Msg("[ACE | WARN]- The user "..attacker:Nick().." has disabled his own permissions! Cancelling prop damage....")
+		--Msg("[ACE | WARN]- The user " .. attacker:Nick() .. " has disabled his own permissions! Cancelling prop damage....")
 
 	-- Deal damage to props if the owner has given permission to the attacker to do it.
 	--elseif ownerperms[attackerid] and not (godOwner or godInflictor) then

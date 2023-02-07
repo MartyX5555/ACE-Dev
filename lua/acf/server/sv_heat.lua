@@ -33,7 +33,7 @@ function ACE_InfraredHeatFromProp( guidance, Target , dist )
 	--local Heat = (  guidance.SeekSensitivity * ( Speed / dist * 0.001 / ACE.HeatDistanceLoss )  )  + ACE.AmbientTemp
 
 	local Heat = ((guidance.SeekSensitivity * Speed) / dist * 1000 / ACE.HeatDistanceLoss) + ACE.AmbientTemp
-	--print(') Heat: '..Heat)
+	--print(') Heat: ' .. Heat)
 
 	return Heat
 
@@ -56,8 +56,8 @@ function ACE_HeatFromGun( Gun , Heat, DeltaTime )
 
 --Decided to keep this code as note
 
-	--local Energyloss = ((42500*(-Heat))) * (1+(Mass^0.5)*2/75) * DeltaTime * 0.03
-	--Heat = math.max(Heat +(Energyloss/(Mass^0.5)*2/743.2),0)
+	--local Energyloss = ((42500 * (-Heat))) * (1 + (Mass ^ 0.5) * 2/75) * DeltaTime * 0.03
+	--Heat = math.max(Heat +(Energyloss/(Mass ^ 0.5) * 2/743.2),0)
 
 	--Creates Heat when firing. Just as note, IK last shot will not create Heat, not really relevant though
 	if Gun.HeatFire then
@@ -228,8 +228,8 @@ function ACE_HeatFromEngine( Engine , Radiator )  --radiator?!? woooo
 	--These parts need rewrite, since we dont have radiators yet
 	local Phys = Engine:GetPhysicsObject()
 
-	local Area = Phys:GetVolume()*2--3452*2 --+ 10000  --engine + radiator
-	local Volume = Phys:GetVolume()*2 --+ 7000 --engine + radiator
+	local Area = Phys:GetVolume() * 2--3452 * 2 --+ 10000  --engine + radiator
+	local Volume = Phys:GetVolume() * 2 --+ 7000 --engine + radiator
 
 	local Mul = Area / Volume
 -----------------------------------------------------------------------------------------

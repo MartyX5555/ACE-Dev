@@ -173,10 +173,10 @@ function TOOL:RightClick( trace )
 
 	local soundData = support.GetSound(trace.Entity)
 
-	self:GetOwner():ConCommand("wire_soundemitter_sound "..soundData.Sound);
+	self:GetOwner():ConCommand("wire_soundemitter_sound " .. soundData.Sound);
 
 	if soundData.Pitch then
-		self:GetOwner():ConCommand("acfsound_pitch "..soundData.Pitch);
+		self:GetOwner():ConCommand("acfsound_pitch " .. soundData.Pitch);
 	end
 
 	return true

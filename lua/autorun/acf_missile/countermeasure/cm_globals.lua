@@ -73,7 +73,7 @@ function ACFM_GetFlaresInCone(pos, dir, degs)
 		if not (flare and flare.FlareUID and flare.FlareUID == uid) then continue end
 
 		if ACFM_ConeContainsPos(pos, dir, degs, flare.Pos) then
-			ret[#ret+1] = flare
+			ret[#ret + 1] = flare
 		end
 
 	end
@@ -115,7 +115,7 @@ function ACFM_GetMissilesInCone(pos, dir, degs)
 		if not IsValid(missile) then continue end
 
 		if ACFM_ConeContainsPos(pos, dir, degs, missile:GetPos()) then
-			ret[#ret+1] = missile
+			ret[#ret + 1] = missile
 		end
 
 	end
@@ -138,7 +138,7 @@ function ACFM_GetMissilesInSphere(pos, radius)
 		if not IsValid(missile) then continue end
 
 		if pos:DistToSqr(missile:GetPos()) <= radSqr then
-			ret[#ret+1] = missile
+			ret[#ret + 1] = missile
 		end
 
 	end
@@ -165,7 +165,7 @@ function ACFM_GetAllMissilesWhichCanSee(pos)
 		end
 
 		if ACFM_ConeContainsPos(missile:GetPos(), missile:GetForward(), guidance.ViewCone, pos) then
-			ret[#ret+1] = missile
+			ret[#ret + 1] = missile
 		end
 
 	end

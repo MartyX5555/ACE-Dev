@@ -84,7 +84,7 @@ function TOOL:LeftClick( trace )
 
 		local ArgTable = {}
 		ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
-		ArgTable[1] = trace.HitPos + trace.HitNormal*50
+		ArgTable[1] = trace.HitPos + trace.HitNormal * 50
 
 		debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
 		debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
@@ -93,7 +93,7 @@ function TOOL:LeftClick( trace )
 
 		-- Reading the list packaged with the ent to see what client CVar it needs
 		for Number, Key in pairs( ArgList[entClass] ) do
-			ArgTable[ Number+2 ] = self:GetClientInfo( Key )
+			ArgTable[ Number + 2 ] = self:GetClientInfo( Key )
 		end
 
 		if trace.Entity:GetClass() == entClass and trace.Entity.CanUpdate then

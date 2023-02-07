@@ -91,8 +91,8 @@ end
 
 function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
 
-	local PEnergy	= ACF.PBase * ((1+Propellant)^ACF.PScale-1)
-	local Speed	= ((PEnergy*2000/Mass)^ACF.MVScale)
+	local PEnergy	= ACF.PBase * ((1 + Propellant) ^ ACF.PScale-1)
+	local Speed	= ((PEnergy * 2000/Mass) ^ ACF.MVScale)
 	local Final	= Speed -- - Speed * math.Clamp(Speed/2000,0,0.5)
 
 	return Final
@@ -104,11 +104,11 @@ function ACF_Kinetic( Speed , Mass, LimitVel )
 	Speed = Speed/39.37
 
 	local Energy = {}
-		Energy.Kinetic = ((Mass) * ((Speed)^2))/2000 --Energy in KiloJoules
+		Energy.Kinetic = ((Mass) * ((Speed) ^ 2))/2000 --Energy in KiloJoules
 		Energy.Momentum = (Speed * Mass)
 
-		local KE = (Mass * (Speed^ACF.KinFudgeFactor))/2000 + Energy.Momentum
-		Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0)^2)/(LimitVel*5) * (KE/200)^0.95 , KE*0.1 )
+		local KE = (Mass * (Speed ^ ACF.KinFudgeFactor))/2000 + Energy.Momentum
+		Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0) ^ 2)/(LimitVel * 5) * (KE/200) ^ 0.95 , KE * 0.1 )
 
 	return Energy
 end
@@ -165,7 +165,7 @@ do
 				local phys = v:GetPhysicsObject()
 				if IsValid( phys ) then
 
-					Mass = Mass + phys:GetMass() --print("total mass of contraption: "..Mass)
+					Mass = Mass + phys:GetMass() --print("total mass of contraption: " .. Mass)
 
 					if PhysEnts[ v ] then
 						PhysMass = PhysMass + phys:GetMass()
@@ -230,25 +230,25 @@ function ACF_UpdateChecking( )
 	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)
 
 		--maybe not the best way to get git but well......
-		str = tostring("String:"..contents)
+		str = tostring("String:" .. contents)
 		i,k = string.find(str,"ACF.Version =")
 
-		local rev = tonumber(string.sub(str,k+2,k+4)) or 0
+		local rev = tonumber(string.sub(str,k + 2,k + 4)) or 0
 
 		if rev and ACF.Version == rev  and rev ~= 0 then
 
-			print("[ACE | INFO]- You have the latest version! Current version: "..rev)
+			print("[ACE | INFO]- You have the latest version! Current version: " .. rev)
 
 		elseif rev and ACF.Version > rev and rev ~= 0 then
 
-			print("[ACE | INFO]- You have an experimental version! Your version: "..ACF.Version..". Main version: "..rev)
+			print("[ACE | INFO]- You have an experimental version! Your version: " .. ACF.Version .. ". Main version: " .. rev)
 		elseif rev == 0 then
 
 			print("[ACE | ERROR]- Unable to find the latest version! Failed to connect to GitHub.")
 
 		else
 
-			print("[ACE | INFO]- A new version of ACE is available! Your version: "..ACF.Version..". New version: "..rev)
+			print("[ACE | INFO]- A new version of ACE is available! Your version: " .. ACF.Version .. ". New version: " .. rev)
 			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
 
 		end
@@ -308,30 +308,30 @@ do
 			file_name = string.Replace( file_name, ".txt", "" )
 
 			dupefiles[i] = Result --Catching desired files
-			file_content = file.Read("scripts/vehicles/"..dupefiles[i], "GAME")
+			file_content = file.Read("scripts/vehicles/" .. dupefiles[i], "GAME")
 
-			file_directory = main_directory.."ace "..Id[2]
-			local fileExists = file.Exists( file_directory.."/"..file_name..".txt", "DATA")
+			file_directory = main_directory .. "ace " .. Id[2]
+			local fileExists = file.Exists( file_directory .. "/" .. file_name .. ".txt", "DATA")
 
 			if not fileExists then
 
-				--print( "[ACE|INFO]- Creating dupe '"..file_name.."'' in "..file_directory )
+				--print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
 
 				file.CreateDir(file_directory)
-				file.Write(file_directory.."/"..file_name..".txt", file_content)
+				file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
 
 
 			else
 				--Idea: bring the analyzer from the internet instead of locally?
 
-				local CFile_Size = file.Size(file_directory.."/"..file_name..".txt", "DATA")
-				local NFile_Size = file.Size("scripts/vehicles/"..dupefiles[i], "GAME")
+				local CFile_Size = file.Size(file_directory .. "/" .. file_name .. ".txt", "DATA")
+				local NFile_Size = file.Size("scripts/vehicles/" .. dupefiles[i], "GAME")
 
 				if NFile_Size > 0 and CFile_Size ~= NFile_Size then
 
-					--print("[ACE|INFO]- your dupe "..file_name.." is different/outdated! Updating....")
+					--print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
 
-					file.Write(file_directory.."/"..file_name..".txt", file_content)
+					file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
 
 				end
 
@@ -478,9 +478,9 @@ function ACE_Msg( type, txt )
 		Info = "INFO"
 	end
 
-	local prefix = "[ACE | "..Info.."]- "
+	local prefix = "[ACE | " .. Info .. "]- "
 
-	print( prefix..txt )
+	print( prefix .. txt )
 
 end
 ]]

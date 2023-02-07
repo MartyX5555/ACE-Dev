@@ -35,8 +35,8 @@ if SERVER then
 		local effectiveness = Material.effectiveness
 		local resiliance	= Material.resiliance
 
-		armor	= armor^curve
-		losArmor	= losArmor^curve
+		armor	= armor ^ curve
+		losArmor	= losArmor ^ curve
 
 		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
 
@@ -135,7 +135,7 @@ if SERVER then
 				HitRes.Damage	= FrArea / resiliance							-- Inflicted Damage
 				HitRes.Overkill = maxPenetration - armor						-- Remaining penetration
 				HitRes.Loss	= armor / maxPenetration						-- Energy loss in percents
-	--			print("DmgBreach: "..HitRes.Damage)
+	--			print("DmgBreach: " .. HitRes.Damage)
 
 				return HitRes
 
@@ -146,7 +146,7 @@ if SERVER then
 				HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness) ^ 2 * FrArea / resiliance
 				HitRes.Overkill = (maxPenetration - Penetration)
 				HitRes.Loss	= Penetration / maxPenetration
-	--		print("DmgPen: "..HitRes.Damage)
+	--		print("DmgPen: " .. HitRes.Damage)
 
 				return HitRes
 
@@ -159,7 +159,7 @@ if SERVER then
 			HitRes.Damage	= ( Penetration / losArmorHealth * effectiveness ) ^ 2 * FrArea / resiliance
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
-	--		print("DmgNoPen: "..HitRes.Damage)
+	--		print("DmgNoPen: " .. HitRes.Damage)
 			return HitRes
 
 		end

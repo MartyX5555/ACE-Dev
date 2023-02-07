@@ -156,7 +156,7 @@ function ACEE_SBlast( HitPos, Radius, HitWater, HitWorld )
 			--if its not already emitted
 			if not Emitted then
 
-				Emitted = true --print('timer has emitted the sound in the time: '..count)
+				Emitted = true --print('timer has emitted the sound in the time: ' .. count)
 
 				--Ground explosions
 				if not HitWater then
@@ -394,7 +394,7 @@ function ACEE_SRico( HitPos, Caliber, Velocity, HitWorld )
 
 		if count > Delay then
 
-			if not Emitted then --print('timer has emitted the sound in the time: '..count)
+			if not Emitted then --print('timer has emitted the sound in the time: ' .. count)
 
 				Emitted = true
 
@@ -514,7 +514,7 @@ function ACE_SGunFire( Gun, Sound, Propellant )
 					if SoundData[State] then
 						if ACE.Sounds.GunTb[GunId] > #SoundData[State]["Package"] then ACE.Sounds.GunTb[GunId] = 1 end
 
-						--print("Sequence for Gun: "..ACE.Sounds.GunTb[GunId].." / Total Sounds: "..#SoundData[State]["Package"])
+						--print("Sequence for Gun: " .. ACE.Sounds.GunTb[GunId] .. " / Total Sounds: " .. #SoundData[State]["Package"])
 
 						Sound	= SoundData[State]["Package"][ACE.Sounds.GunTb[GunId]]
 
@@ -565,9 +565,9 @@ function ACE_SBulletCrack( BulletData, Caliber )
 
 		--Delayed event report.
 		local CrackPos = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
-		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: '..Dist)
-		local Volume = 10000 / Dist --print('Vol: '..Volume)
-		local Delay = (Dist / 1500) * ACE.DelayMultipler --print('amount to match: '..Delay)
+		local Dist = math.abs((plyPos - CrackPos):Length()) --print('distance from bullet: ' .. Dist)
+		local Volume = 10000 / Dist --print('Vol: ' .. Volume)
+		local Delay = (Dist / 1500) * ACE.DelayMultipler --print('amount to match: ' .. Delay)
 
 		if count > Delay then
 

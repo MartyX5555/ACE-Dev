@@ -21,7 +21,7 @@
 	if Gun:IsValid() then
 
 		if Propellant > 0 then
-			local SoundPressure = (Propellant*1000)^0.5
+			local SoundPressure = (Propellant * 1000) ^ 0.5
 			sound.Play( Sound, Gun:GetPos() , math.Clamp(SoundPressure,75,127), 100) --wiki documents level tops out at 180, but seems to fall off past 127
 			if not ((Class == "MG") or (Class == "RAC")) then
 				sound.Play( Sound, Gun:GetPos() , math.Clamp(SoundPressure,75,127), 100)

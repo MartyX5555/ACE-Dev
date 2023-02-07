@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: "..self.InaccuracyAccumulation)
+--	print("Inaccuracy: " .. self.InaccuracyAccumulation)
 
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
