@@ -36,7 +36,7 @@ function Round.create( Gun, BulletData )
 end
 
 -- Function to convert the player's slider data into the complete round data
-function Round.convert( Crate, PlayerData )
+function Round.convert( _, PlayerData )
 
 	local Data = {}
 	local ServerData = {}
@@ -51,7 +51,7 @@ function Round.convert( Crate, PlayerData )
 	PlayerData, Data, ServerData, GUIData = ACF_RoundBaseGunpowder( PlayerData, Data, ServerData, GUIData )
 
 	--Shell sturdiness calcs
-	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9/1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity/1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
+	Data.ProjMass = math.max(GUIData.ProjVolume-PlayerData.Data5,0) * 7.9 / 1000 + math.min(PlayerData.Data5,GUIData.ProjVolume) * ACF.HEDensity / 1000--Volume of the projectile as a cylinder - Volume of the filler * density of steel + Volume of the filler * density of TNT
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 	local Energy = ACF_Kinetic( Data.MuzzleVel * 39.37 , Data.ProjMass, Data.LimitVel )
 
@@ -59,15 +59,15 @@ function Round.convert( Crate, PlayerData )
 	GUIData.MinFillerVol = 0
 	GUIData.MaxFillerVol = math.min(GUIData.ProjVolume,MaxVol * 0.9)
 	GUIData.FillerVol = math.min(PlayerData.Data5,GUIData.MaxFillerVol)
-	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity/200
+	Data.FillerMass = GUIData.FillerVol * ACF.HEDensity / 200
 
-	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0) * 7.9/1000 + Data.FillerMass
+	Data.ProjMass = math.max(GUIData.ProjVolume-GUIData.FillerVol,0) * 7.9 / 1000 + Data.FillerMass
 	Data.MuzzleVel = ACF_MuzzleVelocity( Data.PropMass, Data.ProjMass, Data.Caliber )
 
 	--Random bullshit left
 	Data.ShovePower = 0.1
 	Data.PenArea = Data.FrArea ^ ACF.PenAreaMod
-	Data.DragCoef = ((Data.FrArea/375)/Data.ProjMass)
+	Data.DragCoef = ((Data.FrArea / 375) / Data.ProjMass)
 	Data.LimitVel = 700										--Most efficient penetration speed in m/s
 	Data.KETransfert = 0.1									--Kinetic energy transfert to the target for movement purposes
 	Data.Ricochet = 75										--Base ricochet angle
@@ -134,29 +134,29 @@ function Round.cratetxt( BulletData )
 
 end
 
-function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
+function Round.propimpact()
 
 	return false
 
 end
 
-function Round.worldimpact( Index, Bullet, HitPos, HitNormal )
+function Round.worldimpact()
 
 	return false
 
 end
 
-function Round.endflight( Index, Bullet, HitPos, HitNormal )
+function Round.endflight( Index )
 
 	ACF_RemoveBullet( Index )
 
 end
 
-function Round.endeffect( Effect, Bullet )
+function Round.endeffect()
 
 end
 
-function Round.pierceeffect( Effect, Bullet )
+function Round.pierceeffect( _, Bullet )
 
 	local Spall = EffectData()
 		Spall:SetEntity( Bullet.Crate )
@@ -168,7 +168,7 @@ function Round.pierceeffect( Effect, Bullet )
 
 end
 
-function Round.ricocheteffect( Effect, Bullet )
+function Round.ricocheteffect( _, Bullet )
 
 	local Spall = EffectData()
 		Spall:SetEntity( Bullet.Crate )
@@ -195,7 +195,7 @@ function Round.guicreate( Panel, Table )
 
 	acfmenupanel:AmmoSlider("PropLength",0,0,1000,3, "Propellant Length", "")	--Propellant Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 	acfmenupanel:AmmoSlider("ProjLength",0,0,1000,3, "Projectile Length", "")	--Projectile Length Slider (Name, Value, Min, Max, Decimals, Title, Desc)
-	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Dual Spectrum Filler", "")--Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
+	acfmenupanel:AmmoSlider("FillerVol",0,0,1000,3, "Dual Spectrum Filler", "") --Hollow Point Cavity Slider (Name, Value, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:CPanelText("VelocityDisplay", "")	--Proj muzzle velocity (Name, Desc)
 	acfmenupanel:CPanelText("BurnRateDisplay", "")	--Proj muzzle penetration (Name, Desc)
@@ -206,7 +206,7 @@ function Round.guicreate( Panel, Table )
 
 end
 
-function Round.guiupdate( Panel, Table )
+function Round.guiupdate( Panel )
 
 	local PlayerData = {}
 		PlayerData.Id = acfmenupanel.AmmoData.Data.id			--AmmoSelect GUI
@@ -235,7 +235,7 @@ function Round.guiupdate( Panel, Table )
 	acfmenupanel:AmmoSlider("FillerVol",Data.FillerVol,Data.MinFillerVol,Data.MaxFillerVol,3, "Dual Spectrum Filler", "Filler Mass : " .. (math.floor(Data.FillerMass * 1000)) .. " g")	--HE Filler Slider (Name, Min, Max, Decimals, Title, Desc)
 
 	acfmenupanel:CPanelText("Desc", ACF.RoundTypes[PlayerData.Type].desc)	--Description (Name, Desc)
-	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + Data.Tracer) * 100)/100) .. "/" .. (Data.MaxTotalLength) .. " cm")	--Total round length (Name, Desc)
+	acfmenupanel:CPanelText("LengthDisplay", "Round Length : " .. (math.floor((Data.PropLength + Data.ProjLength + Data.Tracer) * 100) / 100) .. "/" .. Data.MaxTotalLength .. " cm")	--Total round length (Name, Desc)
 	acfmenupanel:CPanelText("VelocityDisplay", "Muzzle Velocity : " .. math.floor(Data.MuzzleVel * ACF.VelScale) .. " m/s")	--Proj muzzle velocity (Name, Desc)
 
 	acfmenupanel:CPanelText("BurnRateDisplay", "Burn Rate : " .. math.Round(Data.BurnRate, 1) .. " kg/s")
