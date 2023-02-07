@@ -52,7 +52,7 @@ function ACFM_OnFlareSpawn(bdata)
 
 	local missiles = flareObj:ApplyToAll()
 
-	for k, missile in pairs(missiles) do
+	for _, missile in pairs(missiles) do
 		missile.Guidance.Override = flareObj
 	end
 
@@ -186,7 +186,7 @@ function ACFM_ConeContainsPos(conePos, coneDir, degs, pos)
 
 	local dot = coneDir:Dot(testDir)
 
-	return (dot >= minDot)
+	return dot >= minDot
 end
 
 
@@ -196,7 +196,7 @@ function ACFM_ApplyCountermeasures(missile, guidance)
 
 	if guidance.Override then return end
 
-	for name, measure in pairs(ACF.Countermeasure) do
+	for _, measure in pairs(ACF.Countermeasure) do
 
 		if not measure.ApplyContinuous then
 			continue
@@ -217,7 +217,7 @@ function ACFM_ApplySpawnCountermeasures(missile, guidance)
 
 	if guidance.Override then return end
 
-	for name, measure in pairs(ACF.Countermeasure) do
+	for _, measure in pairs(ACF.Countermeasure) do
 
 		if measure.ApplyContinuous then
 			continue

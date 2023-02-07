@@ -1,17 +1,15 @@
-
-
- --[[---------------------------------------------------------
-	Initializes the effect. The data is a table of data
-	which was passed from the server.
- -----------------------------------------------------------]]
- function EFFECT:Init( data )
+--[[---------------------------------------------------------
+Initializes the effect. The data is a table of data
+which was passed from the server.
+-----------------------------------------------------------]]
+function EFFECT:Init( data )
 
 	local Origin = data:GetOrigin()
 	local Direction = data:GetNormal()
 	local Scale = data:GetScale()
 	local Emitter = ParticleEmitter( Origin )
 
-	for i=0, 80 * Scale do
+	for _ = 0, 80 * Scale do
 		local particle = Emitter:Add( "particles/flamelet" .. math.random(1,5) , Origin)
 		if (particle) then
 			particle:SetVelocity( ( Direction * math.random(500,2000) + VectorRand() * 150 ) * Scale )
@@ -26,7 +24,7 @@
 		end
 	end
 
-	for i=0, 20 * Scale do
+	for _ = 0, 20 * Scale do
 
 		local Debris = Emitter:Add( "effects/fleck_tile" .. math.random(1,2), Origin )
 		if (Debris) then
@@ -45,7 +43,7 @@
 		end
 	end
 
-	for i=0, 20 * Scale do
+	for _ = 0, 20 * Scale do
 
 		local Embers = Emitter:Add( "particles/flamelet" .. math.random(1,5), Origin )
 		if (Embers) then
@@ -64,7 +62,7 @@
 		end
 	end
 
-	for i=0, 20 * Scale do
+	for _ = 0, 20 * Scale do
 
 		local Smoke = Emitter:Add( "particles/smokey", Origin )
 		if (Smoke) then
@@ -84,7 +82,7 @@
 	end
 
 	if Emitter then Emitter:Finish() end
- end
+end
 
 
 --[[---------------------------------------------------------

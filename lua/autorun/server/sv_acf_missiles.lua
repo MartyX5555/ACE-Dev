@@ -25,12 +25,12 @@ function ACFM_BulletLaunch(BData)
 		ACF.CurBulletIndex = 1
 	end
 
-	local cvarGrav	= GetConVar("sv_gravity")  --gravity
+	--local cvarGrav	= GetConVar("sv_gravity")  --gravity
 	BData.Accel		= Vector(0,0,-600)			--Those are BData settings that are global and shouldn't change round to round
 	BData.LastThink	= BData.LastThink or SysTime()
 	BData["FlightTime"] = 0
 
-	local Owner = BData.Owner  --owner of bullet
+	--local Owner = BData.Owner  --owner of bullet
 
 	if BData["FuseLength"] then
 		BData["InitTime"] = SysTime()
@@ -103,13 +103,10 @@ end
 
 function ACFM_MakeCrateForBullet(self, bullet)
 
-	if not (type(bullet) == "table") then
-		if bullet.BulletData then
-			self:SetNWString( "Sound", bullet.Sound or (bullet.Primary and bullet.Primary.Sound))
-			self.Owner = bullet:GetOwner()
-			self:SetOwner(bullet:GetOwner())
-			bullet = bullet.BulletData
-		end
+	if type(bullet) ~= "table" and bullet.BulletData then
+		self:SetNWString( "Sound", bullet.Sound or (bullet.Primary and bullet.Primary.Sound))
+		self:SetOwner(bullet:GetOwner())
+		bullet = bullet.BulletData
 	end
 
 
@@ -217,7 +214,7 @@ function ResetVelocity.THEAT(bdata)
 
 	local penmul = (bdata.penmul or ACF_GetGunValue(bdata, "penmul") or 1.2) * 0.77
 
-	if DetCount==1 then
+	if DetCount == 1 then
 		--print("Detonation1")
 		bdata.Flight = bdata.Flight * (bdata.SlugMV * penmul) * 39.37
 		bdata.NotFirstPen = false

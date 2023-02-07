@@ -14,7 +14,7 @@ function ENT:Initialize()
 	self.Heat		= self.Heat or 1
 	self.Life		= self.Life or 0.1
 
-	self.Owner		= self:GetOwner()
+	--self.Owner		= self:GetOwner()
 
 	local phys = self:GetPhysicsObject()
 	phys:SetMass(3)
@@ -55,7 +55,7 @@ function ENT:Think()
 	return true
 end
 
-function ENT:PhysicsCollide( Table , PhysObj )
+function ENT:PhysicsCollide( Table )
 
 	local HitEnt = Table.HitEntity
 

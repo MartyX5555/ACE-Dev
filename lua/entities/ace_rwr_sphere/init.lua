@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-function ENT:SpawnFunction( ply, trace )
+function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
@@ -98,7 +98,7 @@ function ENT:Think()
 		local detected = 0
 
 
-		for k, scanEnt in pairs(ScanArray) do
+		for _, scanEnt in pairs(ScanArray) do
 
 			if IsValid(scanEnt) then
 
@@ -109,7 +109,7 @@ function ENT:Think()
 				if radActive then
 
 					local ang = scanEnt:WorldToLocalAngles(difpos:Angle())	--Used for testing if inrange
-					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0)--Since I like ABS so much
+					local absang = Angle(math.abs(ang.p),math.abs(ang.y),0) --Since I like ABS so much
 
 					if (absang.p < scanEnt.Cone and absang.y < scanEnt.Cone) then --Entity is within radar cone
 

@@ -3,7 +3,7 @@
 include("acf/client/cl_acfmenu_missileui.lua")
 
 
-function SetMissileGUIEnabled(panel, enabled, gundata)
+function SetMissileGUIEnabled(_, enabled, gundata)
 
 	if enabled then
 
@@ -23,7 +23,7 @@ function SetMissileGUIEnabled(panel, enabled, gundata)
 			acfmenupanel.CData.GuidanceSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
 			acfmenupanel.CData.GuidanceSelect:SetSize(100, 30)
 
-			acfmenupanel.CData.GuidanceSelect.OnSelect = function( index , value , data )
+			acfmenupanel.CData.GuidanceSelect.OnSelect = function( _ , _ , data )
 				RunConsoleCommand( "acfmenu_data7", data )
 
 				local gun = {}
@@ -60,7 +60,7 @@ function SetMissileGUIEnabled(panel, enabled, gundata)
 		end
 
 		acfmenupanel.CData.GuidanceSelect:Clear()
-		for Key, Value in pairs( gundata.guidance or {} ) do
+		for _, Value in pairs( gundata.guidance or {} ) do
 			acfmenupanel.CData.GuidanceSelect:AddChoice( Value, Value, Value == default )
 		end
 
@@ -72,7 +72,7 @@ function SetMissileGUIEnabled(panel, enabled, gundata)
 			acfmenupanel.CData.FuseSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )	--Every display and slider is placed in the Round table so it gets trashed when selecting a new round type
 			acfmenupanel.CData.FuseSelect:SetSize(100, 30)
 
-			acfmenupanel.CData.FuseSelect.OnSelect = function( index , value , data )
+			acfmenupanel.CData.FuseSelect.OnSelect = function( _ , _ , data )
 
 				local gun = {}
 
@@ -111,7 +111,7 @@ function SetMissileGUIEnabled(panel, enabled, gundata)
 		end
 
 		acfmenupanel.CData.FuseSelect:Clear()
-		for Key, Value in pairs( gundata.fuses or {} ) do
+		for _, Value in pairs( gundata.fuses or {} ) do
 			acfmenupanel.CData.FuseSelect:AddChoice( Value, Value, Value == default ) -- Contact is the only acceptable default
 		end
 
@@ -184,7 +184,7 @@ function CreateRackSelectGUI(node)
 		acfmenupanel.CData.RackSelect = vgui.Create( "DComboBox", acfmenupanel.CustomDisplay )
 		acfmenupanel.CData.RackSelect:SetSize(100, 30)
 
-		acfmenupanel.CData.RackSelect.OnSelect = function( index , value , data )
+		acfmenupanel.CData.RackSelect.OnSelect = function( _ , _ , data )
 			RunConsoleCommand( "acfmenu_data9", data )
 
 			local rack = ACF.Weapons.Racks[data]
@@ -197,18 +197,18 @@ function CreateRackSelectGUI(node)
 					acfmenupanel.CData.RackModel:SetCamPos( Vector( 250, 500, 250 ) )
 					acfmenupanel.CData.RackModel:SetLookAt( Vector( 0, 0, 0 ) )
 					acfmenupanel.CData.RackModel:SetFOV( 20 )
-					acfmenupanel.CData.RackModel:SetSize(acfmenupanel:GetWide()/3,acfmenupanel:GetWide()/3)
-					acfmenupanel.CData.RackModel.LayoutEntity = function( panel, entity ) end
+					acfmenupanel.CData.RackModel:SetSize(acfmenupanel:GetWide() / 3,acfmenupanel:GetWide() / 3)
+					acfmenupanel.CData.RackModel.LayoutEntity = function() end
 					acfmenupanel.CustomDisplay:AddItem( acfmenupanel.CData.RackModel )
 				else
 					acfmenupanel.CData.RackModel:SetModel( rack.model )
 				end
 
-				acfmenupanel:CPanelText("RackTitle", (rack.name or "Missing Name"),"DermaDefaultBold")
+				acfmenupanel:CPanelText("RackTitle", rack.name or "Missing Name","DermaDefaultBold")
 				acfmenupanel:CPanelText("RackDesc", (rack.desc or "Missing Desc") .. "\n")
 
-				acfmenupanel:CPanelText("RackEweight", "Weight when empty : " .. (rack.weight or "Missing weight").. "kg")
-				acfmenupanel:CPanelText("RackFweight", "Weight when fully loaded : " .. ( (rack.weight or 0) + (table.Count(rack.mountpoints) * node.mytable.weight) ).. "kg")
+				acfmenupanel:CPanelText("RackEweight", "Weight when empty : " .. (rack.weight or "Missing weight") .. "kg")
+				acfmenupanel:CPanelText("RackFweight", "Weight when fully loaded : " .. ( (rack.weight or 0) + (table.Count(rack.mountpoints) * node.mytable.weight) ) .. "kg")
 				acfmenupanel:CPanelText("Rack_Year", "Year : " .. rack.year .. "\n")
 			end
 		end
@@ -227,7 +227,7 @@ function CreateRackSelectGUI(node)
 	acfmenupanel.CData.RackSelect:Clear()
 
 	local default = node.mytable.rack
-	for Key, Value in pairs( ACF_GetCompatibleRacks(node.mytable.id) ) do
+	for _, Value in pairs( ACF_GetCompatibleRacks(node.mytable.id) ) do
 		acfmenupanel.CData.RackSelect:AddChoice( Value, Value, Value == default )
 	end
 
@@ -245,7 +245,7 @@ function ModifyACFMenu(panel)
 
 		oldAmmoSelect(panel, blacklist)
 
-		acfmenupanel.CData.CaliberSelect.OnSelect = function( index , value , data )
+		acfmenupanel.CData.CaliberSelect.OnSelect = function( _ , _ , data )
 			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
 			acfmenupanel:UpdateAttribs()
 			acfmenupanel:UpdateAttribs()	--Note : this is intentional
@@ -254,7 +254,7 @@ function ModifyACFMenu(panel)
 			local class = gunTbl.gunclass
 
 			local Classes = list.Get("ACFClasses")
-			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, (Classes.GunClass[class].type == "missile"), gunTbl ) end)
+			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl ) end)
 		end
 
 		local data = acfmenupanel.CData.CaliberSelect:GetValue()
@@ -263,7 +263,7 @@ function ModifyACFMenu(panel)
 			local class = gunTbl.gunclass
 
 			local Classes = list.Get("ACFClasses")
-			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, (Classes.GunClass[class].type == "missile"), gunTbl) end)
+			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl) end)
 		end
 
 	end
@@ -272,7 +272,7 @@ function ModifyACFMenu(panel)
 
 	local gunsNode
 
-	for k, node in pairs(rootNodes) do -- iterating though found folders
+	for _, node in pairs(rootNodes) do -- iterating though found folders
 
 				if node:GetText() == "Missiles" then	--Missile folder is the one that we need
 
@@ -287,20 +287,20 @@ function ModifyACFMenu(panel)
 		local classNodes = gunsNode.ChildNodes:GetChildren()
 		local gunClasses = list.Get("ACFClasses").GunClass
 
-		for k, node in pairs(classNodes) do
+		for _, node in pairs(classNodes) do
 			local gunNodeElement = node.ChildNodes
 
 			if gunNodeElement then
 				local gunNodes = gunNodeElement:GetChildren()
 
-				for k, gun in pairs(gunNodes) do
+				for _, gun in pairs(gunNodes) do
 					local class = gunClasses[gun.mytable.gunclass]
 
 					if (class and class.type == "missile") and not gun.ACFMOverridden then
 						local oldclick = gun.DoClick
 
 						gun.DoClick = function(self)
-							local ret = oldclick(self)
+							oldclick(self)
 							CreateRackSelectGUI(self)
 						end
 

@@ -145,7 +145,7 @@ function EFFECT:ApplyMovement( Bullet )
 		return
 	end
 	if setPos.z < 16380 then
-		self:SetPos( setPos )--Moving the effect to the calculated position
+		self:SetPos( setPos ) --Moving the effect to the calculated position
 		self:SetAngles( Bullet.SimFlight:Angle() )
 
 		local Speed = math.abs((Bullet.SimPos - Bullet.SimPosLast):Length())
@@ -171,7 +171,7 @@ function EFFECT:ApplyMovement( Bullet )
 
 		if Bullet.Counter <= 1 then value = 1.85 end
 
-		local DeltaTime = ACF.CurTime - Bullet.LastThink
+		--local DeltaTime = ACF.CurTime - Bullet.LastThink
 		local DeltaPos = Bullet.SimPos - Bullet.SimPosLast
 		local Length =  math.min(-DeltaPos:Length() * value,-1)
 
@@ -196,8 +196,8 @@ function EFFECT:ApplyMovement( Bullet )
 
 		if MaxSprites > 0 then
 
-			for i=1, MaxSprites do
-				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos - (DeltaPos * i/MaxSprites) )
+			for i = 1, MaxSprites do
+				local Smoke = Bullet.Tracer:Add( "particle/smokesprites_000" .. math.random(1,9), setPos - (DeltaPos * i / MaxSprites) )
 				if (Smoke) then
 					Smoke:SetAngles( Bullet.SimFlight:Angle() )
 					Smoke:SetVelocity( Bullet.SimFlight * 0.05 )
@@ -206,7 +206,7 @@ function EFFECT:ApplyMovement( Bullet )
 					Smoke:SetStartAlpha( 10 )
 					Smoke:SetEndAlpha( 0 )
 					Smoke:SetStartSize( 1 )
-					Smoke:SetEndSize( Length/400 * Bullet.Caliber )
+					Smoke:SetEndSize( Length / 400 * Bullet.Caliber )
 					Smoke:SetRollDelta( 0.1 )
 					Smoke:SetAirResistance( 150 )
 					Smoke:SetGravity( Vector(0,0,20) )
@@ -222,7 +222,7 @@ function EFFECT:Render()
 	local Bullet = ACF.BulletEffect[self.Index]
 
 	if (Bullet) then
-		self.Entity:SetModelScale( Bullet.Caliber/10 , 0 )
+		self.Entity:SetModelScale( Bullet.Caliber / 10 , 0 )
 		self.Entity:DrawModel()	-- Draw the model.
 	end
 

@@ -35,7 +35,7 @@ function ACFTrackRadarGUICreate( Table )
 		RadarMenu:SetLookAt( Vector( 0, 0, 0 ) )
 		RadarMenu:SetFOV( 20 )
 		RadarMenu:SetSize(acfmenupanel:GetWide(),acfmenupanel:GetWide())
-		RadarMenu.LayoutEntity = function( panel, entity ) end
+		RadarMenu.LayoutEntity = function() end
 	acfmenupanel.CustomDisplay:AddItem( RadarMenu )
 
 	acfmenupanel:CPanelText("ClassDesc", ACF.Classes.Radar[Table.class].desc)

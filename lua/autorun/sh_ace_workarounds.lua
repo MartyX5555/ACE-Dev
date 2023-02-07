@@ -33,7 +33,7 @@ if CLIENT then
 			start = view.origin,
 			endpos = TargetOrigin,
 			mask = CONTENTS_SOLID,
-			filter = function( e )
+			filter = function()
 				return false
 			end,
 			mins = Vector( -WallOffset, -WallOffset, -WallOffset ),
@@ -125,7 +125,7 @@ elseif SERVER then
 				SendGodStatus( value, nil )
 				return
 			else
-				for k, ply in ipairs(player.GetHumans()) do -- we dont need to send client data to bots
+				for _, ply in ipairs(player.GetHumans()) do -- we dont need to send client data to bots
 
 					SendGodStatus( ply:HasGodMode(), ply )
 

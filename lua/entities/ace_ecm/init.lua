@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-function ENT:SpawnFunction( ply, trace )
+function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
@@ -116,7 +116,7 @@ function ENT:Think()
 
 		if IsValid( scanEnt ) then
 
-			local radActive = scanEnt.Active
+			--local radActive = scanEnt.Active
 			local entpos = scanEnt:GetPos()
 
 			local LOStr = util.TraceLine( {

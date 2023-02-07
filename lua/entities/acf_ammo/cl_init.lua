@@ -18,7 +18,7 @@ end
 
 
 local function BezPoint(perc, Table)
-	perc = perc or self.Perc
+	--perc = perc or self.Perc
 
 	local vec = Vector(0, 0, 0)
 
@@ -28,47 +28,47 @@ local function BezPoint(perc, Table)
 end
 
 function ACF_DrawRefillAmmo( Table )
-
-	for k,v in pairs( Table ) do
+	for _, v in pairs(Table) do
 		local St, En = v.EntFrom:LocalToWorld(v.EntFrom:OBBCenter()), v.EntTo:LocalToWorld(v.EntTo:OBBCenter())
 		local Distance = (En - St):Length()
-		local Amount = math.Clamp((Distance/50),2,100)
-		local Time = (SysTime() - v.StTime)
-		local En2, St2 = En + Vector(0,0,100), St + ((En-St):GetNormalized() * 10)
-		local vectab = { St, St2, En2, En}
-		local center = (St + En)/2
+		local Amount = math.Clamp(Distance / 50, 2, 100)
+		local Time = SysTime() - v.StTime
+		local En2, St2 = En + Vector(0, 0, 100), St + ((En - St):GetNormalized() * 10)
+
+		local vectab = {St, St2, En2, En}
+
+		local center = (St + En) / 2
+
 		for I = 1, Amount do
-			local point = BezPoint(((((I + Time)%Amount))/Amount), vectab)
+			local point = BezPoint(((I + Time) % Amount) / Amount, vectab)
 			local ang = (point - center):Angle()
+
 			local MdlTbl = {
 				model = v.Model,
 				pos = point,
 				angle = ang
 			}
-			render.Model( MdlTbl )
+
+			render.Model(MdlTbl)
 		end
 	end
-
 end
 
 function ACF_TrimInvalidRefillEffects(effectsTbl)
 
 	local effect
 
-	for i=1, #effectsTbl do
-
+	for i = 1, #effectsTbl do
 		effect = effectsTbl[i]
 
-		if effect then
-			if not IsValid(effect.EntFrom) or not IsValid(effect.EntTo) then
-				effectsTbl[i] = nil
-			end
+		if effect and (not IsValid(effect.EntFrom) or not IsValid(effect.EntTo)) then
+			effectsTbl[i] = nil
 		end
 	end
 
 end
 
-local ACF_AmmoInfoWhileSeated = CreateClientConVar("ACF_AmmoInfoWhileSeated", 0, true, false)
+--local ACF_AmmoInfoWhileSeated = CreateClientConVar("ACF_AmmoInfoWhileSeated", 0, true, false)
 
 function ENT:Draw()
 
@@ -93,7 +93,7 @@ end
 
 usermessage.Hook("ACF_RefillEffect", function( msg )
 
-	local EntFrom, EntTo, Weapon = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() ), msg:ReadString()
+	local EntFrom, EntTo = ents.GetByIndex( msg:ReadFloat() ), ents.GetByIndex( msg:ReadFloat() )
 	if not IsValid( EntFrom ) or not IsValid( EntTo ) then return end
 
 	local Mdl = "models/munitions/round_100mm_shot.mdl"
@@ -109,7 +109,7 @@ usermessage.Hook("ACF_StopRefillEffect", function( msg )
 
 	for k,v in pairs( EntFrom.RefillAmmoEffect ) do
 		if v.EntTo == EntTo then
-			if #EntFrom.RefillAmmoEffect<=1 then
+			if #EntFrom.RefillAmmoEffect <= 1 then
 				EntFrom.RefillAmmoEffect = nil
 				return
 			end

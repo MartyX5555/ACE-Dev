@@ -89,10 +89,10 @@ function ACF_CalcArmor( Area, Ductility, Mass )
 
 end
 
-function ACF_MuzzleVelocity( Propellant, Mass, Caliber )
+function ACF_MuzzleVelocity( Propellant, Mass )
 
 	local PEnergy	= ACF.PBase * ((1 + Propellant) ^ ACF.PScale-1)
-	local Speed	= ((PEnergy * 2000/Mass) ^ ACF.MVScale)
+	local Speed	= ((PEnergy * 2000 / Mass) ^ ACF.MVScale)
 	local Final	= Speed -- - Speed * math.Clamp(Speed/2000,0,0.5)
 
 	return Final
@@ -101,14 +101,14 @@ end
 function ACF_Kinetic( Speed , Mass, LimitVel )
 
 	LimitVel = LimitVel or 99999
-	Speed = Speed/39.37
+	Speed = Speed / 39.37
 
 	local Energy = {}
-		Energy.Kinetic = ((Mass) * ((Speed) ^ 2))/2000 --Energy in KiloJoules
-		Energy.Momentum = (Speed * Mass)
+		Energy.Kinetic = (Mass * (Speed ^ 2)) / 2000 --Energy in KiloJoules
+		Energy.Momentum = Speed * Mass
 
-		local KE = (Mass * (Speed ^ ACF.KinFudgeFactor))/2000 + Energy.Momentum
-		Energy.Penetration = math.max( KE - (math.max(Speed-LimitVel,0) ^ 2)/(LimitVel * 5) * (KE/200) ^ 0.95 , KE * 0.1 )
+		local KE = (Mass * (Speed ^ ACF.KinFudgeFactor)) / 2000 + Energy.Momentum
+		Energy.Penetration = math.max(KE - (math.max(Speed - LimitVel, 0) ^ 2) / (LimitVel * 5) * (KE / 200) ^ 0.95, KE * 0.1)
 
 	return Energy
 end
@@ -145,13 +145,13 @@ do
 
 		-- add any parented but not constrained props you sneaky bastards
 		local AllEnts = table.Copy( PhysEnts )
-		for k, v in pairs( AllEnts ) do
+		for _, v in pairs( AllEnts ) do
 
 			table.Merge( AllEnts, ACF_GetAllChildren( v ) )
 
 		end
 
-		for k, v in pairs( AllEnts ) do
+		for _, v in pairs( AllEnts ) do
 
 			if IsValid( v ) then
 
@@ -197,7 +197,7 @@ do
 		end
 
 		--Build the ratios here
-		for k, v in pairs( AllEnts ) do
+		for _, v in pairs( AllEnts ) do
 			v.acfphystotal	= PhysMass
 			v.acftotal		= Mass
 			v.acflastupdatemass = ACF.CurTime
@@ -209,7 +209,7 @@ do
 
 				MatSums[material] = 0
 
-				for i,mass in pairs(tablemass) do
+				for _, mass in pairs(tablemass) do
 
 					MatSums[material] = MatSums[material] + mass
 
@@ -227,7 +227,7 @@ end
 
 --Checks if theres new versions for ACE
 function ACF_UpdateChecking( )
-	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents,size)
+	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents)
 
 		--maybe not the best way to get git but well......
 		str = tostring("String:" .. contents)

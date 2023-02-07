@@ -59,24 +59,24 @@ local irst_base = {
 
 -- add gui stuff to base classes if this is client
 if CLIENT then
-	gun_base.guicreate		= function( Panel, Table ) ACFGunGUICreate( Table )		end or nil
+	gun_base.guicreate		= function( _, Table ) ACFGunGUICreate( Table )		end or nil
 	gun_base.guiupdate		= function() return end
 
-	engine_base.guicreate	= function( panel, tbl ) ACE_EngineGUI_Update( tbl )		end or nil
+	engine_base.guicreate	= function( _, tbl ) ACE_EngineGUI_Update( tbl )		end or nil
 
-	gearbox_base.guicreate	= function( panel, tbl ) ACFGearboxGUICreate( tbl )		end or nil
+	gearbox_base.guicreate	= function( _, tbl ) ACFGearboxGUICreate( tbl )		end or nil
 	gearbox_base.guiupdate	= function() return end
 
-	fueltank_base.guicreate	= function( panel, tbl ) ACFFuelTankGUICreate( tbl )		end or nil
-	fueltank_base.guiupdate	= function( panel, tbl ) ACFFuelTankGUIUpdate( tbl )		end or nil
+	fueltank_base.guicreate	= function( _, tbl ) ACFFuelTankGUICreate( tbl )		end or nil
+	fueltank_base.guiupdate	= function( _, tbl ) ACFFuelTankGUIUpdate( tbl )		end or nil
 
-	radar_base.guicreate		= function( Panel, Table ) ACFRadarGUICreate( Table )	end
+	radar_base.guicreate		= function( _, Table ) ACFRadarGUICreate( Table )	end
 	radar_base.guiupdate		= function() return end
 
-	trackradar_base.guicreate	= function( Panel, Table ) ACFTrackRadarGUICreate( Table )  end or nil
+	trackradar_base.guicreate	= function( _, Table ) ACFTrackRadarGUICreate( Table )  end or nil
 	trackradar_base.guiupdate	= function() return end
 
-	irst_base.guicreate		= function( Panel, Table ) ACFIRSTGUICreate( Table )		end or nil
+	irst_base.guicreate		= function( _, Table ) ACFIRSTGUICreate( Table )		end or nil
 	irst_base.guiupdate		= function() return end
 end
 
@@ -271,10 +271,10 @@ do
 		"sounds"
 	}
 
-	for k, folder in ipairs(folders) do
+	for _, folder in ipairs(folders) do
 
 		local folderData = file.Find( Gpath .. folder .. "/*.lua", "LUA" )
-		for k, v in pairs( folderData ) do
+		for _, v in pairs( folderData ) do
 			AddCSLuaFile( "acf/shared/" .. folder .. "/" .. v )
 			include( "acf/shared/" .. folder .. "/" .. v )
 		end

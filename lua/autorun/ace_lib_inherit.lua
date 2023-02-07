@@ -66,7 +66,7 @@ end
 
 
 function this.NewBaseClass()
-	local ret = {}
+	--local ret = {}
 	return this.NewSubOf(nil)
 end
 

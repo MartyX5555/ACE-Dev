@@ -71,7 +71,7 @@ end
 
 
 
-function this:GetGuidanceOverride(missile, guidance)
+function this:GetGuidanceOverride()
 
 	if not self.Flare then return end
 
@@ -89,7 +89,7 @@ end
 
 
 -- TODO: refine formula.
-function this:ApplyChance(missile, guidance)
+function this:ApplyChance()
 
 	self:UpdateActive()
 
@@ -143,7 +143,7 @@ function this:ApplyToAll()
 
 	local targets = ACFM_GetAllMissilesWhichCanSee(self.Flare.Pos)
 
-	for k, missile in pairs(targets) do
+	for _, missile in pairs(targets) do
 
 		local guidance = missile.Guidance
 
@@ -173,7 +173,7 @@ function this.ApplyAll(missile, guidance)
 
 	local flares = ACFM_GetFlaresInCone(pos, dir, cone)
 
-	for k, flare in pairs(flares) do
+	for _, flare in pairs(flares) do
 
 		local ret = flare.FlareObj
 

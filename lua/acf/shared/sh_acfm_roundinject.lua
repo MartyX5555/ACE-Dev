@@ -22,7 +22,7 @@ local function checkIfDataIsMissile(data)
 	local classes = list.Get("ACFClasses").GunClass
 	class = classes[class.gunclass]
 
-	return (class.type and class.type == "missile")
+	return class.type and class.type == "missile"
 
 end
 

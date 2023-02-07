@@ -1,9 +1,7 @@
-
-
- --[[-------------------------------------------------------
-	Initializes the effect. The data is a table of data
-	which was passed from the server.
- ---------------------------------------------------------]]
+--[[-------------------------------------------------------
+Initializes the effect. The data is a table of data
+which was passed from the server.
+---------------------------------------------------------]]
 function EFFECT:Init( data )
 
 	self.Origin		= data:GetOrigin()
@@ -130,15 +128,15 @@ function EFFECT:Core( HitWater )
 	local RandColor = 0
 	local WaterColor = Color(255,255,255,100)
 
-	local NumRand, Texture, TScale
+	--local NumRand, Texture, TScale
 
-	for i=0, 3 * Radius * PMul do --Flying Debris
+	for _ = 0, 3 * Radius * PMul do --Flying Debris
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( VectorRand() * math.random(50 * Radius,100 * Radius) )
 			Debris:SetLifeTime( 0 )
-			Debris:SetDieTime( math.Rand( 1.5 , 4 ) * Radius/3 )
+			Debris:SetDieTime( math.Rand( 1.5 , 4 ) * Radius / 3 )
 			Debris:SetStartAlpha( 255 )
 			Debris:SetEndAlpha( 0 )
 			Debris:SetStartSize( math.random(0.1 * Radius , 1 * Radius) )
@@ -154,13 +152,13 @@ function EFFECT:Core( HitWater )
 		end
 	end
 
-	for i=0, 2 * Radius * PMul do
+	for _ = 0, 2 * Radius * PMul do
 
 		local Whisp = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin + VectorRand() * Radius * 11 )
 		if (Whisp) then
 			Whisp:SetVelocity(VectorRand() * math.random( 50,150 * Radius) )
 			Whisp:SetLifeTime( 0 )
-			Whisp:SetDieTime( math.Rand( 0.1 , 3 ) * Radius/3  )
+			Whisp:SetDieTime( math.Rand( 0.1 , 3 ) * Radius / 3  )
 			Whisp:SetStartAlpha( math.Rand( 125, 150 ) )
 			Whisp:SetEndAlpha( 0 )
 			Whisp:SetStartSize( 10 * Radius )
@@ -193,7 +191,7 @@ function EFFECT:Core( HitWater )
 			Glow:SetColor( 255, 255, 255 )
 	end
 
-	for i=0, Radius * PMul * 3 do --Explosion Core
+	for _ = 0, Radius * PMul * 3 do --Explosion Core
 
 		local Flame = self.Emitter:Add( "particles/flamelet" .. math.random(1,5), self.Origin)
 		if (Flame) then
@@ -223,16 +221,16 @@ function EFFECT:Shockwave( Ground, SmokeColor )
 	local Radius = (1-Ground.Fraction) * self.Radius
 	local Density = 15 * Radius
 	local Angle = Ground.HitNormal:Angle()
-	for i=0, Density * PMul do
+	for _ = 0, Density * PMul do
 
-		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
+		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
 		local ShootVector = Angle:Up()
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), Ground.HitPos )
 
 		if (Smoke) then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,300 * Radius) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 1 , 2 ) * Radius /3 )
+			Smoke:SetDieTime( math.Rand( 1 , 2 ) * Radius / 3 )
 			Smoke:SetStartAlpha( math.Rand( 50, 120 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 10 * Radius )
@@ -265,21 +263,21 @@ function EFFECT:Water( Water )
 	--print('R: ' .. Radius)
 	--print('D: ' .. Dist)
 
-	for i=0, Density * PMul do
+	for _ = 0, Density * PMul do
 
 		local TextureTb = {
 			"particle/smokesprites_000" .. math.random(1,9),
 			"effects/splash4"
 		}
 
-		Angle:RotateAroundAxis(Angle:Forward(), (360/Density))
+		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
 		local ShootVector = Angle:Up()
 		local Smoke = self.Emitter:Add( TextureTb[math.random(1,2)], Water.HitPos + Vector(0,0,5) )
 
 		if (Smoke) then
 			Smoke:SetVelocity( ShootVector * math.Rand(5,100 * Radius) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 2 , 6 ) * Radius /3 )
+			Smoke:SetDieTime( math.Rand( 2 , 6 ) * Radius / 3 )
 			Smoke:SetStartAlpha( math.Rand( 50, 120 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 10 * Radius )
@@ -294,7 +292,7 @@ function EFFECT:Water( Water )
 		end
 	end
 
-	for i=0, 2 * Radius * PMul do
+	for _ = 0, 2 * Radius * PMul do
 
 		local TextureTb = {
 			"particle/smokesprites_000" .. math.random(1,9),
@@ -307,9 +305,9 @@ function EFFECT:Water( Water )
 			local Randvec = VectorRand()
 			local absvec = math.abs(Randvec.y)
 
-			Whisp:SetVelocity(Vector(Randvec.x,Randvec.y,absvec) * math.random( 100 * Radius/Dist,150 * Radius/Dist) * Vector(0.15,0.15,1))
+			Whisp:SetVelocity(Vector(Randvec.x,Randvec.y,absvec) * math.random( 100 * Radius / Dist,150 * Radius / Dist) * Vector(0.15,0.15,1))
 			Whisp:SetLifeTime( 0 )
-			Whisp:SetDieTime( math.Rand( 3 , 5 ) * Radius/3  )
+			Whisp:SetDieTime( math.Rand( 3 , 5 ) * Radius / 3  )
 			Whisp:SetStartAlpha( math.Rand( 100, 125 ) )
 			Whisp:SetEndAlpha( 0 )
 			Whisp:SetStartSize( 10 * Radius )
@@ -328,13 +326,13 @@ end
 
 function EFFECT:Concrete( SmokeColor )
 
-	for i=0, 5 * self.Radius * self.ParticleMul do --Flying Debris
+	for _ = 0, 5 * self.Radius * self.ParticleMul do --Flying Debris
 
 		local Fragments = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if (Fragments) then
 			Fragments:SetVelocity ( VectorRand() * math.random(50 * self.Radius,150 * self.Radius) )
 			Fragments:SetLifeTime( 0 )
-			Fragments:SetDieTime( math.Rand( 1 , 2 ) * self.Radius/3 )
+			Fragments:SetDieTime( math.Rand( 1 , 2 ) * self.Radius / 3 )
 			Fragments:SetStartAlpha( 255 )
 			Fragments:SetEndAlpha( 0 )
 			Fragments:SetStartSize( 0.25 * self.Radius )
@@ -351,13 +349,13 @@ function EFFECT:Concrete( SmokeColor )
 		end
 	end
 
-	for i=0, 3 * self.Radius * self.ParticleMul do
+	for _ = 0, 3 * self.Radius * self.ParticleMul do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 1 , 2 ) * self.Radius/3  )
+			Smoke:SetDieTime( math.Rand( 1 , 2 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 50, 150 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 5 * self.Radius )
@@ -376,7 +374,7 @@ end
 
 function EFFECT:Dirt( SmokeColor )
 
-	for i=0, 3 * self.Radius * self.ParticleMul do
+	for _ = 0, 3 * self.Radius * self.ParticleMul do
 
 		NumRand = math.random(-1, 2)
 		TScale = 1
@@ -391,7 +389,7 @@ function EFFECT:Dirt( SmokeColor )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 40,80 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius/3  )
+			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 15 * self.Radius * TScale )
@@ -409,7 +407,7 @@ end
 
 function EFFECT:Sand( SmokeColor )
 
-	for i=0, 3 * self.Radius * self.ParticleMul * 2 do
+	for _ = 0, 3 * self.Radius * self.ParticleMul * 2 do
 
 		NumRand = math.random(-1, 2)
 		TScale = 1
@@ -424,7 +422,7 @@ function EFFECT:Sand( SmokeColor )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 50,80 * self.Radius) + VectorRand() * math.random( 30,60 * self.Radius) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius/3  )
+			Smoke:SetDieTime( math.Rand( 1 , 5 ) * self.Radius / 3  )
 			Smoke:SetStartAlpha( math.Rand( 150, 200 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 15 * self.Radius * TScale )
@@ -439,16 +437,16 @@ function EFFECT:Sand( SmokeColor )
 	end
 end
 
-function EFFECT:Airburst( SmokeColor )
+function EFFECT:Airburst()
 
 	local Radius = self.Radius
-	for i=0, 0.5 * Radius * self.ParticleMul do --Flying Debris
+	for _ = 0, 0.5 * Radius * self.ParticleMul do --Flying Debris
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( VectorRand() * math.random(150 * Radius,450 * Radius) )
 			Debris:SetLifeTime( 0 )
-			Debris:SetDieTime( math.Rand( 0.2 , 0.4 ) * Radius/3 )
+			Debris:SetDieTime( math.Rand( 0.2 , 0.4 ) * Radius / 3 )
 			Debris:SetStartAlpha( 255 )
 			Debris:SetEndAlpha( 0 )
 			Debris:SetStartSize( 0.5 * Radius )

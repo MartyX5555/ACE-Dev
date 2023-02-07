@@ -1,12 +1,11 @@
-local ACFEnts = list.Get("ACFEnts")
-local GunTable = ACFEnts.Guns
+--local ACFEnts = list.Get("ACFEnts")
+--local GunTable = ACFEnts.Guns
 
- --[[---------------------------------------------------------
-	Initializes the effect. The data is a table of data
-	which was passed from the server.
- -----------------------------------------------------------]]
- function EFFECT:Init( data )
-
+--[[---------------------------------------------------------
+Initializes the effect. The data is a table of data
+which was passed from the server.
+-----------------------------------------------------------]]
+function EFFECT:Init( data )
 	self.Ent			= data:GetEntity()
 	self.Caliber		= self.Ent:GetNWFloat( "Caliber", 10 )
 	self.Origin		= data:GetOrigin()
@@ -16,7 +15,7 @@ local GunTable = ACFEnts.Guns
 	self.Emitter		= ParticleEmitter( self.Origin )
 	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
 
-	self.Scale = math.max(self.Mass * (self.Velocity/39.37)/100,1) ^ 0.3
+	self.Scale = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
 
 	local Tr = { }
 		Tr.start = self.Origin - self.DirVec * 20
@@ -59,19 +58,19 @@ local GunTable = ACFEnts.Guns
 	ACE_SPen( self.Origin, self.Velocity, self.Mass )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
- end
+end
 
 function EFFECT:Prop()
 
 	util.Decal("Impact.Concrete", self.Origin - self.DirVec * 50, self.Origin + self.DirVec * 50, self.Ent )
 
-	for i=0, self.Scale * self.ParticleMul do
+	for _ = 0, self.Scale * self.ParticleMul do
 
 		local Debris = self.Emitter:Add( "effects/fleck_tile" .. math.random(1,2), self.Origin )
 		if (Debris) then
 			Debris:SetVelocity ( self.Normal * math.random( 20,140 * self.Scale) + VectorRand() * math.random( 25,150 * self.Scale) )
 			Debris:SetLifeTime( 0 )
-			Debris:SetDieTime( math.Rand( 1.5 , 3 ) * self.Scale/3 )
+			Debris:SetDieTime( math.Rand( 1.5 , 3 ) * self.Scale / 3 )
 			Debris:SetStartAlpha( 255 )
 			Debris:SetEndAlpha( 0 )
 			Debris:SetStartSize( 1 * self.Scale )
@@ -84,13 +83,13 @@ function EFFECT:Prop()
 		end
 	end
 
-	for i=0, self.Scale * self.ParticleMul do
+	for _ = 0, self.Scale * self.ParticleMul do
 
 		local Smoke = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
 		if (Smoke) then
 			Smoke:SetVelocity( self.Normal * math.random( 20,40 * self.Scale) + VectorRand() * math.random( 25,50 * self.Scale) )
 			Smoke:SetLifeTime( 0 )
-			Smoke:SetDieTime( math.Rand( 1 , 2 ) * self.Scale/3  )
+			Smoke:SetDieTime( math.Rand( 1 , 2 ) * self.Scale / 3  )
 			Smoke:SetStartAlpha( math.Rand( 50, 150 ) )
 			Smoke:SetEndAlpha( 0 )
 			Smoke:SetStartSize( 1 * self.Scale )
@@ -104,13 +103,13 @@ function EFFECT:Prop()
 
 	end
 
-	for i=0, self.Scale * self.ParticleMul do
+	for _ = 0, self.Scale * self.ParticleMul do
 
 		local Embers = self.Emitter:Add( "particles/flamelet" .. math.random(1,5), self.Origin )
 		if (Embers) then
 			Embers:SetVelocity ( (self.Normal - VectorRand()) * math.random(30 * self.Scale,80 * self.Scale) )
 			Embers:SetLifeTime( 0 )
-			Embers:SetDieTime( math.Rand( 0.3 , 1 ) * self.Scale/5 )
+			Embers:SetDieTime( math.Rand( 0.3 , 1 ) * self.Scale / 5 )
 			Embers:SetStartAlpha( 255 )
 			Embers:SetEndAlpha( 0 )
 			Embers:SetStartSize( 10 * self.Scale )

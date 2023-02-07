@@ -62,7 +62,7 @@ function ENT:Think()
 				if groundRanger.Hit and groundRanger.HitWorld then
 
 					self:SetPos(groundRanger.HitPos + Vector(0,0,7.1))
-					self:SetAngles(groundRanger.HitNormal:Angle()-Angle(90,0,0))
+					self:SetAngles(groundRanger.HitNormal:Angle() - Angle(90,0,0))
 					self.MineState = 1
 					self.phys:EnableMotion(false)
 				end

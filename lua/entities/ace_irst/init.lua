@@ -144,7 +144,7 @@ function ENT:GetWhitelistedEntsInCone()
 	local difpos		= Vector()
 	local dist		= 0
 
-	for k, scanEnt in ipairs(ScanArray) do
+	for _, scanEnt in ipairs(ScanArray) do
 
 		-- skip any invalid entity
 		if not IsValid(scanEnt) then continue end
@@ -210,7 +210,7 @@ function ENT:AcquireLock()
 	local physEnt		= NULL
 
 
-	for k, scanEnt in ipairs(found) do
+	for _, scanEnt in ipairs(found) do
 
 		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
 		local randposinac	= Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
@@ -223,7 +223,7 @@ function ENT:AcquireLock()
 		absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.01 * (absang.y/90) ^ 2 + 0.01 * (absang.y/90) ^ 2 + 0.01 * (absang.p/90) ^ 2
+		errorFromAng = 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.p / 90) ^ 2
 
 		if absang.p < self.Cone and absang.y < self.Cone then --Entity is within seeker cone
 
@@ -238,10 +238,8 @@ function ENT:AcquireLock()
 				physEnt = scanEnt:GetPhysicsObject()
 
 				--skip if it has not a valid physic object. It's amazing how gmod can break this. . .
-				if physEnt:IsValid() then
 				--check if it's not frozen. If so, skip it, unmoveable stuff should not be even considered
-					if not physEnt:IsMoveable() then continue end
-				end
+				if physEnt:IsValid() and not physEnt:IsMoveable() then continue end
 
 				dist = difpos:Length()
 				Heat = ACE_InfraredHeatFromProp( self, scanEnt , dist )
@@ -256,19 +254,19 @@ function ENT:AcquireLock()
 
 			--Sorts targets as closest to being directly in front of radar
 			if err < besterr then
-				self.ClosestToBeam =  table.getn( Owners ) + 1
+				self.ClosestToBeam =  #Owners + 1
 				besterr = err
 			end
 
-			local errorFromHeat	= math.max((200-Heat)/5000,0) --200 degrees to the seeker causes no loss in accuracy
-			local posErrorFromHeat  = 1 - math.min(1, (Heat / 200))
-			local angerr			= 1 + randanginac * (errorFromAng + errorFromHeat)
+			local errorFromHeat = math.max((200 - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
+			local posErrorFromHeat = 1 - math.min(1, Heat / 200)
+			local angerr = 1 + randanginac * (errorFromAng + errorFromHeat)
 
 			--For Owner table
-			table.insert( Owners		, CPPI and ( IsValid( scanEnt:CPPIGetOwner() ) and scanEnt:CPPIGetOwner():GetName()) or scanEnt:GetOwner():GetName() or "")
-			table.insert( Positions	, (entpos + randposinac * posErrorFromHeat * difpos:Length()/500 ) )
-			table.insert( Temperatures  , Heat )
-			table.insert( posTable	, nonlocang * angerr )
+			table.insert(Owners, CPPI and (IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName()) or scanEnt:GetOwner():GetName() or "")
+			table.insert(Positions, entpos + randposinac * posErrorFromHeat * difpos:Length() / 500)
+			table.insert(Temperatures, Heat)
+			table.insert(posTable, nonlocang * angerr)
 
 			debugoverlay.Line(self:GetPos(), Positions[1], 5, Color(255,255,0), true)
 

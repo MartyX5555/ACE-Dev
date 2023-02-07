@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-function ENT:SpawnFunction( ply, trace )
+function ENT:SpawnFunction( _, trace )
 
 	if not trace.Hit then return end
 
@@ -48,19 +48,10 @@ end
 
 function ENT:OnRemove()
 
-	for Key,Value in pairs(self.Master) do
+	for Key in pairs(self.Master) do
 		if self.Master[Key] and self.Master[Key]:IsValid() then
 			self.Master[Key]:Unlink( self )
 		end
 	end
 
 end
-
-
-
-
-
-
-
-
-

@@ -1,11 +1,10 @@
 
 
- --[[---------------------------------------------------------
-	Initializes the effect. The data is a table of data
-	which was passed from the server.
- -----------------------------------------------------------]]
- function EFFECT:Init( data )
-
+--[[---------------------------------------------------------
+Initializes the effect. The data is a table of data
+which was passed from the server.
+-----------------------------------------------------------]]
+function EFFECT:Init( data )
 	self.Origin	= data:GetOrigin()
 	self.DirVec	= data:GetNormal()
 	self.Velocity	= data:GetScale()			-- Velocity of the projectile in gmod units
@@ -13,7 +12,7 @@
 	self.Emitter	= ParticleEmitter( self.Origin )
 	self.Ent		= data:GetEntity()			-- the Ammocrate entity
 	self.Id		= self.Ent:GetNWString( "AmmoType", "AP" )
-	self.Scale		= math.max(self.Mass * (self.Velocity/39.37)/100,1) ^ 0.3
+	self.Scale = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
 	self.ParticleMul  = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
 
 	local Tr		= {}
@@ -94,27 +93,27 @@ end
 
 function EFFECT:Dust( SmokeColor )
 
-	local PMul		= self.ParticleMul
-	local Vel		= self.Velocity/2500
+	--local PMul		= self.ParticleMul
+	local Vel		= self.Velocity / 2500
 	local Mass		= self.Mass
 
 	local HalfArea	= ( self.SubCalBoost[self.Id] and 0.75) or 1
-	local ShellArea	= 3.141 * (self.Cal/2) * HalfArea
+	local ShellArea	= 3.141 * (self.Cal / 2) * HalfArea
 
 	--print(ShellArea)
 
 	--KE main formula
-	local Energy	= math.Clamp( (((Mass * (Vel ^ 2))/2)/2 ) * ShellArea, 4, math.max(ShellArea ^ 0.95,4) )/2
+	local Energy = math.Clamp((((Mass * (Vel ^ 2)) / 2) / 2) * ShellArea, 4, math.max(ShellArea ^ 0.95, 4)) / 2
 
 	--print(Energy)
 
-	for i=1, 3 do
+	for _ = 1, 3 do
 
 	local Dust = self.Emitter:Add( "particle/smokesprites_000" .. math.random(1,9), self.Origin )
 	if (Dust) then
 		Dust:SetVelocity(VectorRand() * math.random( 20,30 * Energy) )
 		Dust:SetLifeTime( 0 )
-		Dust:SetDieTime( math.Rand( 1 , 2 ) * (Energy/3)  )
+		Dust:SetDieTime( math.Rand( 1 , 2 ) * (Energy / 3)  )
 		Dust:SetStartAlpha( math.Rand( math.max(SmokeColor.a-20,10), SmokeColor.a ) )
 		Dust:SetEndAlpha( 0 )
 		Dust:SetStartSize( 5 * Energy )
@@ -135,9 +134,9 @@ function EFFECT:Metal()
 	local Sparks = EffectData()
 	Sparks:SetOrigin( self.Origin )
 	Sparks:SetNormal( self.DirVec + VectorRand() * 1.5)
-	Sparks:SetMagnitude( self.Scale/1.75 )
-	Sparks:SetScale( self.Scale/1.75 )
-	Sparks:SetRadius( self.Scale/1.75 )
+	Sparks:SetMagnitude( self.Scale / 1.75 )
+	Sparks:SetScale( self.Scale / 1.75 )
+	Sparks:SetRadius( self.Scale / 1.75 )
 	util.Effect( "Sparks", Sparks )
 
 end

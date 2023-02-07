@@ -1,9 +1,7 @@
-
-
- --[[---------------------------------------------------------
-	Initializes the effect. The data is a table of data
-	which was passed from the server.
- -----------------------------------------------------------]]
+--[[---------------------------------------------------------
+Initializes the effect. The data is a table of data
+which was passed from the server.
+-----------------------------------------------------------]]
 function EFFECT:Init( data )
 
 	self.Scale = data:GetScale() * 5
@@ -20,10 +18,10 @@ function EFFECT:Init( data )
 	self.Emitter = ParticleEmitter( self.Entity:GetPos())
 
 	local phys = self.Entity:GetPhysicsObject()
-	if phys and phys:IsValid()then
+	if phys and phys:IsValid() then
 		phys:Wake()
 		phys:ApplyForceCenter( VectorRand() * math.random( 500 , 800 ) * self.Scale )
-	else
+	--else
 		--Msg("Phys invalid/n")
 	end
 
@@ -38,8 +36,8 @@ function EFFECT:Think()
 		Smoke:SetDieTime( math.Rand( 2 , 4 ) )
 		Smoke:SetStartAlpha( math.random( 20,80 ) )
 		Smoke:SetEndAlpha( 0 )
-		Smoke:SetStartSize( 4 * self.Scale/2 )
-		Smoke:SetEndSize( 8 * self.Scale/2 )
+		Smoke:SetStartSize( 4 * self.Scale / 2 )
+		Smoke:SetEndSize( 8 * self.Scale / 2 )
 		Smoke:SetRoll( math.Rand(0, 360) )
 		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
 		Smoke:SetAirResistance( 50 )
@@ -54,8 +52,8 @@ function EFFECT:Think()
 		Fire:SetDieTime( 0.15 )
 		Fire:SetStartAlpha( math.random( 100,150 ) )
 		Fire:SetEndAlpha( 0 )
-		Fire:SetStartSize( 1 * self.Scale/2 )
-		Fire:SetEndSize( 2 * self.Scale/2 )
+		Fire:SetStartSize( 1 * self.Scale / 2 )
+		Fire:SetEndSize( 2 * self.Scale / 2 )
 		Fire:SetRoll( math.Rand(0, 360) )
 		Fire:SetRollDelta( math.Rand(-0.2, 0.2) )
 		Fire:SetAirResistance( 100 )

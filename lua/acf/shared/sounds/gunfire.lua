@@ -1,6 +1,6 @@
 --Little desc for every value here:
 
---ACE_DefineGunFireSound( id, data )
+--ACE_DefineGunFireSound( id, data)
 
 --id	: this will be the sound patch which this content is associated to. Make sure that every id is unique so we dont have colliding data
 --data	: here we will have 3 tables, which each one will edit the sounds to be played PER distance. So we will have main sounds (those you hear normally when standing close to the gun), mid sounds and far sounds.
@@ -90,7 +90,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/7_62mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --12.7mm Machinegun gunfire
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
@@ -166,7 +166,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/12_7mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --20mm heavy machinegun gunfire.
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
@@ -247,7 +247,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_hmg_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --30mm heavy machinegun gunfire.
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
@@ -290,7 +290,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_hmg_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --20mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
@@ -345,7 +345,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/20mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --30mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
@@ -388,7 +388,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/30mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --40mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
@@ -432,7 +432,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/40mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --50mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
@@ -468,7 +468,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/50mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --75mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
@@ -505,7 +505,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/75mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --100mm Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
@@ -542,7 +542,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/100mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --120mm+ Cannon sound
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
@@ -581,7 +581,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/120mm_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --Generic Howitzer gunfire
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
@@ -619,7 +619,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/howitzer_multi.wav",
 			}
 		}
 	}
- )
+)
 
 --Generic Mortar gunfire. Ik its empty, the structure is here just to avoid recreate it in the future.
 ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
@@ -647,7 +647,7 @@ ACE_DefineGunFireSound( "weapons/ACF_Gun/mortar_new.wav",
 			}
 		}
 	}
- )
+)
 
 --Generic AT Rifle gunfire
 ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
@@ -681,7 +681,7 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/gnomefather/7mm1.wav",
 			}
 		}
 	}
- )
+)
 --[[
 --generic rotary autocannon gunfire. Broken atm
 ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
@@ -715,7 +715,7 @@ ACE_DefineGunFireSound( "weapons/acf_gun/mg_fire2.wav",
 			}
 		}
 	}
- )
+)
 ]]
 --Generic GL gunfire
 ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
@@ -743,7 +743,7 @@ ACE_DefineGunFireSound( "weapons/acf_gun/grenadelauncher.wav",
 			}
 		}
 	}
- )
+)
 
 --Generic SL gunfire
 ACE_DefineGunFireSound( "ace_weapons/multi_sound/smoke_multi.mp3",
@@ -771,7 +771,7 @@ ACE_DefineGunFireSound( "ace_weapons/multi_sound/smoke_multi.mp3",
 			}
 		}
 	}
- )
+)
 
 --Generic FGL gunfire
 ACE_DefineGunFireSound( "acf_extra/tankfx/flare_launch.wav",
@@ -799,7 +799,7 @@ ACE_DefineGunFireSound( "acf_extra/tankfx/flare_launch.wav",
 			}
 		}
 	}
- )
+)
 
 --[[
 --Test sound definition. Meant to see if the core works as intended.
@@ -852,5 +852,5 @@ ACE_DefineGunFireSound( "physics/metal/bts5_panels_impact_lg_01.wav",
 			}
 		}
 	}
- )
+)
  ]]

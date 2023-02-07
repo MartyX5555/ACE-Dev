@@ -15,7 +15,7 @@ function EFFECT:Init( data )
 	local Sound		= Gun:GetNWString( "Sound", "" )
 	local Class		= Gun:GetNWString( "Class", "C" )
 	local Caliber		= Gun:GetNWInt( "Caliber", 1 ) * 10
-	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", '50cal_muzzleflash_noscale' )
+	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", "50cal_muzzleflash_noscale" )
 
 	--This tends to fail
 	local ClassData	= ACF.Classes.GunClass[Class]
@@ -25,10 +25,8 @@ function EFFECT:Init( data )
 
 		local longbarrel	= ClassData.longbarrel or nil
 
-		if longbarrel ~= nil then
-			if Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
-				Attachment = longbarrel.newpos
-			end
+		if longbarrel ~= nil and Gun:GetBodygroup( longbarrel.index ) == longbarrel.submodel then
+			Attachment = longbarrel.newpos
 		end
 
 	end
@@ -47,7 +45,7 @@ function EFFECT:Init( data )
 
 		if Gun:WaterLevel() ~= 3 and not ClassData.nolights then
 
-			ACF_RenderLight(Gun:EntIndex(), Caliber * 75, Color(255, 128, 48), Muzzle.Pos + Muzzle.Ang:Forward() * (Caliber/5))
+			ACF_RenderLight(Gun:EntIndex(), Caliber * 75, Color(255, 128, 48), Muzzle.Pos + Muzzle.Ang:Forward() * (Caliber / 5))
 		end
 
 		if Gun.Animate then

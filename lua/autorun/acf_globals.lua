@@ -145,7 +145,7 @@ ACF.HEATMulAmmo		= 30						-- HEAT slug damage multiplier; 13.2x roughly equal t
 ACF.HEATMulFuel		= 4						-- needs less multiplier, much less health than ammo
 ACF.HEATMulEngine	= 10						-- likewise
 ACF.HEATPenLayerMul	= 0.95					-- HEAT base energy multiplier
-ACF.HEATBoomConvert	= 1/3					-- percentage of filler that creates HE damage at detonation
+ACF.HEATBoomConvert	= 1 / 3					-- percentage of filler that creates HE damage at detonation
 
 ACF.DragDiv			= 80						-- Drag fudge factor
 ACF.VelScale			= 1						-- Scale factor for the shell velocities in the game world
@@ -339,7 +339,7 @@ if CLIENT then
 end
 
 timer.Simple( 0, function()
-	for Class,Table in pairs(ACF.Classes["GunClass"]) do
+	for _, Table in pairs(ACF.Classes["GunClass"]) do
 		PrecacheParticleSystem(Table["muzzleflash"])
 	end
 end)
@@ -351,7 +351,7 @@ hook.Add( "Think", "Update ACF Internal Clock", function()
 end )
 
 
-function ACF_CVarChangeCallback(CVar, Prev, New)
+function ACF_CVarChangeCallback(CVar, _, New)
 
 	if CVar == "acf_healthmod" then
 		ACF.Threshold = 264.7 / math.max(New, 0.01)
@@ -427,7 +427,7 @@ do
 
 	local function OnInitialSpawn( ply )
 		local Table = {}
-		for k,v in pairs( ents.GetAll() ) do
+		for _, v in pairs( ents.GetAll() ) do
 			if v.ACF and v.ACF.PrHealth then
 				table.insert(Table,{ID = v:EntIndex(), Health = v.ACF.Health, v.ACF.MaxHealth})
 			end

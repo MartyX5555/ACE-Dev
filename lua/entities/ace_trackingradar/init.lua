@@ -47,8 +47,8 @@ function MakeACE_TrackingRadar(Owner, Pos, Angle, Id)
 	Radar.ACFName			= radar.name
 	Radar.ICone				= radar.viewcone	--Note: intentional. --Recorded initial cone
 	Radar.Cone				= Radar.ICone
-	Radar.InaccuracyMul		= (0.035 * (Radar.Cone/15) ^ 2) * 0.2
-	Radar.DPLRFAC			= 65-(Radar.Cone/2)
+	Radar.InaccuracyMul		= (0.035 * (Radar.Cone / 15) ^ 2) * 0.2
+	Radar.DPLRFAC			= 65-(Radar.Cone / 2)
 	Radar.ConeInducedGCTRSize	= Radar.Cone * 10
 
 	Radar.Id					= Id
@@ -98,11 +98,11 @@ function ENT:TriggerInput( inp, value )
 	if inp == "Cone" then
 		if value > 0 then
 
-			self.Cone = math.Clamp(value/2,3,45)
+			self.Cone = math.Clamp(value / 2,3,45)
 			local curTime = CurTime()
 			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
-			self.InaccuracyMul = (0.035 * (self.Cone/15) ^ 2) * 0.2	-- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
-			self.DPLRFAC = 90-(self.Cone/2)
+			self.InaccuracyMul = (0.035 * (self.Cone / 15) ^ 2) * 0.2	-- +/- 5.3% 30 deg, +/- 1.3% 3 deg, +/- 3.5% 15 deg
+			self.DPLRFAC = 90-(self.Cone / 2)
 			self.ConeInducedGCTRSize = self.Cone * 10
 		else
 			self.Cone = self.ICone
@@ -158,7 +158,7 @@ function ENT:Think()
 
 		local radID = ACE.radarIDs[self]
 		self.IsJammed = 0
-		for k, scanEnt in pairs(ACE.ECMPods) do
+		for _, scanEnt in pairs(ACE.ECMPods) do
 
 			if scanEnt.CurrentlyJamming == radID then
 				self.IsJammed = 1
@@ -174,7 +174,7 @@ function ENT:Think()
 			local ScanArray = ACE.contraptionEnts
 
 			local thisPos	= self:GetPos()
-			local thisforward	= self:GetForward()
+			--local thisforward	= self:GetForward()
 			local randinac	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using the same accuracy var for inaccuracy, what could possibly go wrong?
 			local randinac2	= Vector(math.Rand(-1,1),math.Rand(-1,1),math.Rand(-1,1))	--Using one inaccuracy was boring
 
@@ -186,13 +186,13 @@ function ENT:Think()
 			local besterr = math.huge --Hugh mungus number
 
 
-			for k, scanEnt in pairs(ScanArray) do
+			for _, scanEnt in pairs(ScanArray) do
 
 				--check if ent is valid
 				if scanEnt:IsValid() then
 
 					--skip any flare from vision
-					if scanEnt:GetClass() == 'ace_flare' then continue end
+					if scanEnt:GetClass() == "ace_flare" then continue end
 
 					--skip the tracking itself
 					if scanEnt:EntIndex() == self:EntIndex() then continue end
@@ -209,7 +209,7 @@ function ENT:Think()
 					local absang	= Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 					--Doesn't want to see through peripheral vison since its easier to focus a radar on a target front and center of an array
-					local errorFromAng = Vector(0.05 * (absang.y/self.Cone) ^ 2,0.02 * (absang.y/self.Cone) ^ 2,0.02 * (absang.p/self.Cone) ^ 2)
+					local errorFromAng = Vector(0.05 * (absang.y / self.Cone) ^ 2, 0.02 * (absang.y / self.Cone) ^ 2, 0.02 * (absang.p / self.Cone) ^ 2)
 
 					--Entity is within radar cone
 					if (absang.p < self.Cone and absang.y < self.Cone) then
@@ -239,11 +239,11 @@ function ENT:Think()
 
 							--print(Espeed)
 
-							local Dopplertest = math.min(math.abs( Espeed/math.abs(DPLR.Y)) * 100,10000)
-							local Dopplertest2 = math.min(math.abs( Espeed/math.abs(DPLR.Z)) * 100,10000)
+							local Dopplertest = math.min(math.abs(Espeed / math.abs(DPLR.Y)) * 100, 10000)
+							local Dopplertest2 = math.min(math.abs(Espeed / math.abs(DPLR.Z)) * 100, 10000)
 
 							--Also objects not coming directly towards the radar create more error.
-							local DopplerERR = (((math.abs(DPLR.y) ^ 2 + math.abs(DPLR.z) ^ 2) ^ 0.5)/velLength/2) * 0.1
+							local DopplerERR = (((math.abs(DPLR.y) ^ 2 + math.abs(DPLR.z) ^ 2) ^ 0.5) / velLength / 2) * 0.1
 
 							local GCtr = util.TraceHull( {
 
@@ -270,7 +270,7 @@ function ENT:Think()
 							--if GCdis <= 0.5 then --Get canceled by ground clutter
 
 							--Qualifies as radar target, if a target is moving towards the radar at 30 mph the radar will also classify the target
-							if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X/(Espeed + 0.0001)) > 0.3) or (GCFr >= 0.4) ) then
+							if ( (Dopplertest < self.DPLRFAC) or (Dopplertest2 < self.DPLRFAC) or (math.abs(DPLR.X) > 880) ) and ( (math.abs(DPLR.X / (Espeed + 0.0001)) > 0.3) or (GCFr >= 0.4) ) then
 								--1000 u = ~57 mph
 
 								--Could do pythagorean stuff but meh, works 98% of time
@@ -278,7 +278,7 @@ function ENT:Think()
 
 								--Sorts targets as closest to being directly in front of radar
 								if err < besterr then
-									self.ClosestToBeam = table.getn( ownArray ) + 1
+									self.ClosestToBeam = #ownArray + 1
 									besterr = err
 								end
 								--print((entpos - thisPos):Length())

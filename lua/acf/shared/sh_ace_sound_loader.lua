@@ -27,7 +27,7 @@ local TableTypes = {
 	{ Type = "Debris",		Path = "explosions/debris",			Category = { "low", "high"},							Distance = { "close" }			}
 }
 
-for k, Data in pairs(TableTypes) do
+for _, Data in pairs(TableTypes) do
 
 	ACE.Sounds[Data["Type"]] = {}
 
@@ -64,7 +64,7 @@ for k, Data in pairs(TableTypes) do
 			ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]] = ACE.Sounds[Data["Type"]][Category[Iteration]][Distance[Iteration2]] or {}
 
 
-			for i,Sound in pairs(ExSounds) do
+			for _, Sound in pairs(ExSounds) do
 
 				local Str = "acf_other/" .. Path .. "/" .. Category[Iteration] .. "/" .. Distance[Iteration2] .. "/" .. Sound	--print('Loading sound: ' .. Str)
 

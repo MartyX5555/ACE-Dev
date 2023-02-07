@@ -138,7 +138,7 @@ function ACF_GetCompatibleRacks(ammoId)
 
 	local ret = {}
 
-	for rackId, data in pairs(ACF.Weapons.Racks) do
+	for rackId in pairs(ACF.Weapons.Racks) do
 		if ACF_CanLinkRack(rackId, ammoId) then
 			ret[#ret + 1] = rackId
 		end
@@ -155,21 +155,21 @@ function ACF_GetRoundFromCVars()
 
 	local round = {}
 
-	round.Id			= GetConVarString( "acfmenu_data1" )
-	round.Type		= GetConVarString( "acfmenu_data2" )
-	round.PropLength	= GetConVarNumber( "acfmenu_data3" )
-	round.ProjLength	= GetConVarNumber( "acfmenu_data4" )
-	round.Data5		= GetConVarNumber( "acfmenu_data5" )
-	round.Data6		= GetConVarNumber( "acfmenu_data6" )
-	round.Data7		= GetConVarString( "acfmenu_data7" )
-	round.Data8		= GetConVarString( "acfmenu_data8" )
-	round.Data9		= GetConVarString( "acfmenu_data9" )
-	round.Data10		= GetConVarNumber( "acfmenu_data10" )
-	round.Data11		= GetConVarNumber( "acfmenu_data11" )
-	round.Data12		= GetConVarNumber( "acfmenu_data12" )
-	round.Data13		= GetConVarNumber( "acfmenu_data13" )
-	round.Data14		= GetConVarNumber( "acfmenu_data14" )
-	round.Data15		= GetConVarNumber( "acfmenu_data15" )
+	round.Id = GetConVar("acfmenu_data1"):GetString()
+	round.Type = GetConVar("acfmenu_data2"):GetString()
+	round.PropLength = GetConVar("acfmenu_data3"):GetFloat()
+	round.ProjLength = GetConVar("acfmenu_data4"):GetFloat()
+	round.Data5 = GetConVar("acfmenu_data5"):GetFloat()
+	round.Data6 = GetConVar("acfmenu_data6"):GetFloat()
+	round.Data7 = GetConVar("acfmenu_data7"):GetString()
+	round.Data8 = GetConVar("acfmenu_data8"):GetString()
+	round.Data9 = GetConVar("acfmenu_data9"):GetString()
+	round.Data10 = GetConVar("acfmenu_data10"):GetFloat()
+	round.Data11 = GetConVar("acfmenu_data11"):GetFloat()
+	round.Data12 = GetConVar("acfmenu_data12"):GetFloat()
+	round.Data13 = GetConVar("acfmenu_data13"):GetFloat()
+	round.Data14 = GetConVar("acfmenu_data14"):GetFloat()
+	round.Data15 = GetConVar("acfmenu_data15"):GetFloat()
 
 	return round
 

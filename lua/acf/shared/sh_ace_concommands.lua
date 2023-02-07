@@ -7,7 +7,7 @@ if SERVER then
 		if IsValid(ply) and not ply:IsAdmin() then return end
 
 		if not table.IsEmpty(ACE.Debris) then
-			for k, debris in ipairs(ACE.Debris) do
+			for _, debris in ipairs(ACE.Debris) do
 				if IsValid(debris) then
 					debris:Remove()
 				end
@@ -77,7 +77,7 @@ if SERVER then
 
 else
 
-	local function recvSmokeWind(len)
+	local function recvSmokeWind()
 		ACF.SmokeWind = net.ReadFloat()
 	end
 	net.Receive("acf_smokewind", recvSmokeWind)

@@ -96,7 +96,7 @@ do
 
 		local MeshData = ScaleData.Mesh
 		local Scale = ScaleData.Scale
-		local Size = ScaleData.Size
+		--local Size = ScaleData.Size
 		local PhysMaterial = ScaleData.Material
 
 		MeshData = self:ConvertMeshToScale( MeshData, Scale )
@@ -156,11 +156,9 @@ do -- AdvDupe2 duped parented ammo workaround
 	end
 
 	function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
-		if self.IsScalable then
-			if self.ParentIndex then
-				self.ParentEnt = CreatedEntities[self.ParentIndex]
-				self.ParentIndex = nil
-			end
+		if self.IsScalable and self.ParentIndex then
+			self.ParentEnt = CreatedEntities[self.ParentIndex]
+			self.ParentIndex = nil
 		end
 
 		BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities)

@@ -82,8 +82,8 @@ function ENT:Think()
 				self:SetPos(self:GetPos() + self:GetUp() * 10)
 				self:Remove()
 
-				local HEWeight=2
-				local Radius = (HEWeight) ^ 0.33 * 8*39.37
+				local HEWeight = 2
+				local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
 				ACF_HE( self:GetPos() , Vector(0,0,1) , HEWeight , HEWeight * 0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
 
