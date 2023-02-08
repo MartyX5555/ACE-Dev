@@ -3,7 +3,7 @@ SWEP.Base = "weapon_ace_base"
 
 if CLIENT then
 	SWEP.PrintName		= "Mine-Anti Personel"
-	SWEP.Slot		    = 4
+	SWEP.Slot			= 4
 	SWEP.SlotPos		= 3
 end
 
@@ -13,7 +13,7 @@ SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Grenades/Mines"
 
 --Visual
-SWEP.ViewModelFlip 	= false
+SWEP.ViewModelFlip	= false
 SWEP.ViewModel		= "models/weapons/v_slam.mdl"
 SWEP.WorldModel		= "models/weapons/w_slam.mdl"
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"
@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: "..self.InaccuracyAccumulation)
+--	print("Inaccuracy: " .. self.InaccuracyAccumulation)
 
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )

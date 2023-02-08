@@ -1,6 +1,6 @@
 --define the class
 ACF_defineGunClass("HW", {
-    type = "Gun",
+	type = "Gun",
 	spread = 0.3,
 	name = "Howitzer",
 	desc = ACFTranslation.GunClasses[8],
@@ -26,7 +26,7 @@ ACF_defineGun("75mmHW", { --id
 		propweight = 1.8
 	}
 } )
-	
+
 ACF_defineGun("105mmHW", {
 	name = "105mm Howitzer",
 	desc = "The 105 lobs a big shell far, and its HEAT rounds can be extremely effective against even heavier armor.",
@@ -56,7 +56,7 @@ ACF_defineGun("122mmHW", {
 		propweight = 7
 	}
 } )
-	
+
 ACF_defineGun("155mmHW", {
 	name = "155mm Howitzer",
 	desc = "The 155 is a classic heavy artillery round, with good reason.  A versatile weapon, it's found on most modern SPGs.",
@@ -71,7 +71,7 @@ ACF_defineGun("155mmHW", {
 		propweight = 13.5
 	}
 } )
-	
+
 ACF_defineGun("203mmHW", {
 	name = "203mm Howitzer",
 	desc = "An 8-inch deck gun, found on siege artillery and cruisers.",

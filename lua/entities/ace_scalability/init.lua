@@ -7,7 +7,7 @@ include("shared.lua")
 --[[
 function ENT:Initialize()
 
-	--Use the half value of the final scale lenght. To define the real lenght in the final result 
+	--Use the half value of the final scale lenght. To define the real lenght in the final result
 	--XYZ scale config should depend on what entity we are scaling, since ammos should scale as shown below, guns by caliber, fuels in the same way as ammo, etc...
 
 	local Mode = math.random(1,2)
@@ -30,9 +30,9 @@ function ENT:Initialize()
 		XScale = math.random(10,100)
 		YScale = math.random(10,100)
 		ZScale = math.random(10,100)
-	
+
 		DefaultSize = ACE.ModelData[id].DefaultSize
-		EntityScale = Vector(XScale / DefaultSize, YScale / DefaultSize, ZScale / DefaultSize) 
+		EntityScale = Vector(XScale / DefaultSize, YScale / DefaultSize, ZScale / DefaultSize)
 
 		self:SetMaterial("models/props_pipes/GutterMetal01a")
 
@@ -43,15 +43,15 @@ function ENT:Initialize()
 		local Caliber = 37--math.random(37,170)
 
 		DefaultSize = ACE.ModelData[id].DefaultSize
-		EntityScale = Vector(Caliber / DefaultSize, Caliber / DefaultSize, Caliber / DefaultSize) 
+		EntityScale = Vector(Caliber / DefaultSize, Caliber / DefaultSize, Caliber / DefaultSize)
 
 	end
 
-	ModelPath   = ACE.ModelData[id].Model
+	ModelPath	= ACE.ModelData[id].Model
 
 	self:SetModel( ModelPath ) --Make it compatible with ACF-3
 	self:PhysicsInit(SOLID_VPHYSICS)
-	self:SetMoveType( MOVETYPE_VPHYSICS )       
+	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_VPHYSICS )
 
 	self.PhysicsObj = self:GetPhysicsObject()
@@ -75,7 +75,7 @@ function ENT:Initialize()
 
 			self:ACE_SetScale( self.ScaleData )
 
-		end 
+		end
 	end
 end
 ]]
@@ -96,7 +96,7 @@ do
 
 		local MeshData = ScaleData.Mesh
 		local Scale = ScaleData.Scale
-		local Size = ScaleData.Size
+		--local Size = ScaleData.Size
 		local PhysMaterial = ScaleData.Material
 
 		MeshData = self:ConvertMeshToScale( MeshData, Scale )
@@ -114,7 +114,7 @@ do
 			Phys:Wake()
 			Phys:SetMass(1000)
 			Phys:SetMaterial( PhysMaterial )
-		end 
+		end
 
 		NetworkNewScale( self, ScaleData.Scale )
 
@@ -127,8 +127,8 @@ do
 		if not IsValid(Ent) then return end
 		if not Ent.IsScalable then return end
 
-		local ScaleData = Ent.ScaleData 
-		
+		local ScaleData = Ent.ScaleData
+
 		NetworkNewScale( Ent, ScaleData.Scale )
 
 	end)
@@ -142,12 +142,12 @@ do -- AdvDupe2 duped parented ammo workaround
 	-- Only applies for Advanced Duplicator 2
 
 	function ENT:OnDuplicated(EntTable)
-		if self.IsScalable then 
+		if self.IsScalable then
 			local DupeInfo = EntTable.BuildDupeInfo
 
 			if DupeInfo and DupeInfo.DupeParentID then
 				self.ParentIndex = DupeInfo.DupeParentID
-	
+
 				DupeInfo.DupeParentID = nil
 			end
 		end
@@ -156,19 +156,17 @@ do -- AdvDupe2 duped parented ammo workaround
 	end
 
 	function ENT:PostEntityPaste(Player, Ent, CreatedEntities)
-		if self.IsScalable then
-			if self.ParentIndex then
-				self.ParentEnt = CreatedEntities[self.ParentIndex]
-				self.ParentIndex = nil
-			end
+		if self.IsScalable and self.ParentIndex then
+			self.ParentEnt = CreatedEntities[self.ParentIndex]
+			self.ParentIndex = nil
 		end
 
 		BaseClass.PostEntityPaste(self, Player, Ent, CreatedEntities)
 	end
 
 	hook.Add("AdvDupe_FinishPasting", "ACF Parented Scalable Ent Fix", function(DupeInfo)
-		local Dupe      = unpack(DupeInfo, 1, 1)
-		local Player    = Dupe.Player
+		local Dupe	= unpack(DupeInfo, 1, 1)
+		local Player	= Dupe.Player
 		local CanParent = not IsValid(Player) or tobool(Player:GetInfo("advdupe2_paste_parents"))
 
 		if not CanParent then return end

@@ -3,7 +3,7 @@ SWEP.Base = "weapon_ace_base"
 
 if CLIENT then
 	SWEP.PrintName		= "Mine-Anti Tank"
-	SWEP.Slot		    = 4
+	SWEP.Slot			= 4
 	SWEP.SlotPos		= 3
 end
 
@@ -13,7 +13,7 @@ SWEP.SubCategory = "Grenades/Mines"
 SWEP.Spawnable		= true
 
 --Visual
-SWEP.ViewModelFlip 	= false
+SWEP.ViewModelFlip	= false
 SWEP.ViewModel		= "models/weapons/v_slam.mdl"
 SWEP.WorldModel		= "models/weapons/w_slam.mdl"
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"

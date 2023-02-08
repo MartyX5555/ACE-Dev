@@ -72,8 +72,6 @@ function ENT:Detonate()
 	local HEWeight = 4
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 
-	--ACF_HE( self:GetPos() + Vector(0,0,8) , Vector(0,0,1) , HEWeight , HEWeight*0.5 , self:GetOwner(), nil, self) --0.5 is standard antipersonal mine
-
 	self.FakeCrate = ents.Create("acf_fakecrate2")
 	self.FakeCrate:RegisterTo(self.Bulletdata)
 	self.Bulletdata["Crate"] = self.FakeCrate:EntIndex()
@@ -81,7 +79,7 @@ function ENT:Detonate()
 
 	self.Bulletdata["Flight"] = self:GetForward():GetNormalized() * self.Bulletdata["MuzzleVel"] * 39.37
 	self.Bulletdata.Pos = self:GetPos() + self:GetForward() * 2
-	self.Bulletdata.Owner = self:GetOwner()
+	self.Bulletdata.Owner = self:CPPIGetOwner()
 
 	self.CreateShell = ACF.RoundTypes[self.Bulletdata.Type].create
 	self:CreateShell( self.Bulletdata )
@@ -223,7 +221,7 @@ function ENT:ACF_Activate( Recalc )
 
 	local ForceArmour = ACF_GetGunValue(self.BulletData, "armour")
 
-	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)   --So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
+	local Armour = ForceArmour or (EmptyMass * 1000 / self.ACF.Area / 0.78)	--So we get the equivalent thickness of that prop in mm if all it's weight was a steel plate
 	local Health = self.ACF.Volume / ACF.Threshold							--Setting the threshold of the prop Area gone
 	local Percent = 1
 
@@ -231,26 +229,26 @@ function ENT:ACF_Activate( Recalc )
 		Percent = self.ACF.Health / self.ACF.MaxHealth
 	end
 
-	self.ACF.Health	 = Health * Percent
+	self.ACF.Health	= Health * Percent
 	self.ACF.MaxHealth  = Health
-	self.ACF.Armour	 = Armour * (0.5 + Percent / 2)
+	self.ACF.Armour	= Armour * (0.5 + Percent / 2)
 	self.ACF.MaxArmour  = Armour
-	self.ACF.Type	   = nil
-	self.ACF.Mass	   = self.Mass
+	self.ACF.Type	= nil
+	self.ACF.Mass	= self.Mass
 	self.ACF.Density	= (PhysObj:GetMass() * 1000) / self.ACF.Volume
-	self.ACF.Type	   = "Prop"
+	self.ACF.Type	= "Prop"
 
-	self.ACF.Material   = not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
+	self.ACF.Material	= not isstring(self.ACF.Material) and ACE.BackCompMat[self.ACF.Material] or self.ACF.Material or "RHA"
 
 end
 
 local nullhit = {Damage = 0, Overkill = 1, Loss = 0, Kill = false}
 
-function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )   --This function needs to return HitRes
+function ENT:ACF_OnDamage( Entity , Energy , FrArea , Ang , Inflictor )	--This function needs to return HitRes
 
 	if self.Detonated or self.DisableDamage then return table.Copy(nullhit) end
 
-	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Ang , Inflictor )   --Calling the standard damage prop function
+	local HitRes = ACF_PropDamage( Entity , Energy , FrArea , Ang , Inflictor )	--Calling the standard damage prop function
 
 	-- Detonate if the shot penetrates the casing.
 	HitRes.Kill = HitRes.Kill or HitRes.Overkill > 0

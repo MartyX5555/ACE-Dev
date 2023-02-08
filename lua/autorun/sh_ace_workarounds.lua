@@ -8,7 +8,7 @@ if CLIENT then
 		--Make sure that allowed seats use this override.
 		if not Vehicle.ACE_CamOverride then return end
 
-		if ( Vehicle.GetThirdPersonMode == nil || ply:GetViewEntity() != ply ) then
+		if ( Vehicle.GetThirdPersonMode == nil or ply:GetViewEntity() ~= ply ) then
 			-- This shouldn't ever happen.
 			return
 		end
@@ -16,7 +16,7 @@ if CLIENT then
 		--
 		-- If we're not in third person mode - then get outa here stalker
 		--
-		if ( !Vehicle:GetThirdPersonMode() ) then return view end
+		if ( not Vehicle:GetThirdPersonMode() ) then return view end
 
 		-- Don't roll the camera
 		-- view.angles.roll = 0
@@ -33,7 +33,7 @@ if CLIENT then
 			start = view.origin,
 			endpos = TargetOrigin,
 			mask = CONTENTS_SOLID,
-			filter = function( e ) 
+			filter = function()
 				return false
 			end,
 			mins = Vector( -WallOffset, -WallOffset, -WallOffset ),
@@ -46,7 +46,7 @@ if CLIENT then
 		--
 		-- If the trace hit something, put the camera there.
 		--
-		if ( tr.Hit && !tr.StartSolid) then
+		if ( tr.Hit and not tr.StartSolid) then
 			view.origin = view.origin + tr.HitNormal * WallOffset
 		end
 
@@ -63,7 +63,7 @@ if CLIENT then
 
 			local ply = LocalPlayer()
 			local Bool = net.ReadBool()
-			
+
 			ply.ACE_HasGodMode = Bool
 
 		end)
@@ -95,7 +95,7 @@ elseif SERVER then
 
 		--To make sure we dont fuck up something else.
 		PLAYER.DefaultGodEnable  = PLAYER.DefaultGodEnable  or PLAYER.GodEnable
-		PLAYER.DefaultGodDisable = PLAYER.DefaultGodDisable or PLAYER.GodDisable		
+		PLAYER.DefaultGodDisable = PLAYER.DefaultGodDisable or PLAYER.GodDisable
 
 		function PLAYER:GodEnable()
 
@@ -125,7 +125,7 @@ elseif SERVER then
 				SendGodStatus( value, nil )
 				return
 			else
-				for k, ply in ipairs(player.GetHumans()) do -- we dont need to send client data to bots
+				for _, ply in ipairs(player.GetHumans()) do -- we dont need to send client data to bots
 
 					SendGodStatus( ply:HasGodMode(), ply )
 

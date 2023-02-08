@@ -8,17 +8,17 @@ function ENT:Initialize()
 
 end
 
-function ENT:Draw() 
-	
+function ENT:Draw()
+
 	self:DrawModel()
-	
+
 end
 
 --Brought from ACF3. Fixes the physgun grabbing beam glitch
 function ENT:CalcAbsolutePosition() -- Faking sync
 	local PhysObj  = self:GetPhysicsObject()
 	local Position = self:GetPos()
-	local Angles   = self:GetAngles()
+	local Angles	= self:GetAngles()
 
 	if IsValid(PhysObj) then
 		PhysObj:SetPos(Position)
@@ -34,8 +34,8 @@ end
 local function BuildFakePhysics( entity )
 
 	entity:PhysicsInit(SOLID_VPHYSICS)
-    entity:SetMoveType( MOVETYPE_VPHYSICS )       
-    entity:SetSolid( SOLID_VPHYSICS )
+	entity:SetMoveType( MOVETYPE_VPHYSICS )
+	entity:SetSolid( SOLID_VPHYSICS )
 
 	local PhysObj = entity:GetPhysicsObject()
 
@@ -51,8 +51,8 @@ local ModelData = ACE.ModelData
 --Creates the real physic object for the scalable.
 local function BuildRealPhysics( entity, Scale )
 
-	local Model 		= entity:GetModel()
-	local Mesh 			= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
+	local Model		= entity:GetModel()
+	local Mesh			= ModelData[Model].CustomMesh or entity.PhysicsObj:GetMeshConvexes()
 	local PhysMaterial  = ModelData[Model].physMaterial or ""
 
 	if entity.ConvertMeshToScale then
@@ -76,13 +76,13 @@ end
 
 net.Receive("ACE_Scalable_Network", function()
 
-	local x = net.ReadFloat() 
-	local y = net.ReadFloat() 
-	local z = net.ReadFloat() 
+	local x = net.ReadFloat()
+	local y = net.ReadFloat()
+	local z = net.ReadFloat()
 
 	local entity = net.ReadEntity()
 
-	if IsValid(entity) then 
+	if IsValid(entity) then
 
 		BuildFakePhysics( entity )
 
@@ -90,7 +90,7 @@ net.Receive("ACE_Scalable_Network", function()
 		entity.Matrix = Matrix()
 		entity.Matrix:Scale(Scale)
 		entity:EnableMatrix("RenderMultiply", entity.Matrix)
-	
+
 		BuildRealPhysics( entity, Scale )
 
 	end
@@ -103,7 +103,7 @@ do -- Dealing with visual clip's bullshit
 
 		if Type == "RenderMultiply" and self.Matrix then
 			local Current = self.Matrix:GetScale()
-			local Scale   = Value:GetScale()
+			local Scale	= Value:GetScale()
 
 			-- Visual clip provides a scale of 0, 0, 0
 			-- So we just update it with our actual scale
