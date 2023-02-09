@@ -869,7 +869,7 @@ do
 
 	if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
 
-		local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Lenght"], 1 )
+		local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
 		local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
 		local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
@@ -907,7 +907,7 @@ do
 		acfmenupanel.AmmoPanelConfig["ExpandedCatNew"] = true
 		acfmenupanel.AmmoPanelConfig["ExpandedCatOld"] = false
 		acfmenupanel.AmmoPanelConfig["LegacyAmmos"]	= false
-		acfmenupanel.AmmoPanelConfig["Crate_Lenght"]  = 10
+		acfmenupanel.AmmoPanelConfig["Crate_Length"]  = 10
 		acfmenupanel.AmmoPanelConfig["Crate_Width"]	= 10
 		acfmenupanel.AmmoPanelConfig["Crate_Height"]  = 10
 
@@ -961,19 +961,19 @@ do
 
 		acfmenupanel:CPanelText("Crate_desc_new", "\nAdjust the dimensions for your crate. In inches.", nil, CrateNewPanel)
 
-		local LenghtSlider = vgui.Create( "DNumSlider" )
-		LenghtSlider:SetText( "Lenght" )
-		LenghtSlider:SetDark( true )
-		LenghtSlider:SetMin( 10 )
-		LenghtSlider:SetMax( MaxCrateSize )
-		LenghtSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Lenght"] or 10 )
-		LenghtSlider:SetDecimals( 1 )
+		local LengthSlider = vgui.Create( "DNumSlider" )
+		LengthSlider:SetText( "Length" )
+		LengthSlider:SetDark( true )
+		LengthSlider:SetMin( 10 )
+		LengthSlider:SetMax( MaxCrateSize )
+		LengthSlider:SetValue( acfmenupanel.AmmoPanelConfig["Crate_Length"] or 10 )
+		LengthSlider:SetDecimals( 1 )
 
-		function LenghtSlider:OnValueChanged( value )
-			acfmenupanel.AmmoPanelConfig["Crate_Lenght"] = value
+		function LengthSlider:OnValueChanged( value )
+			acfmenupanel.AmmoPanelConfig["Crate_Length"] = value
 			CreateIdForCrate( MainPanel )
 		end
-		CrateNewPanel:AddItem(LenghtSlider)
+		CrateNewPanel:AddItem(LengthSlider)
 
 		local WidthSlider = vgui.Create( "DNumSlider" )
 		WidthSlider:SetText( "Width" )
