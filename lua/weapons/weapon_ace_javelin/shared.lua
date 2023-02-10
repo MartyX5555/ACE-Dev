@@ -23,6 +23,8 @@ SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for sho
 SWEP.TrackSound = "acf_extra/airfx/caution2.wav"
 SWEP.LockSound = "acf_extra/ACE/BF3/MissileLock/LockedStinger.wav"
 
+SWEP.DirectFireDist = 125 * 39.37
+
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 
@@ -403,7 +405,10 @@ function SWEP:PrimaryAttack()
 
 		if ( IsValid( ent ) ) then
 			ent:SetPos(owner:GetShootPos() + owner:GetAimVector() * 0 + Vector(0, 0, 0))
-			ent:SetAngles(owner:GetAimVector():Angle() + Angle(-5, 0, 0))
+
+			local targetDist = self.TarEnt:GetPos():Distance(owner:GetShootPos())
+			local topAttack = targetDist > self.DirectFireDist
+			ent:SetAngles(owner:GetAimVector():Angle() + Angle(topAttack and -20 or -5, 0, 0))
 
 			ent:Spawn()
 			ent:SetOwner(Gun)
@@ -421,12 +426,11 @@ function SWEP:PrimaryAttack()
 			ent.Bulletdata = self.BulletData
 			ent.LeadMul = 2
 			ent.IsJavelin = true
+			ent.DirectFireDist = self.DirectFireDist
+			ent.TopAttack = topAttack
 
 			ent:SetOwner(owner)
-
-			if CPPI then
-				ent:CPPISetOwner(Entity(0))
-			end
+			ent:CPPISetOwner(owner)
 		end
 
 		self:EmitSound(self.Primary.Sound)

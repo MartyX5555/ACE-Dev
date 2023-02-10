@@ -591,10 +591,6 @@ function ENT:AddMissile()
 
 	missile.ContrapId = ACF_Check( self ) and self.ACF.ContraptionId or 1
 
-	if CPPI then
-		missile:CPPISetOwner(ply)
-	end
-
 	local BulletData = ACFM_CompactBulletData(Crate)
 	BulletData.IsShortForm  = true
 	BulletData.Owner		= ply

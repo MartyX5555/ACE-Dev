@@ -66,7 +66,7 @@ function ENT:Detonate()
 
 	self.Exploded = true
 	ACF_ActiveMissiles[self] = nil
-	self.FuseTime = -1
+
 	self:Remove()
 
 	local HEWeight = 4
@@ -159,10 +159,9 @@ function ENT:Think()
 		local TPos = (self.tarent:GetPos() + GetRootVelocity(self.tarent) * travelTime * (self.LeadMul or 1))
 
 		if self.IsJavelin then
-			-- Increase attack angle with distance, or, if within 125 meters (~5000 units), direct attack
-			-- If past 125 meters, increase attack angle by 1 degree every 800 units (~20 meters) up to a maximum of 30 degrees
-			-- Ends up being slightly more than 30 degrees at maximum range because the missile takes time to turn downwards to its descent
-			if self.StartDist > 5000 and math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - 5000) / 800, 0, 30) then
+			-- Angle of attack increases with distance if we're in top attack mode, because the missile needs time to turn
+			-- Start at 15 degrees, max at 30 degrees, increase by 1 degree every 200 units
+			if self.TopAttack and math.deg(math.acos(distXY / dist)) < math.Clamp((self.StartDist - self.DirectFireDist) / 200 + 15, 15, 30) then
 				self.HeightOffset = Vector(0, 0, self.StartDist / 2)
 			else
 				self.HeightOffset = Vector()
