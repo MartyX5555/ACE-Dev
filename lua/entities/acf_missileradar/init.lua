@@ -251,7 +251,7 @@ function ENT:ScanForMissiles()
 
 		entArray[i] = missile
 		posArray[i] = missile.CurPos
-		velArray[i] = missile.LastVel
+		velArray[i] = missile.TrueVel or missile.LastVel
 
 		local curSqr = thisPos:DistToSqr(missile.CurPos)
 

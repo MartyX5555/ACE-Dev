@@ -352,6 +352,7 @@ function ENT:CalcFlight()
 
 	end
 
+	self.TrueVel = (EndPos - Pos) / DeltaTime
 	self.LastVel	= Vel
 	self.LastPos	= Pos
 	self.CurPos	= EndPos
@@ -559,6 +560,7 @@ function ENT:Think()
 			self.FirstThink = false
 			self.LastThink  = Time - self.ThinkDelay
 			self.LastVel	= self.Launcher.acfphysparent:GetVelocity() * self.ThinkDelay
+			self.TrueVel = self.Launcher.acfphysparent:GetVelocity()
 		end
 
 		self:CalcFlight()
