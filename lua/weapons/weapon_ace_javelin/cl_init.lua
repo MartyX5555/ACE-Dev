@@ -99,7 +99,7 @@ function SWEP:DoDrawCrosshair(x, y)
 		local d = VectorPos - owner:GetPos()
 		local range = d:Length()
 
-		if range < 125 * 39.37 or d.z > 400 then
+		if range < self.DirectFireDist then
 			surface.SetDrawColor(0, 60, 0, 255)
 			surface.DrawOutlinedRect(x - rectSize + 630, y - rectSize - 270, rectSize * 2, rectSize * 2, 7)
 			surface.SetDrawColor(255, 0, 0, 255)

@@ -27,10 +27,12 @@ function ENT:Initialize()
 
 	--Radar stuff
 	self.ThinkDelay		= 1 / 66
-	self.LastVel			= Vector(0,0,0)
+	self.LastVel		= Vector(0,0,0)
 	self.CurPos			= self:GetPos()
-	self.DeltaPos			= self.CurPos
+	self.LastPos		= self.CurPos
 	ACF_ActiveMissiles[self] = true
+
+	self.LastRun = 0
 
 	--Missile stuff
 	self.KillTime			= CurTime() + 20
@@ -126,9 +128,11 @@ function ENT:Think()
 		end
 
 		self.CurPos = self:GetPos()
-		self.LastVel = (self.DeltaPos - self.CurPos) -- * self.ThinkDelay
 
-		self.DeltaPos = self:GetPos()
+		local dT = CurTime() - self.LastRun
+		self.LastRun = CurTime()
+		self.LastVel = (self.LastPos - self.CurPos) / dT
+		self.LastPos = self:GetPos()
 
 		self:NextThink( CurTime() + 0,0151 )
 		return true

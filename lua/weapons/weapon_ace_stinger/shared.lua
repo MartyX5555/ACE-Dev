@@ -378,11 +378,9 @@ function SWEP:PrimaryAttack()
 			ent.LeadMul = 2
 
 			ent:SetOwner(owner)
-
-			if CPPI then
-				ent:CPPISetOwner(owner)
-			end
+			ent:CPPISetOwner(owner)
 		end
+
 		self:EmitSound(self.Primary.Sound)
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 		self:GetOwner():SetAnimation(PLAYER_ATTACK1)
