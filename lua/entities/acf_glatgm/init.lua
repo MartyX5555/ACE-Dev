@@ -131,7 +131,7 @@ function ENT:Think()
 
 		local dT = CurTime() - self.LastRun
 		self.LastRun = CurTime()
-		self.LastVel = (self.LastPos - self.CurPos) / dT
+		self.LastVel = (self.CurPos - self.LastPos) / dT
 		self.LastPos = self:GetPos()
 
 		self:NextThink( CurTime() + 0,0151 )
