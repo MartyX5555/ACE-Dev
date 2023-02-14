@@ -1235,7 +1235,7 @@ function PANEL:AmmoCheckbox(Name, Title, Desc, Tooltip )
 
 		bval = bval and 1 or 0 -- converting to number since booleans sucks in this duty
 
-		acfmenupanel.AmmoData[Name] = tonumber(bval) print(isstring(acfmenupanel.AmmoData[Name]))
+		acfmenupanel.AmmoData[Name] = tonumber(bval) --print(isstring(acfmenupanel.AmmoData[Name]))
 
 		self:UpdateAttribs()
 
