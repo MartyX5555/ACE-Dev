@@ -1010,7 +1010,7 @@ do
 	do
 
 		acfmenupanel:CPanelText("Crate_desc_legacy", "\nChoose a crate in the legacy way. Remember to enable the checkbox below to do so.", nil, CrateOldPanel)
-		acfmenupanel:CPanelText("Crate_desc_legacy2", "DISCLAIMER: These crates could appear to fit more ammo, however, they don't. Don't trust on these crates anymore.", nil, CrateOldPanel)
+		acfmenupanel:CPanelText("Crate_desc_legacy2", "DISCLAIMER: These crates may not represent real sizes or values. Don't trust on these crates!", nil, CrateOldPanel)
 
 		local LegacyCheck = vgui.Create( "DCheckBoxLabel" ) -- Create the checkbox
 		LegacyCheck:SetPos( 25, 50 )							-- Set the position
