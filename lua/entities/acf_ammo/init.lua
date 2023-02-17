@@ -194,11 +194,12 @@ do
 	local function VerifyScale( Scale )
 		if not isvector( Scale ) then return end
 
+		local MinSize = ACF.CrateMinimumSize
 		local MaxSize = ACF.CrateMaximumSize
 
-		Scale.x = math.Clamp( math.Round(Scale.x, 1) ,10,MaxSize)
-		Scale.y = math.Clamp( math.Round(Scale.y, 1) ,10,MaxSize)
-		Scale.z = math.Clamp( math.Round(Scale.z, 1) ,10,MaxSize)
+		Scale.x = math.Clamp( math.Round(Scale.x, 1), MinSize, MaxSize)
+		Scale.y = math.Clamp( math.Round(Scale.y, 1), MinSize, MaxSize)
+		Scale.z = math.Clamp( math.Round(Scale.z, 1), MinSize, MaxSize)
 
 		return Scale
 	end
