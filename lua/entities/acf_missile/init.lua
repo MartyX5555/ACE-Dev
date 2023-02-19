@@ -499,7 +499,7 @@ function ENT:ConfigureFlight()
 	self.DragCoefFlight = Round.dragcoefflight or Round.dragcoef
 	self.MinimumSpeed	= Round.minspeed
 
-	self.FinMultiplier  = Round.finmul
+	self.FinMultiplier  = Round.finmul print(Round.finmul)
 	self.Agility		= GunData.agility or 1
 	self.guidanceInac	= GunData.guidanceInac or 0
 	self.CurPos		= BulletData.Pos
