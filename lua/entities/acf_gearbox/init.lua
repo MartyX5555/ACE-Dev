@@ -800,15 +800,15 @@ function ENT:Link( Target )
 	local Inertia	= ( Axis * Phys:GetInertia() ):Length()
 
 	local Link = {
-		Ent		= Target,
+		Ent			= Target,
 		Side		= Side,
 		Axis		= Axis,
-		Inertia	= Inertia,
+		Inertia		= Inertia,
 		Rope		= Rope,
-		RopeLen	= ( OutPosWorld - InPosWorld ):Length(),
-		Output	= OutPos,
-		ReqTq	= 0,
-		Vel		= 0
+		RopeLen		= ( OutPosWorld - InPosWorld ):Length(),
+		Output		= OutPos,
+		ReqTq		= 0,
+		Vel			= 0
 	}
 	table.insert( self.WheelLink, Link )
 

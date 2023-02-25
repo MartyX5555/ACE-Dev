@@ -770,10 +770,10 @@ function ENT:Link( Target )
 	end
 
 	local Link = {
-		Ent = Target,
-		Rope = Rope,
+		Ent 	= Target,
+		Rope 	= Rope,
 		RopeLen = ( OutPos - InPos ):Length(),
-		ReqTq = 0
+		ReqTq 	= 0
 	}
 
 	table.insert( self.GearLink, Link )
