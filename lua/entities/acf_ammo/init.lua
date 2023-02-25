@@ -212,14 +212,48 @@ do
 		return Scale
 	end
 
-	function MakeACF_Ammo(Owner, Pos, Angle, Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+	-- ACF3 compatibility! Not perfect due to how calcs are done. Better than nothing though
+	local function RetrieveData( Data )
+
+		Data = Data or {}
+
+		--ACF3 has separated this value. So we need to remerge it again. Note this could lead to invalid Ids due to scalable guns
+		if Data.Weapon and Data.Caliber then
+			Data.RoundId = Data.Caliber .. "mm" .. Data.Weapon
+		end
+
+		-- This consists on 3 values to retrieve from.
+		-- In this order: ACE tool or ACE or ACF3. The first is when you spawn the ammo via tool, the second is when its spawned via duplicator. The last tries to get data from ACF3
+		Data.Id 				= Data.id 		or Data.Id 					or Data.Size
+		Data.RoundId 			= Data.data1 	or Data.RoundId 		 	or nil
+		Data.RoundType 			= Data.data2 	or Data.RoundType 			or Data.AmmoType
+		Data.RoundPropellant 	= Data.data3 	or Data.RoundPropellant 	or Data.Propellant
+		Data.RoundProjectile 	= Data.data4 	or Data.RoundProjectile 	or Data.Projectile
+		Data.RoundData5 		= Data.data5 	or Data.RoundData5 			or Data.FillerRatio
+		Data.RoundData6 		= Data.data6 	or Data.RoundData6 			or nil
+		Data.RoundData7 		= Data.data7 	or Data.RoundData7 			or nil
+		Data.RoundData8 		= Data.data8 	or Data.RoundData8 			or nil
+		Data.RoundData9 		= Data.data9 	or Data.RoundData9 			or nil
+		Data.RoundData10 		= Data.data10 	or Data.RoundData10 		or Data.Tracer
+		Data.RoundData11		= Data.data11 	or Data.RoundData11 		or nil
+		Data.RoundData12		= Data.data12 	or Data.RoundData12 		or nil
+		Data.RoundData13		= Data.data13 	or Data.RoundData13 		or nil
+		Data.RoundData14		= Data.data14 	or Data.RoundData14 		or nil
+		Data.RoundData15		= Data.data15 	or Data.RoundData15 		or nil
+
+		return Data
+	end
+
+	function MakeACF_Ammo(Owner, Pos, Angle, Data )
 
 		if not Owner:CheckLimit("_acf_ammo") then return false end
 
 		local Ammo = ents.Create("acf_ammo")
-
 		if IsValid(Ammo) then
 
+			Data = RetrieveData( Data )
+
+			local Id = Data.Id
 			local Model
 			local Weight
 			local Dimensions
@@ -296,7 +330,7 @@ do
 			Ammo.Model = Model
 			Ammo.Dimensions = Dimensions
 
-			Ammo:CreateAmmo(Id, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, Data13, Data14, Data15)
+			Ammo:CreateAmmo( Data )
 
 			Ammo.Ammo	= Ammo.Capacity
 			Ammo.EmptyMass  = Weight or 1
@@ -314,55 +348,64 @@ do
 			return Ammo
 		end
 	end
-end
-
-list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
-duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" , "RoundData11", "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
 
 
-function ENT:Update( ArgsTable )
+	list.Set( "ACFCvars", "acf_ammo", {"id", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9", "data10", "data11", "data12", "data13", "data14", "data15"} )
+	duplicator.RegisterEntityClass("acf_ammo", MakeACF_Ammo, "Pos", "Angle", "Data", "Id", "RoundId", "RoundType", "RoundPropellant", "RoundProjectile", "RoundData5", "RoundData6", "RoundData7", "RoundData8", "RoundData9", "RoundData10" , "RoundData11", "RoundData12", "RoundData13", "RoundData14", "RoundData15" )
 
-	-- That table is the player data, as sorted in the ACFCvars above, with player who shot,
-	-- and pos and angle of the tool trace inserted at the start
 
-	local msg = "Ammo crate updated successfully!"
+	function ENT:Update( ArgsTable )
 
-	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
-		return false, "You don't own that ammo crate!"
-	end
+		-- That table is the player data, as sorted in the ACFCvars above, with player who shot,
+		-- and pos and angle of the tool trace inserted at the start
+		-- The data has index 4 instead of 3 due to player being inserted at start of the table
 
-	if ArgsTable[6] == "Refill" then -- Argtable[6] is the round type. If it's refill it shouldn't be loaded into guns, so we refuse to change to it
-		return false, "Refill ammo type is only avaliable for new crates!"
-	end
+		local msg = "Ammo crate updated successfully!"
 
-	if ArgsTable[5] ~= self.RoundId then -- Argtable[5] is the weapon ID the new ammo loads into
-		for _, Gun in pairs( self.Master ) do
-			if IsValid( Gun ) then
-				Gun:Unlink( self )
+		local Ply = ArgsTable[1]
+		local RoundId = ArgsTable[4]["data1"]
+		local RoundType = ArgsTable[4]["data2"]
+
+		if not self:CPPICanTool(Ply) then -- Check if hes the owner
+			return false, "You don't own that ammo crate!"
+		end
+
+		if RoundType == "Refill" then -- If it's refill it shouldn't be loaded into guns, so we refuse to change to it
+			return false, "Refill ammo type is only avaliable for new crates!"
+		end
+
+		if RoundId ~= self.RoundId then -- RoundId is the weapon ID the new ammo loads into
+			for _, Gun in pairs( self.Master ) do
+				if IsValid( Gun ) then
+					Gun:Unlink( self )
+				end
+			end
+			msg = "New ammo type loaded, crate unlinked."
+		else -- ammotype wasn't changed, but let's check if new roundtype is blacklisted
+			local Blacklist = ACF.AmmoBlacklist[ RoundType ] or {}
+
+			for _, Gun in pairs( self.Master ) do
+				if IsValid( Gun ) and table.HasValue( Blacklist, Gun.Class ) then
+					Gun:Unlink( self )
+					msg = "New round type cannot be used with linked gun, crate unlinked."
+				end
 			end
 		end
-		msg = "New ammo type loaded, crate unlinked."
-	else -- ammotype wasn't changed, but let's check if new roundtype is blacklisted
-		local Blacklist = ACF.AmmoBlacklist[ ArgsTable[6] ] or {}
 
-		for _, Gun in pairs( self.Master ) do
-			if IsValid( Gun ) and table.HasValue( Blacklist, Gun.Class ) then
-				Gun:Unlink( self )
-				msg = "New round type cannot be used with linked gun, crate unlinked."
-			end
-		end
+		local AmmoPercent = self.Ammo / math.max(self.Capacity,1)
+
+		local Data = RetrieveData( ArgsTable[4] )
+
+		self:CreateAmmo( Data )
+
+		self.Ammo = math.floor(self.Capacity * AmmoPercent)
+
+		self.LastMass = 1 -- force update of mass
+		self:UpdateMass()
+
+		return true, msg
+
 	end
-
-	local AmmoPercent = self.Ammo / math.max(self.Capacity,1)
-
-	self:CreateAmmo(ArgsTable[4], ArgsTable[5], ArgsTable[6], ArgsTable[7], ArgsTable[8], ArgsTable[9], ArgsTable[10], ArgsTable[11], ArgsTable[12], ArgsTable[13], ArgsTable[14], ArgsTable[15], ArgsTable[16], ArgsTable[17], ArgsTable[18], ArgsTable[19])
-
-	self.Ammo = math.floor(self.Capacity * AmmoPercent)
-
-	self.LastMass = 1 -- force update of mass
-	self:UpdateMass()
-
-	return true, msg
 
 end
 
@@ -423,13 +466,13 @@ do
 	local BackComp = {
 		["20mmHRAC"]		= "20mmRAC",
 		["30mmHRAC"]		= "30mmRAC",
-		["105mmSB"]		= "100mmSBC",
-		["120mmSB"]		= "120mmSBC",
-		["140mmSB"]		= "140mmSBC",
-		["170mmSB"]		= "170mmSBC",
+		["105mmSB"]			= "100mmSBC",
+		["120mmSB"]			= "120mmSBC",
+		["140mmSB"]			= "140mmSBC",
+		["170mmSB"]			= "170mmSBC",
 		["70mmFFARDAGR"]	= "70mmFFAR",
-		["9M113 ASM"]	= "9M133 ASM",
-		["9M311"]		= "9M311 SAM",
+		["9M113 ASM"]		= "9M133 ASM",
+		["9M311"]			= "9M311 SAM",
 		["SIMBAD-RC SAM"]	= "Mistral SAM"
 	}
 
@@ -439,36 +482,36 @@ do
 		["APFSDSS"]		= "APFSDS"
 	}
 
-	function ENT:CreateAmmo(_, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10 , Data11 , Data12 , Data13 , Data14 , Data15)
+	function ENT:CreateAmmo( Data )
 
-		if not ACE_CheckGun( Data1 ) then
-			Data1 = BackComp[Data1] or "100mmC"
+		if not ACE_CheckGun( Data.RoundId ) then
+			Data.RoundId = BackComp[Data.RoundId] or "100mmC"
 		end
-		if not ACE_CheckRound( Data2 ) then
-			Data2 = AmmoComp[ Data2 ] or "AP"
+		if not ACE_CheckRound( Data.RoundType ) then
+			Data.RoundType = AmmoComp[ Data.RoundType ] or "AP"
 		end
 
 		--For some reason, removing this will also break several things with missile code. bad
-		self.RoundId			= Data1
-		self.RoundType		= Data2							-- Type of round, IE AP, HE, HEAT ...
-		self.RoundPropellant	= Data3					or 0	-- Lenght of propellant
-		self.RoundProjectile	= Data4					or 0	-- Lenght of the projectile
-		self.RoundData5		= Data5					or 0
-		self.RoundData6		= Data6					or 0
-		self.RoundData7		= Data7					or 0
-		self.RoundData8		= Data8					or 0
-		self.RoundData9		= Data9					or 0
-		self.RoundData10		= tonumber(Data10)		or 0 -- Tracer. For some reason, both Data10 and Data are sent as strings. Needs to review this.
-		self.RoundData11		= tonumber(Data11)		or 0 -- Two Piece check
-		self.RoundData12		= Data12					or 0
-		self.RoundData13		= Data13					or 0
-		self.RoundData14		= Data14					or 0
-		self.RoundData15		= Data15					or 0
+		self.RoundId			= Data.RoundId
+		self.RoundType			= Data.RoundType							-- Type of round, IE AP, HE, HEAT ...
+		self.RoundPropellant	= Data.RoundPropellant				or 0	-- Lenght of propellant
+		self.RoundProjectile	= Data.RoundProjectile				or 0	-- Lenght of the projectile
+		self.RoundData5			= Data.RoundData5					or 0
+		self.RoundData6			= Data.RoundData6					or 0
+		self.RoundData7			= Data.RoundData7					or 0
+		self.RoundData8			= Data.RoundData8					or 0
+		self.RoundData9			= Data.RoundData9					or 0
+		self.RoundData10		= tonumber(Data.RoundData10)		or 0 -- Tracer. For some reason, both Data10 and Data are sent as strings. Needs to review this.
+		self.RoundData11		= tonumber(Data.RoundData11)		or 0 -- Two Piece check
+		self.RoundData12		= Data.RoundData12					or 0
+		self.RoundData13		= Data.RoundData13					or 0
+		self.RoundData14		= Data.RoundData14					or 0
+		self.RoundData15		= Data.RoundData15					or 0
 
 
 		local PlayerData = {}	--what a mess
-		PlayerData.Id		= self.RoundId
-		PlayerData.Type		= self.RoundType
+		PlayerData.Id			= self.RoundId
+		PlayerData.Type			= self.RoundType
 		PlayerData.PropLength	= self.RoundPropellant
 		PlayerData.ProjLength	= self.RoundProjectile
 		PlayerData.Data5		= self.RoundData5
@@ -476,12 +519,12 @@ do
 		PlayerData.Data7		= self.RoundData7
 		PlayerData.Data8		= self.RoundData8
 		PlayerData.Data9		= self.RoundData9
-		PlayerData.Tracer	= self.RoundData10
-		PlayerData.TwoPiece	= self.RoundData11
-		PlayerData.Data12	= self.RoundData12
-		PlayerData.Data13	= self.RoundData13
-		PlayerData.Data14	= self.RoundData14
-		PlayerData.Data15	= self.RoundData15
+		PlayerData.Tracer		= self.RoundData10
+		PlayerData.TwoPiece		= self.RoundData11
+		PlayerData.Data12		= self.RoundData12
+		PlayerData.Data13		= self.RoundData13
+		PlayerData.Data14		= self.RoundData14
+		PlayerData.Data15		= self.RoundData15
 
 		self.ConvertData		= ACF.RoundTypes[self.RoundType].convert
 		self.BulletData		= self:ConvertData( PlayerData )

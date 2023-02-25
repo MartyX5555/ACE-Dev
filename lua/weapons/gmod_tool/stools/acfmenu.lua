@@ -83,8 +83,9 @@ function TOOL:LeftClick( trace )
 	if DupeClass then
 
 		local ArgTable = {}
-		ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
 		ArgTable[1] = trace.HitPos + trace.HitNormal * 50
+		ArgTable[2] = trace.HitNormal:Angle():Up():Angle()
+		ArgTable[3] = {} --Empty table. Intentional
 
 		debugoverlay.Cross(trace.HitPos, 5, 5, Color(255,0,0), true)
 		debugoverlay.Cross(ArgTable[1], 5, 5, Color(255,0,0), true)
@@ -92,8 +93,8 @@ function TOOL:LeftClick( trace )
 		local ArgList = list.Get("ACFCvars")
 
 		-- Reading the list packaged with the ent to see what client CVar it needs
-		for Number, Key in pairs( ArgList[entClass] ) do
-			ArgTable[ Number + 2 ] = self:GetClientInfo( Key )
+		for _, Key in pairs( ArgList[entClass] ) do
+			ArgTable[3][Key] = self:GetClientInfo( Key )
 		end
 
 		if trace.Entity:GetClass() == entClass and trace.Entity.CanUpdate then
@@ -104,9 +105,6 @@ function TOOL:LeftClick( trace )
 			-- Using the Duplicator entity register to find the right factory function
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
-
-			--PrintTable(DupeClass)
-			--PrintTable(ArgTable)
 
 			Ent:Activate()
 			Ent:DropToFloor()
