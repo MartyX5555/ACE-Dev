@@ -695,7 +695,7 @@ do
 
 	-- make sure the angle is not excessive
 	function ENT:Checkdriveshaft( NextEnt )
-			
+		
 		local InPos = NextEnt:LocalToWorld( NextEnt.In ) 	--gearbox to connect to engine
 		local OutPos = self:LocalToWorld( self.Out ) 		--the engine output
 

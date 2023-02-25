@@ -728,10 +728,8 @@ do
 		local InPosWorld = NextEnt:LocalToWorld( InPos )
 
 		local OutPos	= self.OutR
-		local Side	= 1
 		if self:WorldToLocal( InPosWorld ).y < 0 then
 			OutPos  = self.OutL
-			Side	= 0
 		end
 		local OutPosWorld = self:LocalToWorld( OutPos )
 
