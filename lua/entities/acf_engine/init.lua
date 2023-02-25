@@ -685,6 +685,7 @@ function ENT:CheckFuel()
 end
 
 do
+	--[[
 	--HARDCODED. USE MODELDEFINITION INSTEAD
 	local TransAxialGearboxes = {
 		["models/engines/transaxial_l.mdl"] = true,
@@ -692,10 +693,10 @@ do
 		["models/engines/transaxial_s.mdl"] = true,
 		["models/engines/transaxial_t.mdl"] = true --mhm acf extras invading...
 	}
+	]]
 
 	-- make sure the angle is not excessive
 	function ENT:Checkdriveshaft( NextEnt )
-		
 		local InPos = NextEnt:LocalToWorld( NextEnt.In ) 	--gearbox to connect to engine
 		local OutPos = self:LocalToWorld( self.Out ) 		--the engine output
 
@@ -706,7 +707,8 @@ do
 		--Check if the link is right from engine's perspective
 		if DrvAngle < MaxAngle then
 			return false
-		else
+		--else
+			--[[ --Disabled since this could break several builds. When we have more junctions, this could be enforced.
 			--Now, do the same, but from gearbox's perspective this time.
 			Direction 	= TransAxialGearboxes[ NextEnt:GetModel() ] and -NextEnt:GetForward() or -NextEnt:GetRight()
 			DrvAngle 	= ( InPos - OutPos ):GetNormalized():Dot( Direction )
@@ -714,6 +716,7 @@ do
 			if DrvAngle < MaxAngle then
 				return false
 			end
+			]]
 		end
 
 		return true
