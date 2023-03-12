@@ -91,7 +91,7 @@ function SWEP:ThrowNade(power, heightoffset)
 		ent:GetPhysicsObject():ApplyForceCenter(aim * power + owner:GetVelocity() * ent:GetPhysicsObject():GetMass())
 		ent:SetOwner(owner)
 		if CPPI then
-			ent:CPPISetOwner(Entity(0))
+			ent:CPPISetOwner( Entity(0) )
 		end
 	end)
 end
