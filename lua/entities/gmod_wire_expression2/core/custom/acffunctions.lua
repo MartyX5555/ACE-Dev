@@ -36,6 +36,17 @@ local function isFuel(ent)
 	if (ent:GetClass() == "acf_fueltank") then return true else return false end
 end
 
+local radarTypes = {
+	acf_missileradar = true,
+	ace_irst = true,
+	ace_trackingradar = true,
+}
+
+local function isRadar(ent)
+	if not validPhysics(ent) then return false end
+	return radarTypes[ent:GetClass()]
+end
+
 local function reloadTime(ent)
 	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
 	return ent.MagReload
@@ -660,6 +671,13 @@ e2function number entity:acfFireRate()
 	return math.Round(this.RateOfFire or 0,3)
 end
 
+-- Sets the rate of fire limit of an acf gun
+e2function void entity:acfSetROFLimit( number rate )
+	if not isGun(this) then return end
+	if not isOwner(self, this) then return end
+	this:TriggerInput("ROFLimit", rate)
+end
+
 -- Returns the number of rounds left in a magazine for an ACF gun
 e2function number entity:acfMagRounds()
 	if not isGun(this) then return 0 end
@@ -1064,3 +1082,58 @@ e2function number entity:acfPeakFuelUse()
 end
 
 
+-- [ Radar Functions ] --
+
+__e2setcost(10)
+
+-- Returns a table containing the outputs you'd get from an ACF radar
+e2function table entity:acfRadarData()
+	local ret = E2Lib.newE2Table()
+
+	if not isRadar(this) then return ret end
+	if restrictInfo(self, this) then return ret end
+	local radarType = this:GetClass()
+
+	ret.s.Detected = this.OutputData.Detected
+	ret.stypes.Detected = "n"
+
+	ret.s.Position = table.Copy(this.OutputData.Position)
+	ret.stypes.Position = "r"
+
+	if radarType == "acf_missileradar" then
+		ret.s.ClosestDistance = this.OutputData.ClosestDistance
+		ret.stypes.ClosestDistance = "n"
+
+		ret.s.Entities = table.Copy(this.OutputData.Entities)
+		ret.stypes.Entities = "r"
+
+		ret.s.Velocity = table.Copy(this.OutputData.Velocity)
+		ret.stypes.Velocity = "r"
+
+		ret.size = 5
+	elseif radarType == "ace_trackingradar" or "ace_irst" then
+		ret.s.Owner = table.Copy(this.OutputData.Owner)
+		ret.stypes.Owner = "r"
+
+		ret.s.ClosestToBeam = this.OutputData.ClosestToBeam
+		ret.stypes.ClosestToBeam = "n"
+
+		if radarType == "ace_trackingradar" then
+			ret.s.Velocity = table.Copy(this.OutputData.Velocity)
+			ret.stypes.Velocity = "r"
+
+			ret.s.IsJammed = this.OutputData.IsJammed
+			ret.stypes.IsJammed = "n"
+		elseif radarType == "ace_irst" then
+			ret.s.Angle = table.Copy(this.OutputData.Angle)
+			ret.stypes.Angle = "r"
+
+			ret.s.EffHeat = table.Copy(this.OutputData.EffHeat)
+			ret.stypes.EffHeat = "r"
+		end
+
+		ret.size = 6
+	end
+
+	return ret
+end

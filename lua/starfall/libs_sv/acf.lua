@@ -64,6 +64,17 @@ local function isFuel ( ent )
 	if ( ent:GetClass() == "acf_fueltank" ) then return true else return false end
 end
 
+local radarTypes = {
+	acf_missileradar = true,
+	ace_irst = true,
+	ace_trackingradar = true,
+}
+
+local function isRadar(ent)
+	if not validPhysics(ent) then return false end
+	return radarTypes[ent:GetClass()]
+end
+
 local function reloadTime( ent )
 	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
 	return ent.MagReload
@@ -1851,6 +1862,22 @@ function ents_methods:acfFire ( fire )
 	this:TriggerInput( "Fire", fire )
 end
 
+--- Sets the ROF limit of an ACF weapon
+-- @server
+-- @param number rate The rate of fire limit
+function ents_methods:acfSetROFLimit ( rate )
+	checktype( self, ents_metatable )
+	checkluatype( rate, TYPE_NUMBER )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+	checkpermission( instance, this, "entities.acf" )
+
+	if not isGun( this ) then return end
+
+	this:TriggerInput( "ROFLimit", rate )
+end
+
 --- Causes an ACF weapon to unload
 -- @server
 function ents_methods:acfUnload ()
@@ -2446,6 +2473,48 @@ function ents_methods:acfPeakFuelUse ()
 		Consumption = 60 * this.FuelUse / ACF.FuelDensity[ fuel ]
 	end
 	return math.Round( Consumption, 3 )
+end
+
+
+-- [ Radar Functions ] --
+
+
+--- Returns a table containing the outputs you'd get from an ACF tracking radar, missile radar, or IRST
+-- @server
+-- @return table The radar data - check radar wire outputs for key names
+function ents_methods:acfRadarData()
+	checktype( self, ents_metatable )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+	if not isRadar(this) then SF.Throw("Entity is not a radar", 2) end
+
+	local data = {}
+	local radarType = this:GetClass()
+
+	if restrictInfo( this ) then return data end
+
+	data.Detected = this.OutputData.Detected
+	data.Position = table.Copy(this.OutputData.Position)
+
+	if radarType == "acf_missileradar" then
+		data.ClosestDistance = this.OutputData.ClosestDistance
+		data.Entities = instance.Sanitize(table.Copy(this.OutputData.Entities))
+		data.Velocity = table.Copy(this.OutputData.Velocity)
+	elseif radarType == "ace_trackingradar" or "ace_irst" then
+		data.Owner = instance.Sanitize(table.Copy(this.OutputData.Owner))
+		data.ClosestToBeam = this.OutputData.ClosestToBeam
+
+		if radarType == "ace_trackingradar" then
+			data.Velocity = table.Copy(this.OutputData.Velocity)
+			data.IsJammed = this.OutputData.IsJammed
+		elseif radarType == "ace_irst" then
+			data.Angle = table.Copy(this.OutputData.Angle)
+			data.EffHeat = this.OutputData.EffHeat
+		end
+	end
+
+	return data
 end
 
 end
