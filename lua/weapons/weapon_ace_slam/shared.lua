@@ -194,7 +194,6 @@ function SWEP:PrimaryAttack()
 				ent:SetAngles( (owner:GetShootPos() - tracepos):Angle() + Angle(90, 0, 0) )
 				--ent:SetAngles(hitNormal:Angle() + Angle(90, 0, 0))
 				ent:Spawn()
-				ent:SetOwner( owner )
 				ent.Bulletdata = self.BulletData
 				owner:AddCleanup( "aceexplosives", ent )
 
@@ -206,6 +205,7 @@ function SWEP:PrimaryAttack()
 					ent:SetParent(traceEnt)
 				end
 
+				ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
 				ent.ExplosionDelay = self:GetExplosionDelay()
 			end
 

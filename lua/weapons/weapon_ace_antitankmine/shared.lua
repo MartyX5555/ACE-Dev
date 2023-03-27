@@ -92,12 +92,12 @@ function SWEP:PrimaryAttack()
 			ent:SetAngles( owner:EyeAngles() )
 			ent:Spawn()
 			ent:SetVelocity( Forward * 10 )
-			ent:SetOwner( owner )
 			owner:AddCleanup( "aceexplosives", ent )
 
 			if CPPI then
 				ent:CPPISetOwner( Entity(0) )
 			end
+			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
 		end
 	end
 

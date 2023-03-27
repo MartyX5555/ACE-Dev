@@ -97,7 +97,7 @@ function ENT:Think()
 		self.LastTime = CurTime()
 
 		if self.FuseTime < 0 then
-			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self, nil, self) --0.5 is standard antipersonal mine
+			ACF_HE( self:GetPos() , Vector(0,0,1) , 5 , 0.1 , self.DamageOwner, nil, self) --0.5 is standard antipersonal mine
 
 			local Flash = EffectData()
 				Flash:SetOrigin( self:GetPos() - self:GetUp() * 6 )

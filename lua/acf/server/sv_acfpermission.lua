@@ -471,15 +471,8 @@ function this.CanDamage(_, Entity, _, _, _, Inflictor, _, _)
 	end
 
 	if not (IsValid(Inflictor) and Inflictor:IsPlayer()) then
-
-		local subInflictor = Inflictor:GetOwner()
-
-		if subInflictor:IsPlayer() then
-			Inflictor = subInflictor
-		else
-			if this.DefaultCanDamage then return
-			else return this.DefaultCanDamage end
-		end
+		if this.DefaultCanDamage then return
+		else return this.DefaultCanDamage end
 	end
 
 	return this.DamagePermission(owner, Inflictor, Entity)
