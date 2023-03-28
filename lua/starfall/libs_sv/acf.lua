@@ -1371,6 +1371,19 @@ function ents_methods:acfSetThrottle ( throttle )
 	this:TriggerInput( "Throttle", throttle )
 end
 
+--- Gets the fuel remaining for an ACF engine
+-- @server
+-- @return number The fuel remaining, in litres or kilowatt-hours
+function ents_methods:acfFuelRemaining ()
+	checktype( self, ents_metatable )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+
+	if not isEngine( this ) then return 0 end
+	if restrictInfo( this ) then return 0 end
+	return this.TotalFuel or 0
+end
 
 -- [ Gearbox Functions ] --
 
