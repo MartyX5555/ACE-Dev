@@ -35,6 +35,7 @@ E2Helper.Descriptions["acfPower"] = "Returns the current power (in kW) of an ACF
 E2Helper.Descriptions["acfInPowerband"] = "Returns 1 if the ACF engine RPM is inside the powerband."
 E2Helper.Descriptions["acfThrottle(e:)"] = "Gets throttle (0-100) for an ACF engine."
 E2Helper.Descriptions["acfThrottle(e:n)"] = "Sets throttle (0-100) for an ACF engine."
+E2Helper.Descriptions["acfFuelRemaining"] = "Returns the amount of fuel remaining for an ACF engine, in litres or kilowatt-hours."
 
 --gearbox
 E2Helper.Descriptions["acfGear"] = "Returns the current gear of an ACF gearbox."

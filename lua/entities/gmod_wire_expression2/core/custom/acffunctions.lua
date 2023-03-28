@@ -401,6 +401,13 @@ e2function number entity:acfThrottle()
 	return (this.Throttle or 0) * 100
 end
 
+-- Returns the total fuel remaining for an ACF engine
+e2function number entity:acfFuelRemaining()
+	if not isEngine(this) then return 0 end
+	if restrictInfo(self, this) then return 0 end
+	return this.TotalFuel or 0
+end
+
 __e2setcost( 5 )
 
 -- Sets the throttle value for an ACF engine
