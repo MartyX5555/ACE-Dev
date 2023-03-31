@@ -1438,7 +1438,7 @@ function ents_methods:acfFinalRatio ()
 
 	if not isGearbox( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
-	return this.GearTable[ "Final" ] or 0
+	return tonumber(this.GearTable[ "Final" ]) or 0
 end
 
 --- Returns the total ratio (current gear * final) for an ACF gearbox
@@ -1524,7 +1524,7 @@ function ents_methods:acfGearRatio ( gear )
 	if not isGearbox( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local g = math.Clamp( math.floor( gear ), 1, this.Gears )
-	return this.GearTable[ g ] or 0
+	return tonumber(this.GearTable[ g ]) or 0
 end
 
 --- Returns the current torque output for an ACF gearbox

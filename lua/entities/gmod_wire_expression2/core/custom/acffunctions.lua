@@ -446,7 +446,7 @@ end
 e2function number entity:acfFinalRatio()
 	if not isGearbox(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
-	return this.GearTable["Final"] or 0
+	return tonumber(this.GearTable["Final"]) or 0
 end
 
 -- Returns the total ratio (current gear * final) for an ACF gearbox
@@ -489,7 +489,7 @@ e2function number entity:acfGearRatio( number gear )
 	if not isGearbox(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	local g = math.Clamp(math.floor(gear),1,this.Gears)
-	return this.GearTable[g] or 0
+	return tonumber(this.GearTable[g]) or 0
 end
 
 -- Returns the current torque output for an ACF gearbox
