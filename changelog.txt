@@ -623,7 +623,7 @@ r100
 - added break sounds for gearbox connections
 
 *r157
-- Added new e2/SF functions: ent:acfRadarData(), ent:acfSetROFLimit() & ent:acfFuelRemaining()
+- Added new e2/SF functions: ent:acfRadarData(), ent:acfSetROFLimit() & ent:acfFuelRemaining() Courtesy of cheezus
 - Fixed mines/grenade not doing damage.
 - Potential fix for ropes not acting rigid once relinked.
 - Updated the wiesel
