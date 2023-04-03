@@ -626,3 +626,4 @@ r100
 - Added new e2/SF functions: ent:acfRadarData(), ent:acfSetROFLimit() & ent:acfFuelRemaining()
 - Fixed mines/grenade not doing damage.
 - Potential fix for ropes not acting rigid once relinked.
+- Updated the wiesel
