@@ -16,31 +16,31 @@ ACE.Debris		= {}	--Debris count
 --list of classname ents which should be added to the contraption ents.
 local AllowedEnts = {
 
-	[ "acf_rack" ]				= true,
+	[ "acf_rack" ]					= true,
 	[ "prop_vehicle_prisoner_pod" ] = true,
-	[ "ace_crewseat_gunner" ]	= true,
-	[ "ace_crewseat_loader" ]	= true,
-	[ "ace_crewseat_driver" ]	= true,
-	[ "ace_rwr_dir" ]			= true,
+	[ "ace_crewseat_gunner" ]		= true,
+	[ "ace_crewseat_loader" ]		= true,
+	[ "ace_crewseat_driver" ]		= true,
+	[ "ace_rwr_dir" ]				= true,
 	[ "ace_rwr_sphere" ]			= true,
-	[ "acf_missileradar" ]		= true,
-	[ "acf_opticalcomputer" ]	= true,
-	[ "gmod_wire_expression2" ]	= true,
+	[ "acf_missileradar" ]			= true,
+	[ "acf_opticalcomputer" ]		= true,
+	[ "gmod_wire_expression2" ]		= true,
 	[ "gmod_wire_gate" ]			= true,
-	[ "prop_physics" ]			= true,
-	[ "ace_ecm" ]				= true,
-	[ "ace_trackingradar" ]		= true,
-	[ "ace_irst" ]				= true,
-	[ "acf_gun" ]				= true,
-	[ "acf_ammo" ]				= true,
+	[ "prop_physics" ]				= true,
+	[ "ace_ecm" ]					= true,
+	[ "ace_trackingradar" ]			= true,
+	[ "ace_irst" ]					= true,
+	[ "acf_gun" ]					= true,
+	[ "acf_ammo" ]					= true,
 	[ "acf_engine" ]				= true,
-	[ "acf_fueltank" ]			= true,
-	[ "acf_gearbox" ]			= true,
-	[ "primitive_shape" ]		= true,
-	[ "primitive_airfoil" ]		= true,
-	[ "primitive_rail_slider" ]	= true,
-	[ "primitive_slider" ]		= true,
-	[ "primitive_ladder" ]		= true
+	[ "acf_fueltank" ]				= true,
+	[ "acf_gearbox" ]				= true,
+	[ "primitive_shape" ]			= true,
+	[ "primitive_airfoil" ]			= true,
+	[ "primitive_rail_slider" ]		= true,
+	[ "primitive_slider" ]			= true,
+	[ "primitive_ladder" ]			= true
 
 }
 
@@ -54,10 +54,10 @@ ACE.ExplosiveEnts = {
 
 -- whitelist for things that can be turned into debris
 ACF.Debris = {
-	["acf_gun"]					= true,
+	["acf_gun"]						= true,
 	["acf_rack"]					= true,
-	["acf_gearbox"]				= true,
-	["acf_engine"]				= true,
+	["acf_gearbox"]					= true,
+	["acf_engine"]					= true,
 	["prop_physics"]				= true,
 	["prop_vehicle_prisoner_pod"]	= true
 }
