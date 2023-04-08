@@ -3,7 +3,7 @@ ACF.BulletEffect = {}
 
 function ACF_ManageBulletEffects()
 
-	if ACF.BulletEffect and table.Count(ACF.BulletEffect) > 0 then
+	if next(ACF.BulletEffect) then
 
 		for Index,Bullet in pairs(ACF.BulletEffect) do
 			ACF_SimBulletFlight( Bullet, Index )			--This is the bullet entry in the table, the omnipresent Index var refers to this

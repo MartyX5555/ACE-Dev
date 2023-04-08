@@ -65,7 +65,7 @@ end
 ]]--------------------------------------------------------------------------------------------------
 function ACF_ManageBullets()
 
-	if table.Count(ACF.Bullet) > 0 then
+	if next(ACF.Bullet) then
 
 		for Index,Bullet in pairs(ACF.Bullet) do
 			if not Bullet.HandlesOwnIteration then
