@@ -15,6 +15,26 @@ if CLIENT then
 	language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
 end
 
+if CLIENT then
+
+	TOOL.Information = {
+
+		{ name = "left", icon = "gui/lmb.png" },
+		{ name = "right", icon = "gui/rmb.png" },
+		{ name = "reload", icon = "gui/r.png" },
+
+	}
+
+	language.Add( "Tool.acfsound.name", ACFTranslation.SoundToolText[1] )
+	language.Add( "Tool.acfsound.desc", ACFTranslation.SoundToolText[2] )
+	--language.Add( "Tool.acfsound.0", ACFTranslation.SoundToolText[3] )
+
+	language.Add( "Tool.acfsound.left", "Apply the new sound. You can use empty sounds too." )
+	language.Add( "Tool.acfsound.right", "Copy the sound." )
+	language.Add( "Tool.acfsound.reload", "Reset to default sound." )
+
+end
+
 local GunClasses = ACF.Classes.GunClass
 local GunTable = ACF.Weapons.Guns
 
