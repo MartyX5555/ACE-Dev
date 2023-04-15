@@ -326,10 +326,16 @@ if CLIENT then
 
 	function spawnmenu.ActivateTool( tool, bool_menu, ... )
 
-		local curMode = LocalPlayer():GetTool().Mode or ""
+		local CurTool = LocalPlayer():GetTool()
 
-		if tool == "wire_soundemitter" and curMode == "acfsound" then
-			tool = curMode
+		if CurTool and CurTool.Mode then
+
+			local CurMode = isstring(CurTool.Mode) and CurTool.Mode or ""
+
+			if tool == "wire_soundemitter" and CurMode == "acfsound" then
+				tool = CurMode
+			end
+
 		end
 
 		spawnmenu.ActivateToolLegacy( tool, bool_menu, ... )
