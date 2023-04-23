@@ -631,5 +631,5 @@ r100
 *r158
 - Improved ACE Sound Replacer Tool.
 - Added button to invert final drive during the gear config.
-- Optimized flying bullets. Fixed some bugs relate to it.
+- Optimized flying bullets. Fixed some bugs related to it.
 - Fixed some bugs/errors with scalable ents.
