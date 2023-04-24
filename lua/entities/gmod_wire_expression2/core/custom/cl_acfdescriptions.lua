@@ -66,7 +66,7 @@ E2Helper.Descriptions["acfShiftPointScale"] = "Sets the shift point scale for an
 E2Helper.Descriptions["acfIsReloading"] = "Returns 1 if an ACF weapon is reloading."
 E2Helper.Descriptions["acfReady"] = "Returns 1 if an ACF weapon is ready to fire."
 E2Helper.Descriptions["acfMagSize"] = "Returns the magazine capacity of an ACF weapon."
-E2Helper.Descriptions["acfMagfReloadTime"] = "Returns time it takes for an ACF weapon to reload magazine."
+E2Helper.Descriptions["acfMagReloadTime"] = "Returns time it takes for an ACF weapon to reload magazine."
 E2Helper.Descriptions["acfReloadTime"] = "Returns time to next shot of an ACF weapon."
 E2Helper.Descriptions["acfReloadProgress"] = "Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars."
 E2Helper.Descriptions["acfSpread"] = "Returns the spread of an ACF weapon."
@@ -89,7 +89,7 @@ E2Helper.Descriptions["acfProjectileMass"] = "Returns the mass of the projectile
 E2Helper.Descriptions["acfFLSpikes"] = "Returns the number of projectiles in a flechette round."
 E2Helper.Descriptions["acfFLSpikeRadius"] = "Returns the radius (in mm) of the spikes in a flechette round."
 E2Helper.Descriptions["acfFLSpikeMass"] = "Returns the mass of a single spike in a FL round in a crate or gun."
-E2Helper.Descriptions["acfPenetration"] = "Returns the penetration of an AP, APHE, HEAT or FL round in an ACF ammo crate or weapon."
+E2Helper.Descriptions["acfPenetration"] = "Returns the penetration of an ACF ammo crate or a weapon. Doesn't work with glatgm yet."
 E2Helper.Descriptions["acfBlastRadius"] = "Returns the blast radius of an HE, APHE, or HEAT round in an ACF ammo crate or weapon."
 E2Helper.Descriptions["acfDragCoef"] = "Returns the drag coefficient of ammo in an ACF ammo crate or weapon."
 

@@ -755,6 +755,8 @@ end
 
 -- [ Ammo Functions ] --
 
+local KE_Ammo = {"AP", "APC", "APBC", "APCBC", "APHE", "APHECBC", "APDS", "APFSDS", "HVAP"}
+local CHE_Ammo = {"HEAT", "HEATFS", "THEAT", "THEATFS"}
 
 __e2setcost( 1 )
 
@@ -841,39 +843,63 @@ e2function number entity:acfDragCoef()
 end
 
 __e2setcost( 5 )
-
--- Returns the penetration of an AP, APHE, or HEAT round
-e2function number entity:acfPenetration()
+-- Returns the penetration of an ACF ammo crate or a weapon.
+e2function number entity:acfPenetration() --todo: glatgm
 	if not (isAmmo(this) or isGun(this)) then return 0 end
 	if restrictInfo(self, this) then return 0 end
+
 	local Type = this.BulletData["Type"] or ""
-	local Energy
-	if Type == "AP" or Type == "APHE" then
+	local Energy, PenArea
+
+	if table.HasValue(KE_Ammo, Type) then
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
-		return math.Round((Energy.Penetration/this.BulletData["PenArea"]) * ACF.KEtoRHA,3)
-	elseif Type == "HEAT" then
-		local Crushed, HEATFillerMass, BoomFillerMass = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
-		if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
-		Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass ) * 39.37, this.BulletData["SlugMass"], 9999999 )
-		return math.floor((Energy.Penetration/this.BulletData["SlugPenArea"]) * ACF.KEtoRHA,3)
+		PenArea = this.BulletData["PenArea"]
+
+	elseif table.HasValue(CHE_Ammo, Type) then
+		if Type ~= "THEAT" and Type ~= "THEATFS" then
+			Energy = ACF_Kinetic( this.BulletData["SlugMV"] * 39.37, this.BulletData["SlugMass"] )
+			PenArea = this.BulletData["SlugPenArea"]
+		else -- THEAT and THEATFS logic
+			Energy = { -- energy is a table :/
+				Kinetic = 0,
+				Momentum = 0,
+				Penetration = 0
+			  }
+			  local Energy_First = ACF_Kinetic(this.BulletData["SlugMV"] * 39.37, this.BulletData["SlugMass"])
+			  local Energy_Second = ACF_Kinetic(this.BulletData["SlugMV2"] * 39.37, this.BulletData["SlugMass2"])
+
+			  for k, v in pairs(Energy_First) do --summing variables in table
+				Energy[k] = Energy_First[k] + Energy_Second[k]
+			  end
+			  PenArea = this.BulletData["SlugPenArea"]
+		end
+
 	elseif Type == "FL" then
 		Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
-		return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"]) * ACF.KEtoRHA, 3)
+		PenArea = this.BulletData["FlechettePenArea"]
+	elseif Type == "HESH" then
+		return math.floor(this.BulletData["FillerMass"] / 1501 * 4 * ACF.HEPower)
+	else
+		return 0
 	end
-	return 0
+
+	return math.Round((Energy.Penetration/PenArea) * ACF.KEtoRHA, 3)
 end
 
--- Returns the blast radius of an HE, APHE, or HEAT round
-e2function number entity:acfBlastRadius()
+-- Returns the blast radius of an explosive round, besides glatgm
+e2function number entity:acfBlastRadius() --todo: glatgm
 	if not (isAmmo(this) or isGun(this)) then return 0 end
 	if restrictInfo(self, this) then return 0 end
+
 	local Type = this.BulletData["Type"] or ""
-	if Type == "HE" or Type == "APHE" then
-		return math.Round(this.BulletData["FillerMass"] ^ 0.33 * 8,3)
-	elseif Type == "HEAT" then
-		return math.Round((this.BulletData["FillerMass"]/3) ^ 0.33 * 8,3)
+
+	if Type == "HE" or Type == "HEFS" or "HESH" or Type == "APHE" or Type == "APHECBC" then
+		return math.Round(this.BulletData["FillerMass"] ^ 0.33 * 8, 3)
+	elseif table.HasValue(CHE_Ammo, Type) then
+		return math.Round((this.BulletData["FillerMass"] /3 ) ^ 0.33 * 8, 3)
+	else
+		return 0
 	end
-	return 0
 end
 
 
@@ -894,7 +920,7 @@ e2function number entity:acfPropHealth()
 	if not validPhysics(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not ACF_Check(this) then return 0 end
-	return math.Round(this.ACF.Health or 0,3)
+	return math.Round(this.ACF.Health or 0, 3)
 end
 
 -- Returns the current armor of an entity
@@ -902,7 +928,7 @@ e2function number entity:acfPropArmor()
 	if not validPhysics(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not ACF_Check(this) then return 0 end
-	return math.Round(this.ACF.Armour or 0,3)
+	return math.Round(this.ACF.Armour or 0, 3)
 end
 
 -- Returns the max health of an entity
@@ -910,7 +936,7 @@ e2function number entity:acfPropHealthMax()
 	if not validPhysics(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not ACF_Check(this) then return 0 end
-	return math.Round(this.ACF.MaxHealth or 0,3)
+	return math.Round(this.ACF.MaxHealth or 0, 3)
 end
 
 -- Returns the max armor of an entity
@@ -918,7 +944,7 @@ e2function number entity:acfPropArmorMax()
 	if not validPhysics(this) then return 0 end
 	if restrictInfo(self, this) then return 0 end
 	if not ACF_Check(this) then return 0 end
-	return math.Round(this.ACF.MaxArmour or 0,3)
+	return math.Round(this.ACF.MaxArmour or 0, 3)
 end
 
 -- Returns the ductility of an entity
@@ -934,7 +960,7 @@ e2function number ranger:acfEffectiveArmor()
 	if not (this and validPhysics(this.Entity)) then return 0 end
 	if restrictInfo(self, this.Entity) then return 0 end
 	if not ACF_Check(this.Entity) then return 0 end
-	return math.Round(this.Entity.ACF.Armour/math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))),1)
+	return math.Round(this.Entity.ACF.Armour / math.abs( math.cos(math.rad(ACF_GetHitAngle( this.HitNormal , this.HitPos-this.StartPos )))), 1)
 end
 
 -- Returns the material of an entity.
