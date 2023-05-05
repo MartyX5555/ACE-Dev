@@ -271,7 +271,7 @@ end
 
 	Note:
 	- folder name must be ONE word (acecool, myaddon, tankpack, etc). It cannot have spaces!!!
-	- you dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
+	- your dupe name can have spaces, however, they must be '_' for the file. The loader will automatically change that symbol to spaces.
 
 	Correct way examples:
 
@@ -282,70 +282,82 @@ end
 
 do
 
-	local file_name
-	local file_directory
-	local main_directory = "advdupe2/"
 
-	local Dupes		= {}
-	local dupefiles	= {}
+	if CLIENT then
 
-	local fileIndex	= "acedupe"
+		concommand.Add( "acf_dupes_remount", function()
+			if file.Exists("acf/ace_dupespawn.txt", "DATA") then
 
-	function ACE_Dupes_Refresh()
+				file.Delete("acf/ace_dupespawn.txt")
+				ACE_Dupes_Refresh()
+			end
+		end )
 
-		Dupes = file.Find("scripts/vehicles/*.txt", "GAME")
+		function ACE_Dupes_Refresh()
 
-		if not Dupes then return end
+			local files = file.Find("scripts/vehicles/acedupe_*.txt", "GAME")
 
-		dupefiles = {}
+			if files then
 
-		for i, Result in ipairs(Dupes) do
+				local file_naming = {}
 
-			local Id = string.Explode("_", Result)
-			if Id[1] ~= fileIndex then continue end
+				local file_name
+				local file_directory
+				local file_exists
+				local cfile_size
+				local nfile_size
 
-			file_name = table.concat( Id, " ", 3)
-			file_name = string.Replace( file_name, ".txt", "" )
+				for _, txtfile in ipairs(files) do
 
-			dupefiles[i] = Result --Catching desired files
-			file_content = file.Read("scripts/vehicles/" .. dupefiles[i], "GAME")
+					file_content   = file.Read("scripts/vehicles/" .. txtfile, "GAME")
+					file_naming    = string.Explode("_", txtfile)
+					file_name      = table.concat( file_naming, " ", 3) -- Parses the file name
+					file_name      = string.Replace( file_name, ".txt", "" )
 
-			file_directory = main_directory .. "ace " .. Id[2]
-			local fileExists = file.Exists( file_directory .. "/" .. file_name .. ".txt", "DATA")
+					file_directory   = "advdupe2/ace " .. file_naming[2]
+					file_exists      = file.Exists( file_directory .. "/" .. file_name .. ".txt", "DATA")
 
-			if not fileExists then
+					if not file_exists then
 
-				--print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
+						local dupespawned = file.Exists("acf/ace_dupespawn.txt", "DATA")
 
-				file.CreateDir(file_directory)
-				file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
+						if not dupespawned then
 
+							file.CreateDir(file_directory)
+							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
 
-			else
-				--Idea: bring the analyzer from the internet instead of locally?
+							file.Write("acf/ace_dupespawn.txt", "This means, dupe loader will not populate the dupes if they were removed.")
 
-				local CFile_Size = file.Size(file_directory .. "/" .. file_name .. ".txt", "DATA")
-				local NFile_Size = file.Size("scripts/vehicles/" .. dupefiles[i], "GAME")
+							--print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
+						end
+					else
+						--Idea: bring the analyzer from the internet instead of locally?
 
-				if NFile_Size > 0 and CFile_Size ~= NFile_Size then
+						cfile_size = file.Size(file_directory .. "/" .. file_name .. ".txt", "DATA")
+						nfile_size = file.Size("scripts/vehicles/" .. txtfile, "GAME")
 
-					--print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
+						if nfile_size > 0 and cfile_size ~= nfile_size then
 
-					file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
+							--print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
 
+							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
+
+						end
+					end
 				end
-
 			end
 
 		end
 
-	end
+		timer.Simple(1,function()
+			ACE_Dupes_Refresh()
+		end)
 
+	end
 end
 
 timer.Simple(1, function()
 	ACF_UpdateChecking()
-	ACE_Dupes_Refresh()
 end )
 
 
