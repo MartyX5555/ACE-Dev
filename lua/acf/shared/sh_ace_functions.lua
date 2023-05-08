@@ -304,8 +304,7 @@ do
 				local file_name
 				local file_directory
 				local file_exists
-				local cfile_size
-				local nfile_size
+				local cfile_content
 
 				for _, txtfile in ipairs(files) do
 
@@ -332,13 +331,11 @@ do
 						end
 					else
 						--Idea: bring the analyzer from the internet instead of locally?
+						cfile_content = file.Read(file_directory .. "/" .. file_name .. ".txt", "DATA")
 
-						cfile_size = file.Size(file_directory .. "/" .. file_name .. ".txt", "DATA")
-						nfile_size = file.Size("scripts/vehicles/" .. txtfile, "GAME")
+						if util.SHA256(cfile_content) ~= util.SHA256(file_content) then
 
-						if nfile_size > 0 and cfile_size ~= nfile_size then
-
-							--print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
+							print("[ACE|INFO]- your dupe " .. file_name .. " is different/outdated! Updating....")
 
 							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
 
