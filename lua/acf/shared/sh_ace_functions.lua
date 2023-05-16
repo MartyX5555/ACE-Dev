@@ -286,8 +286,15 @@ do
 	if CLIENT then
 
 		concommand.Add( "acf_dupes_remount", function()
+
+			if not AdvDupe2 then
+				notification.AddLegacy( "Unable to reload the dupes.", NOTIFY_ERROR, 7)
+				return
+			end
+
 			if file.Exists("acf/ace_dupespawn.txt", "DATA") then
 
+				notification.AddLegacy( "Dupe files were reloaded!", NOTIFY_GENERIC, 7)
 				file.Delete("acf/ace_dupespawn.txt")
 				ACE_Dupes_Refresh()
 			end
@@ -305,10 +312,11 @@ do
 				local file_directory
 				local file_exists
 				local cfile_content
+				local dupespawned = file.Exists("acf/ace_dupespawn.txt", "DATA")
 
 				for _, txtfile in ipairs(files) do
 
-					file_content   = file.Read("scripts/vehicles/" .. txtfile, "GAME")
+					file_content   = file.Read("scripts/vehicles/" .. txtfile, "GAME") or ""
 					file_naming    = string.Explode("_", txtfile)
 					file_name      = table.concat( file_naming, " ", 3) -- Parses the file name
 					file_name      = string.Replace( file_name, ".txt", "" )
@@ -318,20 +326,15 @@ do
 
 					if not file_exists then
 
-						local dupespawned = file.Exists("acf/ace_dupespawn.txt", "DATA")
-
 						if not dupespawned then
-
 							file.CreateDir(file_directory)
 							file.Write(file_directory .. "/" .. file_name .. ".txt", file_content)
 
-							file.Write("acf/ace_dupespawn.txt", "This means, dupe loader will not populate the dupes if they were removed.")
-
-							--print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
+							print( "[ACE|INFO]- Creating dupe '" .. file_name .. "'' in " .. file_directory )
 						end
 					else
 						--Idea: bring the analyzer from the internet instead of locally?
-						cfile_content = file.Read(file_directory .. "/" .. file_name .. ".txt", "DATA")
+						cfile_content = file.Read(file_directory .. "/" .. file_name .. ".txt", "DATA") or ""
 
 						if util.SHA256(cfile_content) ~= util.SHA256(file_content) then
 
@@ -342,11 +345,19 @@ do
 						end
 					end
 				end
-			end
 
+				if not dupespawned then
+					file.Write("acf/ace_dupespawn.txt", "This means, dupe loader will not populate the dupes if they were removed.")
+				end
+			end
 		end
 
 		timer.Simple(1,function()
+			--Why do we need to create useless files if the user has not the advdupe2 in the first place.
+			if not AdvDupe2 then
+				return
+			end
+
 			ACE_Dupes_Refresh()
 		end)
 
