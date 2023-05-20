@@ -426,9 +426,9 @@ do
 			local Retry = ACF_BulletPropImpact( Index, Bullet, FlightRes.Entity , FlightRes.HitNormal , FlightRes.HitPos , FlightRes.HitGroup )
 
 			--don't process ACF.TraceFilter ents
-			--if ACF.TraceFilter[FlightRes.Entity:GetClass()] and Retry == "Penetrated" then
-			--	Retry = false
-			--end
+			if ACF.TraceFilter[FlightRes.Entity:GetClass()] and Retry == "Penetrated" then
+				Retry = false
+			end
 
 			--If we should do the same trace again, then do so
 			ACE_PerformHitResolution(Index, Bullet, FlightRes, Retry, "propimpact")
