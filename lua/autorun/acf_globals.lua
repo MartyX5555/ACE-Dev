@@ -1,4 +1,4 @@
-ACF = {}
+ACF = ACF or {}
 
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
@@ -10,7 +10,7 @@ ACF.Year = 2023			-- Current Year
 
 print("[ACE | INFO]- loading ACE. . .")
 
-ACE               = {}
+ACE               = ACE or {}
 ACE.ArmorTypes    = {}
 
 ACF.Weapons       = {}
@@ -156,7 +156,8 @@ ACF.TraceFilter       = {		-- entities that cause issue with acf and should be n
 
 	prop_vehicle_crane   = true,
 	prop_dynamic         = true,
-	npc_strider          = true
+	npc_strider          = true,
+	worldspawn           = true, --The worldspawn in infinite maps is fake. Since the IsWorld function will not do something to avoid this case, that i will put it here.
 
 }
 
