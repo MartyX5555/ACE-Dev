@@ -52,7 +52,7 @@ end
 
 function tellPlyAboutZones(ply, zone)
 	if perms.DamagePermission ~= modepermission then return end
-	ply:SendLua("chat.AddText(Color(" .. (zone and "0,255,0" or "255,0,0") .. "),\"You have entered the " .. (zone and zone .. " safezone." or "battlefield!") .. "\")")
+	ACE_SendMsg(ply, zone and Color(0, 255, 0) or Color(255, 0, 0), "You have entered the " .. (zone and zone .. " safezone." or "battlefield!"))
 end
 hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAboutZones)
 
