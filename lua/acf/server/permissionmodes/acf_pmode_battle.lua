@@ -35,14 +35,17 @@ local ShouldDisableNoclip = false
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ----]]
-local function modepermission(_, attacker, ent)
+local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
 
 	if szs then
 		local entpos = ent:GetPos()
 		local attpos = attacker:GetPos()
+		local ownerid = owner:SteamID()
+		local attackerid = attacker:SteamID()
+		local ownerperms = perms.GetDamagePermissions(ownerid)
 
-		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) then return false end
+		if (perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos)) and not ownerperms[attackerid] then return false end
 	end
 
 	return true
