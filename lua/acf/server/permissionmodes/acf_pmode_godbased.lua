@@ -7,7 +7,7 @@
 if not ACF or not ACF.Permissions or not ACF.Permissions.RegisterMode then error("ACF: Tried to load the " .. modename .. " permission-mode before the permission-core has loaded!") end
 local perms = ACF.Permissions
 
-local modename = "god based"
+local modename = "godbased"
 local modedescription = "Players without godmode can damage anyone else's entities whose owners are not in godmode."
 
 --[[
