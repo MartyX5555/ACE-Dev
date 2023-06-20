@@ -655,7 +655,7 @@ function ENT:LaunchEffect()
 	local sound = self.BulletData.Sound or ACF_GetGunValue(self.BulletData, "sound")
 
 	if sound then
-		self:EmitSound(sound, 511, 100)
+		self:EmitSound(sound, 511, ( self.BulletData.Pitch or 1 ) * 100 )
 	end
 end
 

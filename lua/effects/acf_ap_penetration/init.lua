@@ -6,23 +6,20 @@ Initializes the effect. The data is a table of data
 which was passed from the server.
 -----------------------------------------------------------]]
 function EFFECT:Init( data )
-	self.Ent			= data:GetEntity()
-	self.Caliber		= self.Ent:GetNWFloat( "Caliber", 10 )
-	self.Origin		= data:GetOrigin()
-	self.DirVec		= data:GetNormal()
-	self.Velocity		= data:GetScale() --Mass of the projectile in kg
-	self.Mass			= data:GetMagnitude() --Velocity of the projectile in gmod units
-	self.Emitter		= ParticleEmitter( self.Origin )
-	self.ParticleMul	= math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
-
-	self.Scale = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
+	self.Ent           = data:GetEntity()
+	self.Caliber       = self.Ent:GetNWFloat( "Caliber", 10 )
+	self.Origin        = data:GetOrigin()
+	self.DirVec        = data:GetNormal()
+	self.Velocity      = data:GetScale() --Mass of the projectile in kg
+	self.Mass          = data:GetMagnitude() --Velocity of the projectile in gmod units
+	self.Emitter       = ParticleEmitter( self.Origin )
+	self.ParticleMul   = math.Max( tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 0, 0)
+	self.Scale         = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
 
 	local Tr = { }
 		Tr.start = self.Origin - self.DirVec * 20
 		Tr.endpos = self.Origin + self.DirVec * 100
-		Tr.mins = Vector(0,0,0)
-		Tr.maxs = Vector(0,0,0)
-	local Impact = util.TraceHull(Tr)					--Trace to see if it will hit anything
+	local Impact = util.TraceLine(Tr)					--Trace to see if it will hit anything
 	self.Normal = Impact.HitNormal
 
 	if IsValid(Impact.Entity) then
@@ -30,32 +27,9 @@ function EFFECT:Init( data )
 	end
 	debugoverlay.Line(self.Origin - self.DirVec * 20, Impact.HitPos , 5, Color(0,255,255))
 
-	-- Material Enum
-	-- 65  ANTLION
-	-- 66 BLOODYFLESH
-	-- 67 CONCRETE / NODRAW
-	-- 68 DIRT
-	-- 70 FLESH
-	-- 71 GRATE
-	-- 72 ALIENFLESH
-	-- 73 CLIP
-	-- 76 PLASTIC
-	-- 77 METAL
-	-- 78 SAND
-	-- 79 FOLIAGE
-	-- 80 COMPUTER
-	-- 83 SLOSH
-	-- 84 TILE
-	-- 86 VENT
-	-- 87 WOOD
-	-- 89 GLASS
-
-	--local Mat = Impact.MatType
-	--print(Mat)
-
 	self:Prop()
 
-	ACE_SPen( self.Origin, self.Velocity, self.Mass )
+	ACE_SPenetration( self.Origin, self.Velocity, self.Mass )
 
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end

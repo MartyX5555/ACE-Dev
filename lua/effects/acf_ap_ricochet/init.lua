@@ -4,78 +4,88 @@
 Initializes the effect. The data is a table of data
 which was passed from the server.
 -----------------------------------------------------------]]
+
+local function GetMaterialName( Mat )
+
+	--concrete
+	local GroundMat = "Concrete"
+
+	-- Dirt
+	if Mat == 68 or Mat == 79 or Mat == 85 then
+		GroundMat = "Dirt"
+	-- Sand
+	elseif Mat == 78 then
+		GroundMat = "Sand"
+	-- Glass
+	elseif Mat == 89 then
+		GroundMat = "Glass"
+	elseif Mat == 77 or Mat == 86 or Mat == 80 then
+		GroundMat = "Metal"
+	end
+
+	return GroundMat
+end
+
+local MaterialColor = {
+	Concrete   = Color(100,100,100,150),
+	Dirt       = Color(117,101,70,150),
+	Sand       = Color(200,180,116,150),
+	Glass      = Color(255,255,255,50),
+}
+
+--this is crucial for subcaliber, this will boost the dust's size.
+local SubCalBoost = {
+	APDS       = true,
+	APDSS      = true,
+	APFSDS     = true,
+	APFSDSS    = true,
+	APCR       = true,
+	HVAP       = true
+}
+
+--the dust is for non-explosive rounds, so lets skip this.
+--Note that APHE variants are not listed here but they still require it in case of rico vs ground.
+local TypeIgnore = {
+	HE       = true,
+	HEFS     = true,
+	HESH     = true,
+	HEAT     = true,
+	HEATFS   = true,
+	THEAT    = true,
+	THEATFS  = true
+}
+
 function EFFECT:Init( data )
-	self.Origin	= data:GetOrigin()
-	self.DirVec	= data:GetNormal()
-	self.Velocity	= data:GetScale()			-- Velocity of the projectile in gmod units
-	self.Mass		= data:GetMagnitude()		-- Mass of the projectile in kg
-	self.Emitter	= ParticleEmitter( self.Origin )
-	self.Ent		= data:GetEntity()			-- the Ammocrate entity
-	self.Id		= self.Ent:GetNWString( "AmmoType", "AP" )
-	self.Scale = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
-	self.ParticleMul  = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
+	self.Origin        = data:GetOrigin()
+	self.DirVec        = data:GetNormal()
+	self.Velocity      = data:GetScale()			-- Velocity of the projectile in gmod units
+	self.Mass          = data:GetMagnitude()		-- Mass of the projectile in kg
+	self.Emitter       = ParticleEmitter( self.Origin )
+	self.Ent           = data:GetEntity()			-- the Ammocrate entity
+	self.Id            = self.Ent:GetNWString( "AmmoType", "AP" )
+	self.Scale         = math.max(self.Mass * (self.Velocity / 39.37) / 100, 1) ^ 0.3
+	self.ParticleMul   = tonumber( LocalPlayer():GetInfo("acf_cl_particlemul") ) or 1
+	self.Cal           = self.Ent:GetNWFloat("Caliber", 2 )
 
 	local Tr		= {}
 	Tr.start		= self.Origin + self.DirVec
 	Tr.endpos		= self.Origin - self.DirVec * 12000
-	Tr.mins		= Vector(0,0,0)
-	Tr.maxs		= Vector(0,0,0)
-	local SurfaceTr	= util.TraceHull( Tr )
+	local SurfaceTr	= util.TraceLine( Tr )
 
-	util.Decal("Impact.Concrete", self.Origin + self.DirVec * 10, self.Origin - self.DirVec * 10 )
-
-	self.Cal		= self.Ent:GetNWFloat("Caliber", 2 )
-	ACEE_SRico( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
-
-	--this is crucial for subcaliber, this will boost the dust's size.
-	self.SubCalBoost = {
-	APDS	= true,
-	APDSS	= true,
-	APFSDS	= true,
-	APFSDSS  = true,
-	APCR	= true,
-	HVAP	= true
-	}
-
-	--the dust is for non-explosive rounds, so lets skip this.
-	--Note that APHE variants are not listed here but they still require it in case of rico vs ground.
-	local TypeIgnore = {
-	HE	= true,
-	HEFS	= true,
-	HESH	= true,
-	HEAT	= true,
-	HEATFS	= true,
-	THEAT	= true,
-	THEATFS  = true
-	}
+	ACE_SRicochet( self.Origin, self.Cal, self.Velocity, SurfaceTr.HitWorld )
 
 	--do this if we are dealing with non-explosive rounds
 	if not TypeIgnore[self.Id] then
 
-	local Mat = SurfaceTr.MatType
+		local Mat = SurfaceTr.MatType
+		local Material = GetMaterialName( Mat )
+		local SmokeColor = MaterialColor[Material] or MaterialColor["Concrete"]
 
-	--concrete
-	local SmokeColor = Color(100,100,100,150)
-
-	-- Dirt
-	if Mat == 68 or Mat == 79 or Mat == 85 then
-		SmokeColor = Color(117,101,70,150)
-
-	-- Sand
-	elseif Mat == 78 then
-		SmokeColor = Color(200,180,116,150)
-
-	-- Glass
-	elseif Mat == 89 then
-		SmokeColor = Color(255,255,255,50)
-	end
-
-	if Mat ~= 77 and Mat ~= 86 and Mat ~= 80 then
-		self:Dust( SmokeColor )
-	else
-		self:Metal()
-	end
-
+		if Material == "Metal" then
+			self:Metal( SmokeColor )
+		else
+			self:Dust( SmokeColor )
+		end
 	end
 
 	local BulletEffect	= {}
@@ -88,6 +98,8 @@ function EFFECT:Init( data )
 	BulletEffect.Damage  = 0
 	LocalPlayer():FireBullets(BulletEffect)
 
+	util.Decal("Impact.Concrete", self.Origin + self.DirVec * 10, self.Origin - self.DirVec * 10 )
+
 	if IsValid(self.Emitter) then self.Emitter:Finish() end
 end
 
@@ -97,7 +109,7 @@ function EFFECT:Dust( SmokeColor )
 	local Vel		= self.Velocity / 2500
 	local Mass		= self.Mass
 
-	local HalfArea	= ( self.SubCalBoost[self.Id] and 0.75) or 1
+	local HalfArea	= ( SubCalBoost[self.Id] and 0.75) or 1
 	local ShellArea	= 3.141 * (self.Cal / 2) * HalfArea
 
 	--print(ShellArea)

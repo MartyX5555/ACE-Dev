@@ -55,12 +55,12 @@ end
 
 local RackWireDescs = {
 	--Inputs
-	["Reload"]	= "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
-	["Delay"]	= "Sets a specific delay to guidance control over the default one in seconds.\n Note that you cannot override lower values than default.",
-	["TargetPos"]	= "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
+	["Reload"]       = "Arms this rack. Its mandatory to set this since racks don't reload automatically.",
+	["Delay"]        = "Sets a specific delay to guidance control over the default one in seconds.\n Note that you cannot override lower values than default.",
+	["TargetPos"]    = "Defines the Target position for the ordnance in this rack. This only works for Wire and laser guidances.",
 
 	--Outputs
-	["Ready"]	= "Returns if the rack is ready to fire."
+	["Ready"]        = "Returns if the rack is ready to fire."
 
 }
 
@@ -68,33 +68,33 @@ function ENT:Initialize()
 
 	self.BaseClass.Initialize(self)
 
-	self.SpecialHealth		= false	--If true needs a special ACF_Activate function
-	self.SpecialDamage		= false	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
-	self.ReloadTime			= 1
-	self.RackStatus			= "Empty"
-	self.Ready				= true
-	self.Firing				= nil
-	self.NextFire			= 1
-	self.PostReloadWait		= CurTime()
-	self.WaitFunction		= self.GetFireDelay
-	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal				= true
-	self.LegalIssues			= ""
-	self.LastSend			= 0
+	self.SpecialHealth   = false	--If true needs a special ACF_Activate function
+	self.SpecialDamage   = false	--If true needs a special ACF_OnDamage function --NOTE: you can't "fix" missiles with setting this to false, it acts like a prop!!!!
+	self.ReloadTime      = 1
+	self.RackStatus      = "Empty"
+	self.Ready           = true
+	self.Firing          = nil
+	self.NextFire        = 1
+	self.PostReloadWait  = CurTime()
+	self.WaitFunction    = self.GetFireDelay
+	self.NextLegalCheck  = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal           = true
+	self.LegalIssues     = ""
+	self.LastSend        = 0
 	self:CPPISetOwner(self)
 
-	self.IsMaster			= true
-	self.CurAmmo				= 1
-	self.Sequence			= 1
-	self.LastThink			= CurTime()
+	self.IsMaster              = true
+	self.CurAmmo               = 1
+	self.Sequence              = 1
+	self.LastThink             = CurTime()
 
-	self.BulletData			= {}
-	self.BulletData.Type		= "Empty"
-	self.BulletData.PropMass	= 0
-	self.BulletData.ProjMass	= 0
+	self.BulletData            = {}
+	self.BulletData.Type       = "Empty"
+	self.BulletData.PropMass   = 0
+	self.BulletData.ProjMass   = 0
 
-	self.ForceTdelay			= 0
-	self.Inaccuracy			= 1
+	self.ForceTdelay           = 0
+	self.Inaccuracy            = 1
 
 	self.Inputs = WireLib.CreateSpecialInputs( self, { "Fire",	"Reload (" .. RackWireDescs["Reload"] .. ")", "Track Delay (" .. RackWireDescs["Delay"] .. ")",	"Target Pos (" .. RackWireDescs["TargetPos"] .. ")" },
 													{ "NORMAL", "NORMAL", "NORMAL", "VECTOR" } )
@@ -440,7 +440,7 @@ function ENT:Think()
 			self.ReloadTime = nil
 			self:Reload()
 		elseif self.ReloadTime and self.ReloadTime > 1 then
-			self:EmitSound( "acf_extra/airfx/weapon_select.wav", 500, 100 )
+			self:EmitSound( "acf_extra/airfx/weapon_select.wav", 75, 100 )
 			self.ReloadTime = nil
 		end
 	elseif self.NextFire >= 1 and Ammo == 0 then
@@ -571,7 +571,7 @@ end
 
 function ENT:AddMissile()
 
-	self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 500, 100 )
+	self:EmitSound( "acf_extra/tankfx/resupply_single.wav", 75, 100 )
 
 	self:TrimNullMissiles()
 
@@ -723,9 +723,10 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
-	Rack.Muzzleflash		= gundef.muzzleflash	or gunclass.muzzleflash	or ""
+	Rack.Muzzleflash	= gundef.muzzleflash	or gunclass.muzzleflash	or ""
 	Rack.RoFmod			= gunclass["rofmod"]								or 1
-	Rack.Sound			= gundef.sound		or gunclass.sound		or ""
+	Rack.Sound			= gundef.sound		or gunclass.sound		or "acf_extra/airfx/rocket_fire2.wav"
+	Rack.SoundPitch  	= 1
 	Rack.Inaccuracy		= gundef["spread"]	or gunclass["spread"]	or 1
 
 	Rack.HideMissile		= ACF_GetRackValue(Id, "hidemissile")			or false
@@ -831,6 +832,7 @@ function ENT:FireMissile()
 
 			if self.Sound and self.Sound ~= "" then
 				missile.BulletData.Sound = self.Sound
+				missile.BulletData.Pitch = self.SoundPitch
 			end
 
 			missile:DoFlight(bdata.Pos, ShootVec)
@@ -844,7 +846,7 @@ function ENT:FireMissile()
 			self:SetNWInt("Ammo",	Ammo)
 
 		else
-			self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)
+			self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 		end
 
 		self.Ready = false
@@ -854,13 +856,13 @@ function ENT:FireMissile()
 		self.ReloadTime = ReloadTime
 
 	else
-		self:EmitSound("weapons/pistol/pistol_empty.wav",500,100)
+		self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 	end
 
 end
 
 function ENT:MuzzleEffect()
-	self:EmitSound( "phx/epicmetal_hard.wav", 500, 100 )
+	self:EmitSound( "phx/epicmetal_hard.wav", 75, 100 )
 end
 
 function ENT:PreEntityCopy()

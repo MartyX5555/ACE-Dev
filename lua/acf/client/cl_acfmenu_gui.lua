@@ -687,6 +687,14 @@ function ACFCLGUICreate()
 	Sub:SizeToContents()
 	acfmenupanel.CustomDisplay:AddItem( Sub )
 
+	local Sounds = vgui.Create( "DForm" )
+	Sounds:SetName("Sounds")
+
+	Sounds:CheckBox("Allow Tinnitu Noise", "acf_tinnitus")
+	Sounds:ControlHelp( "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat." )
+
+	acfmenupanel.CustomDisplay:AddItem( Sounds )
+
 	local Effects = vgui.Create( "DForm" )
 	Effects:SetName("Rendering")
 

@@ -47,8 +47,11 @@ ACF.SoundToolSupport = {
 		GetSound = function(ent) return { Sound = ent.Sound } end,
 
 		SetSound = function(ent, soundData)
+
 			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWString( "SoundPitch", soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
@@ -93,6 +96,7 @@ ACF.SoundToolSupport = {
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
+			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
 		end,
 
@@ -110,11 +114,11 @@ ACF.SoundToolSupport = {
 
 	acf_missileradar = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound or ACFM.DefaultRadarSound } end,
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
-			ent:SetNWString( "Sound", soundData.Sound )
+			ent.SoundPitch = soundData.Pitch
 		end,
 
 		ResetSound = function(ent)
@@ -131,7 +135,8 @@ local function ReplaceSound( _ , Entity , data)
 	local sound = data[1]
 	local pitch = data[2] or 1
 
-	timer.Simple(1, function()
+	--IDK why this timer is here. I will cut to 0.1 if not deleting it if i had idea.
+	timer.Simple(0.1, function()
 		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
 
 		local class = Entity:GetClass()
@@ -309,8 +314,8 @@ if CLIENT then
 			Command = "acfsound_pitch",
 			Type = "Float",
 			Min = "0.1",
-			Max = "2",
-		}):SetTooltip("Works only for engines.")
+			Max = "2.55",
+		}):SetTooltip("Adjust the pitch of the sound. Currently supports Engines, Guns, Rack and Missile radars. \n\nNote: This will not work with dynamic sounds atm.")
 		--[[
 		local SoundPitch = vgui.Create("DNumSlider")
 		SoundPitch:SetMin( 0.1 )

@@ -9,62 +9,62 @@ local GunTable = ACF.Weapons.Guns
 
 function ENT:Initialize()
 
-	self.ReloadTime			= 1
+	self.ReloadTime          = 1
 
-	self.FirstLoad			= true
-	self.Ready				= true
-	self.Firing				= nil
-	self.Reloading			= nil
-	self.NextFire			= 0
-	self.LastSend			= 0
-	self.LastLoadDuration	= 0
-	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
-	self.Legal				= true
-	self.LegalIssues			= ""
-	self.FuseTime			= 0
-	self.OverrideFuse		= false		-- Override disabled by default
-	self.ROFLimit			= 0			-- Used for selecting firerate
+	self.FirstLoad           = true
+	self.Ready               = true
+	self.Firing              = nil
+	self.Reloading           = nil
+	self.NextFire            = 0
+	self.LastSend            = 0
+	self.LastLoadDuration    = 0
+	self.NextLegalCheck      = ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal               = true
+	self.LegalIssues         = ""
+	self.FuseTime            = 0
+	self.OverrideFuse        = false		-- Override disabled by default
+	self.ROFLimit            = 0			-- Used for selecting firerate
 
-	self.IsMaster			= true		-- needed?
-	self.AmmoLink			= {}
-	self.CrewLink			= {}
-	self.HasGunner			= false
-	self.LoaderCount			= 0
-	self.CurAmmo				= 1
-	self.Sequence			= 1
-	self.GunClass			= "MG"
+	self.IsMaster            = true		-- needed?
+	self.AmmoLink            = {}
+	self.CrewLink            = {}
+	self.HasGunner           = false
+	self.LoaderCount         = 0
+	self.CurAmmo             = 1
+	self.Sequence            = 1
+	self.GunClass            = "MG"
 
-	self.Heat				= ACE.AmbientTemp
-	self.IsOverheated		= false
+	self.Heat                = ACE.AmbientTemp
+	self.IsOverheated        = false
 
-	self.BulletData			= {}
-	self.BulletData.Type		= "Empty"
-	self.BulletData.PropMass	= 0
-	self.BulletData.ProjMass	= 0
+	self.BulletData          = {}
+	self.BulletData.Type     = "Empty"
+	self.BulletData.PropMass = 0
+	self.BulletData.ProjMass = 0
 
-	self.Inaccuracy			= 1
-	self.LastThink			= 0
+	self.Inaccuracy          = 1
+	self.LastThink           = 0
 
 end
 
 do
 	local Inputs = {
-		Fire	= "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
-		Unload	= "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
-		Reload	= "Reload (Reloads the current weapon, according to the active ammo it has.)",
-		FuseTime = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
-		ROFLimit = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
+		Fire        = "Fire (Shoots a bullet if loaded. Hold to keep shooting.)",
+		Unload      = "Unload (Unloads the current shell from the gun. Leaving the gun empty.)",
+		Reload      = "Reload (Reloads the current weapon, according to the active ammo it has.)",
+		FuseTime    = "Fuse Time (Defines the required time for shell self-detonation in seconds. \nThis only work with SM, HE & HEAT rounds. \nNote that this is not really accurate.)",
+		ROFLimit    = "ROFLimit (Adjusts the Gun's Rate of Fire. \nNote that setting this to 0 WILL disable overriding! \nIf you want lower rof, use values like 0.1.)",
 	}
 	local Outputs = {
-		Ready		= "Ready (Returns if the gun is ready to fire.)",
-		AmmoCount	= "AmmoCount (Returns the total ammo this gun can shoot.)",
-		Entity		= "Entity [ENTITY]",
-		ShotsLeft	= "Shots Left (Returns the number of shots in the gun.)",
-		FireRate	= "Fire Rate (Returns the Rate of Fire of this gun)",
-		MuzzleWeight	= "Muzzle Weight (Returns the muzzle weight)",
-		MuzzleVelocity = "Muzzle Velocity (Returns the muzzle velocity)" ,
-		Heat		= "Heat (Returns the gun's temperature.)",
-		OverHeat	= "OverHeat (Is the gun overheating?)"
+		Ready           = "Ready (Returns if the gun is ready to fire.)",
+		AmmoCount       = "AmmoCount (Returns the total ammo this gun can shoot.)",
+		Entity          = "Entity [ENTITY]",
+		ShotsLeft       = "Shots Left (Returns the number of shots in the gun.)",
+		FireRate        = "Fire Rate (Returns the Rate of Fire of this gun)",
+		MuzzleWeight    = "Muzzle Weight (Returns the muzzle weight)",
+		MuzzleVelocity  = "Muzzle Velocity (Returns the muzzle velocity)" ,
+		Heat            = "Heat (Returns the gun's temperature.)",
+		OverHeat        = "OverHeat (Is the gun overheating?)"
 	}
 
 	local Inputs_Fuse = {
@@ -105,12 +105,12 @@ do
 
 	--List of ids which no longer stay on ACE. Useful to replace them with the closest counterparts
 	local BackComp = {
-		["20mmHRAC"]		= "20mmRAC",
-		["30mmHRAC"]		= "30mmRAC",
-		["105mmSB"]		= "100mmSBC",
-		["120mmSB"]		= "120mmSBC",
-		["140mmSB"]		= "140mmSBC",
-		["170mmSB"]		= "170mmSBC"
+		["20mmHRAC"]    = "20mmRAC",
+		["30mmHRAC"]    = "30mmRAC",
+		["105mmSB"]     = "100mmSBC",
+		["120mmSB"]     = "120mmSBC",
+		["140mmSB"]     = "140mmSBC",
+		["170mmSB"]     = "170mmSBC"
 	}
 
 	local rapidgun = {
@@ -154,13 +154,13 @@ do
 		Gun:SetPos(Pos)
 		Gun:Spawn()
 		Gun:CPPISetOwner(Owner)
-		Gun.Id			= Id
-		Gun.Caliber		= Lookup.caliber
-		Gun.Model		= Lookup.model
-		Gun.Mass			= Lookup.weight
-		Gun.Class		= Lookup.gunclass
-		Gun.Heat			= ACE.AmbientTemp
-		Gun.LinkRangeMul	= math.max(Gun.Caliber / 10,1) ^ 1.2
+		Gun.Id              = Id
+		Gun.Caliber         = Lookup.caliber
+		Gun.Model           = Lookup.model
+		Gun.Mass            = Lookup.weight
+		Gun.Class           = Lookup.gunclass
+		Gun.Heat            = ACE.AmbientTemp
+		Gun.LinkRangeMul    = math.max(Gun.Caliber / 10,1) ^ 1.2
 
 		Gun.noloaders	= ClassData.noloader or nil
 
@@ -213,6 +213,7 @@ do
 		Gun.RoFmod		= ClassData.rofmod
 		Gun.RateOfFire	= 1 --updated when gun is linked to ammo
 		Gun.Sound		= Lookup.sound or ClassData.sound
+		Gun.SoundPitch  = 1
 		Gun.AutoSound	= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
 
 		Gun:SetNWInt( "Caliber", Gun.Caliber )
@@ -221,6 +222,7 @@ do
 		Gun:SetNWString( "ID", Gun.Id )
 		Gun:SetNWString( "Muzzleflash", Gun.Muzzleflash )
 		Gun:SetNWString( "Sound", Gun.Sound )
+		Gun:SetNWString( "SoundPitch", Gun.SoundPitch )
 
 		Gun:SetModel( Gun.Model )
 
@@ -744,7 +746,7 @@ function ENT:ReloadMag()
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
 		if ( ACF.RoundTypes[self.BulletData.Type] ) then		--Check if the roundtype loaded actually exists
 			self:LoadAmmo(self.MagReload, false)
-			self:EmitSound("weapons/357/357_reload4.wav",500,100)
+			self:EmitSound("weapons/357/357_reload4.wav",68,100)
 			self.CurrentShot = 0
 			Wire_TriggerOutput(self, "Ready", 0)
 		else
@@ -867,7 +869,7 @@ do
 
 				if (self.CurrentShot >= self.MagSize) and (self.MagSize > 1) then
 					self:LoadAmmo(self.MagReload, false)
-					self:EmitSound("weapons/357/357_reload4.wav",500,100)
+					self:EmitSound("weapons/357/357_reload4.wav",68,100)
 					timer.Simple(self.LastLoadDuration, function() if IsValid(self) then self.CurrentShot = 0 end end)
 				else
 					self:LoadAmmo(false, false)
@@ -961,7 +963,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 			self.BulletData.PropMass = 0
 			self.BulletData.ProjMass = 0
 
-		self:EmitSound("weapons/shotgun/shotgun_empty.wav",500,100)
+		self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 		Wire_TriggerOutput(self, "Loaded", "Empty")
 
 		self.NextFire = curTime + 0.5
@@ -986,7 +988,7 @@ function ENT:UnloadAmmo()
 
 	self.Ready = false
 	Wire_TriggerOutput(self, "Ready", 0)
-	self:EmitSound("weapons/shotgun/shotgun_empty.wav",500,100)
+	self:EmitSound("weapons/shotgun/shotgun_empty.wav",68,100)
 
 	local unloadtime = self.ReloadTime / 2 -- base time to swap a fully loaded shell out
 	if self.NextFire < CurTime() then -- unloading in middle of reload
