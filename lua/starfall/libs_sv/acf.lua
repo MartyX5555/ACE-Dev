@@ -75,11 +75,6 @@ local function isRadar(ent)
 	return radarTypes[ent:GetClass()]
 end
 
-local function reloadTime( ent )
-	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
-	return ent.MagReload
-end
-
 local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
 
 local function restrictInfo ( ent )
@@ -1968,8 +1963,8 @@ function ents_methods:acfReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 0 end
-	return reloadTime( this )
+	if restrictInfo( this ) or not isGun( this ) or not this.ReloadTime then return 0 end
+	return this.ReloadTime
 end
 
 --- Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars
@@ -1981,8 +1976,20 @@ function ents_methods:acfReloadProgress ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 1 end
-	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime( this ), 0, 1 )
+	if restrictInfo( this ) or not isGun( this ) then return 1 end
+
+	local reloadTime
+	if this.MagSize == 1 then
+		reloadTime = this.ReloadTime
+	else
+		if this.MagSize - this.CurrentShot > 0 then
+			reloadTime = this.ReloadTime
+		else
+			reloadTime = this.MagReload + this.ReloadTime
+		end
+	end
+
+	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime, 0, 1 )
 end
 
 --- Returns time it takes for an ACF weapon to reload magazine
@@ -1994,7 +2001,7 @@ function ents_methods:acfMagReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( instance.player , this ) or not isGun( this ) or not this.MagReload then return 0 end
+	if restrictInfo( this ) or not isGun( this ) or not this.MagReload then return 0 end
 	return this.MagReload
 end
 
