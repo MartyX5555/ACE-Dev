@@ -30,29 +30,30 @@ local DefaultPermission = false
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ]]
-local function modepermission(owner, attacker, ent)
-	
+local function modepermission(owner, attacker)
+
 	if not (owner.SteamID or attacker.SteamID) then
 		--print("ACF ERROR: owner or attacker is not a player!", tostring(owner), tostring(attacker), "\n", debug.traceback())
 		if DefaultPermission then return
 		else return DefaultPermission end
-	end	
-	
-	local ownerid 		= owner:SteamID()
-	local attackerid 	= attacker:SteamID()
-	local ownerperms 	= perms.GetDamagePermissions(ownerid)
-	local godOwner 		= owner:HasGodMode()
-	local godInflictor 	= attacker:HasGodMode()
+	end
+
+	local ownerid		= owner:SteamID()
+	local attackerid	= attacker:SteamID()
+	local ownerperms	= perms.GetDamagePermissions(ownerid)
+	local godOwner		= owner:HasGodMode()
+	local godInflictor	= attacker:HasGodMode()
 
 	-- Disallow the damage if the attacker has not any way to receive damage to him.
-	if attacker.HasDisabledPerms then
-		--Msg("[ACE | WARN]- The user "..attacker:Nick().." has disabled his own permissions! Cancelling prop damage....")
+	--if attacker.HasDisabledPerms then
+		--Msg("[ACE | WARN]- The user " .. attacker:Nick() .. " has disabled his own permissions! Cancelling prop damage....")
 
 	-- Deal damage to props if the owner has given permission to the attacker to do it.
-	elseif ownerperms[attackerid] and not (godOwner or godInflictor) then
-		return
+	--elseif ownerperms[attackerid] and not (godOwner or godInflictor) then
+	if ownerperms[attackerid] and not (godOwner or godInflictor) then
+		return true
 	end
-	
+
 	-- return false if to deny the damage
 	return false
 end

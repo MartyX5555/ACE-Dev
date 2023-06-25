@@ -3,7 +3,7 @@ SWEP.Base = "weapon_ace_base"
 
 if CLIENT then
 	SWEP.PrintName		= "Mine-Anti Personel"
-	SWEP.Slot		    = 4
+	SWEP.Slot			= 4
 	SWEP.SlotPos		= 3
 end
 
@@ -13,7 +13,7 @@ SWEP.Category = "ACE Weapons"
 SWEP.SubCategory = "Grenades/Mines"
 
 --Visual
-SWEP.ViewModelFlip 	= false
+SWEP.ViewModelFlip	= false
 SWEP.ViewModel		= "models/weapons/v_slam.mdl"
 SWEP.WorldModel		= "models/weapons/w_slam.mdl"
 SWEP.ReloadSound	= "Weapon_Pistol.Reload"
@@ -36,7 +36,7 @@ SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 5
+SWEP.Primary.DefaultClip	= 8
 SWEP.Primary.Automatic		= 0
 SWEP.Primary.Ammo		= "Grenade"
 
@@ -46,7 +46,7 @@ SWEP.Secondary.DefaultClip	= -1
 
 SWEP.ReloadSoundEnabled = 1
 
-SWEP.AimOffset = Vector(0,0,0)
+SWEP.AimOffset = Vector(0, 0, 0)
 SWEP.InaccuracyAccumulation = 0
 SWEP.lastFire = CurTime()
 
@@ -56,7 +56,7 @@ SWEP.InaccuracyDecayRate = 1
 
 SWEP.IronSights = true
 SWEP.IronSightsPos = Vector(-2, -15, 2.98)
-SWEP.ZoomPos = Vector(2,-2,2)
+SWEP.ZoomPos = Vector(2, -2, 2)
 SWEP.IronSightsAng = Angle(0.45, 0, 0)
 SWEP.CarrySpeedMul = 0.6 --WalkSpeedMult when carrying the weapon
 
@@ -77,36 +77,43 @@ function SWEP:PrimaryAttack()
 	if CLIENT then
 		return
 	end
-	self.BulletData.Owner = self:GetOwner()
+
+	local owner = self:GetOwner()
+
+	self.BulletData.Owner = owner
 	self.BulletData.Gun = self
 	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate * (CurTime() - self.lastFire), 1, self.MaxInaccuracyMult)
 
-
-	local Forward = self:GetOwner():EyeAngles():Forward()
-	if not self:GetOwner():HasGodMode() then
+	if not owner:HasGodMode() then
 
 		local ent = ents.Create( "ace_antipersonelmine" )
 
 		if ( IsValid( ent ) ) then
 
-			ent:SetPos( self:GetOwner():GetShootPos() + Forward * 32 )
-			ent:SetAngles( self:GetOwner():EyeAngles() )
+			local Forward = owner:EyeAngles():Forward()
+
+			ent:SetPos( owner:GetShootPos() + Forward * 32 )
+			ent:SetAngles( owner:EyeAngles() )
 			ent:Spawn()
 			ent:SetVelocity( Forward * 10 )
-			ent:SetOwner( self:GetOwner() )
-			self:GetOwner():AddCleanup( "aceexplosives", ent )
+			owner:AddCleanup( "aceexplosives", ent )
+
+			if CPPI then
+				ent:CPPISetOwner(Entity(0))
+			end
+			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
 		end
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: "..self.InaccuracyAccumulation)
+--	print("Inaccuracy: " .. self.InaccuracyAccumulation)
 
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+	owner:SetAnimation( PLAYER_ATTACK1 )
 
 	if self:Ammo1() > 0 then
-		self:GetOwner():RemoveAmmo( 1, "RPG_Round")
+		owner:RemoveAmmo( 1, "Grenade")
 	else
 		self:TakePrimaryAmmo(1)
 	end

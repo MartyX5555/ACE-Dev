@@ -20,19 +20,19 @@ this.desc = "This guidance package reads a target-position from the launcher and
 
 
 function this:Configure(missile)
-    
-    self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
-    self.ViewConeCos = math.cos(math.rad(self.ViewCone))
+
+	self.ViewCone = ACF_GetGunValue(missile.BulletData, "viewcone") or this.ViewCone
+	self.ViewConeCos = math.cos(math.rad(self.ViewCone))
 
 end
 
 function this:GetGuidance(missile)
 
-    local posVec = self:GetWireTarget()
+	local posVec = self:GetWireTarget()
 
-    if not posVec or type(posVec) != "Vector" or posVec == Vector() then
-        return {TargetPos = nil} 
-    end
+	if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
+		return {TargetPos = nil}
+	end
 
 	if posVec then
 
@@ -41,30 +41,30 @@ function this:GetGuidance(missile)
 		local dot       = mfo.x * mdir.x + mfo.y * mdir.y + mfo.z * mdir.z
 
 		if dot < self.ViewConeCos then
-        	return {TargetPos = nil}
+			return {TargetPos = nil}
 		end
 
-		local LOSdata = {} 
-        LOSdata.start   = missile.Launcher:GetPos()
-        LOSdata.endpos  = posVec
-        LOSdata.mask    = MASK_SOLID_BRUSHONLY
+		local LOSdata = {}
+		LOSdata.start   = missile.Launcher:GetPos()
+		LOSdata.endpos  = posVec
+		LOSdata.mask    = MASK_SOLID_BRUSHONLY
 
-        local LOSPlataform = util.TraceLine( LOSdata )
-		
-        LOSdata.start = missile:GetPos()
+		local LOSPlataform = util.TraceLine( LOSdata )
 
-        local LOSMissile = util.TraceLine( LOSdata )
+		LOSdata.start = missile:GetPos()
+
+		local LOSMissile = util.TraceLine( LOSdata )
 
 		local dist = missile:Distance(LOSMissile.HitPos)
 		if LOSPlataform.Hit or LOSMissile.Hit and dist < 80 then
 			return {}
 		end
-		
+
 	end
-	
-    self.TargetPos = posVec
+
+	self.TargetPos = posVec
 	return {TargetPos = posVec, ViewCone = self.ViewCone}
-	
+
 end
 
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
@@ -72,7 +72,7 @@ function this:GetDisplayConfig(Type)
 
 	local ViewCone = ACF.Weapons.Guns[Type].viewcone * 2 or 0
 
-	return 
+	return
 	{
 		["Tracking"] = math.Round(ViewCone, 1) .. " deg"
 	}

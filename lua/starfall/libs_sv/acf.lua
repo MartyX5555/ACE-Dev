@@ -64,9 +64,15 @@ local function isFuel ( ent )
 	if ( ent:GetClass() == "acf_fueltank" ) then return true else return false end
 end
 
-local function reloadTime( ent )
-	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
-	return ent.MagReload
+local radarTypes = {
+	acf_missileradar = true,
+	ace_irst = true,
+	ace_trackingradar = true,
+}
+
+local function isRadar(ent)
+	if not validPhysics(ent) then return false end
+	return radarTypes[ent:GetClass()]
 end
 
 local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
@@ -85,25 +91,19 @@ local ents_methods, wrap, unwrap = instance.Types.Entity.Methods, instance.Types
 local ang_meta, aunwrap = instance.Types.Angle, instance.Types.Angle.Unwrap
 local vec_meta, vunwrap = instance.Types.Vector, instance.Types.Vector.Unwrap
 
-SF.Permissions.registerPrivilege("acf.createMobility", "Create acf engine", "Allows the user to create ACF engines and gearboxes")
-SF.Permissions.registerPrivilege("acf.createFuelTank", "Create acf fuel tank", "Allows the user to create ACF fuel tanks")
-SF.Permissions.registerPrivilege("acf.createGun", "Create acf gun", "Allows the user to create ACF guns")
-SF.Permissions.registerPrivilege("acf.createAmmo", "Create acf ammo", "Allows the user to create ACF ammoboxes")
-SF.Permissions.registerPrivilege("entities.acf", "ACF", "Allows the user to control ACF components", { entities = {} })
-
 local plyCount = SF.LimitObject("acf_components", "acf_components", -1, "The number of ACF components allowed to spawn via Starfall")
 local plyBurst = SF.BurstObject("acf_components", "acf_components", 4, 4, "Rate ACF components can be spawned per second.", "Number of ACF components that can be spawned in a short time.")
 
-local function propOnDestroy(ent, instance)
-	local ply = instance.player
+local function propOnDestroy(ent, inst)
+	local ply = inst.player
 	plyCount:free(ply, 1)
-	instance.data.props.props[ent] = nil
+	inst.data.props.props[ent] = nil
 end
 
-local function register(ent, instance)
-	ent:CallOnRemove("starfall_prop_delete", propOnDestroy, instance)
-	plyCount:free(instance.player, -1)
-	instance.data.props.props[ent] = true
+local function register(ent, inst)
+	ent:CallOnRemove("starfall_prop_delete", propOnDestroy, inst)
+	plyCount:free(inst.player, -1)
+	inst.data.props.props[ent] = true
 end
 
 --- Returns true if functions returning sensitive info are restricted to owned props
@@ -214,12 +214,10 @@ function acf_library.createMobility(pos, ang, id, frozen, gear_ratio)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Mobility")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Mobility (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Mobility")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Mobility (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -341,12 +339,10 @@ function acf_library.createFuelTank(pos, ang, id, fueltype, frozen)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Fuel Tank")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Fuel Tank (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Fuel Tank")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Fuel Tank (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -433,12 +429,10 @@ function acf_library.createGun(pos, ang, id, frozen)
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Gun")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Gun (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Gun")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Gun (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -752,12 +746,10 @@ function acf_library.createAmmo(pos, ang, id, gun_id, ammo_id, frozen, ammo_data
 		phys:EnableMotion(not frozen)
 	end
 
-	if instance.data.props.undo then
-		undo.Create("ACF Ammo")
-			undo.SetPlayer(ply)
-			undo.AddEntity(ent)
-		undo.Finish("ACF Ammo (" .. tostring(id) .. ")")
-	end
+	undo.Create("ACF Ammo")
+		undo.SetPlayer(ply)
+		undo.AddEntity(ent)
+	undo.Finish("ACF Ammo (" .. tostring(id) .. ")")
 
 	ply:AddCleanup("props", ent)
 	register(ent)
@@ -924,11 +916,11 @@ end
 
 local linkTables =
 { -- link resources within each ent type. should point to an ent: true if adding link.Ent, false to add link itself
-	acf_engine      = { GearLink = true, FuelLink = false },
-	acf_gearbox     = { WheelLink = true, Master = false },
-	acf_fueltank    = { Master = false },
-	acf_gun         = { AmmoLink = false },
-	acf_ammo        = { Master = false }
+	acf_engine	= { GearLink = true, FuelLink = false },
+	acf_gearbox	= { WheelLink = true, Master = false },
+	acf_fueltank	= { Master = false },
+	acf_gun		= { AmmoLink = false },
+	acf_ammo		= { Master = false }
 }
 
 local function getLinks ( ent, enttype )
@@ -1097,7 +1089,7 @@ function ents_methods:acfGetLinkedWheels ()
 	if not ( isEngine(this) or isGearbox(this) ) then SF.Throw( "Target must be a engine, or gearbox", 2 ) end
 
 	local wheels = {}
-	for k, ent in pairs( ACF_GetLinkedWheels( this ) ) do
+	for _, ent in pairs( ACF_GetLinkedWheels( this ) ) do
 		table.insert( wheels, wrap( ent ) )
 	end
 
@@ -1311,7 +1303,7 @@ function ents_methods:acfFlyMass ()
 
 	if not isEngine( this ) then return nil end
 	if restrictInfo( this ) then return 0 end
-	return this.Inertia / 3.1416 ^2 or 0
+	return this.Inertia / 3.1416 ^ 2 or 0
 end
 
 --- Returns the current power of an ACF engine
@@ -1374,6 +1366,19 @@ function ents_methods:acfSetThrottle ( throttle )
 	this:TriggerInput( "Throttle", throttle )
 end
 
+--- Gets the fuel remaining for an ACF engine
+-- @server
+-- @return number The fuel remaining, in litres or kilowatt-hours
+function ents_methods:acfFuelRemaining ()
+	checktype( self, ents_metatable )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+
+	if not isEngine( this ) then return 0 end
+	if restrictInfo( this ) then return 0 end
+	return this.TotalFuel or 0
+end
 
 -- [ Gearbox Functions ] --
 
@@ -1428,7 +1433,7 @@ function ents_methods:acfFinalRatio ()
 
 	if not isGearbox( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
-	return this.GearTable[ "Final" ] or 0
+	return tonumber(this.GearTable[ "Final" ]) or 0
 end
 
 --- Returns the total ratio (current gear * final) for an ACF gearbox
@@ -1514,7 +1519,7 @@ function ents_methods:acfGearRatio ( gear )
 	if not isGearbox( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local g = math.Clamp( math.floor( gear ), 1, this.Gears )
-	return this.GearTable[ g ] or 0
+	return tonumber(this.GearTable[ g ]) or 0
 end
 
 --- Returns the current torque output for an ACF gearbox
@@ -1865,6 +1870,22 @@ function ents_methods:acfFire ( fire )
 	this:TriggerInput( "Fire", fire )
 end
 
+--- Sets the ROF limit of an ACF weapon
+-- @server
+-- @param number rate The rate of fire limit
+function ents_methods:acfSetROFLimit ( rate )
+	checktype( self, ents_metatable )
+	checkluatype( rate, TYPE_NUMBER )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+	checkpermission( instance, this, "entities.acf" )
+
+	if not isGun( this ) then return end
+
+	this:TriggerInput( "ROFLimit", rate )
+end
+
 --- Causes an ACF weapon to unload
 -- @server
 function ents_methods:acfUnload ()
@@ -1905,7 +1926,7 @@ function ents_methods:acfAmmoCount ()
 	if not isGun( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local Ammo = 0
-	for Key, AmmoEnt in pairs( this.AmmoLink ) do
+	for _, AmmoEnt in pairs( this.AmmoLink ) do
 		if AmmoEnt and AmmoEnt:IsValid() and AmmoEnt[ "Load" ] then
 			Ammo = Ammo + ( AmmoEnt.Ammo or 0 )
 		end
@@ -1925,7 +1946,7 @@ function ents_methods:acfTotalAmmoCount ()
 	if not isGun( this ) then return 0 end
 	if restrictInfo( this ) then return 0 end
 	local Ammo = 0
-	for Key, AmmoEnt in pairs( this.AmmoLink ) do
+	for _, AmmoEnt in pairs( this.AmmoLink ) do
 		if AmmoEnt and AmmoEnt:IsValid() then
 			Ammo = Ammo + ( AmmoEnt.Ammo or 0 )
 		end
@@ -1942,8 +1963,8 @@ function ents_methods:acfReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 0 end
-	return reloadTime( this )
+	if restrictInfo( this ) or not isGun( this ) or not this.ReloadTime then return 0 end
+	return this.ReloadTime
 end
 
 --- Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars
@@ -1955,8 +1976,20 @@ function ents_methods:acfReloadProgress ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 1 end
-	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime( this ), 0, 1 )
+	if restrictInfo( this ) or not isGun( this ) then return 1 end
+
+	local reloadTime
+	if this.MagSize == 1 then
+		reloadTime = this.ReloadTime
+	else
+		if this.MagSize - this.CurrentShot > 0 then
+			reloadTime = this.ReloadTime
+		else
+			reloadTime = this.MagReload + this.ReloadTime
+		end
+	end
+
+	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime, 0, 1 )
 end
 
 --- Returns time it takes for an ACF weapon to reload magazine
@@ -1968,7 +2001,7 @@ function ents_methods:acfMagReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( instance.player , this ) or not isGun( this ) or not this.MagReload then return 0 end
+	if restrictInfo( this ) or not isGun( this ) or not this.MagReload then return 0 end
 	return this.MagReload
 end
 
@@ -2173,7 +2206,7 @@ function ents_methods:acfBlastRadius ()
 	if restrictInfo( this ) then return 0 end
 	local Type = this.BulletData[ "Type" ] or ""
 	if Type == "HE" or Type == "APHE" then
-		return math.Round( this.BulletData[ "FillerMass" ]^0.33 * 8, 3 )
+		return math.Round( this.BulletData[ "FillerMass" ] ^ 0.33 * 8, 3 )
 	elseif Type == "HEAT" then
 		return math.Round( ( this.BulletData[ "FillerMass" ] / 3) ^ 0.33 * 8, 3 )
 	end
@@ -2460,6 +2493,48 @@ function ents_methods:acfPeakFuelUse ()
 		Consumption = 60 * this.FuelUse / ACF.FuelDensity[ fuel ]
 	end
 	return math.Round( Consumption, 3 )
+end
+
+
+-- [ Radar Functions ] --
+
+
+--- Returns a table containing the outputs you'd get from an ACF tracking radar, missile radar, or IRST
+-- @server
+-- @return table The radar data - check radar wire outputs for key names
+function ents_methods:acfRadarData()
+	checktype( self, ents_metatable )
+	local this = unwrap( self )
+
+	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
+	if not isRadar(this) then SF.Throw("Entity is not a radar", 2) end
+
+	local data = {}
+	local radarType = this:GetClass()
+
+	if restrictInfo( this ) then return data end
+
+	data.Detected = this.OutputData.Detected
+	data.Position = table.Copy(this.OutputData.Position)
+
+	if radarType == "acf_missileradar" then
+		data.ClosestDistance = this.OutputData.ClosestDistance
+		data.Entities = instance.Sanitize(table.Copy(this.OutputData.Entities))
+		data.Velocity = table.Copy(this.OutputData.Velocity)
+	elseif radarType == "ace_trackingradar" or "ace_irst" then
+		data.Owner = instance.Sanitize(table.Copy(this.OutputData.Owner))
+		data.ClosestToBeam = this.OutputData.ClosestToBeam
+
+		if radarType == "ace_trackingradar" then
+			data.Velocity = table.Copy(this.OutputData.Velocity)
+			data.IsJammed = this.OutputData.IsJammed
+		elseif radarType == "ace_irst" then
+			data.Angle = table.Copy(this.OutputData.Angle)
+			data.EffHeat = this.OutputData.EffHeat
+		end
+	end
+
+	return data
 end
 
 end

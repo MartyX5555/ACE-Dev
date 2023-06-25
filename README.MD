@@ -1,4 +1,8 @@
 # Armored Combat Framework Extended
+[![Discord Invite](https://img.shields.io/discord/580463055595503646?label=Discord&style=flat-square)](https://discord.gg/Y8aEYU6)
+[![Linting Status](https://img.shields.io/github/actions/workflow/status/MartyX5555/ACE-Dev/main.yml?branch=master&label=Linter%20Status&style=flat-square)](https://github.com/MartyX5555/ACE-Dev/actions?query=workflow%3AGLuaFixer)
+[![Repository Size](https://img.shields.io/github/repo-size/MartyX5555/ACE-Dev?label=Repository%20Size&style=flat-square)](https://github.com/MartyX5555/ACE-Dev)
+[![Commit Activity](https://img.shields.io/github/commit-activity/m/MartyX5555/ACE-Dev?label=Commit%20Activity&style=flat-square)](https://github.com/MartyX5555/ACE-Dev/graphs/commit-activity)
 
 The Armoured Combat Extended (as known as ACE), is an addon that brings you a realistic combat damage system, a several amount of weapons, like cannons, missiles or bombs and a great amount of engines and gearboxes, so you can build one of the most popular stuff on gmod; *tanks and cars*, although you can build whatever you want. To use this addon, wiremod basic knowledge is required.
 
@@ -14,7 +18,7 @@ The Armoured Combat Extended (as known as ACE), is an addon that brings you a re
 ACE requires you have the following addons before using:
 
 * **[Wiremod](https://steamcommunity.com/workshop/filedetails/?id=160250458)** 
-* **[NADMOD Prop Protection](https://steamcommunity.com/workshop/filedetails/?id=159298542)** (No really mandatory for general use, but required if you want to use the built in ACE Damage Protection)
+* **[Advanced Duplicator 2](https://steamcommunity.com/sharedfiles/filedetails/?id=773402917&searchtext=advanced+duplicator)** (Not required for general use, but you are granted with some dupes that are only visible with this tool )
 
 ## Workshop edition
 

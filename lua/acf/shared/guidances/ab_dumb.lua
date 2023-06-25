@@ -23,17 +23,18 @@ this.Override = nil
 
 
 function this:Init()
-	
-end
-
-function this:Configure(missile)
 
 end
 
-function this:GetGuidance(missile)
+
+function this:Configure()
+
+end
+
+function this:GetGuidance()
 	return {}
 end
 
-function this:GetDisplayConfig(Type)
+function this:GetDisplayConfig()
 	return {}
 end

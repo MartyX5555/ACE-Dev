@@ -14,10 +14,9 @@ function SWEP:DoAmmoStatDisplay()
 
 
 
-	self:GetOwner():SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 10)", sendInfo))
+	ACE_SendNotification(self:GetOwner(), sendInfo, 10)
 end
 
 function SWEP:Equip()
-	self:DoAmmoStatDisplay()
 	self:SetNextPrimaryFire( CurTime() + self.DeployDelay )
 end
