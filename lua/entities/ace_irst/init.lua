@@ -26,7 +26,7 @@ function ENT:Initialize()
 	self.Heat				= 21	-- Heat
 	self.HeatAboveAmbient	= 5	-- How many degrees above Ambient Temperature this irst will start to track?
 
-	self.MinViewCone = 3 
+	self.MinViewCone = 3
 	self.MaxViewCone = 45
 
 	self.NextLegalCheck		= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
@@ -130,7 +130,7 @@ function ENT:TriggerInput( inp, value )
 			self.Cone = self.ICone
 		end
 
-		
+
 
 		self:UpdateOverlayText()
 	end
