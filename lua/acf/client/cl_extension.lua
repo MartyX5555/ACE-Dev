@@ -49,6 +49,21 @@ ACE.Sounds.LOSWhitelist = {
 
 do
 
+	--Global sound function. In order to be modified by a convar config
+	--If the Origin is an entity, uses entity:EmitSound( SoundTxt , SoundLevel, Pitch, Volume )
+	--If the Origin is a vector Position, uses sound.Play(SoundTxt, Position, SoundLevel, Pitch, Volume)
+	function ACE_EmitSound( SoundTxt, Origin, SoundLevel, Pitch, Volume )
+
+		Volume = math.min( Volume, 1 )
+		local VolumeConfig = GetConVar("acf_sound_volume"):GetInt() / 100
+
+		if IsEntity(Origin) and IsValid(Origin) then
+			Origin:EmitSound( SoundTxt, SoundLevel, Pitch, Volume * VolumeConfig )
+		elseif isvector( Origin ) then
+			sound.Play(SoundTxt, Origin, SoundLevel, Pitch, Volume * VolumeConfig )
+		end
+	end
+
 	--Gets the player's point of view if he's using a camera. Returns the entity input if no external entity is involved.
 	function ACE_SGetHearingEntity( ply )
 		if not IsValid(ply) then return ply end
@@ -265,7 +280,7 @@ do
 
 									--See if it supress the current tinnitus and creates a new one, from 0. Should stop the HE spam tinnitus
 									entply:StopSound("acf_other/explosions/ring/tinnitus.mp3")
-									entply:EmitSound("acf_other/explosions/ring/tinnitus.mp3", 75, 100, 1) --Disabled sound
+									ACE_EmitSound("acf_other/explosions/ring/tinnitus.mp3", entply, 75, 100, 1 )
 
 								end
 							end
@@ -278,18 +293,18 @@ do
 							VolFix = VolFix * 0.05
 						end
 
-						entply:EmitSound( Sound or "", 75, Pitch * PitchFix, Volume * VolFix )
+						ACE_EmitSound( Sound or "", entply, 75, Pitch * PitchFix, Volume * VolFix )
 
 						--play dirt sounds
 						if Radius >= ACE.SoundSmallEx and HitWorld then
-							sound.Play(ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, Pitch * PitchFix, Volume * VolFix / 20)
-							sound.Play(ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20)
+							ACE_EmitSound( ACE.Sounds["Debris"]["low"]["close"][math.random(1,#ACE.Sounds["Debris"]["low"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, Pitch * PitchFix, Volume * VolFix / 20 )
+							ACE_EmitSound( ACE.Sounds["Debris"]["high"]["close"][math.random(1,#ACE.Sounds["Debris"]["high"]["close"])] or "", plyPos + (HitPos - plyPos):GetNormalized() * 64, 80, (Pitch * PitchFix) / 0.5, Volume * VolFix / 20 )
 						end
 
 						--Underwater Explosions
 					else
-						entply:EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
-						entply:EmitSound( "^weapons/underwater_explode3.wav", 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+						ACE_EmitSound( "ambient/water/water_splash" .. math.random(1,3) .. ".wav", entply, 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
+						ACE_EmitSound( "^weapons/underwater_explode3.wav", entply, 75, math.max(Pitch * 0.75,65), Volume * 0.075 )
 					end
 				end
 
@@ -339,8 +354,7 @@ do
 						VolFix = VolFix * 0.5
 					end
 
-					entply:EmitSound( Sound or "", 75, Pitch, Volume * VolFix)
-
+					ACE_EmitSound( Sound, entply, 75, Pitch, Volume * VolFix )
 				end
 
 				timer.Stop( ide )
@@ -417,7 +431,7 @@ do
 					end
 
 					if Sound ~= "" then
-						entply:EmitSound( Sound or "" , 75, Pitch, Volume * VolFix )
+						ACE_EmitSound( Sound or "", entply, 75, Pitch, Volume * VolFix )
 					end
 				end
 
@@ -511,7 +525,8 @@ do
 						VolFix = VolFix * 0.5
 					end
 
-					sound.Play(Sound or "", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix) --Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
+					--Pos => Gun's pos before to timer. Not possible to use Gun:GetPos() due to risk of gun might not exist at this point.
+					ACE_EmitSound( Sound or "", plyPos + (Pos - plyPos):GetNormalized() * 64, 90, Pitch, Volume * VolFix )
 
 				end
 
@@ -582,8 +597,7 @@ do
 						VolFix = VolFix * 0.025
 					end
 
-					entply:EmitSound( Sound or "" , 75, 100, Volume * VolFix )
-
+					ACE_EmitSound( Sound or "" , entply, 75, 100, Volume * VolFix )
 				end
 				timer.Stop( ide )
 				timer.Remove( ide )
