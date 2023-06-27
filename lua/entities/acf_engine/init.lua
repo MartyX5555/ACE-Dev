@@ -167,10 +167,6 @@ function ENT:Update( ArgsTable )
 		return false, "Turn off the engine before updating it!"
 	end
 
-	if not self:CPPICanTool(ArgsTable[1]) then -- Argtable[1] is the player that shot the tool
-		return false, "You don't own that engine!"
-	end
-
 	local Id = ArgsTable[4] -- Argtable[4] is the engine ID
 	local Lookup = EngineTable[Id]
 
