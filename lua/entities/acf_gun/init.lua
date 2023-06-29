@@ -213,7 +213,7 @@ do
 		Gun.RoFmod		= ClassData.rofmod
 		Gun.RateOfFire	= 1 --updated when gun is linked to ammo
 		Gun.Sound		= Lookup.sound or ClassData.sound
-		Gun.SoundPitch  = 1
+		Gun.SoundPitch  = 100
 		Gun.AutoSound	= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
 
 		Gun:SetNWInt( "Caliber", Gun.Caliber )
@@ -222,7 +222,7 @@ do
 		Gun:SetNWString( "ID", Gun.Id )
 		Gun:SetNWString( "Muzzleflash", Gun.Muzzleflash )
 		Gun:SetNWString( "Sound", Gun.Sound )
-		Gun:SetNWString( "SoundPitch", Gun.SoundPitch )
+		Gun:SetNWInt( "SoundPitch", Gun.SoundPitch )
 
 		Gun:SetModel( Gun.Model )
 

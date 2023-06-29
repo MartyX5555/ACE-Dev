@@ -44,14 +44,14 @@ ACF.SoundToolSupport = {
 
 	acf_gun = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 
 			ent.Sound = soundData.Sound
 			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
-			ent:SetNWString( "SoundPitch", soundData.Pitch )
+			ent:SetNWInt( "SoundPitch", soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
@@ -92,12 +92,13 @@ ACF.SoundToolSupport = {
 
 	acf_rack = {
 
-		GetSound = function(ent) return { Sound = ent.Sound } end,
+		GetSound = function(ent) return { Sound = ent.Sound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
 			ent.SoundPitch = soundData.Pitch
 			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)
@@ -114,7 +115,7 @@ ACF.SoundToolSupport = {
 
 	acf_missileradar = {
 
-		GetSound = function(ent) return { Sound = ent.Sound or ACFM.DefaultRadarSound } end,
+		GetSound = function(ent) return { Sound = ent.Sound or ACFM.DefaultRadarSound, Pitch = ent.SoundPitch or 100 } end,
 
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
@@ -133,7 +134,11 @@ ACF.SoundToolSupport = {
 local function ReplaceSound( _ , Entity , data)
 	if not IsValid( Entity ) then return end
 	local sound = data[1]
-	local pitch = data[2] or 1
+	local pitch = tonumber(data[2]) or 100
+
+	if pitch < 10 then
+		pitch = pitch * 100
+	end
 
 	--IDK why this timer is here. I will cut to 0.1 if not deleting it if i had idea.
 	timer.Simple(0.1, function()
@@ -307,28 +312,8 @@ if CLIENT then
 		end
 		panel:AddItem(ClearButton)
 
-		--panel:ControlHelp( "string help" )
-
-		panel:AddControl("Slider", {
-			Label = "Pitch:",
-			Command = "acfsound_pitch",
-			Type = "Float",
-			Min = "0.1",
-			Max = "2.55",
-		}):SetTooltip("Adjust the pitch of the sound. Currently supports Engines, Guns, Rack and Missile radars. \n\nNote: This will not work with dynamic sounds atm.")
-		--[[
-		local SoundPitch = vgui.Create("DNumSlider")
-		SoundPitch:SetMin( 0.1 )
-		SoundPitch:SetMax( 2 )
-		SoundPitch:SetDecimals( 0.1 )
-		SoundPitch:SetWide(wide)
-		SoundPitch:SetText("Pitch:")
-		SoundPitch:SetToolTip(ACFTranslation.SoundToolText[6])
-		SoundPitch:SetConVar( "acfsound_pitch" )
-		SoundPitch:SetValue( 1 )
-		panel:AddItem(SoundPitch)
-		--]]
-
+		panel:NumSlider( "Pitch", "acfsound_pitch", 10, 255, 0 )
+		panel:ControlHelp( "Adjust the pitch of the sound. Currently supports Engines, Guns, Rack and Missile radars. \n\nNote: This will not work with dynamic sounds atm." )
 	end
 
 	--[[

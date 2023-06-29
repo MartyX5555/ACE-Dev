@@ -13,7 +13,7 @@ function EFFECT:Init( data )
 	local ReloadTime   = data:GetMagnitude()
 
 	local Sound        = Gun:GetNWString( "Sound", "" )
-	local SoundPitch   = Gun:GetNWString( "SoundPitch", 1 )
+	local SoundPitch   = Gun:GetNWInt( "SoundPitch", 100 )
 	local Class        = Gun:GetNWString( "Class", "C" )
 	local Caliber      = Gun:GetNWInt( "Caliber", 1 ) * 10
 	local MuzzleEffect = Gun:GetNWString( "Muzzleflash", "50cal_muzzleflash_noscale" )
@@ -37,8 +37,6 @@ function EFFECT:Init( data )
 	end
 
 	if Propellant > 0 then
-
-		print(SoundPitch)
 
 		ACE_SGunFire( Gun, Sound, SoundPitch, Propellant )
 

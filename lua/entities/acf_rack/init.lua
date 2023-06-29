@@ -622,6 +622,8 @@ function ENT:AddMissile()
 	if self.HideMissile then missile:SetNoDraw(true) end
 	if self.ProtectMissile then missile:SetNotSolid(true) end
 
+	missile:SetNWEntity( "Launcher", missile.Launcher )
+
 	missile:Spawn()
 
 	self.Missiles[NextIdx + 1] = missile
@@ -726,7 +728,7 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 	Rack.Muzzleflash	= gundef.muzzleflash	or gunclass.muzzleflash	or ""
 	Rack.RoFmod			= gunclass["rofmod"]								or 1
 	Rack.Sound			= gundef.sound		or gunclass.sound		or "acf_extra/airfx/rocket_fire2.wav"
-	Rack.SoundPitch  	= 1
+	Rack.SoundPitch  	= 100
 	Rack.Inaccuracy		= gundef["spread"]	or gunclass["spread"]	or 1
 
 	Rack.HideMissile		= ACF_GetRackValue(Id, "hidemissile")			or false
@@ -740,6 +742,7 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 	Rack:SetNWString( "Class",  Rack.Class )
 	Rack:SetNWString( "ID",	Rack.Id )
 	Rack:SetNWString( "Sound",  Rack.Sound )
+	Rack:SetNWInt( "SoundPitch",  Rack.SoundPitch )
 
 	if not UpdateRack or Rack.Model ~= Rack:GetModel() then
 

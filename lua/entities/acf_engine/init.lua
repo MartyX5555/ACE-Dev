@@ -111,7 +111,7 @@ do
 		Engine.EngineType	= Lookup.enginetype or "GenericPetrol"
 		Engine.TorqueCurve	= Lookup.torquecurve or ACF.GenericTorqueCurves[Engine.EngineType]
 		Engine.RequiresFuel	= Lookup.requiresfuel
-		Engine.SoundPitch	= Lookup.pitch or 1
+		Engine.SoundPitch	= Lookup.pitch or 100
 		Engine.SpecialHealth	= true
 		Engine.SpecialDamage	= true
 		Engine.TorqueMult	= 1
@@ -202,7 +202,7 @@ function ENT:Update( ArgsTable )
 	self.FuelType		= Lookup.fuel
 	self.EngineType		= Lookup.enginetype
 	self.RequiresFuel	= Lookup.requiresfuel
-	self.SoundPitch		= Lookup.pitch or 1
+	self.SoundPitch		= Lookup.pitch or 100
 	self.SpecialHealth	= true
 	self.SpecialDamage	= true
 	self.TorqueMult		= self.TorqueMult or 1
@@ -638,7 +638,7 @@ function ENT:CalcRPM()
 	--Wire_TriggerOutput(self, "EngineHeat", self.Heat) --Definately an RPM calculation
 
 	if self.Sound then
-		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * self.SoundPitch) / 50, 255 ), 0 )
+		self.Sound:ChangePitch( math.min( 20 + (SmoothRPM * (self.SoundPitch / 100)) / 50, 255 ), 0 )
 		self.Sound:ChangeVolume( 0.25 + (0.1 + 0.9 * ((SmoothRPM / self.LimitRPM) ^ 1.5)) * self.Throttle / 1.5, 0 )
 	end
 

@@ -208,7 +208,17 @@ ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(ang
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
 
---------------------------------------------------------------------
+---------------------------------- Particle colors  ----------------------------------
+
+ACE.DustMaterialColor = {
+	Concrete   = Color(100,100,100,150),
+	Dirt       = Color(117,101,70,150),
+	Sand       = Color(200,180,116,150),
+	Glass      = Color(255,255,255,50),
+}
+
+--------------------------------------------------------------------------------------
+
 
 if ACF.AllowCSLua > 0 then
 	AddCSLuaFile("autorun/translation/ace_translationpacks.lua")

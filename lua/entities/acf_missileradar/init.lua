@@ -285,7 +285,7 @@ function ENT:ScanForMissiles()
 	self.OutputData.Velocity = velArray
 
 	if i > (self.LastMissileCount or 0) then
-		self:EmitSound( self.Sound or ACFM.DefaultRadarSound, 500, self.SoundPitch and (self.SoundPitch * 100) or 100 )
+		self:EmitSound( self.Sound or ACFM.DefaultRadarSound, 500, self.SoundPitch or 100 )
 	end
 
 	self.LastMissileCount = i

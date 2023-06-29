@@ -90,11 +90,6 @@ do
 		return ply
 	end
 
-	--Intended universal function
-	function ACE_InDist( Pos1, Pos2, Distance )
-		return (Pos2 - Pos1):LengthSqr() < Distance ^ 2
-	end
-
 	local function GetHeadPos( ply )
 		local plyPos	= ply.aceposoverride or ply:GetPos()
 		local headPos	= plyPos + ( not ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
@@ -516,7 +511,7 @@ do
 						end
 
 					else
-						Pitch = PitchOverride * 100
+						Pitch = PitchOverride
 					end
 
 					--If a wall is in front of the player and is indoor, reduces its vol at 50%
