@@ -690,11 +690,11 @@ function ACFCLGUICreate()
 	local Sounds = vgui.Create( "DForm" )
 	Sounds:SetName("Sounds")
 
-	Sounds:CheckBox("Allow Tinnitu Noise", "acf_tinnitus")
+	Sounds:CheckBox("Allow Tinnitus Noise", "acf_tinnitus")
 	Sounds:ControlHelp( "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat." )
 
 	Sounds:NumSlider( "Ambient overall sounds", "acf_sound_volume", 0, 100, 0 )
-	Sounds:ControlHelp( "Adjusts the volume of ACE sounds like Explosions, penetrations, ricochets, etc. Missiles and engines and some mechanic sounds are not affected yet." )
+	Sounds:ControlHelp( "Adjusts the volume of ACE sounds like explosions, penetrations, ricochets, etc. Eengines and some mechanic sounds are not affected yet." )
 
 	acfmenupanel.CustomDisplay:AddItem( Sounds )
 

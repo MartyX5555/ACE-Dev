@@ -313,7 +313,7 @@ if CLIENT then
 		panel:AddItem(ClearButton)
 
 		panel:NumSlider( "Pitch", "acfsound_pitch", 10, 255, 0 )
-		panel:ControlHelp( "Adjust the pitch of the sound. Currently supports Engines, Guns, Rack and Missile radars. \n\nNote: This will not work with dynamic sounds atm." )
+		panel:ControlHelp( "Adjust the pitch of the sound. Currently supports engines, guns, racks and missile radars. \n\nNote: This will not work with dynamic sounds atm." )
 	end
 
 	--[[
