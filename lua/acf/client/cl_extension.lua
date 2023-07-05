@@ -75,16 +75,17 @@ do
 
 		-------------------------- Method 2: Via Wire Cam Controller -----------------------------
 		ACE.Sounds.HookTable = ACE.Sounds.HookTable or hook.GetTable()
+		if ACE.Sounds.HookTable["CalcView"] then
 
-		-- wire cam controller support. I would wish not to have a really hardcoded way to make everything consistent but well...
-		local CameraPos        = ACE.Sounds.HookTable["CalcView"]["wire_camera_controller_calcview"]
-		local ThirdPersonPos   = CameraPos and CameraPos()
+			ply.aceposoverride	= nil
+			-- wire cam controller support. I would wish not to have a really hardcoded way to make everything consistent but well...
+			local CameraPos        = ACE.Sounds.HookTable["CalcView"]["wire_camera_controller_calcview"]
+			local ThirdPersonPos   = CameraPos and CameraPos()
 
-		ply.aceposoverride	= nil
-
-		if ThirdPersonPos and ThirdPersonPos.origin then
-			ply.aceposoverride = ThirdPersonPos.origin
-			return ply
+			if ThirdPersonPos and ThirdPersonPos.origin then
+				ply.aceposoverride = ThirdPersonPos.origin
+				return ply
+			end
 		end
 
 		return ply

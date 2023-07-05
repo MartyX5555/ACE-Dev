@@ -227,54 +227,11 @@ function ENT:UnloadAmmo()
 	-- we're ok with mixed munitions.
 end
 
-local WireTable = { "gmod_wire_adv_pod", "gmod_wire_pod", "gmod_wire_keyboard", "gmod_wire_joystick", "gmod_wire_joystick_multi" }
-
-function ENT:GetUser( inp )
-	if not inp then return nil end
-
-	if inp:GetClass() == "gmod_wire_adv_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_pod" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_keyboard" then
-		if inp.ply then
-			return inp.ply
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_joystick_multi" then
-		if inp.Pod then
-			return inp.Pod:GetDriver()
-		end
-	elseif inp:GetClass() == "gmod_wire_expression2" then
-		if inp.Inputs["Fire"] then
-			return self:GetUser(inp.Inputs["Fire"].Src)
-		elseif inp.Inputs["Shoot"] then
-			return self:GetUser(inp.Inputs["Shoot"].Src)
-		elseif inp.Inputs then
-			for _,v in pairs(inp.Inputs) do
-				if not IsValid(v.Src) then return inp.Owner or inp:CPPIGetOwner() end
-				if table.HasValue(WireTable, v.Src:GetClass()) then
-					return self:GetUser(v.Src)
-				end
-			end
-		end
-	end
-	return inp.Owner or inp:CPPIGetOwner()
-
-end
-
 function ENT:TriggerInput( iname , value )
 
 	if ( iname == "Fire" and value ~= 0 and ACF.GunfireEnabled and self.Legal ) then
 		if self.NextFire >= 1 then
-			self.User = self:GetUser(self.Inputs["Fire"].Src)
+			self.User = ACE_GetWeaponUser( self, self.Inputs.Fire.Src )
 			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
 			self:FireMissile()
 			self:Think()
