@@ -481,7 +481,7 @@ end
 -- Set ammo properties
 local ammo_properties = {}
 
-for id, data in pairs(list.Get("ACFRoundTypes")) do
+for id, data in pairs(ACF.RoundTypes) do
 	ammo_properties[id] = {
 		name = data.name,
 		desc = data.desc,
@@ -992,7 +992,7 @@ function ents_methods:acfName ()
 	if isGearbox( this ) then acftype = "Mobility" end
 	if isGun( this ) then acftype = "Guns" end
 	if ( acftype == "" ) then return "" end
-	local List = list.Get( "ACFEnts" )
+	local List = ACF.Weapons
 	return List[ acftype ][ this.Id ][ "name" ] or ""
 end
 
@@ -1006,11 +1006,11 @@ function ents_methods:acfType ()
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
 	if isEngine( this ) or isGearbox( this ) then
-		local List = list.Get( "ACFEnts" )
+		local List = ACF.Weapons
 		return List[ "Mobility" ][ this.Id ][ "category" ] or ""
 	end
 	if isGun( this ) then
-		local Classes = list.Get( "ACFClasses" )
+		local Classes = ACF.Classes
 		return Classes[ "GunClass" ][ this.Class ][ "name" ] or ""
 	end
 	if isAmmo( this ) then return this.RoundType or "" end
@@ -2321,7 +2321,7 @@ function ents_methods:acfPropArmorData()
 	local mat = this.ACF.Material
 	if not mat then return empty end
 
-	local matData = ACE.Armors[mat]
+	local matData = ACE.ArmorTypes[mat]
 	if not matData then return empty end
 
 	return {

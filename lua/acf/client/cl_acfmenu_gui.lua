@@ -254,7 +254,7 @@ function PANEL:Init( )
 	Ammo subfolder SPECS
 ]]--=========================
 
-	local SPECSAttribs = list.Get("SPECSRoundTypes") --local RoundAttribs = list.Get("ACFRoundTypes")
+	local SPECSAttribs = list.Get("SPECSRoundTypes")
 	self.SPECSAttribs = {}
 	for ID,Table in pairs(SPECSAttribs) do
 	Table.id = ID

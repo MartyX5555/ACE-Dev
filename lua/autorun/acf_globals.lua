@@ -12,6 +12,7 @@ print("[ACE | INFO]- loading ACE. . .")
 
 ACE               = ACE or {}
 ACE.ArmorTypes    = {}
+ACE.GSounds 	  = {}
 
 ACF.Weapons       = {}
 ACF.Classes       = {}
@@ -342,16 +343,6 @@ if ACF.Year > 1989 then
 	include("acf/shared/rounds/roundtheatfs.lua")
 
 end
-
-
-ACF.Weapons       = list.Get("ACFEnts")
-ACF.Classes       = list.Get("ACFClasses")
-ACF.RoundTypes    = list.Get("ACFRoundTypes")
-ACF.IdRounds      = list.Get("ACFIdRounds")	--Lookup tables so i can get rounds classes from clientside with just an integer
-
-ACE.Armors        = list.Get("ACE_MaterialTypes")
-ACE.GSounds       = list.Get("ACESounds")
-
 
 game.AddDecal("GunShot1", "decals/METAL/shot5")
 

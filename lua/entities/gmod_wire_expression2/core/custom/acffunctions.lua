@@ -221,7 +221,7 @@ e2function string entity:acfType()
 		return List["Mobility"][this.Id]["category"] or ""
 	end
 	if isGun(this) then
-		local Classes = list.Get("ACFClasses")
+		local Classes = ACF.Classes
 		return Classes["GunClass"][this.Class]["name"] or ""
 	end
 	if isAmmo(this) then return this.RoundType or "" end
@@ -957,7 +957,7 @@ e2function table entity:acfPropArmorData()
 	local mat = this.ACF.Material
 	if not mat then return ret end
 
-	local matData = ACE.Armors[mat]
+	local matData = ACE.ArmorTypes[mat]
 	if not matData then return ret end
 
 	ret.size = 4
