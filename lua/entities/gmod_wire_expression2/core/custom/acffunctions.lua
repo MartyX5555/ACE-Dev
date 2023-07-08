@@ -210,14 +210,14 @@ e2function string entity:acfName()
 	if isGearbox(this) then acftype = "Mobility" end
 	if isGun(this) then acftype = "Guns" end
 	if (acftype == "") then return "" end
-	local List = list.Get("ACFEnts")
+	local List = ACF.Weapons
 	return List[acftype][this.Id]["name"] or ""
 end
 
 -- Returns the type of ACF entity
 e2function string entity:acfType()
 	if isEngine(this) or isGearbox(this) then
-		local List = list.Get("ACFEnts")
+		local List = ACF.Weapons
 		return List["Mobility"][this.Id]["category"] or ""
 	end
 	if isGun(this) then
