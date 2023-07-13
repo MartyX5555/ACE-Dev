@@ -648,7 +648,6 @@ function ENT:Think()
 
 		--UnlinkDistance
 		for _, Crate in pairs(self.AmmoLink) do
-			print( IsValid( Crate ), Crate.Load, Crate.Legal )
 			if IsValid( Crate ) and Crate.Load and Crate.Legal then
 
 				if IsInRetDist( self, Crate, AmmoLinkDistBase * self.LinkRangeMul ) then

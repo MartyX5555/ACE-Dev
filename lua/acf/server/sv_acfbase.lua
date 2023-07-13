@@ -248,22 +248,15 @@ function ACF_VehicleDamage(Entity, Energy, FrArea, Angle, Inflictor, _, Gun, Typ
 	if HitRes.Damage ~= HitRes.Damage then HitRes.Damage = 0 end
 
 	if validd then
-
 		local dmg = 40
-
-		if Type == "Spall" then
-			dmg = 40
-			--print(HitRes.Damage * dmg)
-		end
-
 		Driver:TakeDamage( HitRes.Damage * dmg , Inflictor, Gun )
 	end
 
 	HitRes.Kill = false
 	if HitRes.Damage >= Entity.ACF.Health then --Drivers will no longer survive seat destruction
-			if validd then
-				Driver:Kill()
-			end
+		if validd then
+			Driver:Kill()
+		end
 		HitRes.Kill = true
 	else
 		Entity.ACF.Health = Entity.ACF.Health - HitRes.Damage

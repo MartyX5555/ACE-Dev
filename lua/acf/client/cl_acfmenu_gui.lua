@@ -694,7 +694,7 @@ function ACFCLGUICreate()
 	Sounds:ControlHelp( "Allows the ear tinnitus effect to be applied when an explosive was detonated too close to your position, improving the inmersion during combat." )
 
 	Sounds:NumSlider( "Ambient overall sounds", "acf_sound_volume", 0, 100, 0 )
-	Sounds:ControlHelp( "Adjusts the volume of ACE sounds like explosions, penetrations, ricochets, etc. Eengines and some mechanic sounds are not affected yet." )
+	Sounds:ControlHelp( "Adjusts the volume of ACE sounds like explosions, penetrations, ricochets, etc. Engines and some mechanic sounds are not affected yet." )
 
 	acfmenupanel.CustomDisplay:AddItem( Sounds )
 

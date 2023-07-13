@@ -65,6 +65,9 @@ ACF.SoundToolSupport = {
 
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
+		end,
+
+		NewFormat = function()
 		end
 	},
 
@@ -110,7 +113,11 @@ ACF.SoundToolSupport = {
 
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
+		end,
+
+		NewFormat = function()
 		end
+
 	},
 
 	acf_missileradar = {
@@ -128,31 +135,38 @@ ACF.SoundToolSupport = {
 			local setSound = ACF.SoundToolSupport["acf_gun"].SetSound
 			setSound( ent, soundData )
 		end
-	}
+	},
+
+	NewFormat = function()
+	end
+
 }
 
 local function ReplaceSound( _ , Entity , data)
 	if not IsValid( Entity ) then return end
 	local sound = data[1]
 	local pitch = tonumber(data[2]) or 100
+	local isNew = data[3]
 
 	if pitch < 10 then
 		pitch = pitch * 100
 	end
 
-	--IDK why this timer is here. I will cut to 0.1 if not deleting it if i had idea.
-	timer.Simple(0.1, function()
-		if not IsValid( Entity ) then return end --Caused by insta removal of the dupe
+	local class = Entity:GetClass()
+	local support = ACF.SoundToolSupport[class]
 
-		local class = Entity:GetClass()
-		local support = ACF.SoundToolSupport[class]
+	if support then
 
-		if not support then return end
+		-- Before to the implementation, sounds were still being granted with the pitch you had on the slider, 
+		-- making that the official integration makes it to use it, altering the supposed non pitch it had before
+		-- This should fix it, making sure to tag it with a new format in future applications.
+		if support.NewFormat and not isNew then
+			pitch = 100
+		end
 
 		support.SetSound(Entity, {Sound = sound, Pitch = pitch})
-	end)
-
-	duplicator.StoreEntityModifier( Entity, "acf_replacesound", {sound, pitch} )
+		duplicator.StoreEntityModifier( Entity, "acf_replacesound", {sound, pitch, true} )
+	end
 end
 
 duplicator.RegisterEntityModifier( "acf_replacesound", ReplaceSound )
@@ -186,7 +200,7 @@ function TOOL:LeftClick( trace )
 
 	local sound = self:GetOwner():GetInfo("wire_soundemitter_sound")
 	local pitch = self:GetOwner():GetInfo("acfsound_pitch")
-	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch} )
+	ReplaceSound( self:GetOwner(), trace.Entity, {sound, pitch, true} )
 	return true
 end
 
