@@ -91,6 +91,10 @@ do
 		return ply
 	end
 
+	function ACE_GetDistanceTime( Dist )
+		return (Dist / 1500) * ACE.DelayMultipler
+	end
+
 	local function GetHeadPos( ply )
 		local plyPos	= ply.aceposoverride or ply:GetPos()
 		local headPos	= plyPos + ( not ply:InVehicle() and ( ( ply:Crouching() and Vector(0,0,28) ) or Vector(0,0,64) ) or Vector(0,0,0) )
@@ -166,10 +170,10 @@ do
 			local entply    = ACE_SGetHearingEntity( ply )
 
 			local plyPos    = entply.aceposoverride or entply:GetPos()
-			local Dist      = math.abs((plyPos - HitPos):Length())
+			local Dist      = (plyPos - HitPos):Length()
 			local Volume    = 1 / (Dist / 500) * Radius * 0.2
 			local Pitch     = math.Clamp(1000 / Radius, 25, 130)
-			local Delay     = (Dist / 1500) * ACE.DelayMultipler
+			local Delay     = ACE_GetDistanceTime( Dist )
 
 			if count > Delay then
 
@@ -330,10 +334,10 @@ do
 			local entply = ACE_SGetHearingEntity( ply )
 
 			local plyPos    = entply.aceposoverride or entply:GetPos()
-			local Dist      = math.abs((plyPos - HitPos):Length())
+			local Dist      = (plyPos - HitPos):Length()
 			local Volume    = 1 / (Dist / 500) * Mass / 17.5
 			local Pitch     = math.Clamp(Velocity * 1, 90, 150)
-			local Delay     = (Dist / 1500) * ACE.DelayMultipler
+			local Delay     = ACE_GetDistanceTime( Dist )
 
 			if count > Delay then
 
@@ -378,10 +382,10 @@ do
 			local entply = ACE_SGetHearingEntity( ply )
 
 			local plyPos    = entply.aceposoverride or entply:GetPos()
-			local Dist      = math.abs((plyPos - HitPos):Length())
+			local Dist      = (plyPos - HitPos):Length()
 			local Volume    = 1 / (Dist / 500) * Velocity / 130000
 			local Pitch     = math.Clamp(Velocity * 0.001, 90, 150)
-			local Delay     = (Dist / 1500) * ACE.DelayMultipler
+			local Delay     = ACE_GetDistanceTime( Dist )
 
 			if count > Delay then
 
@@ -462,9 +466,9 @@ do
 			local entply = ACE_SGetHearingEntity( ply )
 
 			local plyPos    = entply.aceposoverride or entply:GetPos()
-			local Dist      = math.abs((plyPos - Pos):Length())
+			local Dist      = (plyPos - Pos):Length()
 			local Volume    = 1 / (Dist / 500) * Propellant / 18
-			local Delay     = (Dist / 1500) * ACE.DelayMultipler
+			local Delay     = ACE_GetDistanceTime( Dist )
 
 			if count > Delay then
 
@@ -556,9 +560,9 @@ do
 
 			--Delayed event report.
 			local CrackPos    = BulletData.SimPos - BulletData.SimFlight:GetNormalized() * 5000
-			local Dist        = math.abs((plyPos - CrackPos):Length())
+			local Dist        = (plyPos - CrackPos):Length()
 			local Volume      = 10000 / Dist
-			local Delay       = (Dist / 1500) * ACE.DelayMultipler
+			local Delay       = ACE_GetDistanceTime( Dist )
 
 			if count > Delay then
 
@@ -599,6 +603,50 @@ do
 				timer.Remove( ide )
 			end
 		end )
+	end
+
+	--For any miscellaneous sound. BaseDistVolume is the Max dist where Volume will be 1. The volume will start losing dbs beyond this distance. In Units.
+	function ACE_SimpleSound( Sound, Origin, Pitch, BaseDistVolume  )
+
+		local ply = LocalPlayer()
+		local count    = 1
+		local Emitted  = false --Was the sound played?
+
+		local ide = "ACESimpleSound#" .. math.random(1,100000)
+
+		if timer.Exists( ide ) then return end
+		timer.Create( ide , 0.1, 0, function()
+
+			count = count + 1
+
+			local entply = ACE_SGetHearingEntity( ply )
+			local plyPos = entply.aceposoverride or entply:GetPos()
+
+			--Delayed event report.
+			local Dist        = (plyPos - Origin):Length()
+			local Delay       = ACE_GetDistanceTime( Dist )
+			local Volume      = BaseDistVolume / Dist
+
+			if count > Delay then
+
+				if not Emitted then
+
+					Emitted = true
+
+					local VolFix = 1
+
+					--If a wall is in front of the player and is indoor, reduces its vol
+					if not ACE_SHasLOS( Origin ) and ACE_SIsInDoor() then
+						VolFix = VolFix * 0.025
+					end
+
+					ACE_EmitSound( Sound or "" , plyPos + (Origin - plyPos):GetNormalized() * 64, 100, Pitch, Volume * VolFix )
+				end
+				timer.Stop( ide )
+				timer.Remove( ide )
+			end
+		end )
+
 	end
 
 	--Coming soon

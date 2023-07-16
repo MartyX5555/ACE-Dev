@@ -113,13 +113,16 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Radar:SetAngles(Angle)
 	Radar:SetPos(Pos)
 
-	Radar.Model	= radar.model
-	Radar.Weight	= radar.weight
-	Radar.ACFName	= radar.name
-	Radar.ConeDegs  = radar.viewcone
-	Radar.Range	= radar.range
-	Radar.Id		= Id
-	Radar.Class	= radar.class
+	Radar.Model        = radar.model
+	Radar.Weight       = radar.weight
+	Radar.ACFName      = radar.name
+	Radar.ConeDegs     = radar.viewcone
+	Radar.Range        = radar.range
+	Radar.Id           = Id
+	Radar.Class        = radar.class
+
+	Radar.Sound        = ACFM.DefaultRadarSound
+	Radar.SoundPitch   = 100
 
 	Radar:Spawn()
 	Radar:SetPlayer(Owner)
@@ -132,15 +135,14 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Owner:AddCleanup( "acfmenu", Radar )
 
 	Radar:SetNWString( "WireName", Radar.ACFName )
+	Radar:SetNWString( "Sound", Radar.Sound )
+	Radar:SetNWInt( "SoundPitch",  Radar.SoundPitch )
 
 	return Radar
 
 end
 list.Set( "ACFCvars", "acf_missileradar", {"id"} )
 duplicator.RegisterEntityClass("acf_missileradar", MakeACF_MissileRadar, "Pos", "Angle", "Id" )
-
-
-
 
 function ENT:CreateRadar(ACFName, ConeDegs)
 
@@ -151,9 +153,6 @@ function ENT:CreateRadar(ACFName, ConeDegs)
 
 end
 
-
-
-
 function ENT:RefreshClientInfo()
 
 	self:SetNWFloat("ConeDegs", self.ConeDegs)
@@ -162,9 +161,6 @@ function ENT:RefreshClientInfo()
 	self:SetNWString("Name", self.ACFName)
 
 end
-
-
-
 
 function ENT:SetModelEasy(mdl)
 
@@ -181,11 +177,7 @@ function ENT:SetModelEasy(mdl)
 	if (phys:IsValid()) then
 		phys:SetMass(Rack.Weight)
 	end
-
 end
-
-
-
 
 function ENT:Think()
 
@@ -218,9 +210,7 @@ function ENT:Think()
 	self:GetOverlayText()
 
 	return true
-
 end
-
 
 function ENT:UpdateStatus()
 
@@ -285,11 +275,17 @@ function ENT:ScanForMissiles()
 	self.OutputData.Velocity = velArray
 
 	if i > (self.LastMissileCount or 0) then
-		self:EmitSound( self.Sound or ACFM.DefaultRadarSound, 500, self.SoundPitch or 100 )
+		self:EmitRadarSound()
 	end
 
 	self.LastMissileCount = i
 
+end
+
+function ENT:EmitRadarSound()
+	local Effect = EffectData()
+		Effect:SetEntity( self )
+	util.Effect( "acf_radar_noise", Effect, true, true )
 end
 
 function ENT:ClearOutputs()

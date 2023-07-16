@@ -127,6 +127,8 @@ ACF.SoundToolSupport = {
 		SetSound = function(ent, soundData)
 			ent.Sound = soundData.Sound
 			ent.SoundPitch = soundData.Pitch
+			ent:SetNWString( "Sound", soundData.Sound )
+			ent:SetNWInt( "SoundPitch",  soundData.Pitch )
 		end,
 
 		ResetSound = function(ent)

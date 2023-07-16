@@ -259,7 +259,7 @@ if SERVER then
 	AddCSLuaFile("acf/client/cl_acfballistics.lua")
 	AddCSLuaFile("acf/client/cl_acfmenu_gui.lua")
 	AddCSLuaFile("acf/client/cl_acfrender.lua")
-	AddCSLuaFile("acf/client/cl_extension.lua")
+	AddCSLuaFile("acf/client/cl_soundbase.lua")
 
 	AddCSLuaFile("acf/client/cl_acfmenu_missileui.lua")
 
@@ -271,7 +271,7 @@ elseif CLIENT then
 
 	include("acf/client/cl_acfballistics.lua")
 	include("acf/client/cl_acfrender.lua")
-	include("acf/client/cl_extension.lua")
+	include("acf/client/cl_soundbase.lua")
 
 	include("acf/client/cl_acfpermission.lua")
 	include("acf/client/gui/cl_acfsetpermission.lua")
