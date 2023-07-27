@@ -630,22 +630,20 @@ function ENT:LoadAmmo()
 
 end
 
-function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
+function MakeACF_Rack(Owner, Pos, Angle, Id)
 
-	if not IsValid(UpdateRack) and not Owner:CheckLimit("_acf_rack") then return false end
+	if not Owner:CheckLimit("_acf_rack") then return false end
 
-	local Rack = UpdateRack or ents.Create("acf_rack")
+	local Rack = ents.Create("acf_rack")
 
 	if not IsValid(Rack) then return false end
 
 	Rack:SetAngles(Angle)
 	Rack:SetPos(Pos)
+	Rack:Spawn()
 
-	if not UpdateRack then --print("no update")
-		Rack:Spawn()
-		Owner:AddCount("_acf_rack", Rack)
-		Owner:AddCleanup( "acfmenu", Rack )
-	end
+	Owner:AddCount("_acf_rack", Rack)
+	Owner:AddCleanup( "acfmenu", Rack )
 
 	if not ACE_CheckRack( Id ) then
 		Id = "1xRK"
@@ -682,18 +680,19 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 
 	local gunclass = RackClasses[Rack.Class] or ErrorNoHalt("Couldn't find the " .. tostring(Rack.Class) .. " gun-class!")
 
-	Rack.Muzzleflash	= gundef.muzzleflash	or gunclass.muzzleflash	or ""
-	Rack.RoFmod			= gunclass["rofmod"]								or 1
-	Rack.Sound			= gundef.sound		or gunclass.sound		or "acf_extra/airfx/rocket_fire2.wav"
-	Rack.SoundPitch  	= 100
-	Rack.Inaccuracy		= gundef["spread"]	or gunclass["spread"]	or 1
+	Rack.Muzzleflash       = gundef.muzzleflash	or gunclass.muzzleflash	or ""
+	Rack.RoFmod            = gunclass["rofmod"]								or 1
+	Rack.Sound             = gundef.sound		or gunclass.sound		or "acf_extra/airfx/rocket_fire2.wav"
+	Rack.DefaultSound      = Rack.Sound
+	Rack.SoundPitch        = 100
+	Rack.Inaccuracy        = gundef["spread"]	or gunclass["spread"]	or 1
 
-	Rack.HideMissile		= ACF_GetRackValue(Id, "hidemissile")			or false
-	Rack.ProtectMissile	= gundef.protectmissile or gunclass.protectmissile  or false
-	Rack.CustomArmour	= gundef.armour		or gunclass.armour		or 1
+	Rack.HideMissile       = ACF_GetRackValue(Id, "hidemissile")			or false
+	Rack.ProtectMissile    = gundef.protectmissile or gunclass.protectmissile  or false
+	Rack.CustomArmour      = gundef.armour		or gunclass.armour		or 1
 
-	Rack.ReloadMultiplier	= ACF_GetRackValue(Id, "reloadmul")
-	Rack.WhitelistOnly	= ACF_GetRackValue(Id, "whitelistonly")
+	Rack.ReloadMultiplier  = ACF_GetRackValue(Id, "reloadmul")
+	Rack.WhitelistOnly     = ACF_GetRackValue(Id, "whitelistonly")
 
 	Rack:SetNWString("WireName",Rack.name)
 	Rack:SetNWString( "Class",  Rack.Class )
@@ -701,14 +700,10 @@ function MakeACF_Rack(Owner, Pos, Angle, Id, UpdateRack)
 	Rack:SetNWString( "Sound",  Rack.Sound )
 	Rack:SetNWInt( "SoundPitch",  Rack.SoundPitch )
 
-	if not UpdateRack or Rack.Model ~= Rack:GetModel() then
-
-		Rack:SetModel( Rack.Model )
-		Rack:PhysicsInit( SOLID_VPHYSICS )
-		Rack:SetMoveType( MOVETYPE_VPHYSICS )
-		Rack:SetSolid( SOLID_VPHYSICS )
-	end
-
+	Rack:SetModel( Rack.Model )
+	Rack:PhysicsInit( SOLID_VPHYSICS )
+	Rack:SetMoveType( MOVETYPE_VPHYSICS )
+	Rack:SetSolid( SOLID_VPHYSICS )
 
 	local phys = Rack:GetPhysicsObject()
 	if (phys:IsValid()) then
@@ -842,21 +837,12 @@ function ENT:PreEntityCopy()
 		duplicator.StoreEntityModifier( self, "ACFAmmoLink", info )
 	end
 
-	duplicator.StoreEntityModifier( self, "ACFRackInfo", {Id = self.Id} )
-
 	--Wire dupe info
 	self.BaseClass.PreEntityCopy( self )
 
 end
 
-
-
-
 function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
-
-	self.Id = Ent.EntityMods.ACFRackInfo.Id
-
-	MakeACF_Rack(self:CPPIGetOwner(), self:GetPos(), self:GetAngles(), self.Id, self)
 
 	if Ent.EntityMods and Ent.EntityMods.ACFAmmoLink and Ent.EntityMods.ACFAmmoLink.entities then
 		local AmmoLink = Ent.EntityMods.ACFAmmoLink
@@ -871,22 +857,10 @@ function ENT:PostEntityPaste( Player, Ent, CreatedEntities )
 		Ent.EntityMods.ACFAmmoLink = nil
 	end
 
-
 	--Wire dupe info
 	self.BaseClass.PostEntityPaste( self, Player, Ent, CreatedEntities )
 
 end
-
-
-
-
-function ACF_Rack_OnPhysgunDrop(_, ent)
-	if ent:GetClass() == "acf_rack" then
-		timer.Simple(0.01, function() if IsValid(ent) then ent:SetLoadedWeight() end end)
-	end
-end
-
-hook.Add("PhysgunDrop", "ACF_Rack_OnPhysgunDrop", ACF_Rack_OnPhysgunDrop)
 
 function ENT:OnRemove()
 	Wire_Remove(self)

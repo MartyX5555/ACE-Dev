@@ -211,14 +211,15 @@ do
 			Gun.MagReload = math.max(Gun.MagReload, Lookup.magreload )
 		end
 
-		Gun.MinLengthBonus = 0.5 * 3.1416 * (Gun.Caliber / 2) ^ 2 * Lookup.round.maxlength
+		Gun.MinLengthBonus    = 0.5 * 3.1416 * (Gun.Caliber / 2) ^ 2 * Lookup.round.maxlength
 
-		Gun.Muzzleflash	= Lookup.muzzleflash or ClassData.muzzleflash
-		Gun.RoFmod		= ClassData.rofmod
-		Gun.RateOfFire	= 1 --updated when gun is linked to ammo
-		Gun.Sound		= Lookup.sound or ClassData.sound
-		Gun.SoundPitch  = 100
-		Gun.AutoSound	= ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
+		Gun.Muzzleflash       = Lookup.muzzleflash or ClassData.muzzleflash
+		Gun.RoFmod            = ClassData.rofmod
+		Gun.RateOfFire        = 1 --updated when gun is linked to ammo
+		Gun.Sound             = Lookup.sound or ClassData.sound
+		Gun.DefaultSound      = Gun.Sound
+		Gun.SoundPitch        = 100
+		Gun.AutoSound         = ClassData.autosound and (Lookup.autosound or ClassData.autosound) or nil
 
 		Gun:SetNWInt( "Caliber", Gun.Caliber )
 		Gun:SetNWString( "WireName", Lookup.name )

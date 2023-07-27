@@ -122,6 +122,7 @@ function MakeACF_MissileRadar(Owner, Pos, Angle, Id)
 	Radar.Class        = radar.class
 
 	Radar.Sound        = ACFM.DefaultRadarSound
+	Radar.DefaultSound = Radar.Sound
 	Radar.SoundPitch   = 100
 
 	Radar:Spawn()
