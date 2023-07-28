@@ -9,28 +9,28 @@ local TraceInit = { output = TraceRes }
 
 --Used for filter certain undesired ents inside of HE processing
 ACF.HEFilter = {
-	gmod_wire_hologram		= true,
-	starfall_hologram		= true,
-	prop_vehicle_crane		= true,
-	prop_dynamic				= true,
-	ace_debris				= true,
-	sent_tanktracks_legacy	= true,
-	sent_tanktracks_auto		= true,
-	ace_flares				= true
+	gmod_wire_hologram       = true,
+	starfall_hologram        = true,
+	prop_vehicle_crane       = true,
+	prop_dynamic             = true,
+	ace_debris               = true,
+	sent_tanktracks_legacy   = true,
+	sent_tanktracks_auto     = true,
+	ace_flares               = true
 }
 
 --Used for tracebug HE workaround
 ACE.CritEnts = {
-	acf_gun					= true,
-	acf_ammo					= true,
-	acf_engine				= true,
-	acf_gearbox				= true,
-	acf_fueltank				= true,
-	acf_rack					= true,
-	acf_missile				= true,
-	ace_missile_swep_guided	= true,
-	prop_vehicle_prisoner_pod	= true,
-	gmod_wire_gate			= true
+	acf_gun                    = true,
+	acf_ammo                   = true,
+	acf_engine                 = true,
+	acf_gearbox                = true,
+	acf_fueltank               = true,
+	acf_rack                   = true,
+	acf_missile                = true,
+	ace_missile_swep_guided    = true,
+	prop_vehicle_prisoner_pod  = true,
+	gmod_wire_gate             = true
 }
 
 --I don't want HE processing every ent that it has in range
@@ -188,6 +188,9 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		--Now that we have the props to damage, apply it here
 		for _, Table in ipairs(Damage) do
 
+			print("EXPLOSIONtrace2222")
+
+
 			local Tar		= Table.Ent
 			local Feathering	= (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
 			local AreaFraction  = Table.Area / TotalArea
@@ -242,6 +245,9 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 					end
 
 					if not (Occ.Hit and Occ.Entity:EntIndex() ~= Tar:EntIndex()) and not (not Occ.Hit and NewHitpos ~= NewHitat) then
+
+						print("EXPLOSION")
+
 						BlastRes = ACF_Damage ( Tar	, Blast  , AreaAdjusted , 0	, Inflictor , 0	, Gun , "HE" )
 						FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 
@@ -257,6 +263,8 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				BlastRes = ACF_CalcDamage( Tar, Blast, AreaAdjusted, 0 )
 
 			else
+
+				print("EXPLOSION")
 
 				BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
 				FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
