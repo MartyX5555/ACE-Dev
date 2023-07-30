@@ -188,9 +188,6 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 		--Now that we have the props to damage, apply it here
 		for _, Table in ipairs(Damage) do
 
-			print("EXPLOSIONtrace2222")
-
-
 			local Tar		= Table.Ent
 			local Feathering	= (1-math.min(1,Table.Dist / Radius)) ^ ACF.HEFeatherExp
 			local AreaFraction  = Table.Area / TotalArea
@@ -246,8 +243,6 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 
 					if not (Occ.Hit and Occ.Entity:EntIndex() ~= Tar:EntIndex()) and not (not Occ.Hit and NewHitpos ~= NewHitat) then
 
-						print("EXPLOSION")
-
 						BlastRes = ACF_Damage ( Tar	, Blast  , AreaAdjusted , 0	, Inflictor , 0	, Gun , "HE" )
 						FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
 
@@ -263,8 +258,6 @@ function ACF_HE( Hitpos , _ , FillerMass, FragMass, Inflictor, NoOcc, Gun )
 				BlastRes = ACF_CalcDamage( Tar, Blast, AreaAdjusted, 0 )
 
 			else
-
-				print("EXPLOSION")
 
 				BlastRes = ACF_Damage ( Tar  , Blast , AreaAdjusted , 0 , Inflictor ,0 , Gun, "HE" )
 				FragRes = ACF_Damage ( Tar , FragKE , FragArea * FragHit , 0 , Inflictor , 0, Gun, "Frag" )
