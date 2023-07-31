@@ -82,23 +82,7 @@ function SWEP:PrimaryAttack()
 	self.BulletData.Gun = self
 
 	if not owner:HasGodMode() then
-		local ent = ents.Create( "ace_boundingmine" )
-
-		if ( IsValid( ent ) ) then
-
-			local Forward = owner:EyeAngles():Forward()
-
-			ent:SetPos( owner:GetShootPos() + Forward * 32 )
-			ent:SetAngles( owner:EyeAngles() )
-			ent:Spawn()
-			ent:SetVelocity( Forward * 10 )
-			owner:AddCleanup( "aceexplosives", ent )
-
-			if CPPI then
-				ent:CPPISetOwner( Entity(0) )
-			end
-			ent.DamageOwner = owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
-		end
+		ACE_CreateMine( "Bounding-APL", owner )
 	end
 	self.lastFire = CurTime()
 

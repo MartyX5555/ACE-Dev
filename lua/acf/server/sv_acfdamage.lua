@@ -1171,3 +1171,61 @@ function ACE_CalculateHERadius( HEWeight )
 	local Radius = HEWeight ^ 0.33 * 8 * 39.37
 	return Radius
 end
+
+local MineTable = ACE.MineData
+
+function ACE_CreateMine( MineId, Owner )
+	if not IsValid(Owner) then return end
+
+	local Mine = ents.Create( "ace_mine" )
+	if IsValid( Mine ) then
+
+		Owner:AddCount("_acf_mines", Mine)
+
+		local MineData = MineTable[MineId]
+		if not MineData then return end
+
+		Mine.ArmingTime       = MineData.armdelay or 0
+		Mine.HEWeight         = MineData.heweight or 0
+		Mine.FragMass         = MineData.fragmass or 0
+
+		Mine.weight           = MineData.weight or 1
+		Mine.ignoreplayers    = MineData.ignoreplayers
+		Mine.IsJumper         = MineData.shouldjump
+		Mine.JumpForce 		  = MineData.shouldjump and MineData.jumpforce or nil
+
+		Mine.digdepth         = MineData.digdepth or 0
+		Mine.GroundInverted   = MineData.groundinverted
+
+		Mine.CustomMineDetonation = MineData.customdetonation
+
+		local Forward = Owner:EyeAngles():Forward()
+		Mine:SetPos( Owner:GetShootPos() + Forward * 32 )
+		Mine:SetAngles( Owner:EyeAngles() )
+
+		Mine:SetModel( MineData.model )
+		Mine:SetMaterial( MineData.material )
+		Mine:SetColor( MineData.color or Color(255,255,255) )
+
+		Mine:SetMoveType(MOVETYPE_VPHYSICS);
+		Mine:PhysicsInit(SOLID_VPHYSICS);
+		Mine:SetSolid(SOLID_VPHYSICS);
+
+		Mine:Spawn()
+
+		local physObj = Mine:GetPhysicsObject()
+		if IsValid(physObj) then
+
+			Mine.physObj = physObj
+			physObj:SetMass(MineData.weight)
+			physObj:Wake()
+		end
+
+		Mine:SetVelocity( Forward * 10 )
+
+		Mine:CPPISetOwner(Entity(0))
+		Mine.DamageOwner = Owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
+	end
+
+end
+
