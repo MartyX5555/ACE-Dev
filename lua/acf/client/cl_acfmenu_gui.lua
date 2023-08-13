@@ -291,7 +291,7 @@ function PANEL:Init( )
 			for k, v in pairs(radarClasses) do  --calls subfolders
 				if v.type == "Anti-missile" then
 					nods[k] = antimissile:AddNode( v.name or "No Name" , ItemIcon	)
-				elseif v.type == "Tracking-Radar" then 
+				elseif v.type == "Tracking-Radar" then
 					nods[k] = tracking
 				elseif v.type == "IRST" then
 					nods[k] = irst
@@ -299,7 +299,7 @@ function PANEL:Init( )
 			end
 
 			--calls subfolders content
-			for _, Ent in pairs(radars) do 
+			for _, Ent in pairs(radars) do
 
 				local curNode = nods[Ent.class]
 
