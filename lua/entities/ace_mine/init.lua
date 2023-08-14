@@ -113,6 +113,7 @@ function ENT:Initialize()
 
 	self.Ready = false
 	self.HasGround = false
+	self.PhysgunDisabled = true
 
 end
 
