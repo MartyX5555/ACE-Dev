@@ -1172,15 +1172,14 @@ function ACE_CalculateHERadius( HEWeight )
 	return Radius
 end
 
+
 local MineTable = ACE.MineData
 
-function ACE_CreateMine( MineId, Owner )
+function ACE_CreateMine( MineId, Pos, Angle, Owner )
 	if not IsValid(Owner) then return end
 
 	local Mine = ents.Create( "ace_mine" )
 	if IsValid( Mine ) then
-
-		Owner:AddCount("_acf_mines", Mine)
 
 		local MineData = MineTable[MineId]
 		if not MineData then return end
@@ -1192,16 +1191,22 @@ function ACE_CreateMine( MineId, Owner )
 		Mine.weight           = MineData.weight or 1
 		Mine.ignoreplayers    = MineData.ignoreplayers
 		Mine.IsJumper         = MineData.shouldjump
-		Mine.JumpForce 		  = MineData.shouldjump and MineData.jumpforce or nil
+		Mine.JumpForce        = MineData.shouldjump and MineData.jumpforce or nil
+
+		Mine.setrange         = MineData.setrange or 1
+		Mine.triggermins      = MineData.triggermins or vector_origin
+		Mine.triggermaxs      = MineData.triggermaxs or vector_origin
 
 		Mine.digdepth         = MineData.digdepth or 0
 		Mine.GroundInverted   = MineData.groundinverted
 
 		Mine.CustomMineDetonation = MineData.customdetonation
 
-		local Forward = Owner:EyeAngles():Forward()
-		Mine:SetPos( Owner:GetShootPos() + Forward * 32 )
-		Mine:SetAngles( Owner:EyeAngles() )
+		Mine:CPPISetOwner(Entity(0))
+		Mine.DamageOwner = Owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
+
+		Mine:SetPos( Pos )
+		Mine:SetAngles( Angle )
 
 		Mine:SetModel( MineData.model )
 		Mine:SetMaterial( MineData.material )
@@ -1210,7 +1215,6 @@ function ACE_CreateMine( MineId, Owner )
 		Mine:SetMoveType(MOVETYPE_VPHYSICS);
 		Mine:PhysicsInit(SOLID_VPHYSICS);
 		Mine:SetSolid(SOLID_VPHYSICS);
-
 		Mine:Spawn()
 
 		local physObj = Mine:GetPhysicsObject()
@@ -1220,12 +1224,7 @@ function ACE_CreateMine( MineId, Owner )
 			physObj:SetMass(MineData.weight)
 			physObj:Wake()
 		end
-
-		Mine:SetVelocity( Forward * 10 )
-
-		Mine:CPPISetOwner(Entity(0))
-		Mine.DamageOwner = Owner -- Done to avoid owners from manipulating the entity, but allowing the damage to be credited by him.
+		return Mine
 	end
-
 end
 

@@ -1,14 +1,15 @@
 --i'll leave almost everything ready so they can be exported to acf-3 in some near future
 --print("[ACE | INFO]- Loading Contraption System. . .")
 --ACE               = ACE or {}
-ACE.contraptionEnts = {} --table which will have all registered ents
-ACE.radarEntities   = {} --for tracking radar usage
-ACE.radarIDs        = {} --ID radar purpose
-ACE.ECMPods         = {} --ECM usage
-ACE.Opticals        = {} --GLATGM optical computers
-ACE.Explosives      = {} --Explosive entities like ammocrates & fueltanks go here
-ACE.Debris          = {} --Debris count
-ACE.Mines			 = {}
+ACE.contraptionEnts   = {} --table which will have all registered ents
+ACE.radarEntities     = {} --for tracking radar usage
+ACE.radarIDs          = {} --ID radar purpose
+ACE.ECMPods           = {} --ECM usage
+ACE.Opticals          = {} --GLATGM optical computers
+ACE.Explosives        = {} --Explosive entities like ammocrates & fueltanks go here
+ACE.Debris            = {} --Debris count
+ACE.Mines             = ACE.Mines or {}
+ACE.MineOwners  	  = ACE.MineOwners or {} -- We want to develop without losing any data inside of this.
 
 --list of classname ents which should be added to the contraption ents.
 local AllowedEnts = {
@@ -95,6 +96,7 @@ end)
 
 -- Remove any entity of the Contraption List that has been removed from map
 hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
+
 	--Assuming that our table has whitelisted ents
 	if AllowedEnts[Ent:GetClass()] then
 
@@ -163,6 +165,16 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 			end
 		end
 	elseif Ent:GetClass() == "ace_mine" then
+
+		local Owner = Ent.DamageOwner
+
+		for i, mine in ipairs(ACE.MineOwners[Owner]) do
+			if IsValid(mine) and mine == Ent then
+				table.remove(ACE.MineOwners[Owner], i)
+				print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
+			end
+		end
+
 		for i, mine in ipairs(ACE.Mines) do
 			if IsValid(mine) and mine == Ent then
 				table.remove(ACE.Mines, i)

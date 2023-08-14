@@ -66,6 +66,29 @@ SWEP.ZoomRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 SWEP.CrouchAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 
+local function CheckMineLimit( Owner )
+	local limit = #ACE.MineOwners[Owner] < GetConVar("acf_mines_max"):GetInt()
+	print(#ACE.MineOwners[Owner], GetConVar("acf_mines_max"):GetInt(), limit)
+	return limit
+end
+
+local function VerifyMineLimits(Owner)
+
+	if not CheckMineLimit( Owner ) then
+		local OldMine = ACE.MineOwners[Owner][1]
+		--table.remove( ACE.MineOwners[Owner], 1 )
+		if IsValid(OldMine) then
+			print("TOO MUCH MINES")
+			OldMine:Remove()
+		end
+	end
+end
+
+local function AddMineToLimit( Owner, Mine )
+	table.insert( ACE.MineOwners[Owner], Mine )
+	print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
+end
+
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
@@ -82,7 +105,17 @@ function SWEP:PrimaryAttack()
 	self.BulletData.Gun = self
 
 	if not owner:HasGodMode() then
-		ACE_CreateMine( "ATL", owner )
+
+		VerifyMineLimits(owner)
+
+		local Forward   = owner:EyeAngles():Forward()
+		local Pos       = owner:GetShootPos() + Forward * 32
+		local Angle     = owner:EyeAngles()
+
+		local Mine = ACE_CreateMine( "ATL", Pos, Angle, owner )
+		if IsValid(Mine) then
+			AddMineToLimit( owner, Mine )
+		end
 	end
 
 	self.lastFire = CurTime()

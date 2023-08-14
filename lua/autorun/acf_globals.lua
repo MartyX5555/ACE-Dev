@@ -31,7 +31,7 @@ CreateConVar("sbox_max_acf_ammo", 50)						-- ammo limit
 CreateConVar("sbox_max_acf_misc", 50)						-- misc ents limit
 CreateConVar("sbox_max_acf_rack", 12)						-- Racks limit
 
-CreateConVar("sbox_max_acf_mines", 4)						-- mines. Experimental
+CreateConVar("acf_mines_max", 4)						-- mines. Experimental
 CreateConVar("acf_meshvalue", 1)
 CreateConVar("sbox_acf_restrictinfo", 1)						-- 0=any, 1=owned
 
