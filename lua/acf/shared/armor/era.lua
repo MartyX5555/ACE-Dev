@@ -17,19 +17,19 @@ Material.resiliance		= 1
 Material.HEATresiliance	= 1
 
 -- Used when ERA fails to detonate. This will act like a RHA at its 25% from ERA thickness. Used by HE
-Material.NCurve			= 1
+Material.NCurve = 1
 Material.Neffectiveness	= 0.25
-Material.Nresiliance		= 1
+Material.Nresiliance = 1
 
 Material.APSensorFactor	= 4	-- quotient used to determinate minimal pen for detonation for Kinetic shells
 Material.HEATSensorFactor	= 16	-- quotient used to determinate minimal pen for detonation for chemical shells
 
 Material.spallarmor	= 1
-Material.spallresist	= 1
+Material.spallresist = 1
 
-Material.spallmult	= 0
-Material.ArmorMul	= 1
-Material.NormMult	= 1
+Material.spallmult = 0
+Material.ArmorMul = 1
+Material.NormMult = 1
 
 Material.Stopshock	= true	-- Use this value if the material is meant to stop shockwaves
 
@@ -41,7 +41,6 @@ if SERVER then
 
 	-- Ammo Types to be considered HEAT. Hardcoded
 	Material.HEATList = {
-
 		HEAT	= true,
 		THEAT	= true,
 		HEATFS  = true,
@@ -50,7 +49,6 @@ if SERVER then
 
 	-- Ammo Types to be considered HE. Hardcoded
 	Material.HEList = {
-
 		HE	= true,
 		HESH	= true,
 		Frag	= true
