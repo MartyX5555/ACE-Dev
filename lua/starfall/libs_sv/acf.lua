@@ -810,6 +810,24 @@ function acf_library.getAllAmmoBoxes()
 	return ammoBoxes
 end
 
+--- Returns latest version of acf
+-- @server
+-- @return number
+function acf_library.getVersion()
+	local version = ACF.CurrentVersion
+
+	return version
+end
+
+--- Returns server version of acf
+-- @server
+-- @return number
+function acf_library.getCurrentVersion()
+	local version = ACF.Version
+
+	return version
+end
+
 ----------------------------------------
 -- Entity Methods
 
@@ -2226,6 +2244,51 @@ function ents_methods:acfDragCoef()
 	if restrictInfo( this ) then return 0 end
 	return ( this.BulletData[ "DragCoef" ] or 0 ) / ACF.DragDiv
 end
+
+--- Returns the heat of an ACF entity 
+-- @server
+-- @return number The heat value of the entity
+function ents_methods:acfHeat()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	local Heat
+	if isGun(this) then
+		Heat = ACE_HeatFromGun(this, this.Heat, this.DeltaTime)
+	elseif isEngine(this) then
+		Heat = ACE_HeatFromEngine(this)
+	else
+		Heat = ACE.AmbientTemp
+	end
+
+	return Heat
+end
+
+--- Returns all crewseats linked to an acf entity
+-- @server
+-- @return table crewseats entities
+function ents_methods:acfGetCrew()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	if restrictInfo( this ) then
+		return {}
+	end
+
+	local Crew = this.CrewLink
+
+	return Crew
+end
+
+
 
 -- [ Armor Functions ] --
 

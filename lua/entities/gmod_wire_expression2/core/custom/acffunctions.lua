@@ -277,6 +277,33 @@ e2function number acfDragDiv()
 	return ACF.DragDiv
 end
 
+--returns heat of acf entity
+e2function number entity:acfHeat()
+	if IsValid(this) then
+		local Heat
+		if isGun(this) then
+			Heat = ACE_HeatFromGun(this, this.Heat, this.DeltaTime)
+		elseif isEngine(this) then
+			Heat = ACE_HeatFromEngine(this)
+		else
+			Heat = ACE.AmbientTemp
+		end
+		return Heat
+	end
+	return 0 -- Return a default value if the entity is not valid
+end
+
+--returns latest ACE version
+e2function number acfVersion()
+	return ACF.CurrentVersion
+end
+
+--returns current ACE version
+e2function number acfCurVersion()
+	return ACF.Version
+end
+
+
 -- [ Engine Functions ] --
 
 
@@ -875,6 +902,20 @@ e2function number entity:acfBlastRadius()
 	end
 	return 0
 end
+
+--[[ Returns a table of all crew seats linked to the entity - no idea why not worky
+e2function table entity:acfGetCrew()
+    local Crew = {}
+    local Has_Crew = #this.CrewLink > 0
+    
+    if IsValid(this) and not restrictInfo(this) and Has_Crew then
+        Crew = this.CrewLink
+    end
+    
+    return Crew
+end
+]]--
+
 
 
 -- [ Armor Functions ] --
