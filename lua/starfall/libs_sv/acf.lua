@@ -2283,7 +2283,7 @@ function ents_methods:acfGetCrew()
 		return {}
 	end
 
-	local Crew = this.CrewLink
+	local Crew = table.Copy(this.CrewLink)
 
 	return Crew
 end
