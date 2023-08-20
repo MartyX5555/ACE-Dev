@@ -16,6 +16,34 @@ if SERVER then
 
 	end)
 
+	concommand.Add( "acf_mines_clear", function(ply)
+
+		if IsValid(ply) and not ply:IsAdmin() then return end
+
+		if next(ACE.Mines) then
+			for _, mine in ipairs(ACE.Mines) do
+				if IsValid(mine) then
+					mine:Remove()
+				end
+			end
+		end
+
+	end)
+
+	concommand.Add( "acf_mines_explode_all", function(ply)
+
+		if IsValid(ply) and not ply:IsSuperAdmin() then return end
+
+		if next(ACE.Mines) then
+			for _, mine in ipairs(ACE.Mines) do
+				if IsValid(mine) then
+					mine:Detonate()
+				end
+			end
+		end
+
+	end)
+
 	do
 
 		local function msgToCaller( ply, hud, msg )
