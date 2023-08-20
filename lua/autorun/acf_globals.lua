@@ -23,17 +23,17 @@ ACF.IdRounds      = {}	--Lookup tables so i can get rounds classes from clientsi
 	Entity Limits
 ]]------------------------------
 
-CreateConVar("sbox_max_acf_gun", 24)							-- Gun limit
-CreateConVar("sbox_max_acf_rapidgun", 4)						-- Guns like RACs, MGs, and ACs
-CreateConVar("sbox_max_acf_largegun", 2)						-- Guns with a caliber above 100mm
-CreateConVar("sbox_max_acf_smokelauncher", 20)				-- smoke launcher limit
-CreateConVar("sbox_max_acf_ammo", 50)						-- ammo limit
-CreateConVar("sbox_max_acf_misc", 50)						-- misc ents limit
-CreateConVar("sbox_max_acf_rack", 12)						-- Racks limit
+CreateConVar("sbox_max_acf_gun", 24)					-- Gun limit
+CreateConVar("sbox_max_acf_rapidgun", 4)				-- Guns like RACs, MGs, and ACs
+CreateConVar("sbox_max_acf_largegun", 2)				-- Guns with a caliber above 100mm
+CreateConVar("sbox_max_acf_smokelauncher", 20)			-- smoke launcher limit
+CreateConVar("sbox_max_acf_ammo", 50)					-- ammo limit
+CreateConVar("sbox_max_acf_misc", 50)					-- misc ents limit
+CreateConVar("sbox_max_acf_rack", 12)					-- Racks limit
 
-CreateConVar("acf_mines_max", 4)						-- mines. Experimental
+CreateConVar("acf_mines_max", 10)						-- The mine limit
 CreateConVar("acf_meshvalue", 1)
-CreateConVar("sbox_acf_restrictinfo", 1)						-- 0=any, 1=owned
+CreateConVar("sbox_acf_restrictinfo", 1)				-- 0=any, 1=owned
 
 -- Cvars for legality checking
 CreateConVar( "acf_legalcheck", 1 , FCVAR_ARCHIVE)
