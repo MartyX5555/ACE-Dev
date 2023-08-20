@@ -267,6 +267,7 @@ do
 		"armor",
 		"guns",
 		"missiles",
+		"mines",
 		"radars",
 		"ammocrates",
 		"engines",

@@ -66,30 +66,6 @@ SWEP.ZoomRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 SWEP.CrouchAccuracyImprovement = 0.4 -- 0.3 means 0.7 the inaccuracy
 SWEP.CrouchRecoilImprovement = 0.2 -- 0.3 means 0.7 the recoil movement
 
---
-local function CheckMineLimit( Owner )
-	local limit = #ACE.MineOwners[Owner] < GetConVar("acf_mines_max"):GetInt()
-	print(#ACE.MineOwners[Owner], GetConVar("acf_mines_max"):GetInt(), limit)
-	return limit
-end
-
-local function VerifyMineLimits(Owner)
-
-	if not CheckMineLimit( Owner ) then
-		local OldMine = ACE.MineOwners[Owner][1]
-		--table.remove( ACE.MineOwners[Owner], 1 )
-		if IsValid(OldMine) then
-			print("TOO MUCH MINES")
-			OldMine:Remove()
-		end
-	end
-end
-
-local function AddMineToLimit( Owner, Mine )
-	table.insert( ACE.MineOwners[Owner], Mine )
-	print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
-end
-
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	if (self:Ammo1() == 0) and (self:Clip1() == 0) then return end
@@ -100,39 +76,31 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-	local owner = self:GetOwner()
+	local Owner = self:GetOwner()
 
 	self.BulletData.Owner = owner
 	self.BulletData.Gun = self
-	self.InaccuracyAccumulation = math.Clamp(self.InaccuracyAccumulation + self.InaccuracyAccumulationRate - self.InaccuracyDecayRate * (CurTime() - self.lastFire), 1, self.MaxInaccuracyMult)
 
-	if not owner:HasGodMode() then
+	if not Owner:HasGodMode() then
 
-		VerifyMineLimits(owner)
+		local Forward   = Owner:EyeAngles():Forward()
+		local Pos       = Owner:GetShootPos() + Forward * 32
+		local Angle     = Owner:EyeAngles()
 
-		local Forward   = owner:EyeAngles():Forward()
-		local Pos       = owner:GetShootPos() + Forward * 32
-		local Angle     = owner:EyeAngles()
+		ACE_CreateMine( "APL", Pos, Angle, Owner )
 
-		local Mine = ACE_CreateMine( "APL", Pos, Angle, owner )
-		if IsValid(Mine) then
-			AddMineToLimit( owner, Mine )
-		end
 	end
 
 	self.lastFire = CurTime()
---	print("Inaccuracy: " .. self.InaccuracyAccumulation)
 
 	self:SendWeaponAnim( ACT_VM_PRIMARYATTACK )
-	owner:SetAnimation( PLAYER_ATTACK1 )
+	Owner:SetAnimation( PLAYER_ATTACK1 )
 
 	if self:Ammo1() > 0 then
-		owner:RemoveAmmo( 1, "Grenade")
+		Owner:RemoveAmmo( 1, "Grenade")
 	else
 		self:TakePrimaryAmmo(1)
 	end
---	self:TakePrimaryAmmo(1)
-
 end
 
 function SWEP:SecondaryAttack()
