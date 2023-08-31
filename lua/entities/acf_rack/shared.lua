@@ -34,7 +34,7 @@ function ENT:GetMunitionAngPos(missile, _, attachname)
 		local mountpoint = VerifyMountData(RackData.mountpoints[attachname])
 		local inverted = RackData.inverted or false
 
-		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir * offset) 
+		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir * offset)
 
 		debugoverlay.Cross(pos, 5, 5, Color(0,255,0,255), true)
 
