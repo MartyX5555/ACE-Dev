@@ -2,65 +2,60 @@
 
 DEFINE_BASECLASS("base_wire_entity")
 
-ENT.Type			= "anim"
-ENT.Base			= "base_wire_entity"
-ENT.PrintName	= "ACF Missile Rack"
+ENT.Type              = "anim"
+ENT.Base              = "base_wire_entity"
+ENT.PrintName         = "ACF Missile Rack"
 
-ENT.Spawnable	= false
-ENT.AdminOnly	= false
-ENT.AdminSpawnable  = false
+ENT.Spawnable         = false
+ENT.AdminOnly         = false
+ENT.AdminSpawnable    = false
 
+local Weapons = ACF.Weapons.Guns
+local Racks = ACF.Weapons.Racks
 
-function ENT:GetMunitionAngPos(missile, attach, attachname)
+local function VerifyMountData(mountpoint)
 
-	local angpos
+	mountpoint.pos = mountpoint.pos or vector_origin
+	mountpoint.offset = mountpoint.offset or vector_origin
+	mountpoint.scaledir = mountpoint.scaledir or vector_origin
 
-	if attach ~= 0 then
-		angpos = self:GetAttachment(attach)
-	else
-		angpos = {Pos = self:GetPos(), Ang = self:GetAngles()}
+	return mountpoint
+end
+
+function ENT:GetMunitionAngPos(missile, _, attachname)
+
+	local GunData = Weapons[missile.BulletData.Id]
+	local RackData	= Racks[self.Id]
+
+	if GunData and RackData then
+
+		local offset = (GunData.modeldiameter or GunData.caliber) / (2.54 * 2)
+
+		local mountpoint = VerifyMountData(RackData.mountpoints[attachname])
+		local inverted = RackData.inverted or false
+
+		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir * offset) 
+
+		debugoverlay.Cross(pos, 5, 5, Color(0,255,0,255), true)
+
+		return inverted, pos
 	end
-
-	local guns		= ACF.Weapons.Guns
-	local gun	= guns[missile.BulletData.Id]
-
-	if not gun then return angpos end
-
-	local offset	= (gun.modeldiameter or gun.caliber) / (2.54 * 2)
-	local rack	= ACF.Weapons.Racks[self.Id]
-
-	if not rack then return angpos end
-
-	mountpoint = rack.mountpoints[attachname] or {["offset"] = Vector(0,0,0), ["scaledir"] = Vector(0, 0, -1)}
-	inverted = rack.inverted or false
-
-
-	if mountpoint.pos then
-		angpos.Pos = mountpoint.pos
-	end
-
-	angpos.Pos = self:LocalToWorld(angpos.Pos + mountpoint.offset + mountpoint.scaledir * offset)
-
-	return inverted, angpos
 end
 
 function ENT:GetMuzzle(shot, missile)
 	shot = (shot or 0) + 1
 
 	local attachname		= "missile" .. shot
-	local attach			= self:LookupAttachment(attachname)
-	local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
-	if attach ~= 0 then return attach, inverted, angpos  end
+	local inverted, pos  = self:GetMunitionAngPos(missile, attach, attachname)
+	if attach ~= 0 then return attach, inverted, pos  end
 
 	attachname			= "missile1"
-	local attach			= self:LookupAttachment(attachname)
-	local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
-	if attach ~= 0 then return attach, inverted, angpos end
+	local inverted, pos  = self:GetMunitionAngPos(missile, attach, attachname)
+	if attach ~= 0 then return attach, inverted, pos end
 
 	attachname			= "muzzle"
-	local attach			= self:LookupAttachment(attachname)
-	local inverted, angpos  = self:GetMunitionAngPos(missile, attach, attachname)
-	if attach ~= 0 then return attach, inverted, angpos end
+	local inverted, pos  = self:GetMunitionAngPos(missile, attach, attachname)
+	if attach ~= 0 then return attach, inverted, pos end
 
-	return 0, false, {Pos = self:GetPos(), Ang = self:GetAngles()}
+	return 0, false, pos
 end

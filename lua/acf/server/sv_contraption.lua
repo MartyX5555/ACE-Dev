@@ -110,7 +110,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 
 					if IsValid(ecm) and ecm == Ent then
 						table.remove(ACE.ECMPods, i)
-						print("ECM registered count: " .. #ACE.ECMPods)
+						--print("ECM registered count: " .. #ACE.ECMPods)
 						break
 					end
 				end
@@ -123,7 +123,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 						ACE.radarIDs[Ent] = nil
 
 						table.remove(ACE.radarEntities, i)
-						print("Tracking radar registered count: " .. #ACE.radarEntities)
+						--print("Tracking radar registered count: " .. #ACE.radarEntities)
 						break
 					end
 				end
@@ -133,7 +133,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 				for i, optical in ipairs(ACE.Opticals) do
 					if IsValid(optical) and optical == Ent then
 						table.remove(ACE.Opticals, i)
-						print("Opticals registered count: " .. #ACE.Opticals)
+						--print("Opticals registered count: " .. #ACE.Opticals)
 						break
 					end
 				end
@@ -143,7 +143,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 				for i, explosive in ipairs(ACE.Explosives) do
 					if IsValid(explosive) and explosive == Ent then
 						table.remove(ACE.Explosives, i)
-						print("Explosive registered count: " .. #ACE.Explosives)
+						--print("Explosive registered count: " .. #ACE.Explosives)
 						break
 					end
 				end
@@ -152,7 +152,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 			-- Finally, remove this Entity from the main list
 			if ent == Ent then
 				table.remove(ACE.contraptionEnts, i)
-				print("Global registered count: " .. #ACE.contraptionEnts )
+				--print("Global registered count: " .. #ACE.contraptionEnts )
 				return
 			end
 		end
@@ -161,7 +161,7 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 		for i, debris in ipairs(ACE.Debris) do
 			if IsValid(debris) and debris == Ent then
 				table.remove(ACE.Debris, i)
-				print("Debris registered count: " .. #ACE.Debris )
+				--print("Debris registered count: " .. #ACE.Debris )
 			end
 		end
 	elseif Ent:GetClass() == "ace_mine" then
@@ -171,14 +171,14 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 		for i, mine in ipairs(ACE.MineOwners[Owner]) do
 			if IsValid(mine) and mine == Ent then
 				table.remove(ACE.MineOwners[Owner], i)
-				print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
+				--print("Mine registered count to player " .. Owner:Nick() .. ": " .. #ACE.MineOwners[Owner] )
 			end
 		end
 
 		for i, mine in ipairs(ACE.Mines) do
 			if IsValid(mine) and mine == Ent then
 				table.remove(ACE.Mines, i)
-				print("Mine registered count: " .. #ACE.Mines )
+				--print("Mine registered count: " .. #ACE.Mines )
 			end
 		end
 	end
