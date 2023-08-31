@@ -29,14 +29,15 @@ function ENT:GetMunitionAngPos(missile, _, attachname)
 
 	if GunData and RackData then
 
-		local offset = (GunData.modeldiameter or GunData.caliber) / (2.54 * 2)
-
+		local offset = (GunData.bodydiameter and GunData.bodydiameter / 2) or (GunData.modeldiameter and GunData.modeldiameter / 2) or (GunData.caliber / 2.54)
 		local mountpoint = VerifyMountData(RackData.mountpoints[attachname])
 		local inverted = RackData.inverted or false
 
 		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir * offset)
+		local pos2 = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir) --for testing purposes
 
 		debugoverlay.Cross(pos, 5, 5, Color(0,255,0,255), true)
+		debugoverlay.Cross(pos2, 5, 5, Color(183,255,0), true)
 
 		return inverted, pos
 	end

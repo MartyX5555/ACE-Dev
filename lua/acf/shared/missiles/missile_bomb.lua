@@ -27,7 +27,7 @@ ACF_defineGun("50kgBOMB", {						-- id
 	caliber		= 5.0,
 	weight		= 50,						-- Don't scale down the weight though!
 	year			= 1915,
-	modeldiameter	= 10,					-- in cm
+	modeldiameter	= 11.15,					-- in cm
 	round = {
 		model	= "models/bombs/fab50.mdl",
 		rackmdl	= "models/bombs/fab50.mdl",
