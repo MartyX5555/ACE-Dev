@@ -356,8 +356,8 @@ function ENT:CalcFlight()
 	self.FlightTime = Flight
 
 	--Missile trajectory debugging
-	debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
-	debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
+	--.Line(Pos, EndPos, 10, Color(0, 255, 0))
+	--debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
 
 	self:DoFlight()
 end
