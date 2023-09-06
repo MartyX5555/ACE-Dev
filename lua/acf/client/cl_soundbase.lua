@@ -570,7 +570,7 @@ do
 
 					Emitted = true
 
-					local VolFix = 1
+					local VolFix = 0.1
 
 					--Small arm guns
 					local Sound = ACE.Sounds["Cracks"]["small"]["close"][math.random(1,#ACE.Sounds["Cracks"]["small"]["close"])]
@@ -582,6 +582,8 @@ do
 						--above 100mm cannons
 						if Caliber >= 10 then
 							Sound = ACE.Sounds["Cracks"]["large"]["close"][math.random(1,#ACE.Sounds["Cracks"]["large"]["close"])]
+							VolFix = 1
+
 
 							--Some fly sounds don´t fit really well. Special case here.
 							if Caliber >= 20 then
