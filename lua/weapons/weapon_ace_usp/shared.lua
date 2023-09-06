@@ -23,7 +23,6 @@ SWEP.Primary.Automatic = false
 
 SWEP.ReloadSound = "Weapon_Pistol.Reload"
 
-
 SWEP.ZoomFOV = 60
 SWEP.HasScope = false --True if the weapon has a sniper-style scope
 

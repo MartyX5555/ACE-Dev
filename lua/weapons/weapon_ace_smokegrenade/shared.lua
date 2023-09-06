@@ -35,10 +35,6 @@ SWEP.Primary.DefaultClip	= 5
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo		= "Grenade"
 
-SWEP.Secondary.Ammo		= "none"
-SWEP.Secondary.ClipSize		= -1
-SWEP.Secondary.DefaultClip	= -1
-
 SWEP.JustDeployed = true
 
 function SWEP:Deploy()

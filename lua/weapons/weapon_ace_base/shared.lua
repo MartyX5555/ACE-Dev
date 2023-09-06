@@ -18,6 +18,7 @@ SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
+SWEP.Secondary.Ammo		= "none"
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 

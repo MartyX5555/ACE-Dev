@@ -40,10 +40,6 @@ SWEP.Primary.DefaultClip	= 3
 SWEP.Primary.Automatic		= 0
 SWEP.Primary.Ammo		= "Grenade"
 
-SWEP.Secondary.Ammo		= "none"
-SWEP.Secondary.ClipSize		= -1
-SWEP.Secondary.DefaultClip	= -1
-
 SWEP.ReloadSoundEnabled = 1
 
 SWEP.AimOffset = Vector(0, 0, 0)
