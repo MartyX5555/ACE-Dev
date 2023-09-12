@@ -100,7 +100,7 @@ do
 
 		local MeshData 		= ScaleData.Mesh
 		local Scale 		= ScaleData.Scale
-		local PhysMaterial 	= ScaleData.Material
+		local PhysMaterial 	= ScaleData.Material or ""
 
 		MeshData = self:ConvertMeshToScale( MeshData, Scale )
 

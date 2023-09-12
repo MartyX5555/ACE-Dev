@@ -73,6 +73,8 @@ function TOOL:LeftClick( trace )
 	if not TypeId then
 		if Type == "Ammo" then
 			entClass = "acf_ammo"
+		elseif Type == "FuelTanks" then
+			entClass = "acf_fueltanks"
 		end
 	else
 		entClass = TypeId["ent"]

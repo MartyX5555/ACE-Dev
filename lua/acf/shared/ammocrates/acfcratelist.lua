@@ -648,10 +648,11 @@ AmmoTable["Shell170mm"] = Shell170mm
 
 list.Set( "ACFEnts", "Ammo", AmmoTable )	--end ammo containers listing
 
---WOW
-ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
+--Cube
+ACE_DefineModelData("Box",{
 
-	Model = "models/holograms/rcube_thin.mdl",
+	Shape = "Box",
+	Model = "models/holograms/rcube_thin.mdl", --Note: The model can be used as ID if needed.
 	physMaterial = "metal",
 	DefaultSize = 12,
 	CustomMesh = { --Its a box anyways
@@ -668,5 +669,58 @@ ACE_DefineModelData("models/holograms/rcube_thin.mdl",{
 	}
 
 })
+
+--Triangle / Wedge
+ACE_DefineModelData("Wedge",{
+
+	Shape = "Wedge",
+	Model = "models/holograms/right_prism.mdl",
+	physMaterial = "metal",
+	DefaultSize = 12,
+	CustomMesh = { --Its a box anyways
+		{
+			Vector(-6, 6, 6),
+			Vector(-6, -6, 6),
+			Vector(6, 6, -6),
+			Vector(6, -6, -6),
+			Vector(-6, 6, -6),
+			Vector(-6, -6, -6)
+		},
+	}
+
+})
+
+--Triangle / Wedge
+ACE_DefineModelData("Cylinder",{
+
+	Shape = "Cylinder",
+	Model = "models/holograms/hq_rcylinder_thin.mdl",
+	physMaterial = "metal",
+	DefaultSize = 12,
+	CustomMesh = {
+		{
+			Vector(6, 0, -6),
+			Vector(0, -6, -6),
+			Vector(-6, 0, -6),
+			Vector(0, 6, -6),
+			
+			Vector(4.24, -4.24, -6),
+			Vector(-4.24, -4.24, -6),
+			Vector(-4.24, 4.24, -6),
+			Vector(4.24, 4.24, -6),
+
+			Vector(6, 0, 6),
+			Vector(0, -6, 6),
+			Vector(-6, 0, 6),
+			Vector(0, 6, 6),
+			
+			Vector(4.24, -4.24, 6),
+			Vector(-4.24, -4.24, 6),
+			Vector(-4.24, 4.24, 6),
+			Vector(4.24, 4.24, 6),
+		}
+	},
+})
+
 
 

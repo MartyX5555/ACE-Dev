@@ -875,20 +875,20 @@ do
 
 	local function CreateIdForCrate( self )
 
-	if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
+		if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
 
-		local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
-		local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
-		local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
+			local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
+			local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
+			local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
-		local Id = X .. ":" .. Y .. ":" .. Z
+			local Id = X .. ":" .. Y .. ":" .. Z
 
-		acfmenupanel.AmmoData["Id"] = Id
-		RunConsoleCommand( "acfmenu_id", Id )
+			acfmenupanel.AmmoData["Id"] = Id
+			RunConsoleCommand( "acfmenu_id", Id )
 
-	end
+		end
 
-	self:UpdateAttribs()
+		self:UpdateAttribs()
 
 	end
 

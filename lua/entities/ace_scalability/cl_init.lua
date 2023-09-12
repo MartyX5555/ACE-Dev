@@ -64,6 +64,7 @@ local function BuildRealPhysics( entity, Scale )
 		local Mesh			= ModelData[Model].CustomMesh or PhysObj:GetMeshConvexes()
 		local PhysMaterial  = ModelData[Model].physMaterial or ""
 
+
 		if entity.ConvertMeshToScale then
 			Mesh = entity:ConvertMeshToScale(Mesh, Scale)
 		end
