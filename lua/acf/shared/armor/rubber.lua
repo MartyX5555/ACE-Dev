@@ -52,7 +52,7 @@ if SERVER then
 			local spallresist = Material.spallresist
 
 			if Type == "Spall" then
-				specialeffectiveness = specialeffectiveness * spallresist
+				specialeffectiveness = Material.effectiveness * spallresist
 			end
 
 			local DmgResist = 0.01 + math.min(caliber * 10 / specialeffect, 5) * 6
@@ -190,4 +190,4 @@ if SERVER then
 	end
 end
 
-list.Set( "ACE_MaterialTypes", Material.id, Material )
+ACE.ArmorTypes[Material.id] = Material

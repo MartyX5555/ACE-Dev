@@ -35,27 +35,21 @@ local ShouldDisableNoclip = false
 	Return: boolean
 		true if the entity should be damaged, false if the entity should be protected from the damage.
 ----]]
-local function modepermission(_, attacker, ent)
+local function modepermission(owner, attacker, ent)
 	local szs = perms.Safezones
 
 	if szs then
 		local entpos = ent:GetPos()
 		local attpos = attacker:GetPos()
+		local ownerid = owner:SteamID()
+		local attackerid = attacker:SteamID()
+		local ownerperms = perms.GetDamagePermissions(ownerid)
 
-		if perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos) then return false end
+		if (perms.IsInSafezone(entpos) or perms.IsInSafezone(attpos)) and not ownerperms[attackerid] then return false end
 	end
 
 	return true
 end
-
-
-
-function tellPlyAboutZones(ply, zone)
-	if perms.DamagePermission ~= modepermission then return end
-	ply:SendLua("chat.AddText(Color(" .. (zone and "0,255,0" or "255,0,0") .. "),\"You have entered the " .. (zone and zone .. " safezone." or "battlefield!") .. "\")")
-end
-hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", tellPlyAboutZones)
-
 
 
 local function DisableNoclipPressInBattle( ply, wantsNoclipOn )
@@ -64,7 +58,6 @@ local function DisableNoclipPressInBattle( ply, wantsNoclipOn )
 	return perms.IsInSafezone(ply:GetPos()) ~= false
 end
 hook.Add( "PlayerNoClip", "ACF_DisableNoclipPressInBattle", DisableNoclipPressInBattle )
-
 
 
 local function modethink()
@@ -94,4 +87,4 @@ local function modethink()
 end
 
 
-perms.RegisterMode(modepermission, modename, modedescription, false, modethink)
+perms.RegisterMode(modepermission, modename, modedescription, false, modethink, nil, true)

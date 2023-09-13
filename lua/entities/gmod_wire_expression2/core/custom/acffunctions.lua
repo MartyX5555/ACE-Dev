@@ -47,11 +47,6 @@ local function isRadar(ent)
 	return radarTypes[ent:GetClass()]
 end
 
-local function reloadTime(ent)
-	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
-	return ent.MagReload
-end
-
 local function restrictInfo(ply, ent)
 	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
 		if isOwner(ply, ent) then return false else return true end
@@ -215,18 +210,18 @@ e2function string entity:acfName()
 	if isGearbox(this) then acftype = "Mobility" end
 	if isGun(this) then acftype = "Guns" end
 	if (acftype == "") then return "" end
-	local List = list.Get("ACFEnts")
+	local List = ACF.Weapons
 	return List[acftype][this.Id]["name"] or ""
 end
 
 -- Returns the type of ACF entity
 e2function string entity:acfType()
 	if isEngine(this) or isGearbox(this) then
-		local List = list.Get("ACFEnts")
+		local List = ACF.Weapons
 		return List["Mobility"][this.Id]["category"] or ""
 	end
 	if isGun(this) then
-		local Classes = list.Get("ACFClasses")
+		local Classes = ACF.Classes
 		return Classes["GunClass"][this.Class]["name"] or ""
 	end
 	if isAmmo(this) then return this.RoundType or "" end
@@ -281,6 +276,33 @@ end
 e2function number acfDragDiv()
 	return ACF.DragDiv
 end
+
+--returns heat of acf entity
+e2function number entity:acfHeat()
+	if IsValid(this) then
+		local Heat
+		if isGun(this) then
+			Heat = ACE_HeatFromGun(this, this.Heat, this.DeltaTime)
+		elseif isEngine(this) then
+			Heat = ACE_HeatFromEngine(this)
+		else
+			Heat = ACE.AmbientTemp
+		end
+		return Heat
+	end
+	return 0 -- Return a default value if the entity is not valid
+end
+
+--returns latest ACE version
+e2function number acfVersion()
+	return ACF.CurrentVersion
+end
+
+--returns current ACE version
+e2function number acfCurVersion()
+	return ACF.Version
+end
+
 
 -- [ Engine Functions ] --
 
@@ -621,15 +643,28 @@ end
 -- Returns time to next shot of an ACF weapon
 __e2setcost( 3 )
 e2function number entity:acfReloadTime()
-	if restrictInfo(self, this) or not isGun(this) or this.Ready then return 0 end
-	return reloadTime(this)
+	if restrictInfo(self, this) or not isGun(this) or not this.ReloadTime then return 0 end
+	return this.ReloadTime
 end
 
  -- Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars
 __e2setcost( 5 )
 e2function number entity:acfReloadProgress()
-	if restrictInfo(self, this) or not isGun(this) or this.Ready then return 1 end
-	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime(this), 0, 1 )
+	if restrictInfo(self, this) or not isGun(this) then return 1 end
+	if this.BulletData.Type == "Empty" then return 0 end
+
+	local reloadTime
+	if this.MagSize == 1 then
+		reloadTime = this.ReloadTime
+	else
+		if this.MagSize - this.CurrentShot > 0 then
+			reloadTime = this.ReloadTime
+		else
+			reloadTime = this.MagReload + this.ReloadTime
+		end
+	end
+
+	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime, 0, 1 )
 end
 
  __e2setcost( 1 )
@@ -868,6 +903,20 @@ e2function number entity:acfBlastRadius()
 	return 0
 end
 
+--[[ Returns a table of all crew seats linked to the entity - no idea why not worky
+e2function table entity:acfGetCrew()
+    local Crew = {}
+    local Has_Crew = #this.CrewLink > 0
+    
+    if IsValid(this) and not restrictInfo(this) and Has_Crew then
+        Crew = this.CrewLink
+    end
+    
+    return Crew
+end
+]]--
+
+
 
 -- [ Armor Functions ] --
 
@@ -949,7 +998,7 @@ e2function table entity:acfPropArmorData()
 	local mat = this.ACF.Material
 	if not mat then return ret end
 
-	local matData = ACE.Armors[mat]
+	local matData = ACE.ArmorTypes[mat]
 	if not matData then return ret end
 
 	ret.size = 4

@@ -14,6 +14,7 @@ this.Player = {}
 this.Modes = {}
 this.ModeDescs = {}
 this.ModeThinks = {}
+this.NotifySafezones = {}
 
 --TODO: convar this
 local mapSZDir = "acf/safezones/"
@@ -125,6 +126,11 @@ hook.Add( "Initialize", "ACF_LoadSafesForMap", function()
 	end
 end )
 
+hook.Add("ACF_PlayerChangedZone", "ACF_TellPlyAboutSafezoneBattle", function(ply, zone)
+	if not this.NotifySafezones[table.KeyFromValue(this.Modes, this.DamagePermission)] then return end
+
+	ACE_SendMsg(ply, zone and Color(0, 255, 0) or Color(255, 0, 0), "You have entered the " .. (zone and zone .. " safezone." or "battlefield!"))
+end)
 
 local plyzones = {}
 hook.Add("Think", "ACF_DetectSZTransition", function()
@@ -354,7 +360,7 @@ concommand.Add( "ACF_SetDefaultPermissionMode", function(ply, _, args)
 
 		for _, v in pairs(player.GetAll()) do
 			if v:IsAdmin() then
-				v:SendLua("chat.AddText(Color(255,0,0),\"Default permission mode for " .. game.GetMap() .. " has been set to " .. mode .. "!\")")
+				ACE_SendMsg(v, Color(255, 0, 0), "Default permission mode for " .. game.GetMap() .. " has been set to " .. mode .. "!")
 			end
 		end
 
@@ -399,7 +405,7 @@ local function tellPlysAboutDPMode(mode, oldmode)
 	if mode == oldmode then return end
 
 	for _, v in pairs(player.GetAll()) do
-		v:SendLua("chat.AddText(Color(255,0,0),\"Damage protection has been changed to " .. mode .. " mode!\")")
+		ACE_SendMsg(v, Color(255,0,0), "Damage protection has been changed to " .. mode .. " mode!")
 	end
 end
 hook.Add("ACF_ProtectionModeChanged", "ACF_TellPlysAboutDPMode", tellPlysAboutDPMode)
@@ -424,11 +430,12 @@ function this.IsInSafezone(pos)
 	return false
 end
 
-function this.RegisterMode(mode, name, desc, default, think, defaultaction)
+function this.RegisterMode(mode, name, desc, default, think, defaultaction, notifysafezones)
 
 	this.Modes[name] = mode
 	this.ModeDescs[name] = desc
 	this.ModeThinks[name] = think or function() end
+	this.NotifySafezones[name] = notifysafezones or false
 	this.DefaultCanDamage = defaultaction or false
 	print("[ACE | INFO]- Registered damage permission mode \"" .. name .. "\"!")
 
@@ -457,6 +464,7 @@ function this.CanDamage(_, Entity, _, _, _, Inflictor, _, _)
 	--Disables protection if either CPPI is unexistent or has been disabled via convar.
 	local DP = GetConVar("acf_enable_dp"):GetInt()
 	if not CPPI or DP == 0 then return true end
+	if Entity.DamageOwner then return true end -- This value is normally used by entities meant to be destroyed by everyone.
 
 	local owner = Entity:CPPIGetOwner() --entity to attack. Gets the attacked entity's owner
 
@@ -594,8 +602,8 @@ net.Receive("ACF_dmgfriends", function(_, ply)
 
 				local note = v and "given you" or "removed your"
 				local MsgNote = v and "given" or "removed"
-				--Msg("Sending", targ, " ", note, "\n")
-				targ:SendLua(string.format("GAMEMODE:AddNotify(%q,%s,7)", ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!", "NOTIFY_GENERIC"))
+
+				ACE_SendNotification(targ, ply:Nick() .. " has " .. note .. " permission to damage their objects with ACE!")
 				print("[ACE | INFO]- The user " .. ply:Nick() .. " has " .. MsgNote .. " permissions to damage objects with ACE " .. (v and "to" or "from") .. " " .. ((targ == ply) and "himself" or targ:Nick()))
 			end
 		end

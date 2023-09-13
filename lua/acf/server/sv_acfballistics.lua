@@ -113,14 +113,16 @@ function ACF_CheckClips( Ent, HitPos )
 	local origin
 
 	for i = 1, #Ent.ClipData do
-		normal = Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]):Forward()
-		origin = Ent:LocalToWorld(Ent:OBBCenter()) + normal * Ent.ClipData[i]["d"]
-		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(Ent.ClipData[i]["n"]), 15, Color(255,0,0,32) )
-		if normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
+
+		local ClipData = Ent.ClipData[i]
+
+		normal = Ent:LocalToWorldAngles(ClipData.n):Forward()
+		origin = Ent:LocalToWorld(Ent:OBBCenter()) + normal * ClipData.d
+		--debugoverlay.BoxAngles( origin, Vector(0,-24,-24), Vector(1,24,24), Ent:LocalToWorldAngles(ClipData["n"]), 15, Color(255,0,0,32) )
+		if not ClipData.physics and normal:Dot((origin - HitPos):GetNormalized()) > 0 then return true end  --Since tracehull/traceline transition during impacts, this can be 0 with no issues
 	end
 
 	return false
-
 end
 
 do
@@ -212,17 +214,16 @@ do
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				FlightTr.maxs	= vector_origin
-				FlightTr.mins	= -FlightTr.maxs
-
 				-- trace result is stored in supplied output FlightRes (at top of file)
-				util.TraceHull(FlightTr)
+				util.TraceLine(FlightTr)
 
 				-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
 				if not FlightRes.HitNonWorld then
 
-				util.TraceHull(FlightTr)
-
+					-- The traceline function overrides the mins/maxs. So i must redefine them again here.
+					FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
+					FlightTr.mins = -FlightTr.maxs
+					util.TraceHull(FlightTr)
 				end
 			end
 

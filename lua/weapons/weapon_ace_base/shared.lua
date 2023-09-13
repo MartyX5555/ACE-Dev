@@ -18,6 +18,7 @@ SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
+SWEP.Secondary.Ammo		= "none"
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 
@@ -243,7 +244,7 @@ function SWEP:PrimaryAttack()
 		self.Reloading = false
 	end
 
-	local sounds = list.Get("ACESounds").GunFire[self.Primary.Sound]
+	local sounds = ACE.GSounds.GunFire[self.Primary.Sound]
 
 	if game.SinglePlayer() then
 		self:CallOnClient("PrimaryAttack")

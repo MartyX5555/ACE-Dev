@@ -75,11 +75,6 @@ local function isRadar(ent)
 	return radarTypes[ent:GetClass()]
 end
 
-local function reloadTime( ent )
-	if ent.CurrentShot and ent.CurrentShot > 0 then return ent.ReloadTime end
-	return ent.MagReload
-end
-
 local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
 
 local function restrictInfo ( ent )
@@ -486,7 +481,7 @@ end
 -- Set ammo properties
 local ammo_properties = {}
 
-for id, data in pairs(list.Get("ACFRoundTypes")) do
+for id, data in pairs(ACF.RoundTypes) do
 	ammo_properties[id] = {
 		name = data.name,
 		desc = data.desc,
@@ -815,6 +810,24 @@ function acf_library.getAllAmmoBoxes()
 	return ammoBoxes
 end
 
+--- Returns latest version of acf
+-- @server
+-- @return number
+function acf_library.getVersion()
+	local version = ACF.CurrentVersion
+
+	return version
+end
+
+--- Returns server version of acf
+-- @server
+-- @return number
+function acf_library.getCurrentVersion()
+	local version = ACF.Version
+
+	return version
+end
+
 ----------------------------------------
 -- Entity Methods
 
@@ -997,7 +1010,7 @@ function ents_methods:acfName ()
 	if isGearbox( this ) then acftype = "Mobility" end
 	if isGun( this ) then acftype = "Guns" end
 	if ( acftype == "" ) then return "" end
-	local List = list.Get( "ACFEnts" )
+	local List = ACF.Weapons
 	return List[ acftype ][ this.Id ][ "name" ] or ""
 end
 
@@ -1011,11 +1024,11 @@ function ents_methods:acfType ()
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
 	if isEngine( this ) or isGearbox( this ) then
-		local List = list.Get( "ACFEnts" )
+		local List = ACF.Weapons
 		return List[ "Mobility" ][ this.Id ][ "category" ] or ""
 	end
 	if isGun( this ) then
-		local Classes = list.Get( "ACFClasses" )
+		local Classes = ACF.Classes
 		return Classes[ "GunClass" ][ this.Class ][ "name" ] or ""
 	end
 	if isAmmo( this ) then return this.RoundType or "" end
@@ -1968,8 +1981,8 @@ function ents_methods:acfReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 0 end
-	return reloadTime( this )
+	if restrictInfo( this ) or not isGun( this ) or not this.ReloadTime then return 0 end
+	return this.ReloadTime
 end
 
 --- Returns number between 0 and 1 which represents reloading progress of an ACF weapon. Useful for progress bars
@@ -1981,8 +1994,20 @@ function ents_methods:acfReloadProgress ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( this ) or not isGun( this ) or this.Ready then return 1 end
-	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime( this ), 0, 1 )
+	if restrictInfo( this ) or not isGun( this ) then return 1 end
+
+	local reloadTime
+	if this.MagSize == 1 then
+		reloadTime = this.ReloadTime
+	else
+		if this.MagSize - this.CurrentShot > 0 then
+			reloadTime = this.ReloadTime
+		else
+			reloadTime = this.MagReload + this.ReloadTime
+		end
+	end
+
+	return math.Clamp( 1 - (this.NextFire - CurTime()) / reloadTime, 0, 1 )
 end
 
 --- Returns time it takes for an ACF weapon to reload magazine
@@ -1994,7 +2019,7 @@ function ents_methods:acfMagReloadTime ()
 
 	if not ( this and this:IsValid() ) then SF.Throw( "Entity is not valid", 2 ) end
 
-	if restrictInfo( instance.player , this ) or not isGun( this ) or not this.MagReload then return 0 end
+	if restrictInfo( this ) or not isGun( this ) or not this.MagReload then return 0 end
 	return this.MagReload
 end
 
@@ -2220,6 +2245,51 @@ function ents_methods:acfDragCoef()
 	return ( this.BulletData[ "DragCoef" ] or 0 ) / ACF.DragDiv
 end
 
+--- Returns the heat of an ACF entity 
+-- @server
+-- @return number The heat value of the entity
+function ents_methods:acfHeat()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	local Heat
+	if isGun(this) then
+		Heat = ACE_HeatFromGun(this, this.Heat, this.DeltaTime)
+	elseif isEngine(this) then
+		Heat = ACE_HeatFromEngine(this)
+	else
+		Heat = ACE.AmbientTemp
+	end
+
+	return Heat
+end
+
+--- Returns all crewseats linked to an acf entity
+-- @server
+-- @return table crewseats entities
+function ents_methods:acfGetCrew()
+	checktype(self, ents_metatable)
+	local this = unwrap(self)
+
+	if not (this and this:IsValid()) then
+		SF.Throw("Entity is not valid", 2)
+	end
+
+	if restrictInfo( this ) then
+		return {}
+	end
+
+	local Crew = table.Copy(this.CrewLink)
+
+	return Crew
+end
+
+
+
 -- [ Armor Functions ] --
 
 --- Returns the current health of an entity
@@ -2314,7 +2384,7 @@ function ents_methods:acfPropArmorData()
 	local mat = this.ACF.Material
 	if not mat then return empty end
 
-	local matData = ACE.Armors[mat]
+	local matData = ACE.ArmorTypes[mat]
 	if not matData then return empty end
 
 	return {

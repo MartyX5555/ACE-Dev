@@ -356,8 +356,8 @@ function ENT:CalcFlight()
 	self.FlightTime = Flight
 
 	--Missile trajectory debugging
-	debugoverlay.Line(Pos, EndPos, 10, Color(0, 255, 0))
-	debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
+	--.Line(Pos, EndPos, 10, Color(0, 255, 0))
+	--debugoverlay.Line(EndPos, EndPos + Dir:GetNormalized()  * 50, 10, Color(0, 0, 255))
 
 	self:DoFlight()
 end
@@ -652,11 +652,9 @@ end
 ----- Skin/Bodygroup/effect/Sound functions
 --===========================================================================================
 function ENT:LaunchEffect()
-	local sound = self.BulletData.Sound or ACF_GetGunValue(self.BulletData, "sound")
-
-	if sound then
-		self:EmitSound(sound, 511, 100)
-	end
+	local Effect = EffectData()
+		Effect:SetEntity( self )
+	util.Effect( "acf_missilelaunch", Effect, true, true )
 end
 
 function ENT:UpdateSkin()

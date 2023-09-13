@@ -125,14 +125,14 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 	local ExplodeChance = (1-(self.Fuel / self.Capacity)) ^ 0.75 --chance to explode from fumes in tank, less fuel = more explodey
 
 	--it's gonna blow
-	if math.Rand(0,1) < (ExplodeChance + Ratio) then
+	if math.Rand(0, 1.2) < (ExplodeChance + Ratio) then
 
 		if hook.Run( "ACF_FuelExplode", self ) == false then return HitRes end
 
 		self.Inflictor = Inflictor
 		self.Exploding = true
 
-		timer.Simple(math.random(0.1,1), function()
+		timer.Simple(math.Rand(0.1, 1), function()
 			if IsValid(self) then
 				ACF_ScaledExplosion( self )
 			end
@@ -140,7 +140,9 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 
 	else												--spray some fuel around
 		self:NextThink( CurTime() + 0.1 )
-		self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage / self.ACF.Health) ^ 1.5) * 0.25
+		if self.FuelType ~= "Electric" then
+			self.Leaking = self.Leaking + self.Fuel * ((HitRes.Damage / self.ACF.Health) ^ 1.5) * 0.25
+		end
 	end
 
 	return HitRes
@@ -358,7 +360,7 @@ function ENT:UpdateOverlayText()
 
 	if self.FuelType == "Electric" then
 
-		text = text .. "\nCurrent Charge Levels:"
+		text = text .. "\nCurrent Charge Level:"
 		text = text .. "\n-  " .. math.Round( self.Fuel, 1 ) .. " / " .. math.Round( self.Capacity, 1 ) .. " kWh"
 		text = text .. "\n-  " .. math.Round( self.Fuel * 3.6, 1 ) .. " / " .. math.Round( self.Capacity * 3.6, 1) .. " MJ"
 
@@ -369,6 +371,10 @@ function ENT:UpdateOverlayText()
 		text = text .. "\n-  " .. math.Round( self.Fuel * 0.264172, 1 ) .. " / " .. math.Round( self.Capacity * 0.264172, 1 ) .. " gallons"
 
 		--text = text .. "\nFuel Remaining: " .. math.Round( self.Fuel, 1 ) .. " liters / " .. math.Round( self.Fuel * 0.264172, 1 ) .. " gallons"
+
+		if self.Leaking > 0 then
+			text = text .. "\n- Leaking: " .. math.Round(self.Leaking, 1) .. " liters per second"
+		end
 	end
 
 	if not self.Legal then
@@ -391,7 +397,7 @@ function ENT:UpdateFuelMass()
 	--reduce superflous engine calls, update fuel tank mass every 5 kgs change or every 10s-15s
 	if math.abs(self.LastMass - self.Mass) > 5 or CurTime() > self.NextMassUpdate then
 		self.LastMass = self.Mass
-		self.NextMassUpdate = CurTime() + math.Rand(10,15)
+		self.NextMassUpdate = CurTime() + math.Rand(10, 15)
 		local phys = self:GetPhysicsObject()
 		if (phys:IsValid()) then
 			phys:SetMass( self.Mass )
@@ -405,10 +411,6 @@ end
 function ENT:Update( ArgsTable )
 
 	local Feedback = ""
-
-	if not self:CPPICanTool(ArgsTable[1]) then --Argtable[1] is the player that shot the tool
-		return false, "You don't own that fuel tank!"
-	end
 
 	if ( ArgsTable[6] ~= self.FuelType ) then
 		for _, Engine in pairs( self.Master ) do
@@ -460,23 +462,34 @@ function ENT:Think()
 		self.Leaking = math.Clamp(self.Leaking - (1 / math.max(self.Fuel,1)) ^ 0.5, 0, self.Fuel) --fuel tanks are self healing
 		Wire_TriggerOutput(self, "Leaking", (self.Leaking > 0) and 1 or 0)
 	else
-		self:NextThink( CurTime() + 2 )
+		self:NextThink( CurTime() + 1 )
 	end
 
 	--refuelling
 	if self.Active and self.SupplyFuel and self.Fuel > 0 and self.Legal then
+		self:NextThink(CurTime())
 		for _,Tank in pairs(ACF.FuelTanks) do
+
 			if self.FuelType == Tank.FuelType and not Tank.SupplyFuel and Tank.Legal then --don't refuel the refuellers, otherwise it'll be one big circlejerk
 				local dist = self:GetPos():Distance(Tank:GetPos())
+
 				if dist < ACF.RefillDistance and (Tank.Capacity - Tank.Fuel > 0.1) then
-					local exchange = (CurTime() - self.LastThink) * ACF.RefillSpeed * (((self.FuelType == "Electric") and ACF.ElecRate) or ACF.FuelRate) / 1750 --3500
+					local exchange = ((self.FuelType == "Electric") and 1 or 15) / 200
 					exchange = math.min(exchange, self.Fuel, Tank.Capacity - Tank.Fuel)
 					self.Fuel = self.Fuel - exchange
 					Tank.Fuel = Tank.Fuel + exchange
+
 					if Tank.FuelType == "Electric" then
-						sound.Play("ambient/energy/newspark04.wav",Tank:GetPos(),75,100,0.5)
+						if not Tank.PlayedSound and CurTime() > (Tank.NextSoundTime or 0) then
+							sound.Play("ambient/energy/newspark04.wav", Tank:GetPos(), 75, 100, 0.5)
+							Tank.PlayedSound = true
+							Tank.NextSoundTime = CurTime() + 1 -- Adjust the delay time (in seconds) as needed
+						end
 					else
-						sound.Play("vehicles/jetski/jetski_no_gas_start.wav",Tank:GetPos(),75,120,0.5)
+						if CurTime() > (Tank.NextSoundTime or 0) then
+							sound.Play("vehicles/jetski/jetski_no_gas_start.wav", Tank:GetPos(), 75, 120, 0.5)
+							Tank.NextSoundTime = CurTime() + 1 -- Adjust the delay time (in seconds) as needed
+						end
 					end
 				end
 			end

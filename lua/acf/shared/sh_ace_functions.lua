@@ -82,6 +82,51 @@ function ACF_CalcEnginePerformanceData(curve, maxTq, idle, redline)
 	}
 end
 
+-- A cheap way to check if the distance between 2 points is within a target distance.
+function ACE_InDist( Pos1, Pos2, Distance )
+	return (Pos2 - Pos1):LengthSqr() < Distance ^ 2
+end
+
+	-- Material Enum
+	-- 65 ANTLION
+	-- 66 BLOODYFLESH
+	-- 67 CONCRETE / NODRAW
+	-- 68 DIRT
+	-- 70 FLESH
+	-- 71 GRATE
+	-- 72 ALIENFLESH
+	-- 73 CLIP
+	-- 76 PLASTIC
+	-- 77 METAL
+	-- 78 SAND
+	-- 79 FOLIAGE
+	-- 80 COMPUTER
+	-- 83 SLOSH
+	-- 84 TILE
+	-- 86 VENT
+	-- 87 WOOD
+	-- 89 GLASS
+
+function ACE_GetMaterialName( Mat )
+	--concrete
+	local GroundMat = "Concrete"
+
+	-- Dirt
+	if Mat == 68 or Mat == 79 or Mat == 85 then
+		GroundMat = "Dirt"
+	-- Sand
+	elseif Mat == 78 then
+		GroundMat = "Sand"
+	-- Glass
+	elseif Mat == 89 then
+		GroundMat = "Glass"
+	elseif Mat == 77 or Mat == 86 or Mat == 80 then
+		GroundMat = "Metal"
+	end
+
+	return GroundMat
+end
+
 -- changes here will be automatically reflected in the armor properties tool
 function ACF_CalcArmor( Area, Ductility, Mass )
 
@@ -395,7 +440,7 @@ do
 			end
 		end
 
-		local MatData = ACE.Armors[Mat]
+		local MatData = ACE.ArmorTypes[Mat]
 
 		return MatData
 	end
@@ -404,7 +449,7 @@ end
 --TODO: Use a universal function
 function ACE_CheckMaterial( MatId )
 
-	local matdata = ACE.Armors[ MatId ]
+	local matdata = ACE.ArmorTypes[ MatId ]
 
 	if not matdata then return false end
 
@@ -473,6 +518,51 @@ function ACE_CheckFuelTank( fueltankid )
 	if not fueltankid then return false end
 
 	return true
+end
+
+if SERVER then
+	function ACE_SendMsg(ply, ...)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(false)
+		net.WriteTable({...})
+		net.Send(ply)
+	end
+
+	function ACE_SendNotification(ply, hint, duration)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(true)
+		net.WriteString(hint)
+		net.WriteUInt(duration or 7, 8)
+		net.Send(ply)
+	end
+
+	function ACE_BroadcastMsg(...)
+		net.Start("ACE_SendMessage")
+		net.WriteBool(false)
+		net.WriteTable({...})
+		net.Broadcast()
+	end
+else
+	net.Receive("ACE_SendMessage", function()
+		local isHint = net.ReadBool()
+
+		if isHint then
+			local hint = net.ReadString()
+			local duration = net.ReadUInt(8)
+
+			notification.AddLegacy(hint, NOTIFY_GENERIC, duration)
+		else
+			local msg = net.ReadTable()
+
+			for k, v in pairs(msg) do
+				if type(v) == "table" and #v == 4 then -- For some reason, color objects are sometimes converted to tables during networking?
+					msg[k] = Color(v[1], v[2], v[3], v[4])
+				end
+			end
+
+			chat.AddText(unpack(msg))
+		end
+	end)
 end
 
 --[[ IDK if this will take some usage

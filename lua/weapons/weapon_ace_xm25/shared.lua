@@ -19,9 +19,6 @@ SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/xm25_multi.mp3"
 SWEP.Primary.LightScale = 200 --Muzzleflash light radius
 SWEP.Primary.BulletCount = 1 --Number of bullets to fire each shot, used for shotguns
 
-SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip = -1
-
 SWEP.ReloadSound = "weapons/amr/sniper_reload.wav" --Sound other players hear when you reload - this is NOT your first-person sound
 										--Most models have a built-in first-person reload sound
 
@@ -87,7 +84,7 @@ function SWEP:SecondaryAttack()
 		self.FuseDelay = time > 0.07 and time or 0
 	end
 
-	owner:SendLua(string.format("GAMEMODE:AddNotify(%q, \"NOTIFY_HINT\", 2)", "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None")))
+	ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)
 
 	return
 end

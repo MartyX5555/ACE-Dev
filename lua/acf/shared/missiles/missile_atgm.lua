@@ -103,7 +103,9 @@ ACF_defineGun("9M133 ASM", {									-- id
 
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
-					["1x Kornet"] = true
+					["1x Kornet"] = true,
+					["2x Kornet"] = true,
+					["4x Kornet"] = true
 			},
 
 	viewcone		= 25,										-- getting outside this cone will break the lock.  Divided by 2.

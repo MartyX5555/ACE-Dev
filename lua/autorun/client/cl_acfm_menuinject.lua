@@ -3,6 +3,8 @@
 include("acf/client/cl_acfmenu_missileui.lua")
 
 
+local ACFEnts = ACF.Weapons
+
 function SetMissileGUIEnabled(_, enabled, gundata)
 
 	if enabled then
@@ -30,7 +32,7 @@ function SetMissileGUIEnabled(_, enabled, gundata)
 
 				local gunId = acfmenupanel.CData.CaliberSelect:GetValue()
 				if gunId then
-					local guns = list.Get("ACFEnts").Guns
+					local guns = ACF.Weapons.Guns
 					gun = guns[gunId]
 				end
 
@@ -78,7 +80,7 @@ function SetMissileGUIEnabled(_, enabled, gundata)
 
 				local gunId = acfmenupanel.CData.CaliberSelect:GetValue()
 				if gunId then
-					local guns = list.Get("ACFEnts").Guns
+					local guns = ACF.Weapons.Guns
 					gun = guns[gunId]
 				end
 
@@ -246,23 +248,23 @@ function ModifyACFMenu(panel)
 		oldAmmoSelect(panel, blacklist)
 
 		acfmenupanel.CData.CaliberSelect.OnSelect = function( _ , _ , data )
-			acfmenupanel.AmmoData["Data"] = acfmenupanel.WeaponData["Guns"][data]["round"]
+			acfmenupanel.AmmoData["Data"] = ACFEnts["Guns"][data]["round"]
 			acfmenupanel:UpdateAttribs()
 			acfmenupanel:UpdateAttribs()	--Note : this is intentional
 
-			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
+			local gunTbl = ACFEnts["Guns"][data]
 			local class = gunTbl.gunclass
 
-			local Classes = list.Get("ACFClasses")
+			local Classes = ACF.Classes
 			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl ) end)
 		end
 
 		local data = acfmenupanel.CData.CaliberSelect:GetValue()
 		if data then
-			local gunTbl = acfmenupanel.WeaponData["Guns"][data]
+			local gunTbl = ACFEnts["Guns"][data]
 			local class = gunTbl.gunclass
 
-			local Classes = list.Get("ACFClasses")
+			local Classes = ACF.Classes
 			timer.Simple(0.01, function() SetMissileGUIEnabled( acfmenupanel, Classes.GunClass[class].type == "missile", gunTbl) end)
 		end
 
@@ -274,18 +276,15 @@ function ModifyACFMenu(panel)
 
 	for _, node in pairs(rootNodes) do -- iterating though found folders
 
-				if node:GetText() == "Missiles" then	--Missile folder is the one that we need
-
-					gunsNode = node
-					break
-
-				end
-
+		if node:GetText() == "Missiles" then	--Missile folder is the one that we need
+			gunsNode = node
+			break
+		end
 	end
 
 	if gunsNode then
 		local classNodes = gunsNode.ChildNodes:GetChildren()
-		local gunClasses = list.Get("ACFClasses").GunClass
+		local gunClasses = ACF.Classes.GunClass
 
 		for _, node in pairs(classNodes) do
 			local gunNodeElement = node.ChildNodes
