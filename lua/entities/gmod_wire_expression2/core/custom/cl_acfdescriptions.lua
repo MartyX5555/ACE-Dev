@@ -4,9 +4,9 @@ E2Helper.Descriptions["acfIsGearbox"] = "Returns 1 if the entity is an ACF gearb
 E2Helper.Descriptions["acfIsGun"] = "Returns 1 if the entity is an ACF gun."
 E2Helper.Descriptions["acfIsAmmo"] = "Returns 1 if the entity is an ACF ammo crate."
 E2Helper.Descriptions["acfIsFuel"] = "Returns 1 if the entity is an ACF fuel tank."
-E2Helper.Descriptions["acfActive(e:)"] = "Returns whether an ACF engine, ammo crate, or fuel tank is active"
-E2Helper.Descriptions["acfActive(e:n)"] = "Sets whether an ACF engine, ammo crate, or fuel tank is active"
-E2Helper.Descriptions["acfHitClip"] = "Returns 1 if hitpos is on a clipped part of prop"
+E2Helper.Descriptions["acfActive(e:)"] = "Returns whether an ACF engine, ammo crate, or fuel tank is active."
+E2Helper.Descriptions["acfActive(e:n)"] = "Sets whether an ACF engine, ammo crate, or fuel tank is active."
+E2Helper.Descriptions["acfHitClip"] = "Returns 1 if hitpos is on a clipped part of prop."
 E2Helper.Descriptions["acfNameShort"] = "Returns the short name of an ACF entity."
 E2Helper.Descriptions["acfName"] = "Returns the full name of an ACF entity."
 E2Helper.Descriptions["acfType"] = "Returns the type of ACF entity."
@@ -16,11 +16,10 @@ E2Helper.Descriptions["acfCapacity"] = "Returns the capacity of an ACF ammo crat
 E2Helper.Descriptions["acfInfoRestricted"] = "Returns 1 if functions returning sensitive info are restricted to owned props."
 E2Helper.Descriptions["acfLinks"] = "Returns all the entities which are linked to this entity through ACF."
 E2Helper.Descriptions["acfGetLinkedWheels"] = "Returns any wheels linked to this engine/gearbox or its children links."
-E2Helper.Descriptions["acfDragDiv"] = "Returns current ACF drag divisor"
-E2Helper.Descriptions["acfHeat"] = "Returns heat of an ACF entity"
-E2Helper.Descriptions["acfVersion"] = "Returns latest git version of acf"
-E2Helper.Descriptions["acfCurVersion"] = "Returns current version of acf"
---E2Helper.Descriptions["acfGetCrew"] = "Returns table of crew seats, linked to entity"
+E2Helper.Descriptions["acfDragDiv"] = "Returns current ACF drag divisor."
+E2Helper.Descriptions["acfHeat"] = "Returns heat of an ACF entity."
+E2Helper.Descriptions["acfVersion"] = "Returns latest git version of ACE."
+E2Helper.Descriptions["acfCurVersion"] = "Returns current version of ACE."
 
 --engine
 E2Helper.Descriptions["acfMaxTorque"] = "Returns the maximum torque (in N/m) of an ACF engine."
@@ -40,6 +39,7 @@ E2Helper.Descriptions["acfInPowerband"] = "Returns 1 if the ACF engine RPM is in
 E2Helper.Descriptions["acfThrottle(e:)"] = "Gets throttle (0-100) for an ACF engine."
 E2Helper.Descriptions["acfThrottle(e:n)"] = "Sets throttle (0-100) for an ACF engine."
 E2Helper.Descriptions["acfFuelRemaining"] = "Returns the amount of fuel remaining for an ACF engine, in litres or kilowatt-hours."
+E2Helper.Descriptions["acfGetFuelTanks"] = "Returns a list of all the fuel tanks of an ACF Engine."
 
 --gearbox
 E2Helper.Descriptions["acfGear"] = "Returns the current gear of an ACF gearbox."
@@ -82,6 +82,8 @@ E2Helper.Descriptions["acfReload"] = "Causes an ACF weapon to reload."
 E2Helper.Descriptions["acfMagRounds"] = "Returns the rounds remaining in the magazine of an ACF weapon."
 E2Helper.Descriptions["acfAmmoCount"] = "Returns the number of rounds in active ammo crates linked to an ACF weapon."
 E2Helper.Descriptions["acfTotalAmmoCount"] = "Returns the number of rounds in all ammo crates linked to an ACF weapon."
+E2Helper.Descriptions["acfGetCrew"] = "Returns a list of all the crew seats of an ACF Entity."
+E2Helper.Descriptions["acfGetAmmoCrates"] = "Returns a list of all the ammo crates of an ACF Weapon."
 
 --ammo
 E2Helper.Descriptions["acfRounds"] = "Returns the number of rounds in an ACF ammo crate."
