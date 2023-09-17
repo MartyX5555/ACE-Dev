@@ -783,7 +783,7 @@ do
 
 	-- Returns an array of all ammo crates linked to the entity.
 	e2function array entity:acfGetAmmoCrates()
-		if not (isGun(this) or isRack(ent)) then return {} end
+		if not (isGun(this) or isRack(this)) then return {} end
 		if restrictInfo(self, this) then return {} end
 		if not next(this.AmmoLink) then return {} end
 
@@ -908,25 +908,33 @@ do
 	
 	__e2setcost( 5 )
 	
-	-- Returns the penetration of an AP, APHE, or HEAT round
+
+	-- Returns the penetration of a shell packed in an ammo crate or loaded in gun.
 	e2function number entity:acfPenetration()
-		if not (isAmmo(this) or isGun(this)) then return 0 end
-		if restrictInfo(self, this) then return 0 end
-		local Type = this.BulletData["Type"] or ""
-		local Energy
-		if Type == "AP" or Type == "APHE" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37, this.BulletData["ProjMass"] - (this.BulletData["FillerMass"] or 0), this.BulletData["LimitVel"] )
-			return math.Round((Energy.Penetration/this.BulletData["PenArea"]) * ACF.KEtoRHA,3)
-		elseif Type == "HEAT" then
-			local Crushed, HEATFillerMass, BoomFillerMass = ACF.RoundTypes["HEAT"].CrushCalc(this.BulletData.MuzzleVel, this.BulletData.FillerMass)
-			if Crushed == 1 then return 0 end -- no HEAT jet to fire off, it was all converted to HE
-			Energy = ACF_Kinetic(ACF.RoundTypes["HEAT"].CalcSlugMV( this.BulletData, HEATFillerMass ) * 39.37, this.BulletData["SlugMass"], 9999999 )
-			return math.floor((Energy.Penetration/this.BulletData["SlugPenArea"]) * ACF.KEtoRHA,3)
-		elseif Type == "FL" then
-			Energy = ACF_Kinetic(this.BulletData["MuzzleVel"] * 39.37 , this.BulletData["FlechetteMass"], this.BulletData["LimitVel"] )
-			return math.Round((Energy.Penetration/this.BulletData["FlechettePenArea"]) * ACF.KEtoRHA, 3)
-		end
-		return 0
+		local penetration = 0
+		if not (isAmmo(this) or isGun(this)) then return penetration end
+		if restrictInfo(self, this) then return penetration end
+		if not next(this.BulletData) then return penetration end
+		if not ACE_CheckRound( this.BulletData.Type ) then return penetration end
+
+		local Data = ACF.RoundTypes[this.BulletData.Type].getDisplayData(this.BulletData)
+		penetration = Data.MaxPen or 0
+
+		return penetration
+	end
+
+	-- Returns the penetration of a shell packed in an ammo crate or loaded in gun. Assigns an index to return the tandem penetration if its a THEAT.
+	e2function number entity:acfPenetration( number index )
+		local penetration = 0
+		if not (isAmmo(this) or isGun(this)) then return penetration end
+		if restrictInfo(self, this) then return penetration end
+		if not next(this.BulletData) then return penetration end
+		if not ACE_CheckRound( this.BulletData.Type ) then return penetration end
+
+		local Data = ACF.RoundTypes[this.BulletData.Type].getDisplayData(this.BulletData)
+		penetration = ((index == 1) and (Data.MaxPen or 0)) or ((index == 2) and (Data.MaxPen2 or 0)) or 0
+
+		return penetration
 	end
 	
 	-- Returns the blast radius of an HE, APHE, or HEAT round

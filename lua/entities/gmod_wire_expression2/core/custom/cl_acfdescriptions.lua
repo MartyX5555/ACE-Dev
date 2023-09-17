@@ -95,7 +95,8 @@ E2Helper.Descriptions["acfProjectileMass"] = "Returns the mass of the projectile
 E2Helper.Descriptions["acfFLSpikes"] = "Returns the number of projectiles in a flechette round."
 E2Helper.Descriptions["acfFLSpikeRadius"] = "Returns the radius (in mm) of the spikes in a flechette round."
 E2Helper.Descriptions["acfFLSpikeMass"] = "Returns the mass of a single spike in a FL round in a crate or gun."
-E2Helper.Descriptions["acfPenetration"] = "Returns the penetration of an AP, APHE, HEAT or FL round in an ACF ammo crate or weapon."
+E2Helper.Descriptions["acfPenetration(e:)"] = "Returns the penetration of a shell packed in an ammo crate or loaded in gun."
+E2Helper.Descriptions["acfPenetration(e:n)"] = "Returns the penetration of a shell packed in an ammo crate or loaded in gun, according to its index."
 E2Helper.Descriptions["acfBlastRadius"] = "Returns the blast radius of an HE, APHE, or HEAT round in an ACF ammo crate or weapon."
 E2Helper.Descriptions["acfDragCoef"] = "Returns the drag coefficient of ammo in an ACF ammo crate or weapon."
 
