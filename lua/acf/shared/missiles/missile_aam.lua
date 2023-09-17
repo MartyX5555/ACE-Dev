@@ -29,7 +29,7 @@ ACF_defineGun("AIM-9 AAM", {								-- id
 	rofmod		= 0.5,
 	year			= 1953,
 	modeldiameter	= 13.66,
-	bodydiameter     = 7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 6.1, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rotmult		= 0.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
@@ -83,7 +83,7 @@ ACF_defineGun("AIM-120 AAM", {							-- id
 	year			= 1991,
 	rofmod		= 0.35,
 	modeldiameter	= 20.41,						-- in cm
-	bodydiameter     = 10, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 8.9, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rotmult		= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
@@ -136,7 +136,7 @@ ACF_defineGun("AIM-54 AAM", {							-- id
 	year             = 1974,
 	rofmod           = 0.32,
 	modeldiameter    = 22,86,
-	bodydiameter     = 16, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
+	bodydiameter     = 15.4, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rotmult          = 6,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {

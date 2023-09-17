@@ -19,7 +19,7 @@ ACF_DefineRack("1xRK", {
 	year = 1915,
 
 	mountpoints = {
-		missile1 = { pos = Vector(0, 0, 3.8), scaledir = Vector(0, 0, -1)}
+		missile1 = { pos = Vector(0, 0, 3.65), scaledir = Vector(0, 0, -1)}
 	}
 } )
 
@@ -34,7 +34,7 @@ ACF_DefineRack("1xRK_small", {
 	year = 1915,
 
 	mountpoints = {
-		missile1 = { pos = Vector(0, 0, 3.8), scaledir = Vector(0, 0, -1)}
+		missile1 = { pos = Vector(0, 0, 3.6), scaledir = Vector(0, 0, -1)}
 	}
 } )
 
@@ -47,8 +47,8 @@ ACF_DefineRack("2xRK", {
 	year = 1915,
 
 	mountpoints = {
-		missile1 = { pos = Vector(4,-12.5,-1.7), scaledir = Vector(0, -1, 0)},
-		missile2 = { pos = Vector(4,12.5,-1.7),  scaledir = Vector(0, 1, 0)}
+		missile1 = { pos = Vector(4,-12.6,-1.7), scaledir = Vector(0, -1, 0)},
+		missile2 = { pos = Vector(4,12.6,-1.7),  scaledir = Vector(0, 1, 0)}
 	}
 } )
 
@@ -63,9 +63,9 @@ ACF_DefineRack("3xRK", {
 	magsize = 3,
 
 	mountpoints = {
-		missile1 = { pos = Vector(1.9,0,-7.5),	scaledir = Vector(0,0,-1)},
-		missile2 = { pos = Vector(2.3,3,-2),	scaledir = Vector(-1,1,0)},
-		missile3 = { pos = Vector(2.3,-3,-2),	scaledir = Vector(-1,-1,0)},
+		missile1 = { pos = Vector(1.9,0,-7.7), scaledir = Vector(0,0,-1)},
+		missile2 = { pos = Vector(2.3,3.2,0.4),	scaledir = Vector(0,1,-1)},
+		missile3 = { pos = Vector(2.3,-3.2,0.4), scaledir = Vector(0,-1,-1)},
 	}
 } )
 
@@ -79,10 +79,10 @@ ACF_DefineRack("4xRK", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(0,12.5,9), scaledir = Vector(0,1,0)},
-		missile2 = { pos = Vector(0,-12.5,9), scaledir = Vector(0,-1,0)},
-		missile3 = { pos = Vector(0,-12.5,-5), scaledir = Vector(0,0,-1)},
-		missile4 = { pos = Vector(0,12.5,-5), scaledir = Vector(0,0,-1)}
+		missile1 = { pos = Vector(0,12,9), scaledir = Vector(0,1,0)},
+		missile2 = { pos = Vector(0,-12,9), scaledir = Vector(0,-1,0)},
+		missile3 = { pos = Vector(0,-12.6,-3.4), scaledir = Vector(0,0,-1)},
+		missile4 = { pos = Vector(0,12.6,-3.4), scaledir = Vector(0,0,-1)}
 	}
 } )
 
@@ -97,8 +97,8 @@ ACF_DefineRack("2x AGM-114", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(0,-7.9,5.5), scaledir = Vector(0,0,-1)},
-		missile2 = { pos = Vector(0,7.9,5.5), scaledir = Vector(0,0,-1)},
+		missile1 = { pos = Vector(0,-7.9,5.7), scaledir = Vector(0,0,-1)},
+		missile2 = { pos = Vector(0,7.9,5.7), scaledir = Vector(0,0,-1)},
 	}
 } )
 
@@ -113,10 +113,10 @@ ACF_DefineRack("4x AGM-114", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(0,-7.9,5.5), scaledir = Vector(0,0,-1)},
-		missile2 = { pos = Vector(0,7.9,5.5), scaledir = Vector(0,0,-1)},
-		missile3 = { pos = Vector(0,-7.9,-12.2), scaledir = Vector(0,0,-1)},
-		missile4 = { pos = Vector(0,7.9,-12.2), scaledir = Vector(0,0,-1)}
+		missile1 = { pos = Vector(0,-7.9,5.7), scaledir = Vector(0,0,-1)},
+		missile2 = { pos = Vector(0,7.9,5.7), scaledir = Vector(0,0,-1)},
+		missile3 = { pos = Vector(0,-7.9,-12.1), scaledir = Vector(0,0,-1)},
+		missile4 = { pos = Vector(0,7.9,-12.1), scaledir = Vector(0,0,-1)}
 	}
 } )
 
@@ -131,7 +131,7 @@ ACF_DefineRack("1xAT3RK", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(3.2,0,3.4), scaledir = Vector(0, 0, -1)}
+		missile1 = { pos = Vector(3.5,-0.2,-2.55), scaledir = Vector(0, 0, 1)}
 	}
 } )
 
@@ -146,6 +146,6 @@ ACF_DefineRack("1xAT3RKS", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(21,0,8.6), scaledir = Vector(0, 0, -1) }
+		missile1 = { pos = Vector(21.225,-0.2,2.6), scaledir = Vector(0, 0, 1) }
 	}
 } )
