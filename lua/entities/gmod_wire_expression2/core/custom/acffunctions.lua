@@ -31,7 +31,6 @@ local function isRack(ent)
 	if (ent:GetClass() == "acf_rack") then return true else return false end
 end
 
-
 local function isAmmo(ent)
 	if not validPhysics(ent) then return false end
 	if (ent:GetClass() == "acf_ammo") then return true else return false end
@@ -98,6 +97,9 @@ do
 		if isGun(this) then return this.Id or "" end
 		if isAmmo(this) then return this.RoundId or "" end
 		if isFuel(this) then return this.FuelType .." ".. this.SizeId end
+		if isRack(this) then return this.Id or "" end
+		if isRadar(this) then return this.Id or "" end
+
 		return ""
 	end
 	
@@ -185,7 +187,6 @@ do
 		return ret
 	end
 	
-	
 	__e2setcost( 20 )
 	
 	e2function array entity:acfLinks()
@@ -202,9 +203,6 @@ do
 	
 	end
 	
-	
-	
-	
 	__e2setcost( 2 )
 	
 	-- Returns the full name of an ACF entity
@@ -212,9 +210,18 @@ do
 		if isAmmo(this) then return (this.RoundId .. " " .. this.RoundType) end
 		if isFuel(this) then return this.FuelType .." ".. this.SizeId end
 		local acftype = ""
-		if isEngine(this) then acftype = "Mobility" end
-		if isGearbox(this) then acftype = "Mobility" end
-		if isGun(this) then acftype = "Guns" end
+		if isGun(this) then 
+			acftype = "Guns"
+		elseif isEngine(this)  then 
+			acftype = "Engines"
+		elseif isGearbox(this)  then 
+			acftype = "Gearboxes" 
+		elseif isRack(this) then
+			acftype = "Racks"
+		elseif isRadar(this) then
+			acftype = "Radars"
+		end
+
 		if (acftype == "") then return "" end
 		local List = ACF.Weapons
 		return List[acftype][this.Id]["name"] or ""
@@ -222,19 +229,30 @@ do
 	
 	-- Returns the type of ACF entity
 	e2function string entity:acfType()
-		if isEngine(this) or isGearbox(this) then
+
+		if isEngine(this) then
 			local List = ACF.Weapons
-			return List["Mobility"][this.Id]["category"] or ""
-		end
-		if isGun(this) then
+			return List["Engines"][this.Id]["category"] or ""
+		elseif isGearbox(this) then
+			local List = ACF.Weapons
+			return List["Gearboxes"][this.Id]["category"] or ""
+		elseif isGun(this) then
 			local Classes = ACF.Classes
 			return Classes["GunClass"][this.Class]["name"] or ""
+		elseif isRack(this) then
+			local Classes = ACF.Classes
+			return Classes["Rack"][this.Class]["name"] or ""
+		elseif isRadar(this) then
+			local Classes = ACF.Classes
+			return Classes["Radar"][this.Class]["name"] or ""
 		end
 		if isAmmo(this) then return this.RoundType or "" end
 		if isFuel(this) then return this.FuelType or "" end
 		return ""
 	end
 	
+	
+
 	--allows e2 to perform ACF links
 	e2function number entity:acfLinkTo(entity target, number notify)
 		if not (isLinkableACFEnt(this)) and (isOwner(self, this) and isOwner(self, target)) then
@@ -649,7 +667,12 @@ do
 	e2function number entity:acfIsGun()
 		if isGun(this) and not restrictInfo(self, this) then return 1 else return 0 end
 	end
-	
+
+	-- Returns 1 if the entity is an ACF rack
+	e2function number entity:acfIsRack()
+		if isRack(this) and not restrictInfo(self, this) then return 1 else return 0 end
+	end
+
 	-- Returns 1 if the ACF gun is ready to fire
 	e2function number entity:acfReady()
 		if not isGun(this) then return 0 end
@@ -1175,6 +1198,14 @@ end
 -- [ Radar Functions ] --
 
 do
+
+	__e2setcost(1)
+
+	-- Returns 1 if the entity is an ACF gun
+	e2function number entity:acfIsRadar()
+		if isRadar(this) and not restrictInfo(self, this) then return 1 else return 0 end
+	end
+
 	__e2setcost(10)
 
 	-- Returns a table containing the outputs you'd get from an ACF radar

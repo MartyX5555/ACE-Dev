@@ -2,8 +2,10 @@
 E2Helper.Descriptions["acfIsEngine"] = "Returns 1 if the entity is an ACF engine."
 E2Helper.Descriptions["acfIsGearbox"] = "Returns 1 if the entity is an ACF gearbox."
 E2Helper.Descriptions["acfIsGun"] = "Returns 1 if the entity is an ACF gun."
+E2Helper.Descriptions["acfIsRack"] = "Returns 1 if the entity is an ACF rack."
 E2Helper.Descriptions["acfIsAmmo"] = "Returns 1 if the entity is an ACF ammo crate."
 E2Helper.Descriptions["acfIsFuel"] = "Returns 1 if the entity is an ACF fuel tank."
+E2Helper.Descriptions["acfIsRadar"] = "Returns 1 if the entity is an ACF radar."
 E2Helper.Descriptions["acfActive(e:)"] = "Returns whether an ACF engine, ammo crate, or fuel tank is active."
 E2Helper.Descriptions["acfActive(e:n)"] = "Sets whether an ACF engine, ammo crate, or fuel tank is active."
 E2Helper.Descriptions["acfHitClip"] = "Returns 1 if hitpos is on a clipped part of prop."
@@ -40,6 +42,7 @@ E2Helper.Descriptions["acfThrottle(e:)"] = "Gets throttle (0-100) for an ACF eng
 E2Helper.Descriptions["acfThrottle(e:n)"] = "Sets throttle (0-100) for an ACF engine."
 E2Helper.Descriptions["acfFuelRemaining"] = "Returns the amount of fuel remaining for an ACF engine, in litres or kilowatt-hours."
 E2Helper.Descriptions["acfGetFuelTanks"] = "Returns a list of all the fuel tanks of an ACF Engine."
+E2Helper.Descriptions["acfIsElectric"] = "Returns 1 if this engine is electric."
 
 --gearbox
 E2Helper.Descriptions["acfGear"] = "Returns the current gear of an ACF gearbox."
