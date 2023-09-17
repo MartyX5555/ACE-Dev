@@ -439,8 +439,8 @@ ACF_DefineRack("2x Kornet", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(9.77,-7.37,-5.58), scaledir = Vector(0,0,0) },
-		missile2 = { pos = Vector(9.77,7.37,-5.5), scaledir = Vector(0,0,0) },
+		missile1 = { pos = Vector(2,-7.3,-1), scaledir = Vector(0,0,0) },
+		missile2 = { pos = Vector(2,7.3,-1), scaledir = Vector(0,0,0) },
 	}
 } )
 
@@ -461,10 +461,10 @@ ACF_DefineRack("4x Kornet", {
 
 	mountpoints =
 	{
-		missile1 = { pos = Vector(9.77,-7.4,-16.5), scaledir = Vector(0,0,0) },
-		missile2 = { pos = Vector(9.77,7.4,-16.5), scaledir = Vector(0,0,0) },
-		missile3 = { pos = Vector(9.77,-7.4,-5.4), scaledir = Vector(0,0,0) },
-		missile4 = { pos = Vector(9.77,7.4,-5.4), scaledir = Vector(0,0,0) },
+		missile1 = { pos = Vector(-1,-7.3,4.5), scaledir = Vector(0,0,0) },
+		missile2 = { pos = Vector(-1,7.3,4.5), scaledir = Vector(0,0,0) },
+		missile3 = { pos = Vector(-1,-7.3,-6.5), scaledir = Vector(0,0,0) },
+		missile4 = { pos = Vector(-1,7.3,-6.5), scaledir = Vector(0,0,0) },
 	}
 } )
 
