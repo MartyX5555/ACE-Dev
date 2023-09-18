@@ -255,6 +255,8 @@ do
 
 	--allows e2 to perform ACF links
 	e2function number entity:acfLinkTo(entity target, number notify)
+
+		if not IsValid( this ) or not IsValid(target) then return 0 end
 		if not (isLinkableACFEnt(this)) and (isOwner(self, this) and isOwner(self, target)) then
 			if notify > 0 then
 				ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
@@ -271,6 +273,8 @@ do
 	
 	--allows e2 to perform ACF unlinks
 	e2function number entity:acfUnlinkFrom(entity target, number notify)
+
+		if not IsValid( this ) or not IsValid(target) then return 0 end
 		if not (isLinkableACFEnt(this)) and (isOwner(self, this) and isOwner(self, target)) then
 			if notify > 0 then
 				ACF_SendNotify(self.player, 0, "Must be called on a gun, engine, or gearbox you own.")
