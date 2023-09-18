@@ -445,7 +445,9 @@ do
 					self.CutoutTime	= Time + self.MotorLength -- must not be called here
 				end
 
-				self:LaunchEffect()
+				if self.Motor > 0 then
+					self:LaunchEffect()
+				end
 
 			end )
 		elseif not GunData.prepush then
@@ -468,7 +470,9 @@ do
 				self.CutoutTime	= Time + self.MotorLength
 			end
 
-			self:LaunchEffect()
+			if self.Motor > 0 then
+				self:LaunchEffect()
+			end
 
 		end
 
