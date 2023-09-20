@@ -62,7 +62,7 @@ if SERVER then
 
 				printmsg(ply, HUD_PRINTCONSOLE,
 
-					"Set the wind intensity upon all smoke munitions." ..
+					"Set the maximum wind strength intensity upon all smoke munitions." ..
 					"\n	This affects the ability of smoke to be used for screening effect." ..
 					"\n	Example; acf_smokewind 300")
 
