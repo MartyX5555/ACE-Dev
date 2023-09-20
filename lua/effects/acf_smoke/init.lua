@@ -58,6 +58,7 @@ local windDirection = Vector(0, 0, 0)  -- Initialize with a default wind directi
 
 local lastWindUpdateTime = 0
 local windStrength = 0  -- Initialize windStrength to 0
+local curveFactor = 3 -- How biased the wind strength to 0 is (curvature!!)
 
 local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, i, SmokeColor, DeploySpeed, Lifetime)
 	local currentTime = CurTime()
@@ -71,8 +72,8 @@ local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, 
 		windDirection = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
 
 		if ACF.SmokeWind ~= 0 then
-			-- Update windStrength to a random value between 0 and ACF.SmokeWind
-			windStrength = math.Rand(0, ACF.SmokeWind)
+			local randValue = math.Rand(0, 1)
+			windStrength = (randValue ^ curveFactor) * ACF.SmokeWind
 		else
 			windStrength = 0
 		end
