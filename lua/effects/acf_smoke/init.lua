@@ -53,36 +53,72 @@ local smokes = {
 	"particle/smokesprites_0008"
 }
 
-local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, i, wind, SmokeColor, DeploySpeed, Lifetime)
-	local Smoke = self.Emitter:Add( smokes[math.random(1, #smokes)], Ground.HitPos )
-	if (Smoke) then
-		Smoke:SetVelocity( (ShootVector + Vector(0, 0, 0.2)) * (Radius * RadiusMod) * DeploySpeed )
-		Smoke:SetLifeTime( 0 )
-		Smoke:SetDieTime( math.Clamp(Lifetime, 1, 60) )
-		Smoke:SetStartAlpha( math.Rand( 200, 255 ) )
-		Smoke:SetEndAlpha( 0 )
-		Smoke:SetStartSize( math.Clamp((Radius * RadiusMod) * DeploySpeed, 5, 1000) )
-		Smoke:SetEndSize( math.Clamp(Radius * RadiusMod * 4, 150, 4000) )
-		Smoke:SetRoll( math.Rand(0, 360) )
-		Smoke:SetRollDelta( math.Rand(-0.2, 0.2) )
-		Smoke:SetAirResistance( 100 * DeploySpeed )
-		Smoke:SetGravity( Vector( math.Rand( -10 , 10 ) + wind * 0.5 + (wind * i / Density), math.Rand( -10 , 10 ), math.Rand( 5 , 15 ) ) * DeploySpeed )
-		Smoke:SetColor( SmokeColor.x,SmokeColor.y,SmokeColor.z )
+local lastWindUpdateTime = 0
+local windDirection = Vector(0, 0, 0)  -- Initialize with a default wind direction
+
+local lastWindUpdateTime = 0
+local windStrength = 0  -- Initialize windStrength to 0
+local curveFactor = 2.5 -- How biased the wind strength to 0 is (curvature!!)
+
+local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, i, SmokeColor, DeploySpeed, Lifetime)
+	local currentTime = CurTime()
+	local wind = GetConVar("acf_wind"):GetFloat()
+	-- Check if it's time to update the wind direction and windStrength
+	local reset_timer = 60 -- Update wind direction every n seconds (adjust the time interval as needed) 
+	if currentTime - lastWindUpdateTime > reset_timer then
+		lastWindUpdateTime = currentTime
+
+		-- Generate a new random wind direction
+		windDirection = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
+
+		local randValue = math.Rand(0, 1)
+		windStrength = (randValue ^ curveFactor) * wind
+	end
+
+	local Smoke = self.Emitter:Add(smokes[math.random(1, #smokes)], Ground.HitPos)
+	if Smoke then
+		-- Calculate the wind effect on velocity and gravity
+		local velocity = (ShootVector + Vector(0, 0, 0.2)) * (Radius * RadiusMod) * DeploySpeed
+		local gravity = Vector(0, 0, math.Rand(5, 15))
+
+		-- Apply wind effect based on wind direction and windStrength
+		local windEffect = windDirection * (windStrength * math.Rand(0.5, 1.5))
+		velocity = velocity + windEffect * (i / Density)
+		gravity = gravity + windEffect * 0.2
+
+		Smoke:SetVelocity(velocity)
+		Smoke:SetLifeTime(0)
+		Smoke:SetDieTime(math.Clamp(Lifetime, 1, 60))
+		Smoke:SetStartAlpha(math.Rand(200, 255))
+		Smoke:SetEndAlpha(0)
+		Smoke:SetStartSize(math.Clamp((Radius * RadiusMod) * DeploySpeed, 5, 1000))
+		Smoke:SetEndSize(math.Clamp(Radius * RadiusMod * 4, 150, 4000))
+		Smoke:SetRoll(math.Rand(0, 360))
+		Smoke:SetRollDelta(math.Rand(-0.2, 0.2))
+		Smoke:SetAirResistance(100 * DeploySpeed)
+		Smoke:SetGravity(gravity)
+		Smoke:SetColor(SmokeColor.x, SmokeColor.y, SmokeColor.z)
 	end
 end
+
+
+
+
+
+
+
 
 
 function EFFECT:SmokeFiller( Ground, SmokeColor, Radius, DeploySpeed, Lifetime )
 
 	local Density = Radius / 18
 	local Angle = Ground.HitNormal:Angle()
-	local wind = ACF.SmokeWind or 0
 	local ShootVector = Ground.HitNormal * 0.5
 	--print(Radius .. ", " .. Density)
 
-	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, Density, 0, wind, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
+	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, Density, 0, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
 	for i = 0, math.floor(Density) do
-		smokePuff(self, Ground, ShootVector, Radius, 1, Density, i, wind, SmokeColor, DeploySpeed, Lifetime)
+		smokePuff(self, Ground, ShootVector, Radius, 1, Density, i, SmokeColor, DeploySpeed, Lifetime)
 
 		ShootVector = Angle and Angle:Up()
 		Angle:RotateAroundAxis(Angle:Forward(), 360 / Density)
