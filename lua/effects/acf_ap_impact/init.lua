@@ -55,8 +55,6 @@ function EFFECT:Init( data )
 		local Material = ACE_GetMaterialName( Mat )
 		local SmokeColor = ACE.DustMaterialColor[Material] or ACE.DustMaterialColor["Concrete"]
 
-		print(SmokeColor)
-
 		if Material == "Metal" then
 			self:Metal( SmokeColor )
 		else

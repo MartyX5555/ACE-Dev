@@ -593,7 +593,7 @@ function ACFCLGUICreate()
 	local Effects = vgui.Create( "DForm" )
 	Effects:SetName("Rendering")
 
-	Effects:CheckBox("Allow lighting rendering", "ACFM_MissileLights")
+	Effects:CheckBox("Allow lighting rendering", "acf_enable_lighting")
 	Effects:ControlHelp( "Enables lighting for explosions, muzzle flashes and rocket motors, increasing the inmersion during combat, however, may impact heavily the performance and it's possible it doesn't render properly in certain map surfaces." )
 
 	Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")

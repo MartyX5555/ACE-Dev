@@ -53,7 +53,7 @@ local function isRadar(ent)
 end
 
 local function restrictInfo(ply, ent)
-	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
+	if GetConVar("acf_restrictinfo"):GetInt() ~= 0 then
 		if isOwner(ply, ent) then return false else return true end
 	end
 	return false
@@ -87,7 +87,7 @@ do
 
 	-- Returns 1 if functions returning sensitive info are restricted to owned props
 	e2function number acfInfoRestricted()
-		return GetConVar("sbox_acf_restrictinfo"):GetInt() or 0
+		return GetConVar("acf_restrictinfo"):GetInt() or 0
 	end
 	
 	-- Returns the short name of an ACF entity

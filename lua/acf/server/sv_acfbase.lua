@@ -1,6 +1,5 @@
 --visual concept: Here's where should be every acf function
 
-
 -- returns last parent in chain, which has physics
 function ACF_GetPhysicalParent( obj )
 	if not IsValid(obj) then return nil end
