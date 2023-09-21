@@ -58,25 +58,21 @@ local windDirection = Vector(0, 0, 0)  -- Initialize with a default wind directi
 
 local lastWindUpdateTime = 0
 local windStrength = 0  -- Initialize windStrength to 0
-local curveFactor = 3 -- How biased the wind strength to 0 is (curvature!!)
+local curveFactor = 2.5 -- How biased the wind strength to 0 is (curvature!!)
 
 local function smokePuff(self, Ground, ShootVector, Radius, RadiusMod, Density, i, SmokeColor, DeploySpeed, Lifetime)
 	local currentTime = CurTime()
-
+	local wind = GetConVar("acf_wind"):GetFloat()
 	-- Check if it's time to update the wind direction and windStrength
-	local timer = 60 -- Update wind direction every n seconds (adjust the time interval as needed) 
-	if currentTime - lastWindUpdateTime > timer then
+	local reset_timer = 60 -- Update wind direction every n seconds (adjust the time interval as needed) 
+	if currentTime - lastWindUpdateTime > reset_timer then
 		lastWindUpdateTime = currentTime
 
 		-- Generate a new random wind direction
 		windDirection = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
 
-		if ACF.SmokeWind ~= 0 then
-			local randValue = math.Rand(0, 1)
-			windStrength = (randValue ^ curveFactor) * ACF.SmokeWind
-		else
-			windStrength = 0
-		end
+		local randValue = math.Rand(0, 1)
+		windStrength = (randValue ^ curveFactor) * wind
 	end
 
 	local Smoke = self.Emitter:Add(smokes[math.random(1, #smokes)], Ground.HitPos)

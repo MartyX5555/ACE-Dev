@@ -71,6 +71,10 @@ CreateConVar("acf_spalling_multipler", 1, FCVAR_ARCHIVE)
 CreateConVar("acf_explosions_scaled_he_max", 100, FCVAR_ARCHIVE)
 CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
+--Smoke 
+CreateConVar("acf_wind", 300, FCVAR_ARCHIVE)
+
+
 if CLIENT then
 --[[-----------------------------
 		Client Convars
@@ -172,6 +176,7 @@ ACF.MVScale           = 0.5					-- Propellant to MV convertion expotential
 ACF.PDensity          = 1.6					-- Gun propellant density (Real powders go from 0.7 to 1.6, i'm using higher densities to simulate case bottlenecking)
 ACF.PhysMaxVel		= 8000
 
+
 ACF.NormalizationFactor = 0.15					-- at 0.1(10%) a round hitting a 70 degree plate will act as if its hitting a 63 degree plate, this only applies to capped and LRP ammunition.
 
 ---------------------------------- Misc & other ----------------------------------
@@ -191,7 +196,6 @@ ACF.HEDamageMult        = 2						-- HE Damage Multipler
 ACF.HESHDamageMult      = 1.2					-- HESH Damage Multipler
 ACF.HPDamageMult        = 8						-- HP Damage Multipler
 
-ACF.SmokeWind           = 5 + math.random() * 35	-- affects the ability of smoke to be used for screening effect
 ACF.AllowCSLua          = 0
 
 ACF.Threshold           = 264.7					-- Health Divisor (don't forget to update cvar function down below)
