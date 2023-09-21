@@ -482,7 +482,7 @@ if CLIENT then
 		ACF.Wind = Vector(net.ReadFloat(), net.ReadFloat(), 0)
 	end)
 else
-	local curveFactor = 2
+	local curveFactor = 2.5
 	local reset_timer = 60
 
 	timer.Create("ACE_Wind", reset_timer, 0, function()
