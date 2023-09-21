@@ -81,11 +81,6 @@ end
 
 
 
-
-
-
-
-
 function EFFECT:SmokeFiller( Ground, SmokeColor, Radius, DeploySpeed, Lifetime )
 
 	local Density = Radius / 18
@@ -94,7 +89,7 @@ function EFFECT:SmokeFiller( Ground, SmokeColor, Radius, DeploySpeed, Lifetime )
 	--print(Radius .. ", " .. Density)
 
 	smokePuff(self, Ground, Vector(0, 0, 0.3), Radius, 1.5, SmokeColor, DeploySpeed, Lifetime) --smoke filler initial upward puff
-	for i = 0, math.floor(Density) do
+	for _ = 0, math.floor(Density) do
 		smokePuff(self, Ground, ShootVector, Radius, 1, SmokeColor, DeploySpeed, Lifetime)
 
 		ShootVector = Angle and Angle:Up()
