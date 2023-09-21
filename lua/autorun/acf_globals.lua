@@ -208,7 +208,7 @@ if SERVER then
 	CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
 	--Smoke 
-	CreateConVar("acf_wind", 300, FCVAR_ARCHIVE)
+	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
 
 	function ACF_CVarChangeCallback(CVar, _, New)
