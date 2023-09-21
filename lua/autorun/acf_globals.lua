@@ -72,7 +72,7 @@ CreateConVar("acf_explosions_scaled_he_max", 100, FCVAR_ARCHIVE)
 CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
 --Smoke 
-CreateConVar("acf_wind", 300, FCVAR_ARCHIVE)
+CreateConVar("acf_wind", 300, FCVAR_ARCHIVE + FCVAR_REPLICATED)
 
 
 if CLIENT then
@@ -473,6 +473,29 @@ do
 	hook.Add( "PlayerInitialSpawn", "renderdamage", OnInitialSpawn )
 
 end
+
+
+if CLIENT then
+	ACF.Wind = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
+
+	net.Receive("ACE_Wind", function()
+		ACF.Wind = Vector(net.ReadFloat(), net.ReadFloat(), 0)
+	end)
+else
+	local curveFactor = 2.5
+	local reset_timer = 60
+
+	timer.Create("ACE_Wind", reset_timer, 0, function()
+		local smokeDir = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
+		local wind = (math.random() ^ curveFactor) * smokeDir * GetConVar("acf_wind"):GetFloat()
+		net.Start("ACE_Wind")
+			net.WriteFloat(wind.x)
+			net.WriteFloat(wind.y)
+		net.Broadcast()
+	end)
+end
+
+
 
 cleanup.Register( "aceexplosives" )
 
