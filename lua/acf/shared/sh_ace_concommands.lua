@@ -43,16 +43,4 @@ if SERVER then
 		end
 
 	end)
-
-	do
-
-		local function msgToCaller( ply, hud, msg )
-			if IsValid(ply) then
-				ply:PrintMessage(hud, msg or "")
-			else
-				print(msg or "")
-			end
-		end
-
-	end
 end
