@@ -8,7 +8,7 @@ Material.desc		= "Simple, generic, but trusty steel. The standard armor everythi
 Material.year		= 1900 -- Dont blame about this, ik that RHA has existed before this year but it would be cool to see: when?
 
 Material.massMod		= 1
-Material.curve		= 0.99 --Slight and almost unnoticable penalty to high thickness armor
+Material.curve		= 1 --Slight and almost unnoticable penalty to high thickness armor
 
 --All effectiveness values multiply the Line of Sight armor values of armor.
 --All Resiliance values are damage multipliers. Higher = more damage. Lower = less damage.
@@ -24,7 +24,7 @@ Material.ArmorMul	= 1
 Material.NormMult	= 1
 
 if SERVER then
-	function Material.ArmorResolution( _, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, _)
+	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, _)
 
 		local HitRes = {}
 

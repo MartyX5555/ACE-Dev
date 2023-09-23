@@ -36,7 +36,7 @@ Material.NormMult	= 0.05
 Material.Stopshock	= true
 
 if SERVER then
-	function Material.ArmorResolution( _, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
+	function Material.ArmorResolution( Entity, armor, losArmor, losArmorHealth, maxPenetration, FrArea, caliber, damageMult, Type)
 
 		local HitRes = {}
 
