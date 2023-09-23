@@ -37,7 +37,7 @@ function Round.convert( _, PlayerData )
 
 	Data.MinCalMult		= 0.2
 	Data.MaxCalMult		= 1.0
-	Data.PenModifier		= 0.8
+	Data.PenModifier		= 1.08 --for 120mm. 726 @ 1.1. 630 @1.3
 	Data.VelModifier		= 1.1
 	Data.Ricochet		= 80
 
