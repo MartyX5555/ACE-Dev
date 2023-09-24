@@ -97,9 +97,9 @@ if SERVER then
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
-			return HitRes
+			return HitReHeatTypess
 
-		elseif Type == "HE" or Type == "Spall" or Type == "HESH" then
+		elseif OtherImpactType[Type] then
 
 			local HEeffectiveness = Material.HEeffectiveness
 			local HEresiliance = Material.HEresiliance
