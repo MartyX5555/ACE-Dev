@@ -38,7 +38,15 @@ if SERVER then
 
 		local DamageModifier = 1
 
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
+
+		local validTypes = {
+			["HEAT"] = true,
+			["THEAT"] = true,
+			["HEATFS"] = true,
+			["THEATFS"] = true
+		}
+
+		if validTypes[Type] then
 
 			DamageModifier = Material.HEATMul
 
