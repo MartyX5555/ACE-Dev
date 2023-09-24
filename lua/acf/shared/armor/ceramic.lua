@@ -40,7 +40,12 @@ if SERVER then
 
 		local dmul = ( losArmor / armor ) --Angled ceramic takes more damage. Fully angled ceramic takes up to 7x the damage
 
-		if Type == "HE" or Type == "HESH" then
+		local validTypes = {
+			["HE"] = true,
+			["HESH"] = true
+		}
+
+		if validTypes[Type] then
 			dmul = dmul * 15
 		end
 

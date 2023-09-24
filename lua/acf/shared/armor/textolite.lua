@@ -41,7 +41,20 @@ if SERVER then
 		armor	= armor ^ curve
 		losArmor	= losArmor ^ curve
 
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" then
+		local HeatTypes = { -- 
+			["HEAT"] = true,
+			["THEAT"] = true,
+			["HEATFS"] = true,
+			["THEATFS"] = true,
+		}
+
+		local OtherImpactType = { -- 
+			["HE"] = true,
+			["Spall"] = true,
+			["HESH"] = true,
+		}
+
+		if HeatTypes[Type] then
 
 			local HEATeffectiveness = Material.HEATeffectiveness
 			local HEATresiliance = Material.HEATresiliance
@@ -84,9 +97,9 @@ if SERVER then
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
-			return HitRes
+			return HitReHeatTypess
 
-		elseif Type == "HE" or Type == "Spall" or Type == "HESH" then
+		elseif OtherImpactType[Type] then
 
 			local HEeffectiveness = Material.HEeffectiveness
 			local HEresiliance = Material.HEresiliance

@@ -54,7 +54,15 @@ if SERVER then
 		--=========================================================================================================\
 		--------------------------------------------------------- For HEAT shells & Spall -------------------------->
 		--=========================================================================================================/
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" or Type == "Spall" then
+		local validTypes = {
+			["HEAT"] = true,
+			["THEAT"] = true,
+			["HEATFS"] = true,
+			["THEATFS"] = true,
+			["Spall"] = true
+		}
+
+		if validTypes[Type] then
 
 			local specialeffectiveness  = Material.HEATeffectiveness
 			local specialresiliance	= Material.HEATresiliance
