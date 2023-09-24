@@ -20,8 +20,8 @@ Material.resiliance	= 2.5 --Resiliance against penetrating kinetic shells
 Material.Catchresiliance = 2 --Resiliance Multiplier used for kinetic shells when they fail to penetrate the armor and are "caught"
 
 
-Material.HEATeffectiveness = 4
-Material.HEATresiliance = 0.15
+Material.HEATeffectiveness = 3
+Material.HEATresiliance = 3
 
 Material.HEresiliance	= 6
 
@@ -45,7 +45,7 @@ if SERVER then
 		local resiliance	= Material.resiliance
 
 		local ductilityvalue = (Entity.ACF.Ductility or 0) * 1.25 --The ductility value of the armor. Outputs 1 to -1 depending on max ductility
-		local ductilitymult    = 2 / (2 - ductilityvalue * 1.5) -- Direct damage multiplier based on ductility.
+		local ductilitymult    = 2 / (2 + ductilityvalue * 1.5) -- Direct damage multiplier based on ductility.
 
 		armor	= armor ^ curve
 		losArmor	= losArmor ^ curve
@@ -54,7 +54,7 @@ if SERVER then
 		--=========================================================================================================\
 		--------------------------------------------------------- For HEAT shells & Spall -------------------------->
 		--=========================================================================================================/
-		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" or Type == "Spall" then --Gotta love shelltype bloat. P L E A S E  Stop appeasing the bloaters.
+		if Type == "HEAT" or Type == "THEAT" or Type == "HEATFS" or Type == "THEATFS" or Type == "Spall" then
 
 			local specialeffectiveness  = Material.HEATeffectiveness
 			local specialresiliance	= Material.HEATresiliance
@@ -66,6 +66,8 @@ if SERVER then
 			end
 
 			local DmgResist = 0.01 + math.min(caliber * 10 / Material.specialeffect, 5) * 10 --Caliber in mm / specialeffect. Makes HEAT shells with a larger jet shred rubber more.
+
+			local DmgResist = 1
 
 			-- Breach probability, chance of a shell to shoot clean through without doing much structural damage ignoring richochet and LOS armor.
 			local breachProb = math.Clamp( (caliber * 10 / armor / specialeffectiveness - 1.3) / 5.7 , 0, 1) -- If the caliber in mm is at least 1.3x the effective armor there is a chance to overmatch. At 7x the effective armor, 100% chance to overmatch.

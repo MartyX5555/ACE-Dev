@@ -7,13 +7,13 @@ Material.sname		= "Ceramic"
 Material.desc		= "Ceramic is usually used as a material to ensure shells do not penetrate due to its high penetration resistance. Due to its frailty it is usually only used as a backing and is not meant to take the brunt of damage. Do not let it get penetrated or it will shatter."
 Material.year		= 1955
 
-Material.massMod		= 0.8
-Material.curve		= 0.95
+Material.massMod		= 1.4
+Material.curve		= 0.98
 
 --All effectiveness values multiply the Line of Sight armor values of armor.
 --All Resiliance values are damage multipliers. Higher = more damage. Lower = less damage.
 
-Material.effectiveness  = 2.4
+Material.effectiveness  = 2.05
 Material.resiliance	= 100
 
 Material.spallarmor	= 1
@@ -33,7 +33,7 @@ if SERVER then
 		local resiliance	= Material.resiliance
 
 		local ductilityvalue = (Entity.ACF.Ductility or 0) * 1.25 --The ductility value of the armor. Outputs 1 to -1 depending on max ductility
-		local ductilitymult    = 2 / (2 - ductilityvalue * 1.5) -- Direct damage multiplier based on ductility.
+		local ductilitymult    = 4 / (4 + ductilityvalue * 1.5) -- Direct damage multiplier based on ductility.
 
 		armor = armor ^ curve
 		losArmor = losArmor ^ curve
@@ -59,7 +59,7 @@ if SERVER then
 			local Penetration = math.min( maxPenetration, losArmor * effectiveness )
 
 			if maxPenetration > losArmor * effectiveness then
-				dmul = dmul * 20 --Damage multiplier for ceramic when it gets penned. Is this enough shatter?
+				dmul = dmul * 2 --Damage multiplier for ceramic when it gets penned. Is this enough shatter?
 				Entity:EmitSound(Sound("physics/concrete/concrete_break2.wav"), 100, 100, 1, CHAN_WEAPON ) --I want to implement some sort of shatter sound. Would better be done through impact sounds.
 			end
 
