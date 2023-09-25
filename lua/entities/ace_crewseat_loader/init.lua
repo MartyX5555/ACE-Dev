@@ -82,7 +82,8 @@ function ENT:Think()
 	end
 
 	self:IncreaseStamina()
-	print(self.Stamina)
+
+	self:UpdateOverlayText()
 end
 
 
@@ -97,10 +98,11 @@ function ENT:OnRemove()
 end
 
 
+function ENT:UpdateOverlayText()
+	local hp = math.Round(self.ACF.Health / self.ACF.MaxHealth * 100)
+	local stamina = math.Round(self.Stamina)
+	local name = "Joe"
+	local str = string.format("Health: %s%%\nStamina: %s%%\nName: %s", hp, stamina, name)
 
-
-
-
-
-
-
+	self:SetOverlayText(str)
+end
