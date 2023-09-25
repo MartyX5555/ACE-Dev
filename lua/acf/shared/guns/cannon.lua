@@ -54,7 +54,7 @@ ACF_defineGun("75mmC", {
 	caliber = 7.5,
 	weight = 660,
 	year = 1942,
-	maxrof = 25, -- maximum rounds per minute
+	maxrof = 24, -- maximum rounds per minute
 	round = {
 		maxlength = 78,
 		propweight = 3.8
@@ -70,7 +70,7 @@ ACF_defineGun("85mmC", {
 	caliber = 8.5,
 	weight = 1030,
 	year = 1944,
-	maxrof = 23, -- maximum rounds per minute
+	maxrof = 20, -- maximum rounds per minute
 	round = {
 		maxlength = 85.5,
 		propweight = 6.65
@@ -86,7 +86,7 @@ ACF_defineGun("100mmC", {
 	caliber = 10.0,
 	weight = 1400,
 	year = 1944,
-	maxrof = 19, -- maximum rounds per minute
+	maxrof = 15, -- maximum rounds per minute
 	round = {
 		maxlength = 93,
 		propweight = 9.5
