@@ -6,8 +6,9 @@ ACF_defineGunClass("SC", {
 	desc = ACFTranslation.GunClasses[13],
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 1.3,
+	maxrof = 25, -- maximum rounds per minute
 	year = 1915,
-	sound = "weapons/acf_gun/cannon_new.wav",
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
 
 } )
 

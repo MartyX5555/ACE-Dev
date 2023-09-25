@@ -7,7 +7,7 @@ ACF_defineGunClass("GL", {
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 1,
 	year = 1970,
-	sound = "weapons/acf_gun/grenadelauncher.wav",
+	sound = "ace_weapons/multi_sound/12_7mm_multi.mp3",
 	nolights	= true,
 	noloader = true,
 

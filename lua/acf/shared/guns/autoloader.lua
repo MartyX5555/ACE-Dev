@@ -7,7 +7,7 @@ ACF_defineGunClass("AL", {
 	muzzleflash = "120mm_muzzleflash_noscale",
 	rofmod = 0.64,
 	year = 1946,
-	sound = "weapons/acf_gun/autoloader.wav",
+	sound = "ace_weapons/multi_sound/100mm_multi.mp3",
 	autosound = "acf_extra/tankfx/reload.wav",
 	noloader = true,
 } )

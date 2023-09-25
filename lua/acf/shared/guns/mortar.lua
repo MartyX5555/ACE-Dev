@@ -7,7 +7,7 @@ ACF_defineGunClass("MO", {
 	muzzleflash = "40mm_muzzleflash_noscale",
 	rofmod = 2,
 	year = 1915,
-	sound = "weapons/ACF_Gun/mortar_new.wav",
+	sound = "ace_weapons/multi_sound/40mm_multi.mp3",
 
 } )
 

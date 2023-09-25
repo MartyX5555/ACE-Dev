@@ -305,6 +305,7 @@ function ENT:UpdateOverlayText()
 
 	self:SetOverlayText( text )
 
+
 end
 
 local function IsInRetDist( enta, entb, Distance )
@@ -388,6 +389,7 @@ function ENT:Link( Target )
 		table.insert( Target.Master, self )
 
 		self.LoaderCount = self.LoaderCount + 1
+		Target.LinkedGun = self
 
 		return true, "Link successful!"
 
@@ -502,23 +504,30 @@ function ENT:CanProperty( _, property )
 
 end
 
-function ENT:TriggerInput( iname, value )
-
-	if (iname == "Unload" and value > 0 and not self.Reloading) then
+function ENT:TriggerInput(iname, value)
+	if iname == "Unload" and value > 0 and not self.Reloading then
+		-- Triggered to unload ammo
 		self:UnloadAmmo()
-	elseif ( iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal ) then
+	elseif iname == "Fire" and value > 0 and ACF.GunfireEnabled and self.Legal then
+		-- Triggered to fire if conditions are met
 		if self.NextFire < CurTime() then
-			self.User = ACE_GetWeaponUser( self, self.Inputs.Fire.Src )
-			if not IsValid(self.User) then self.User = self:CPPIGetOwner() end
+			-- Check if it's time to fire
+			self.User = ACE_GetWeaponUser(self, self.Inputs.Fire.Src)
+			if not IsValid(self.User) then
+				self.User = self:CPPIGetOwner()
+			end
 			self:FireShell()
 			self:Think()
+			self.Firing = true
 		end
-		self.Firing = true
-	elseif ( iname == "Fire" and value <= 0 ) then
+	elseif iname == "Fire" and value <= 0 then
+		-- Triggered to stop firing
 		self.Firing = false
-	elseif ( iname == "Reload" and value ~= 0 ) then
+	elseif iname == "Reload" and value ~= 0 then
+		-- Triggered to start reloading
 		self.Reloading = true
-	elseif ( iname == "Fuse Time" ) then
+	elseif iname == "Fuse Time" then
+		-- Set the fuse time if value is greater than 0
 		if value > 0 then
 			self.FuseTime = value
 			self.OverrideFuse = true
@@ -526,14 +535,17 @@ function ENT:TriggerInput( iname, value )
 			self.FuseTime = 0
 			self.OverrideFuse = false
 		end
-	elseif (iname == "ROFLimit") then
+	elseif iname == "ROFLimit" then
+		-- Set the rate of fire limit if value is greater than 0
 		if value > 0 then
-			self.ROFLimit = math.min(1 / (value / 60), 600) --Im not responsible if your gun start firing 1 bullet each 10 mins.
+			self.ROFLimit = math.min(1 / (value / 60), 600) -- Limit the rate of fire
 		else
 			self.ROFLimit = 0
 		end
 	end
 end
+
+
 
 function ENT:Heat_Function()
 
@@ -764,6 +776,24 @@ end
 
 do
 
+	function ENT:ChooseLoader()
+
+		local highestStaminaLoader = nil
+		local highestStamina = 0
+
+		for _, crewEnt in ipairs(self.CrewLink) do
+			if crewEnt:GetClass() == "ace_crewseat_loader" then
+				local stamina = crewEnt.Stamina
+				if stamina > highestStamina then
+					highestStamina = stamina
+					highestStaminaLoader = crewEnt
+				end
+			end
+		end
+
+		return highestStaminaLoader
+	end
+
 	local FusedRounds = {
 		HE	= true,
 		HEFS	= true,
@@ -844,6 +874,11 @@ do
 					self:LoadAmmo(false, false)
 				end
 				Wire_TriggerOutput(self, "Ready", 0)
+
+				if self.LoaderCount > 0 then
+					self:ChooseLoader():DecreaseStamina()
+				end
+
 			else
 
 				self.CurrentShot = 0
@@ -893,12 +928,29 @@ function ENT:LoadAmmo( AddTime, Reload )
 
 		local Adj = not self.BulletData.LengthAdj and 1 or self.BulletData.LengthAdj --FL firerate bonus adjustment
 		local CrewReload = 1
+		local curLoaderStamina = 100
 
-		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
-			CrewReload = 1.25-(self.LoaderCount * 0.25)
+		local curLoader = self:ChooseLoader()
+		if IsValid(curLoader) then
+			curLoaderStamina = curLoader.Stamina
 		end
 
-		self.ReloadTime = math.max(( ( math.max(self.BulletData.RoundVolume,self.MinLengthBonus * Adj) / 500 ) ^ 0.60 ) * self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1), self.ROFLimit)
+		local maxRof = self.ROFLimit
+		if Lookup.maxrof then
+			maxRof = math.min(maxRof, Lookup.maxrof)
+		end
+
+		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
+			if self.LoaderCount > 0 then
+				CrewReload = curLoaderStamina / 100
+			else
+				CrewReload = 1
+			end
+		end
+
+		local reloadTimeMath_Mul = self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1)
+		local reloadTimeMath = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus * Adj) / 500) ^ 0.60) * reloadTimeMath_Mul
+		self.ReloadTime = math.max(reloadTimeMath, maxRof) -- keeping it with 3 variables, because too many things in one line
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)
 
 		self.RateOfFire = (60 / self.ReloadTime)
@@ -944,7 +996,7 @@ end
 
 function ENT:UnloadAmmo()
 
-	if not self.BulletData or not self.BulletData.Crate then return end -- Explanation: http://www.youtube.com/watch?v=dwjrui9oCVQ
+	if not self.BulletData or not self.BulletData.Crate then return end
 	if not self.Ready then
 		if (self.NextFire-CurTime()) < 0 then return end -- see above; preventing spam
 		if self.MagSize > 1 and self.CurrentShot >= self.MagSize then return end -- prevent unload in middle of mag reload

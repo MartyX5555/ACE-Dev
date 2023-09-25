@@ -7,7 +7,7 @@ ACF_defineGunClass("SA", {
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.5,
 	year = 1935,
-	sound = "acf_extra/tankfx/gnomefather/25mm1.wav",
+	sound = "ace_weapons/multi_sound/20mm_multi.mp3",
 	noloader = true,
 
 } )

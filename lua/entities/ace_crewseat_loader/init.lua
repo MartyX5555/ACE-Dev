@@ -27,22 +27,62 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
+	self:GetPhysicsObject():SetMass(80) --70 kilo people plus 3 kg seat + Equipment
 
 	self.Master = {}
 	self.ACF = {}
 	self.ACF.Health = 1
 	self.ACF.MaxHealth = 1
+	self.Stamina = 100 --initial stamina for crewseat
+	self.LinkedGun = nil
 end
 
+function ENT:DecreaseStamina()
+	local linkedGun = self.LinkedGun
+	--print("A")
+
+	if IsValid(linkedGun) then
+		local bulletWeight = 0
+		local distanceToCrate = 0
+
+		if linkedGun.BulletData then
+			local ProjMass = linkedGun.BulletData.ProjMass
+			local PropMass = linkedGun.BulletData.PropMass
+			bulletWeight = ProjMass + PropMass -- in kgs
+		end
+
+		if IsValid(linkedGun.AmmoLink) then
+			local CurAmmo = linkedGun.CurAmmo -- current key in the table
+			distanceToCrate = linkedGun:GetPos():Distance(linkedGun.AmmoLink[CurAmmo]:GetPos()) -- in units
+		end
+
+		local distance_multiplier = 0.05
+		local staminaMultipliers = bulletWeight + distanceToCrate * distance_multiplier   --* distanceToCrate
+		local staminaCost = 10 + staminaMultipliers -- take x points out of self.Stamina
+		self.Stamina = math.Round(self.Stamina - staminaCost) -- Update the instance variable
+		self.Stamina = math.max(self.Stamina, 20) -- so the gun doesn't take forever to reload, keep the second variable above 0 
+		--print(self.Stamina)
+	end
+end
+
+function ENT:IncreaseStamina()
+
+	local staminaHeal = 0.5 -- adjust me
+	self.Stamina = self.Stamina + staminaHeal -- Update the instance variable
+
+	self.Stamina = math.Clamp(self.Stamina, 0, 100)
+
+	return self.Stamina
+end
 
 function ENT:Think()
-	self:GetPhysicsObject():SetMass(65) --62 kilo people plus 3 kg seat, hooray
-
 	if self.ACF.Health < self.ACF.MaxHealth * 0.989 then
-		ACF_HEKill( self, VectorRand() , 0)
+		ACF_HEKill(self, VectorRand(), 0)
 		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
 	end
 
+	self:IncreaseStamina()
+	print(self.Stamina)
 end
 
 
