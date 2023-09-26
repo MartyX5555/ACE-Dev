@@ -944,7 +944,8 @@ function ENT:LoadAmmo( AddTime, Reload )
 
 		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
 			if self.LoaderCount > 0 then
-				CrewReload = curLoaderStamina / 100
+				local Mul = 2
+				CrewReload = curLoaderStamina / 100 * Mul
 			else
 				CrewReload = 1
 			end

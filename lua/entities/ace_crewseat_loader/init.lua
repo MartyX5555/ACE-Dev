@@ -79,7 +79,8 @@ function ENT:DecreaseStamina()
 		end
 
 		local distance_multiplier = 0.05
-		local staminaMultipliers = bulletWeight + distanceToCrate * distance_multiplier   --* distanceToCrate
+		local weight_multiplier = 0.95
+		local staminaMultipliers = bulletWeight * weight_multiplier + distanceToCrate * distance_multiplier   --* distanceToCrate
 		local staminaCost = 10 + staminaMultipliers -- take x points out of self.Stamina
 		self.Stamina = math.Round(self.Stamina - staminaCost) -- Update the instance variable
 		self.Stamina = math.max(self.Stamina, 20) -- so the gun doesn't take forever to reload, keep the second variable above 0 
