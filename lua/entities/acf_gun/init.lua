@@ -936,9 +936,11 @@ function ENT:LoadAmmo( AddTime, Reload )
 		end
 
 		local maxRof = self.ROFLimit
-		if Lookup.maxrof then
+		-- Check if Lookup is valid and not nil
+		if Lookup and isValid(Lookup.maxrof) and Lookup.maxrof ~= nil then
 			maxRof = math.min(maxRof, Lookup.maxrof)
 		end
+
 
 		if not (self.Class == "AC" or self.Class == "MG" or self.Class == "RAC" or self.Class == "HMG" or self.Class == "GL" or self.Class == "SA") then
 			if self.LoaderCount > 0 then
@@ -948,7 +950,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 			end
 		end
 
-		local reloadTimeMath_Mul = self.RoFmod * self.PGRoFmod * CrewReload * (AmmoEnt.RoFMul + 1)
+		local reloadTimeMath_Mul = self.RoFmod * self.PGRoFmod / CrewReload * (AmmoEnt.RoFMul + 1)
 		local reloadTimeMath = ((math.max(self.BulletData.RoundVolume, self.MinLengthBonus * Adj) / 500) ^ 0.60) * reloadTimeMath_Mul
 		self.ReloadTime = math.max(reloadTimeMath, maxRof) -- keeping it with 3 variables, because too many things in one line
 		Wire_TriggerOutput(self, "Loaded", self.BulletData.Type)

@@ -27,22 +27,45 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS);
 	self:SetUseType(SIMPLE_USE);
 	self:SetSolid(SOLID_VPHYSICS);
+	self:GetPhysicsObject():SetMass(60)
 
 	self.Master = {}
 	self.ACF = {}
 	self.ACF.Health = 1
 	self.ACF.MaxHealth = 1
+
+	self.Name = "Crew Seat"
+
+	-- List of rare names
+	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Steve", "Ferv", "Twisted", "Red", "nrulz"}
+
+	-- Generate a random number between 1 and 10
+	local randomNum = math.random(1, 100)
+
+	if randomNum <= 2 then
+		-- Choose a rare name
+		self.Name  = rareNames[math.random(1, #rareNames)]
+	else
+		-- Generate a random name
+		local randomPrefixes = {"John", "Bob", "Sam", "Joe", "Ben", "Alex", "Chris", "David", "Eric", "Frank", "Antonio", "Ivan"}
+		local randomSuffixes = {"Smith", "Johnson", "Dover", "Wang", "Kim", "Lee", "Brown", "Davis", "Evans", "Garcia", "", "Russel"}
+
+		local randomPrefix = randomPrefixes[math.random(1, #randomPrefixes)]
+		local randomSuffix = randomSuffixes[math.random(1, #randomSuffixes)]
+
+		self.Name  = randomPrefix .. " " .. randomSuffix
+	end
 end
 
 
 function ENT:Think()
-	self:GetPhysicsObject():SetMass(65) --62 kilo people plus 3 kg seat, hooray
 
-	if self.ACF.Health < self.ACF.MaxHealth * 0.989 then
+	if self.ACF.Health <= self.ACF.MaxHealth * 0.97 then
 		ACF_HEKill( self, VectorRand() , 0)
 		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
 	end
 
+	self:UpdateOverlayText()
 end
 
 
@@ -56,7 +79,13 @@ function ENT:OnRemove()
 
 end
 
+function ENT:UpdateOverlayText()
+	local hp = math.Round(self.ACF.Health / self.ACF.MaxHealth * 100)
 
+	local str = string.format("Health: %s%%\nName: %s", hp, self.Name )
+
+	self:SetOverlayText(str)
+end
 
 
 
