@@ -107,9 +107,6 @@ function TOOL:LeftClick( trace )
 			local Ent = DupeClass.Func( ply, unpack( ArgTable ) ) --aka function like MakeACF_Ammo
 			if not IsValid(Ent) then ACF_SendNotify(ply, false, ACFTranslation.ACFMenuTool[15]) return false end
 
-			--PrintTable(DupeClass)
-			--PrintTable(ArgTable)
-
 			Ent:Activate()
 			Ent:DropToFloor()
 			Ent:GetPhysicsObject():EnableMotion( false )

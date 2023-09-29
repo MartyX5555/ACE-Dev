@@ -79,7 +79,7 @@ local propProtectionInstalled = FindMetaTable("Entity").CPPIGetOwner and true
 
 local function restrictInfo ( ent )
 	if not propProtectionInstalled then return false end
-	if GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0 then
+	if GetConVar("acf_restrictinfo"):GetInt() ~= 0 then
 		if ent:CPPIGetOwner() ~= instance.player then return true else return false end
 	end
 	return false
@@ -110,7 +110,7 @@ end
 -- @server
 -- @return boolean True if restriced, False if not
 function acf_library.infoRestricted()
-	return GetConVar("sbox_acf_restrictinfo"):GetInt() ~= 0
+	return GetConVar("acf_restrictinfo"):GetInt() ~= 0
 end
 
 --- Returns current ACF drag divisor
@@ -836,7 +836,7 @@ end
 -- Moved to acf lib
 -- Returns true if functions returning sensitive info are restricted to owned props
 --[[function ents_methods:acfInfoRestricted ()
-	return GetConVar( "sbox_acf_restrictinfo" ):GetInt() ~= 0
+	return GetConVar( "acf_restrictinfo" ):GetInt() ~= 0
 end]]
 
 --- Returns true if this entity contains sensitive info and is not accessable to us

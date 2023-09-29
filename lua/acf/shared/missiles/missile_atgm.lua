@@ -131,6 +131,7 @@ ACF_defineGun("AT-3 ASM", { --id
 	year			= 1969,
 	rofmod			= 0.4,
 	modeldiameter	= 3 * 2.54,
+	bodydiameter     = 7, -- If this ordnance has fixed fins. Add this to count the body without finds, to ensure the missile will fit properly on the rack (doesnt affect the ammo dimension)
 	rotmult			= 1,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {
@@ -236,7 +237,7 @@ ACF_defineGun("AT-2 ASM", { --id
 	weight			= 27,										-- Don't scale down the weight though!
 	year			= 1969,
 	rofmod			= 0.4,
-	modeldiameter	= 3 * 2.54,
+	modeldiameter	= 2.8 * 2.54,
 	rotmult			= 1.5,	-- Adjust this if you see that your missile falls too quickly. 0 to deny falling
 
 	round = {

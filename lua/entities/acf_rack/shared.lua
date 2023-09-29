@@ -2,13 +2,7 @@
 
 DEFINE_BASECLASS("base_wire_entity")
 
-ENT.Type              = "anim"
-ENT.Base              = "base_wire_entity"
 ENT.PrintName         = "ACF Missile Rack"
-
-ENT.Spawnable         = false
-ENT.AdminOnly         = false
-ENT.AdminSpawnable    = false
 
 local Weapons = ACF.Weapons.Guns
 local Racks = ACF.Weapons.Racks
@@ -29,14 +23,16 @@ function ENT:GetMunitionAngPos(missile, _, attachname)
 
 	if GunData and RackData then
 
-		local offset = (GunData.modeldiameter or GunData.caliber) / (2.54 * 2)
-
+		local offset = (GunData.bodydiameter and GunData.bodydiameter / 2) or (GunData.modeldiameter and GunData.modeldiameter / 2) or (GunData.caliber / 2.54)
 		local mountpoint = VerifyMountData(RackData.mountpoints[attachname])
 		local inverted = RackData.inverted or false
 
-		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + mountpoint.scaledir * offset)
+		local scaledir = mountpoint.scaledir:GetNormalized()
+		local pos = self:LocalToWorld(mountpoint.pos + mountpoint.offset + scaledir * offset)
+		local pos2 = self:LocalToWorld(mountpoint.pos + mountpoint.offset + scaledir) --for testing purposes
 
-		debugoverlay.Cross(pos, 5, 5, Color(0,255,0,255), true)
+		debugoverlay.Cross(pos, 5, 10, Color(0,255,0,255) )
+		debugoverlay.Cross(pos2, 5, 10, Color(183,255,0))
 
 		return inverted, pos
 	end
