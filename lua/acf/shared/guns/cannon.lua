@@ -86,7 +86,7 @@ ACF_defineGun("100mmC", {
 	caliber = 10.0,
 	weight = 1400,
 	year = 1944,
-	maxrof = 15, -- maximum rounds per minute
+	maxrof = 17, -- maximum rounds per minute
 	round = {
 		maxlength = 93,
 		propweight = 9.5
@@ -102,7 +102,7 @@ ACF_defineGun("120mmC", {
 	caliber = 12.0,
 	weight = 2100,
 	year = 1955,
-	maxrof = 12, -- maximum rounds per minute
+	maxrof = 14, -- maximum rounds per minute
 	round = {
 		maxlength = 110,
 		propweight = 18
@@ -118,7 +118,7 @@ ACF_defineGun("140mmC", {
 	caliber = 14.0,
 	weight = 3900,
 	year = 1990,
-	maxrof = 8.5, -- maximum rounds per minute
+	maxrof = 11, -- maximum rounds per minute
 	round = {
 		maxlength = 127,
 		propweight = 28
