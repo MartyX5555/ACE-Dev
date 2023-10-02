@@ -22,7 +22,7 @@ ACF_defineGun("50mmSBC", {
 	gunclass = "SBC",
 	caliber = 5.0,
 	weight = 650,
-	maxrof = 35, -- maximum rounds per minute
+	maxrof = 32, -- maximum rounds per minute
 	year = 1965,
 	round = {
 		maxlength = 63,
@@ -38,7 +38,7 @@ ACF_defineGun("75mmSBC", {
 	gunclass = "SBC",
 	caliber = 7.5,
 	weight = 900,
-	maxrof = 24, -- maximum rounds per minute
+	maxrof = 17, -- maximum rounds per minute
 	year = 1960,
 	round = {
 		maxlength = 78,
@@ -54,7 +54,7 @@ ACF_defineGun("100mmSBC", {
 	gunclass = "SBC",
 	caliber = 10.0,
 	weight = 1700,
-	maxrof = 17, -- maximum rounds per minute
+	maxrof = 14, -- maximum rounds per minute
 	year = 1960,
 	round = {
 		maxlength = 93,
@@ -70,7 +70,7 @@ ACF_defineGun("120mmSBC", {
 	gunclass = "SBC",
 	caliber = 12.0,
 	weight = 3200,
-	maxrof = 14, -- maximum rounds per minute
+	maxrof = 10, -- maximum rounds per minute
 	year = 1970,
 	round = {
 		maxlength = 115,
@@ -86,7 +86,7 @@ ACF_defineGun("140mmSBC", {
 	gunclass = "SBC",
 	caliber = 14.0,
 	weight = 4300,
-	maxrof = 11, -- maximum rounds per minute
+	maxrof = 8, -- maximum rounds per minute
 	year = 1995,
 	round = {
 		maxlength = 140,

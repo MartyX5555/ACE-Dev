@@ -38,7 +38,7 @@ ACF_defineGun("50mmC", {
 	caliber = 5.0,
 	weight = 380,
 	year = 1935,
-	maxrof = 35, -- maximum rounds per minute
+	maxrof = 32, -- maximum rounds per minute
 	round = {
 		maxlength = 63,
 		propweight = 2.1
@@ -54,7 +54,7 @@ ACF_defineGun("75mmC", {
 	caliber = 7.5,
 	weight = 660,
 	year = 1942,
-	maxrof = 24, -- maximum rounds per minute
+	maxrof = 17, -- maximum rounds per minute
 	round = {
 		maxlength = 78,
 		propweight = 3.8
@@ -70,7 +70,7 @@ ACF_defineGun("85mmC", {
 	caliber = 8.5,
 	weight = 1030,
 	year = 1944,
-	maxrof = 20, -- maximum rounds per minute
+	maxrof = 15.5, -- maximum rounds per minute
 	round = {
 		maxlength = 85.5,
 		propweight = 6.65
@@ -86,7 +86,7 @@ ACF_defineGun("100mmC", {
 	caliber = 10.0,
 	weight = 1400,
 	year = 1944,
-	maxrof = 17, -- maximum rounds per minute
+	maxrof = 14, -- maximum rounds per minute
 	round = {
 		maxlength = 93,
 		propweight = 9.5
@@ -102,7 +102,7 @@ ACF_defineGun("120mmC", {
 	caliber = 12.0,
 	weight = 2100,
 	year = 1955,
-	maxrof = 14, -- maximum rounds per minute
+	maxrof = 10, -- maximum rounds per minute
 	round = {
 		maxlength = 110,
 		propweight = 18
@@ -118,7 +118,7 @@ ACF_defineGun("140mmC", {
 	caliber = 14.0,
 	weight = 3900,
 	year = 1990,
-	maxrof = 11, -- maximum rounds per minute
+	maxrof = 8, -- maximum rounds per minute
 	round = {
 		maxlength = 127,
 		propweight = 28
