@@ -378,10 +378,6 @@ function ENT:Link( Target )
 			return false, "You need a gunner before you can have a loader!"
 		end
 
-		if self.LoaderCount >= 3 then
-			return false, "The gun already has 3 loaders!"
-		end
-
 		if self.noloaders then
 			return false, "This gun cannot have a loader!"
 		end
@@ -644,7 +640,7 @@ function ENT:Think()
 
 		self:UpdateOverlayText()
 
-		if not self.Legal and self.Firing then self:TriggerInput("Fire",0) end
+		if not self.Legal and self.Firing then self:TriggerInput("Fire", 0) end
 
 	end
 

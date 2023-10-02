@@ -78,10 +78,10 @@ function ENT:DecreaseStamina()
 			distanceToCrate = linkedGun:GetPos():Distance(linkedGun.AmmoLink[CurAmmo]:GetPos()) -- in units
 		end
 
-		local distance_multiplier = 0.05
-		local weight_multiplier = 0.95
-		local staminaMultipliers = bulletWeight * weight_multiplier + distanceToCrate * distance_multiplier   --* distanceToCrate
-		local staminaCost = 10 + staminaMultipliers -- take x points out of self.Stamina
+		local distanceMultiplier = 0.07
+		local weightMultiplier = 1.4
+		local staminaMultipliers = bulletWeight * weightMultiplier + distanceToCrate * distanceMultiplier   --* distanceToCrate
+		local staminaCost = 8 + staminaMultipliers -- take x points out of self.Stamina
 		self.Stamina = math.Round(self.Stamina - staminaCost) -- Update the instance variable
 		self.Stamina = math.max(self.Stamina, 20) -- so the gun doesn't take forever to reload, keep the second variable above 0 
 		--print(self.Stamina)
@@ -90,7 +90,7 @@ end
 
 function ENT:IncreaseStamina()
 
-	local staminaHeal = 0.4 -- adjust me
+	local staminaHeal = 0.33 -- adjust me
 	self.Stamina = self.Stamina + staminaHeal -- Update the instance variable
 
 	self.Stamina = math.Clamp(self.Stamina, 0, 100)
