@@ -37,6 +37,11 @@ function ENT:Initialize()
 	self.Stamina = 100 --initial stamina for crewseat
 	self.LinkedGun = nil
 	self.Name = "Crew Seat"
+	self.Weight = 60
+
+	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
 
 	-- List of rare names
 	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Steve", "Ferv", "Twisted", "Red", "nrulz"}
@@ -61,7 +66,6 @@ end
 
 function ENT:DecreaseStamina()
 	local linkedGun = self.LinkedGun
-	--print("A")
 
 	if IsValid(linkedGun) then
 		local bulletWeight = 0
@@ -73,24 +77,28 @@ function ENT:DecreaseStamina()
 			bulletWeight = ProjMass + PropMass -- in kgs
 		end
 
-		if IsValid(linkedGun.AmmoLink) then
+		if linkedGun.AmmoLink then
 			local CurAmmo = linkedGun.CurAmmo -- current key in the table
-			distanceToCrate = linkedGun:GetPos():Distance(linkedGun.AmmoLink[CurAmmo]:GetPos()) -- in units
+			local gunPos = linkedGun:GetPos()
+			local ammoPos = linkedGun.AmmoLink[CurAmmo]:GetPos()
+			distanceToCrate = gunPos:Distance(ammoPos) -- in units
 		end
 
-		local distanceMultiplier = 0.07
-		local weightMultiplier = 1.4
+
+		local distanceMultiplier = 0.032
+		local weightMultiplier = 1
 		local staminaMultipliers = bulletWeight * weightMultiplier + distanceToCrate * distanceMultiplier   --* distanceToCrate
-		local staminaCost = 8 + staminaMultipliers -- take x points out of self.Stamina
+		local staminaCost = 5 + staminaMultipliers -- take x points out of self.Stamina
+
 		self.Stamina = math.Round(self.Stamina - staminaCost) -- Update the instance variable
-		self.Stamina = math.max(self.Stamina, 20) -- so the gun doesn't take forever to reload, keep the second variable above 0 
+		self.Stamina = math.max(self.Stamina, 20) -- so the gun doesn't take forever to reload, keep the second variable above 0
 		--print(self.Stamina)
 	end
 end
 
 function ENT:IncreaseStamina()
 
-	local staminaHeal = 0.33 -- adjust me
+	local staminaHeal = 0.32 -- adjust me
 	self.Stamina = self.Stamina + staminaHeal -- Update the instance variable
 
 	self.Stamina = math.Clamp(self.Stamina, 0, 100)
@@ -104,7 +112,16 @@ function ENT:Think()
 		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav", 60)
 	end
 
-	self:IncreaseStamina()
+	if ACF.CurTime > self.NextLegalCheck then
+
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+
+		if self.Legal then
+			self:IncreaseStamina()
+		end
+
+	end
 
 	self:UpdateOverlayText()
 end
@@ -125,6 +142,10 @@ function ENT:UpdateOverlayText()
 	local stamina = math.Round(self.Stamina)
 
 	local str = string.format("Health: %s%%\nStamina: %s%%\nName: %s", hp, stamina, self.Name )
+
+	if not self.Legal then
+		str = str .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 
 	self:SetOverlayText(str)
 end

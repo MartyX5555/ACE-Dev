@@ -322,13 +322,17 @@ local BreakSoundTbl = {
 
 local function BreakGunLink( Gun, LinkedEnt )
 	Gun:Unlink( LinkedEnt )
-	Gun:EmitSound( (BreakSoundTbl[LinkedEnt:GetClass()] or "physics/metal/metal_box_impact_bullet" ) .. tostring(math.random(1, 3)) .. ".wav",100,100)
+	Gun:EmitSound( (BreakSoundTbl[LinkedEnt:GetClass()] or "physics/metal/metal_box_impact_bullet" ) .. tostring(math.random(1, 3)) .. ".wav", 100, 100)
 end
 
 function ENT:Link( Target )
 
 	if not IsValid( Target ) then
 		return false, "Target not a valid entity!"
+	end
+
+	if not Target.Legal then
+		return false, "This entity is illegal!"
 	end
 
 	-- CrewLink
@@ -618,6 +622,14 @@ end
 	end
 ]]
 
+function ENT:IllegalCrewSeatRemove(crewEntities)
+	for _, crewEnt in ipairs(crewEntities) do
+		if not crewEnt.Legal then
+			self:Unlink(crewEnt)
+		end
+	end
+end
+
 function ENT:Think()
 
 	--Legality check part
@@ -637,6 +649,8 @@ function ENT:Think()
 				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
 			end
 		end
+
+		self:IllegalCrewSeatRemove(self.CrewLink)
 
 		self:UpdateOverlayText()
 
@@ -780,7 +794,7 @@ do
 		local highestStamina = 0
 
 		for _, crewEnt in ipairs(self.CrewLink) do
-			if crewEnt:GetClass() == "ace_crewseat_loader" then
+			if crewEnt:GetClass() == "ace_crewseat_loader" and crewEnt.Legal then
 				local stamina = crewEnt.Stamina
 				if stamina > highestStamina then
 					highestStamina = stamina
@@ -791,6 +805,7 @@ do
 
 		return highestStaminaLoader
 	end
+
 
 	local FusedRounds = {
 		HE	= true,

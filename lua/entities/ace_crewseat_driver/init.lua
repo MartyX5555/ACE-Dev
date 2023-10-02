@@ -34,6 +34,11 @@ function ENT:Initialize()
 	self.ACF.Health = 1
 	self.ACF.MaxHealth = 1
 	self.Name = "Crew Seat"
+	self.Weight = 60
+
+	self.NextLegalCheck	= ACF.CurTime + math.random(ACF.Legal.Min, ACF.Legal.Max) -- give any spawning issues time to iron themselves out
+	self.Legal = true
+	self.LegalIssues = ""
 
 	-- List of rare names
 	local rareNames = {"Mr.Marty", "RDC", "Cheezus", "KemGus", "Golem Man", "Arend", "Mac", "Firstgamerable", "kerbal cadet", "Psycho Dog", "Steve", "Ferv", "Twisted", "Red", "nrulz"}
@@ -64,6 +69,13 @@ function ENT:Think()
 		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav", 50)
 	end
 
+	if ACF.CurTime > self.NextLegalCheck then
+
+		self.Legal, self.LegalIssues = ACF_CheckLegal(self, self.Model, math.Round(self.Weight, 2), nil, true, true)
+		self.NextLegalCheck = ACF.Legal.NextCheck(self.legal)
+
+	end
+
 	self:UpdateOverlayText()
 end
 
@@ -82,6 +94,10 @@ function ENT:UpdateOverlayText()
 	local hp = math.Round(self.ACF.Health / self.ACF.MaxHealth * 100)
 
 	local str = string.format("Health: %s%%\nName: %s", hp, self.Name)
+
+	if not self.Legal then
+		str = str .. "\n\nNot legal, disabled for " .. math.ceil(self.NextLegalCheck - ACF.CurTime) .. "s\nIssues: " .. self.LegalIssues
+	end
 
 	self:SetOverlayText(str)
 end
