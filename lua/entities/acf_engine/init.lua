@@ -368,6 +368,14 @@ function ENT:ACF_OnDamage( Entity, Energy, FrArea, Angle, Inflictor, _, Type )	-
 	return HitRes --This function needs to return HitRes
 end
 
+function ENT:IllegalCrewSeatRemove(crewEntities)
+	for _, crewEnt in ipairs(crewEntities) do
+		if not crewEnt.Legal then
+			self:Unlink(crewEnt)
+		end
+	end
+end
+
 function ENT:Think()
 
 	if ACF.CurTime > self.NextLegalCheck then
@@ -379,6 +387,8 @@ function ENT:Think()
 
 		self:UpdateOverlayText()
 		self.NextUpdate = ACF.CurTime + 1
+
+		self:IllegalCrewSeatRemove(self.CrewLink)
 
 		if not self.Legal and self.Active then
 			self:TriggerInput("Active",0) -- disable if not legal and active
@@ -733,6 +743,10 @@ function ENT:Link( Target )
 	end
 
 	if Target:GetClass() == "ace_crewseat_driver" then
+
+		if not Target.Legal then
+			return false, "The driver seat is illegal!"
+		end
 
 		if self.HasDriver == 1 then
 			return false, "The engine already has a driver!"
