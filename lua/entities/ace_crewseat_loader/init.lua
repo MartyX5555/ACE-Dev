@@ -50,7 +50,7 @@ function ENT:Initialize()
 	else
 		-- Generate a random name
 		local randomPrefixes = {"John", "Bob", "Sam", "Joe", "Ben", "Alex", "Chris", "David", "Eric", "Frank", "Antonio", "Ivan"}
-		local randomSuffixes = {"Smith", "Johnson", "Dover", "Wang", "Kim", "Lee", "Brown", "Davis", "Evans", "Garcia", "", "Russel"}
+		local randomSuffixes = {"Smith", "Johnson", "Dover", "Wang", "Kim", "Lee", "Brown", "Davis", "Evans", "Garcia", "", "Russel" , "King"}
 
 		local randomPrefix = randomPrefixes[math.random(1, #randomPrefixes)]
 		local randomSuffix = randomSuffixes[math.random(1, #randomSuffixes)]
@@ -101,7 +101,7 @@ end
 function ENT:Think()
 	if self.ACF.Health <= self.ACF.MaxHealth * 0.97 then
 		ACF_HEKill(self, VectorRand(), 0)
-		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav")
+		self:EmitSound("npc/combine_soldier/die" .. tostring(math.random(1, 3)) .. ".wav", 60)
 	end
 
 	self:IncreaseStamina()
