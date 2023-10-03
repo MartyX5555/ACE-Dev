@@ -360,6 +360,7 @@ function ENT:Link( Target )
 		table.insert( Target.Master, self )
 
 		self.HasGunner = true
+		Target.LinkedGun = self
 
 		return true, "Link successful!"
 
@@ -470,6 +471,8 @@ function ENT:Unlink( Target )
 			elseif Target:GetClass() == "ace_crewseat_loader" then
 				self.LoaderCount = self.LoaderCount - 1
 			end
+
+			Target.LinkedGun = nil
 
 			table.remove(self.CrewLink,Key)
 			Success = true
@@ -622,14 +625,6 @@ end
 	end
 ]]
 
-function ENT:IllegalCrewSeatRemove(crewEntities)
-	for _, crewEnt in ipairs(crewEntities) do
-		if not crewEnt.Legal then
-			self:Unlink(crewEnt)
-		end
-	end
-end
-
 function ENT:Think()
 
 	--Legality check part
@@ -649,8 +644,6 @@ function ENT:Think()
 				self.LegalIssues = self.LegalIssues .. "\nSeat not legal: " .. issues
 			end
 		end
-
-		self:IllegalCrewSeatRemove(self.CrewLink)
 
 		self:UpdateOverlayText()
 
@@ -796,7 +789,7 @@ do
 		for _, crewEnt in ipairs(self.CrewLink) do
 			if crewEnt:GetClass() == "ace_crewseat_loader" and crewEnt.Legal then
 				local stamina = crewEnt.Stamina
-				if stamina > highestStamina then
+				if stamina >= highestStamina then
 					highestStamina = stamina
 					highestStaminaLoader = crewEnt
 				end
@@ -967,7 +960,7 @@ function ENT:LoadAmmo( AddTime, Reload )
 		-- Check if self.Class is in the invalidClasses table
 		if not ACE_table_contains(invalidClasses, self.Class) and self.maxrof then
 
-			if self.LoaderCount > 0 then -- if loaders are linked then
+			if self.LoaderCount > 0 and IsValid(curLoader) then -- if loaders are linked then
 
 				local CrewReload = curLoaderStamina / 100
 				local reloadTime = lowestReloadTime / CrewReload -- in seconds!!!!
