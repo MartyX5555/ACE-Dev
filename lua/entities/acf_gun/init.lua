@@ -697,12 +697,12 @@ function ENT:Think()
 			Wire_TriggerOutput(self, "Shots Left", 1)
 		end
 
-		self:SetNWString("GunType",self.Id)
+		self:SetNWString("GunType", self.Id)
 		self:SetNWInt("Ammo",Ammo)
-		self:SetNWString("Type",self.BulletData.Type)
-		self:SetNWFloat("Mass",self.BulletData.ProjMass * 100)
-		self:SetNWFloat("Propellant",self.BulletData.PropMass * 1000)
-		self:SetNWFloat("FireRate",self.RateOfFire)
+		self:SetNWString("Type", self.BulletData.Type)
+		self:SetNWFloat("Mass", self.BulletData.ProjMass * 100)
+		self:SetNWFloat("Propellant", self.BulletData.PropMass * 1000)
+		self:SetNWFloat("FireRate", self.RateOfFire)
 
 		self.LastSend = Time
 
@@ -739,7 +739,7 @@ function ENT:ReloadMag()
 	if ( (self.CurrentShot > 0) and self.IsUnderWeight and self.Ready and self.Legal ) then
 		if ( ACF.RoundTypes[self.BulletData.Type] ) then		--Check if the roundtype loaded actually exists
 			self:LoadAmmo(self.MagReload, false)
-			self:EmitSound("weapons/357/357_reload4.wav",68,100)
+			self:EmitSound("weapons/357/357_reload4.wav", 68, 100)
 			self.CurrentShot = 0
 			Wire_TriggerOutput(self, "Ready", 0)
 		else
