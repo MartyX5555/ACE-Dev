@@ -190,8 +190,6 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3)
 	local Tank = ents.Create("acf_fueltank")
 	if IsValid(Tank) then
 
-		print( Id, Data1)
-
 		local Model
 		local Dimensions
 
@@ -284,25 +282,61 @@ end
 list.Set( "ACFCvars", "acf_fueltank", {"id", "data1", "data2", "data3"} )
 duplicator.RegisterEntityClass("acf_fueltank", MakeACF_FuelTank, "Pos", "Angle", "Id", "SizeId", "FuelType", "Shape" )
 
-function ENT:UpdateFuelTank(_, Data1, Data2)
 
-	local TankData = TankTable[Data1]
+local Wall = 0.03937 --wall thickness in inches (1mm)
+
+function ENT:UpdateFuelTank(_, _, Data2)
+
+	local electric = "ups"
+	local gas = "ups"
+	local TankData = TankTable[self.SizeId]
 	local pct = 1 --how full is the tank?
 
 	if self.Capacity and self.Capacity ~= 0 then --if updating existing tank, keep fuel level
 		pct = self.Fuel / self.Capacity
 	end
 
-	local PhysObj    = self:GetPhysicsObject()
-	local Area       = PhysObj:GetSurfaceArea() print(Area)
-	local Wall       = 0.03937 --wall thickness in inches (1mm)
-	local Volume     = PhysObj:GetVolume() --Should work with scalable ents too.
+	if self.IsScalable then
 
-	PrintTable( PhysObj:GetMeshConvexes() )
+		local ModelData = ACE.ModelData[self.Shape]
+		local Volumefunc = ModelData.volumefunction
 
-	self.Volume        = Volume - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
-	self.Capacity      = self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
-	self.EmptyMass     = (Area * Wall) * 16.387 * (7.9 / 1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
+		local Dimensions = self.Dimensions
+
+		local Length = Dimensions.x
+		local Width = Dimensions.y
+		local Height = Dimensions.z
+
+		local Volume = Volumefunc( Length, Width, Height)
+		local IVolume = Volumefunc( Length - (Wall * 2), Width - (Wall * 2), Height - (Wall * 2))
+
+		self.Volume        = IVolume-- total volume of tank (cu in), reduced by wall thickness
+		self.Capacity      = IVolume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
+		self.EmptyMass     = (Volume - IVolume) * 16.387 * ( 7.9 / 1000 )    -- total wall volume * cu in to cc * density of steel (kg/cc)
+
+		local x = math.Round(Length, 1) / 10
+		local y = math.Round(Width, 1) / 10
+		local z = math.Round(Height, 1) / 10
+
+		local dims = x .. "x" .. y .. "x" .. z
+
+		electric = (Data2 == "Electric") and dims .. " Li-Ion Battery"
+		gas	= Data2 .. " " .. dims .. " Fuel Tank"
+
+	else
+
+		local PhysObj    = self:GetPhysicsObject()
+		local Area       = PhysObj:GetSurfaceArea()
+		local Volume     = PhysObj:GetVolume()
+
+		self.Volume        = Volume - (Area * Wall) -- total volume of tank (cu in), reduced by wall thickness
+		self.Capacity      = self.Volume * ACF.CuIToLiter * ACF.TankVolumeMul * 0.4774 --internal volume available for fuel in liters, with magic realism number
+		self.EmptyMass     = (Area * Wall) * 16.387 * (7.9 / 1000)  -- total wall volume * cu in to cc * density of steel (kg/cc)
+
+		electric = (Data2 == "Electric") and TankData.name .. " Li-Ion Battery"
+		gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
+
+	end
 
 	self.FuelType      = Data2
 	self.IsExplosive   = self.FuelType ~= "Electric" and false or true
@@ -317,24 +351,6 @@ function ENT:UpdateFuelTank(_, Data1, Data2)
 	end
 
 	self:UpdateFuelMass()
-
-	local electric = "ups"
-	local gas = "ups"
-
-	if self.IsScalable then
-
-		local x = math.Round(self.Dimensions.x, 1) / 10
-		local y = math.Round(self.Dimensions.y, 1) / 10
-		local z = math.Round(self.Dimensions.z, 1) / 10
-
-		local dims = x .. "x" .. y .. "x" .. z
-
-		electric = (Data2 == "Electric") and dims .. " Li-Ion Battery"
-		gas	= Data2 .. " " .. dims .. " Fuel Tank"
-	else
-		electric = (Data2 == "Electric") and TankData.name .. " Li-Ion Battery"
-		gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
-	end
 
 	local name = "ACE " .. (electric or gas)
 

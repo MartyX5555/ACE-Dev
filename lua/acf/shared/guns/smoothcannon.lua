@@ -104,12 +104,3 @@ ACF_defineGun("170mmSBC", {
 	}
 } )
 
---- MODEL DATA
-
-ACE_DefineModelData("models/tankgun_new/tankgun_100mm.mdl",{
-
-	Model = "models/tankgun_new/tankgun_100mm.mdl",
-	DefaultSize = 100,
-
-})
-
