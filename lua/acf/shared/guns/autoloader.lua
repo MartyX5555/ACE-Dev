@@ -43,7 +43,7 @@ ACF_defineGun("100mmAL", {
 	weight = 1800,
 	year = 1956,
 	rofmod = 0.8,
-	magsize = 10,
+	magsize = 12,
 	magreload = 25,
 	round = {
 		maxlength = 93,
@@ -62,7 +62,7 @@ ACF_defineGun("120mmAL", {
 	weight = 2700,
 	year = 1956,
 	rofmod = 0.8,
-	magsize = 8,
+	magsize = 12,
 	magreload = 30,
 	round = {
 		maxlength = 110,
@@ -81,7 +81,7 @@ ACF_defineGun("140mmAL", {
 	weight = 4800,
 	year = 1970,
 	rofmod = 0.9,
-	magsize = 8,
+	magsize = 12,
 	magreload = 40,
 	round = {
 		maxlength = 127,
@@ -101,7 +101,7 @@ ACF_defineGun("170mmAL", {
 	weight = 12460,
 	year = 1970,
 	rofmod = 1,
-	magsize = 6,
+	magsize = 12,
 	magreload = 40,
 	round = {
 		maxlength = 154,
