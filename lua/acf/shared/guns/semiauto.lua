@@ -1,7 +1,7 @@
 --define the class
 ACF_defineGunClass("SA", {
 	type = "Gun",
-	spread = 0.14,
+	spread = 0.131,
 	name = "Semiautomatic Cannon",
 	desc = ACFTranslation.GunClasses[12],
 	muzzleflash = "30mm_muzzleflash_noscale",
