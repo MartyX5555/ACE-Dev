@@ -755,6 +755,7 @@ function ENT:Link( Target )
 		table.insert( self.CrewLink, Target )
 		table.insert( Target.Master, self )
 
+		Target.LinkedEngine = self
 		self.HasDriver = 1
 		self:UpdateOverlayText()
 
@@ -813,6 +814,7 @@ function ENT:Unlink( Target )
 			table.remove(self.CrewLink,Key)
 			Success = true
 			self.HasDriver = 0
+			Target.LinkedEngine = nil
 			return true, "Unlink successful!"
 		end
 	end
