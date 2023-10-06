@@ -851,7 +851,7 @@ ACE_DefineModelData("Cone",{
 			Vector(-4.24, 4.24, -6),
 			Vector(4.24, 4.24, -6),
 
-			Vector(0,0,6),
+			Vector(0, 0, 6),
 		}
 	},
 	volumefunction = function( L, W, H )
