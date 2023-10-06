@@ -241,7 +241,7 @@ function MakeACF_FuelTank(Owner, Pos, Angle, Id, Data1, Data2, Data3)
 				Tank:ACE_SetScale( Tank.ScaleData )
 
 			else
-				Data1 = "Ammo2x4x4"
+				Data1 = "Tank_4x4x2"
 			end
 		end
 
@@ -324,7 +324,6 @@ function ENT:UpdateFuelTank(_, _, Data2)
 		gas	= Data2 .. " " .. dims .. " Fuel Tank"
 
 	else
-
 		local PhysObj    = self:GetPhysicsObject()
 		local Area       = PhysObj:GetSurfaceArea()
 		local Volume     = PhysObj:GetVolume()
@@ -335,7 +334,6 @@ function ENT:UpdateFuelTank(_, _, Data2)
 
 		electric = (Data2 == "Electric") and TankData.name .. " Li-Ion Battery"
 		gas	= Data2 .. " " .. TankData.name .. ( not TankData.notitle and " Fuel Tank" or "")
-
 	end
 
 	self.FuelType      = Data2
