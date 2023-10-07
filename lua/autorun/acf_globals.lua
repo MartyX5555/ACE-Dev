@@ -84,7 +84,7 @@ ACF.ScaledEntsMax     = 5
 
 ---------------------------------- Ballistic config ----------------------------------
 
-ACF.Bullet            = {}	-- when ACF is loaded, this table holds bullets
+ACF.Bullet			  = {} --When ACF is loaded, this table holds bullets
 ACF.CurBulletIndex    = 0	-- used to track where to insert bullets
 ACF.BulletIndexLimit  = 5000	-- The maximum number of bullets in flight at any one time TODO: fix the typo
 ACF.SkyboxGraceZone   = 100	-- grace zone for the high angle fire
@@ -143,6 +143,14 @@ ACF.ArmorMod            = 1
 ACF.SlopeEffectFactor   = 1.1					-- Sloped armor effectiveness: armor / cos(angle) ^ factor
 ACF.Spalling            = 1
 ACF.SpallMult           = 1
+
+
+--Math in globals????
+
+--UNLESS YOU WANT SPALL TO FLY BACKWARDS, BE ABSOLUTELY SURE TO MAKE SURE THIS VECTOR LENGTH IS LESS THAN 1
+--The vector controls the spread pattern. The multiplier adjusts the tightness of the spread cone. ABSOLUTELY DO NOT MAKE THE MULTIPLIER MORE THAN 1. A Vector of 1,1,0.5. Results in half the vertical spall spread
+ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45 
+
 
 ---------------------------------- Particle colors  ----------------------------------
 
