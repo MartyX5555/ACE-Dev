@@ -330,6 +330,16 @@ do
 	e2function number acfCurVersion()
 		return ACF.Version
 	end
+
+	--returns global variable about air effectiveness against heat
+	e2function number acfHEATAirGapFactor()
+		return ACF.HEATAirGapFactor
+	end
+
+	--returns acfWindVector
+	e2function vector acfWindVector()
+		return ACF.Wind
+	end
 end
 
 -- [ Engine Functions ] --

@@ -476,16 +476,17 @@ if CLIENT then
 else
 	local curveFactor = 2.5
 	local reset_timer = 60
-
+	ACF.Wind = Vector()
 	timer.Create("ACE_Wind", reset_timer, 0, function()
 		local smokeDir = Vector(math.Rand(-1, 1), math.Rand(-1, 1), 0):GetNormalized()
-		local wind = (math.random() ^ curveFactor) * smokeDir * GetConVar("acf_wind"):GetFloat()
+		ACF.Wind = (math.random() ^ curveFactor) * smokeDir * GetConVar("acf_wind"):GetFloat()
 		net.Start("ACE_Wind")
-			net.WriteFloat(wind.x)
-			net.WriteFloat(wind.y)
+			net.WriteFloat(ACF.Wind.x)
+			net.WriteFloat(ACF.Wind.y)
 		net.Broadcast()
 	end)
 end
+
 
 
 

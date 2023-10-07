@@ -828,6 +828,24 @@ function acf_library.getCurrentVersion()
 	return version
 end
 
+--- returns % velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
+-- @server
+-- @return number
+function acf_library.getHEATAirGapFactor()
+	local airgapfactor = ACF.HEATAirGapFactor
+
+	return airgapfactor
+end
+
+--- Returns acf wind direction(vector)
+-- @server
+-- @return vector
+function acf_library.getWindVector()
+	local windVector = ACF.Wind
+
+	return windVector
+end
+
 ----------------------------------------
 -- Entity Methods
 
