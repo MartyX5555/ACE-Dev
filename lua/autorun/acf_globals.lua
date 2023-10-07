@@ -77,6 +77,7 @@ ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly eq
 ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than ammo
 ACF.HEATMulEngine     = 10						-- likewise
 ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
+ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
 
 ACF.ScaledHEMax       = 50
@@ -149,7 +150,7 @@ ACF.SpallMult           = 1
 
 --UNLESS YOU WANT SPALL TO FLY BACKWARDS, BE ABSOLUTELY SURE TO MAKE SURE THIS VECTOR LENGTH IS LESS THAN 1
 --The vector controls the spread pattern. The multiplier adjusts the tightness of the spread cone. ABSOLUTELY DO NOT MAKE THE MULTIPLIER MORE THAN 1. A Vector of 1,1,0.5. Results in half the vertical spall spread
-ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45 
+ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45
 
 
 ---------------------------------- Particle colors  ----------------------------------
@@ -215,7 +216,7 @@ if SERVER then
 	CreateConVar("acf_explosions_scaled_he_max", 100, FCVAR_ARCHIVE)
 	CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
-	--Smoke 
+	--Smoke
 	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
 
