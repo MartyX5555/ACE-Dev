@@ -317,7 +317,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 		--0.75 results in 11mm spall with a 120mm SBC
 		--15 results in 20mm spall
 		local WeightFactor = 15
-		
+
 		--Direct multiplier for spall velocity, used to fine-tune the spall penetration
 		local Velocityfactor = 300
 
@@ -340,7 +340,7 @@ function ACF_Spall( HitPos , HitVec , Filter , KE , Caliber , Armour , Inflictor
 
 			ACE.Spall[Index] = {}
 			ACE.Spall[Index].start  = HitPos
-			ACE.Spall[Index].endpos = HitPos + (HitVec:GetNormalized() + VectorRand()* ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
+			ACE.Spall[Index].endpos = HitPos + ( HitVec:GetNormalized() + VectorRand() * ACF.SpallingDistribution ):GetNormalized() * math.max( SpallVel, 600 ) --Spall endtrace. Used to determine spread and the spall trace length. Only adjust the value in the max to determine the minimum distance spall will travel. 600 should be fine.
 			ACE.Spall[Index].filter = table.Copy(Filter)
 			ACE.Spall[Index].mins	= Vector(0,0,0)
 			ACE.Spall[Index].maxs	= Vector(0,0,0)

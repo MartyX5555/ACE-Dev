@@ -149,7 +149,7 @@ ACF.ScaledEntsMax     = 5
 
 ---------------------------------- Ballistic config ----------------------------------
 
-ACF.Bullet            = {}	-- when ACF is loaded, this table holds bullets
+ACF.Bullet            = {} --When ACF is loaded, this table holds bullets
 ACF.CurBulletIndex    = 0	-- used to track where to insert bullets
 ACF.BulletIndexLimit  = 5000	-- The maximum number of bullets in flight at any one time TODO: fix the typo
 ACF.SkyboxGraceZone   = 100	-- grace zone for the high angle fire
