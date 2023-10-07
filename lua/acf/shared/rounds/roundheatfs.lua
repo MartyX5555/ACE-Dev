@@ -113,6 +113,7 @@ function Round.convert( _, PlayerData )
 	Data.DetonatorAngle = 80
 
 	Data.Detonated = false
+	Data.HEATLastPos	= Vector(0,0,0)
 	Data.NotFirstPen = false
 	Data.BoomPower = Data.PropMass + Data.FillerMass
 
@@ -205,6 +206,7 @@ function Round.detonate( _, Bullet, HitPos, HitNormal )
 	local DeltaTime = SysTime() - Bullet.LastThink
 	Bullet.StartTrace = Bullet.Pos - Bullet.Flight:GetNormalized() * (math.min(ACF.PhysMaxVel * DeltaTime,Bullet.FlightTime * Bullet.Flight:Length()) + 25)
 	Bullet.NextPos = Bullet.Pos + (Bullet.Flight * ACF.VelScale * DeltaTime)		--Calculates the next shell position
+	Bullet.HEATLastPos = HitPos --Used to backtrack the HEAT's travel distance
 
 end
 
@@ -230,6 +232,11 @@ function Round.propimpact( Index, Bullet, Target, HitNormal, HitPos, Bone )
 			end
 
 		else
+
+			local distanceTraveled = (HitPos-Bullet.HEATLastPos):Length()
+			Bullet.Flight = Bullet.Flight * (1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 ))
+--			print("Meters Traveled: "..distanceTraveled/39.37)
+--			print("Speed Reduction: "..(1-math.Min( ACF.HEATAirGapFactor * distanceTraveled / 39.37 ,0.99 )).."x") --
 
 			local Speed = Bullet.Flight:Length() / ACF.VelScale
 			local Energy = ACF_Kinetic( Speed , Bullet.ProjMass - Bullet.FillerMass, Bullet.LimitVel )
