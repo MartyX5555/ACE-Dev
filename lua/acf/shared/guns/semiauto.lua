@@ -1,13 +1,13 @@
 --define the class
 ACF_defineGunClass("SA", {
 	type = "Gun",
-	spread = 0.14,
+	spread = 0.131,
 	name = "Semiautomatic Cannon",
 	desc = ACFTranslation.GunClasses[12],
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 0.5,
 	year = 1935,
-	sound = "acf_extra/tankfx/gnomefather/25mm1.wav",
+	sound = "ace_weapons/multi_sound/20mm_multi.mp3",
 	noloader = true,
 
 } )

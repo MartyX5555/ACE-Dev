@@ -10,6 +10,7 @@ ACE.Explosives        = {} --Explosive entities like ammocrates & fueltanks go h
 ACE.Debris            = {} --Debris count
 ACE.Mines             = ACE.Mines or {}
 ACE.MineOwners  	  = ACE.MineOwners or {} -- We want to develop without losing any data inside of this.
+ACE.ScalableEnts      = ACE.ScalableEnts or {}
 
 --list of classname ents which should be added to the contraption ents.
 local AllowedEnts = {
@@ -59,39 +60,45 @@ ACF.Debris = {
 -- insert any new entity to the Contraption List
 -- Maybe in a future: Change if-else chains by tables
 hook.Add("OnEntityCreated", "ACE_EntRegister", function(Ent)
-	if not IsValid(Ent) then return end
+	timer.Simple(0, function()
+		if not IsValid(Ent) then return end
 
-	-- check if ent class is in whitelist
-	if AllowedEnts[Ent:GetClass()] then
-		-- include any ECM to this table
-		if Ent:GetClass() == "ace_ecm" then
-			table.insert(ACE.ECMPods, Ent) --print('[ACE | INFO]- ECM registered count: ' .. table.Count( ACE.ECMPods ))
-			-- include any Tracking Radar to this table
-		elseif Ent:GetClass() == "ace_trackingradar" then
-			table.insert(ACE.radarEntities, Ent) --print('[ACE | INFO]- Tracking radar registered count: ' .. table.Count( ACE.radarEntities ))
+		-- check if ent class is in whitelist
+		if AllowedEnts[Ent:GetClass()] then
+			-- include any ECM to this table
+			if Ent:GetClass() == "ace_ecm" then
+				table.insert(ACE.ECMPods, Ent) --print('[ACE | INFO]- ECM registered count: ' .. table.Count( ACE.ECMPods ))
+				-- include any Tracking Radar to this table
+			elseif Ent:GetClass() == "ace_trackingradar" then
+				table.insert(ACE.radarEntities, Ent) --print('[ACE | INFO]- Tracking radar registered count: ' .. table.Count( ACE.radarEntities ))
 
-			for id, ent in pairs(ACE.radarEntities) do
-				ACE.radarIDs[ent] = id
+				for id, ent in pairs(ACE.radarEntities) do
+					ACE.radarIDs[ent] = id
+				end
+			elseif Ent:GetClass() == "acf_opticalcomputer" then
+				--Optical Computers go here
+				table.insert(ACE.Opticals, Ent) --print('[ACE | INFO]- GLATGM optical computer registered count: ' .. table.Count( ACE.Opticals ))
+			elseif ACE.ExplosiveEnts[Ent:GetClass()] then
+				--Insert Ammocrates and other explosive stuff here
+				table.insert(ACE.Explosives, Ent) --print('[ACE | INFO]- Explosive registered count: ' .. table.Count( ACE.Explosives ))
 			end
-		elseif Ent:GetClass() == "acf_opticalcomputer" then
-			--Optical Computers go here
-			table.insert(ACE.Opticals, Ent) --print('[ACE | INFO]- GLATGM optical computer registered count: ' .. table.Count( ACE.Opticals ))
-		elseif ACE.ExplosiveEnts[Ent:GetClass()] then
-			--Insert Ammocrates and other explosive stuff here
-			table.insert(ACE.Explosives, Ent) --print('[ACE | INFO]- Explosive registered count: ' .. table.Count( ACE.Explosives ))
-		end
 
-		-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
-		if not IsValid(Ent:GetParent()) then
-			table.insert(ACE.contraptionEnts, Ent)
-			--print("[ACE | INFO]- an entity ' .. Ent:GetClass() .. ' has been registered!")
-			--print('Total Ents registered count: ' .. table.Count( ACE.contraptionEnts ))
+			if Ent.IsScalable then
+				table.insert( ACE.ScalableEnts, Ent)
+			end
+
+			-- Finally, include the whitelisted entity to the main table ( contraptionEnts )
+			if not IsValid(Ent:GetParent()) then
+				table.insert(ACE.contraptionEnts, Ent)
+				--print("[ACE | INFO]- an entity ' .. Ent:GetClass() .. ' has been registered!")
+				--print('Total Ents registered count: ' .. table.Count( ACE.contraptionEnts ))
+			end
+		elseif Ent:GetClass() == "ace_debris" then
+			table.insert(ACE.Debris, Ent) --print('Adding - Count: ' .. #ACE.Debris)
+		elseif Ent:GetClass() == "ace_mine" then
+			table.insert(ACE.Mines, Ent) print("Adding - Count: " .. #ACE.Mines)
 		end
-	elseif Ent:GetClass() == "ace_debris" then
-		table.insert(ACE.Debris, Ent) --print('Adding - Count: ' .. #ACE.Debris)
-	elseif Ent:GetClass() == "ace_mine" then
-		table.insert(ACE.Mines, Ent) print("Adding - Count: " .. #ACE.Mines)
-	end
+	end)
 end)
 
 -- Remove any entity of the Contraption List that has been removed from map
@@ -144,6 +151,16 @@ hook.Add("EntityRemoved", "ACE_EntRemoval", function(Ent)
 					if IsValid(explosive) and explosive == Ent then
 						table.remove(ACE.Explosives, i)
 						--print("Explosive registered count: " .. #ACE.Explosives)
+						break
+					end
+				end
+			end
+
+			if Ent.IsScalable then
+
+				for i, scalable in ipairs(ACE.ScalableEnts) do
+					if IsValid(scalable) and scalable == Ent then
+						table.remove(ACE.ScalableEnts, i)
 						break
 					end
 				end

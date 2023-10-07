@@ -593,7 +593,7 @@ function ACFCLGUICreate()
 	local Effects = vgui.Create( "DForm" )
 	Effects:SetName("Rendering")
 
-	Effects:CheckBox("Allow lighting rendering", "ACFM_MissileLights")
+	Effects:CheckBox("Allow lighting rendering", "acf_enable_lighting")
 	Effects:ControlHelp( "Enables lighting for explosions, muzzle flashes and rocket motors, increasing the inmersion during combat, however, may impact heavily the performance and it's possible it doesn't render properly in certain map surfaces." )
 
 	Effects:CheckBox("Draw Mobility rope links", "ACF_MobilityRopeLinks")
@@ -779,20 +779,20 @@ do
 
 	local function CreateIdForCrate( self )
 
-	if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
+		if not acfmenupanel.AmmoPanelConfig["LegacyAmmos"] then
 
-		local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
-		local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
-		local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
+			local X = math.Round( acfmenupanel.AmmoPanelConfig["Crate_Length"], 1 )
+			local Y = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Width"], 1 )
+			local Z = math.Round(acfmenupanel.AmmoPanelConfig["Crate_Height"], 1)
 
-		local Id = X .. ":" .. Y .. ":" .. Z
+			local Id = X .. ":" .. Y .. ":" .. Z
 
-		acfmenupanel.AmmoData["Id"] = Id
-		RunConsoleCommand( "acfmenu_id", Id )
+			acfmenupanel.AmmoData["Id"] = Id
+			RunConsoleCommand( "acfmenu_id", Id )
 
-	end
+		end
 
-	self:UpdateAttribs()
+		self:UpdateAttribs()
 
 	end
 

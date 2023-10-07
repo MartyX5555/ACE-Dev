@@ -7,7 +7,7 @@ ACF_defineGunClass("ATR", {
 	muzzleflash = "30mm_muzzleflash_noscale",
 	rofmod = 10,
 	year = 1917,
-	sound = "acf_extra/tankfx/gnomefather/7mm1.wav",
+	sound = "ace_weapons/multi_sound/7_62mm_multi.mp3",
 
 } )
 

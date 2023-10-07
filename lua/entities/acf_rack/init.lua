@@ -573,7 +573,6 @@ function ENT:AddMissile()
 	if self.ProtectMissile then missile:SetNotSolid(true) end
 
 	missile:SetNWEntity( "Launcher", missile.Launcher )
-
 	missile:Spawn()
 
 	self.Missiles[NextIdx + 1] = missile

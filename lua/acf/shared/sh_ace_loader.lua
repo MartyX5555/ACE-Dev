@@ -208,6 +208,7 @@ end
 function ACE_DefineModelData( id, data )
 	data.id = id
 	ModelData[id] = data
+	ModelData[data.Model] = data -- I will allow both model or fast name as id.
 end
 
 function ACE_DefineMine(id, data)
