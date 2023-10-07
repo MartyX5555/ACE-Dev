@@ -142,6 +142,7 @@ ACF.HEATMulAmmo       = 30						-- HEAT slug damage multiplier; 13.2x roughly eq
 ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than ammo
 ACF.HEATMulEngine     = 10						-- likewise
 ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
+ACF.HEATAirGapFactor  = 0.15						--% velocity loss for every meter traveled. 0.2x means HEAT loses 20% of its energy every 2m traveled. 1m is about typical for the sideskirt spaced armor of most tanks.
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
 
 ACF.ScaledHEMax       = 50
