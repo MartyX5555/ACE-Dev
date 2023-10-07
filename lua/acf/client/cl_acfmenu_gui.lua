@@ -347,11 +347,12 @@ function PANEL:UpdateDisplay( Table )
 	RunConsoleCommand( "acfmenu_id", Table.id or 0 )
 
 	--If a previous display exists, erase it
-	if ( acfmenupanel.CustomDisplay ) then
-	acfmenupanel.CustomDisplay:Clear(true)
-	acfmenupanel.CustomDisplay = nil
-	acfmenupanel.CData = nil
+	if acfmenupanel.CustomDisplay then
+		acfmenupanel.CustomDisplay:Clear(true)
+		acfmenupanel.CustomDisplay = nil
+		acfmenupanel.CData = nil
 	end
+
 	--Create the space to display the custom data
 	acfmenupanel.CustomDisplay = vgui.Create( "DPanelList", acfmenupanel )
 	acfmenupanel.CustomDisplay:SetSpacing( 10 )
@@ -384,10 +385,10 @@ function PANEL:PerformLayout()
 	ypos = acfmenupanel.WeaponSelect.Y + acfmenupanel.WeaponSelect:GetTall() + vspacing
 
 	if acfmenupanel.CustomDisplay then
-	--Custom panel
-	acfmenupanel.CustomDisplay:SetPos( 0, ypos )
-	acfmenupanel.CustomDisplay:SetSize( acfmenupanel:GetWide(), acfmenupanel:GetTall() - acfmenupanel.WeaponSelect:GetTall() - 10 )
-	ypos = acfmenupanel.CustomDisplay.Y + acfmenupanel.CustomDisplay:GetTall() + vspacing
+		--Custom panel
+		acfmenupanel.CustomDisplay:SetPos( 0, ypos )
+		acfmenupanel.CustomDisplay:SetSize( acfmenupanel:GetWide(), acfmenupanel:GetTall() - acfmenupanel.WeaponSelect:GetTall() - 10 )
+		ypos = acfmenupanel.CustomDisplay.Y + acfmenupanel.CustomDisplay:GetTall() + vspacing
 	end
 
 end
