@@ -146,7 +146,7 @@ do
 			local MinCrateSize = ACF.CrateMinimumSize or 5
 			local MaxCrateSize = ACF.CrateMaximumSize
 
-			acfmenupanel:CPanelText("Crate_desc_new", "\nAdjust the dimensions for your tank. In inches.", nil, CrateNewPanel)
+			acfmenupanel:CPanelText("Crate_desc_new", "\nAdjust the dimensions for your tank. In inches.", nil, nil, CrateNewPanel)
 
 			-- The ComboList
 			local ShapeComboList = vgui.Create( "DComboBox" )
@@ -219,7 +219,7 @@ do
 		----------- legacy tank size dropbox -----------
 		do
 
-			acfmenupanel:CPanelText("Fuel_desc_legacy", "\nChoose a fueltank in the legacy way. Remember to enable the checkbox below to do so.", nil, CrateOldPanel)
+			acfmenupanel:CPanelText("Fuel_desc_legacy", "\nChoose a fueltank in the legacy way. Remember to enable the checkbox below to do so.", nil, nil, CrateOldPanel)
 
 			-- The checkbox
 			local LegacyCheck = vgui.Create( "DCheckBoxLabel" ) -- Create the checkbox
@@ -259,7 +259,7 @@ do
 
 					local Model = Tanks[acfmenupanel.FuelTankData.IdLegacy].model
 					acfmenupanel.CData.DisplayModel:SetModel(Model)
-					acfmenupanel:CPanelText("CrateDesc", Tanks[acfmenupanel.FuelTankData.Id].desc, nil, CrateOldPanel)
+					acfmenupanel:CPanelText("CrateDesc", Tanks[acfmenupanel.FuelTankData.Id].desc, nil, nil, CrateOldPanel)
 
 				end
 			end
@@ -268,8 +268,8 @@ do
 			RunConsoleCommand( "acfmenu_data1", acfmenupanel.FuelTankData.Id )
 			CrateOldPanel:AddItem( FuelTankComboList )
 
-			acfmenupanel:CPanelText("TankName", "", nil, CrateOldPanel)
-			acfmenupanel:CPanelText("TankDesc", "", nil, CrateOldPanel)
+			acfmenupanel:CPanelText("TankName", "", nil, nil, CrateOldPanel)
+			acfmenupanel:CPanelText("TankDesc", "", nil, nil, CrateOldPanel)
 
 			acfmenupanel.CData.DisplayModel = vgui.Create( "DModelPanel", CrateOldPanel )
 			acfmenupanel.CData.DisplayModel:SetModel( Tanks[acfmenupanel.FuelTankData.IdLegacy].model )
