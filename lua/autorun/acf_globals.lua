@@ -150,7 +150,7 @@ ACF.SpallMult           = 1
 
 --UNLESS YOU WANT SPALL TO FLY BACKWARDS, BE ABSOLUTELY SURE TO MAKE SURE THIS VECTOR LENGTH IS LESS THAN 1
 --The vector controls the spread pattern. The multiplier adjusts the tightness of the spread cone. ABSOLUTELY DO NOT MAKE THE MULTIPLIER MORE THAN 1. A Vector of 1,1,0.5. Results in half the vertical spall spread
-ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45 
+ACF.SpallingDistribution = Vector(1,1,0.5):GetNormalized() * 0.45
 
 
 ---------------------------------- Particle colors  ----------------------------------
@@ -216,7 +216,7 @@ if SERVER then
 	CreateConVar("acf_explosions_scaled_he_max", 100, FCVAR_ARCHIVE)
 	CreateConVar("acf_explosions_scaled_ents_max", 5, FCVAR_ARCHIVE)
 
-	--Smoke 
+	--Smoke
 	CreateConVar("acf_wind", 600, FCVAR_ARCHIVE)
 
 
