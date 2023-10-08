@@ -191,7 +191,7 @@ function ENT:Think()
 
 		if self.RadioDist and d:Length() < self.RadioDist then
 			self:Detonate()
-			print("Proxy Fuse")
+			--print("Proxy Fuse")
 		end
 
 		local deltaDistance = self.lastDistance - dist --Use distance instead of traveltime because it is better indicitive of a miss and won't detonate a gliding missile still moving towards the target
@@ -206,14 +206,14 @@ function ENT:Think()
 		else
 			if self.DestructOnMiss then
 				self:Detonate()
-				print("Self Destruct")
+				--print("Self Destruct")
 			end
 		end
 
 		self:RecalculateGuidance()
 
 	else
-		print("No Target")
+		--print("No Target")
 		self:Detonate()
 	end
 

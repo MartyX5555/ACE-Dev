@@ -50,7 +50,7 @@ ACF_defineGun("AGM-114 ASM", {						--id
 	},
 
 	ent        = "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance   = {"Dumb", "Laser", "Infrared"},
+	guidance   = {"Dumb", "Laser"},
 	fuses      = {"Contact", "Optical"},
 
 	racks	= {									-- a whitelist for racks that this missile can load into.
@@ -90,7 +90,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		rackmdl           = "models/missiles/aim120.mdl",
 		maxlength         = 150,
 		casing            = 0.15,						-- thickness of missile casing, cm
-		armour            = 10,						-- effective armour thickness of casing, in mm
+		armour            = 15,						-- effective armour thickness of casing, in mm
 		propweight        = 3,							-- motor mass - motor casing
 		thrust            = 2000,						-- average thrust - kg * in/s ^ 2		--was 600
 		burnrate          = 300,						-- cm ^ 3/s at average chamber pressure
@@ -99,7 +99,7 @@ ACF_defineGun("AGM-45 ASM", {						-- id
 		dragcoef          = 0.004,						-- drag coefficient while falling								--was 0.001
 		dragcoefflight    = 0.004,						-- drag coefficient during flight
 		finmul            = 0.2,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul            = math.sqrt(0.18)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(0.1)			-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -145,7 +145,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		rackmdl           = "models/missiles/aim9.mdl",
 		maxlength         = 140,
 		casing            = 0.1,						-- thickness of missile casing, cm
-		armour            = 5,							-- effective armour thickness of casing, in mm
+		armour            = 15,							-- effective armour thickness of casing, in mm
 		propweight        = 4,							-- motor mass - motor casing
 		thrust            = 8500,						-- average thrust - kg * in/s ^ 2	--was 4000
 		burnrate          = 1600,						-- cm ^ 3/s at average chamber pressure	--was 1400
@@ -154,7 +154,7 @@ ACF_defineGun("AGM-122 ASM", {						-- id
 		dragcoef          = 0.005,						-- drag coefficient while falling								--0.001
 		dragcoefflight    = 0.001,						-- drag coefficient during flight
 		finmul            = 0.02,						-- fin multiplier (mostly used for unpropelled guidance)
-		penmul            = math.sqrt(0.1)				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
+		penmul            = math.sqrt(0.075)				-- HEAT velocity multiplier. Squared relation to penetration (math.sqrt(2) means 2x pen)
 	},
 
 	ent		= "acf_missile_to_rack",				-- A workaround ent which spawns an appropriate rack for the missile.
@@ -198,7 +198,7 @@ ACF_defineGun("AGM-65 ASM", {						-- id
 		rackmdl           = "models/missiles/aim54.mdl",
 		maxlength         = 220,
 		casing            = 0.2,						-- thickness of missile casing, cm
-		armour            = 10,						-- effective armour thickness of casing, in mm
+		armour            = 25,						-- effective armour thickness of casing, in mm
 		propweight        = 5,							-- motor mass - motor casing
 		thrust            = 18000,						-- average thrust - kg * in/s ^ 2	--was 10000
 		burnrate          = 200,						-- cm ^ 3/s at average chamber pressure	--was 800
