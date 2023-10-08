@@ -19,7 +19,7 @@ function ENT:Initialize()
 	self.MaxTurnRate = 30
 	self.LeadMul = 1 --A higher leadmul means it's easier to force the missile to bleed a missile's energy. Lower can potentially be more efficient by reducing overcorrection
 
-	
+
 	self.DestructOnMiss = false --Detonate the missile the distance to the target increases(when the missile misses or runs out of energy)
 
 	self.SpecialHealth  = true  --If true, use the ACF_Activate function defined by this ent
@@ -161,7 +161,7 @@ function ENT:Think()
 
 		self.Gravity = 9.8 * 39.37 * DelTime --Gravity is always active. Makes it harder for missiles to climb high.
 
-		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust * math.Min(self.CurrentFuse*self.MotorIncrements,1) + Vector(0, 0, -self.Gravity)))
+		self.phys:ApplyForceCenter(20 * (self:GetForward() * self.MissileThrust * math.Min( self.CurrentFuse * self.MotorIncrements,1 ) + Vector(0, 0, -self.Gravity)))
 
 		debugoverlay.Line(self.LastPos, pos, 10, Color(0, 0, 255))
 
@@ -187,7 +187,7 @@ function ENT:Think()
 			end
 		end
 
-		local d = (TPos + self.HeightOffset + Vector(0,0,tposDist*9.8/(vel:Length())*8)) - pos
+		local d = (TPos + self.HeightOffset + Vector( 0,0, tposDist * 9.8 / (vel:Length() ) * 8 )) - pos
 
 		if self.RadioDist and d:Length() < self.RadioDist then
 			self:Detonate()
@@ -319,7 +319,6 @@ end
 
 
 function ENT:GetWhitelistedEntsInCone()
-	local owner = self:GetOwner()
 
 	local ScanArray = ACE.contraptionEnts
 	if table.IsEmpty(ScanArray) then return {} end
@@ -419,9 +418,9 @@ function ENT:AcquireLock()
 				local err = absang.p + absang.y
 
 				if self.tarent == scanEnt then
-					err = err/self.DecoyResiliance
+					err = err / self.DecoyResiliance
 				end
-				
+
 				err = err - Heat
 
 				--Sorts targets as closest to being directly in front of radar

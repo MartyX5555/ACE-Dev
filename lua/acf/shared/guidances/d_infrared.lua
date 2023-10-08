@@ -232,7 +232,7 @@ function this:AcquireLock(missile)
 			testang = absang.p + absang.y --Could do pythagorean stuff but meh, works 98% of time
 
 			if self.Target == scanEnt then
-				testang = testang/self.SeekSensitivity
+				testang = testang / self.SeekSensitivity
 			end
 
 			testang = testang - Heat

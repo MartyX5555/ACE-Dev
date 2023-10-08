@@ -24,55 +24,53 @@ function SWEP:DoDrawCrosshair(x, y)
 	local owner = self:GetOwner()
 	local inaccuracy = math.min(owner:GetVelocity():Length() / owner:GetRunSpeed(), 1)
 	inaccuracy = math.max(inaccuracy, self.Heat / self.HeatMax)
-    local fusedelay = XM25FuseDelay or 0
-    local fusedist = XM25Distance or 0
-    local Tx = XM25Px or 0
-    local Ty = 0
+	local fusedelay = XM25FuseDelay or 0
+	local fusedist = XM25Distance or 0
+	local Tx = XM25Px or 0
+	local Ty = 0
 
 		if Zoom then
 			surface.SetDrawColor(Color(255, 0, 0, 255 - inaccuracy * 150))
-
-			local width = 1 + inaccuracy * 7
 
 			surface.SetDrawColor(Color(255, 0, 0, 255))
 
 			surface.DrawRect(x, y, 4,4)
 
-            surface.SetFont( "HudDefault" )
-            surface.SetTextColor( 150, 0, 0 )
-            surface.SetTextPos( x - 280, y ) 
-            surface.DrawText( "ABRST: "..math.Round(fusedelay,2).."s" )
+			surface.SetFont( "HudDefault" )
+			surface.SetTextColor( 150, 0, 0 )
+			surface.SetTextPos( x - 280, y )
+			surface.DrawText( "ABRST: " .. math.Round(fusedelay,2) .. "s" )
 
-            surface.SetTextPos( x - 280, y - 35 ) 
-            surface.DrawText( "OFST: 2.5m")
+			surface.SetTextPos( x - 280, y - 35 )
+			surface.DrawText( "OFST: 2.5m")
 
-            surface.SetTextPos( x + 250, y ) 
-            surface.DrawText( "RNG: "..math.Round(fusedist,0).."m")
+			surface.SetTextPos( x + 250, y )
+			surface.DrawText( "RNG: " .. math.Round(fusedist,0) .. "m")
 
-            local ARC = -1 -- +1 for high, -1 for direct fire
-            local G = 15
-            local GVel = 110
+			local ARC = -1 -- +1 for high, -1 for direct fire
+			local G = 15
+			local GVel = 110
 
 
-            local calculatedAngle = (math.atan( (GVel^2 + ARC * math.sqrt(GVel^4 - G*(G*Tx^2 + 2*Ty*GVel^2))) / (G * Tx) )) * 180/math.pi
+			local calculatedAngle = (math.atan( (GVel^2 + ARC * math.sqrt(GVel^4 - G * ( G * Tx^2 + 2 * Ty * GVel^2))) / (G * Tx) )) * 180 / math.pi
 
-            local eEye = owner:EyeAngles()
-            local VectorPos = Vector()
+			local eEye = owner:EyeAngles()
+			local VectorPos = Vector()
 
-            if calculatedAngle > 0 then
-            VectorPos = owner:EyePos() + ( Angle(eEye.x,eEye.y,0) + Angle(calculatedAngle,0,0)):Forward()*2000
-            else
-            VectorPos = owner:EyePos() + ( Angle(eEye.x,eEye.y,0) + Angle(-calculatedAngle,0,0)):Forward()*2000
-            end
-            local tarpos2d = VectorPos:ToScreen()
-            tarpos2d = Vector(math.floor(tarpos2d.x + 0.5), math.floor(tarpos2d.y + 0.5), 0)
+			if calculatedAngle > 0 then
+			VectorPos = owner:EyePos() + ( Angle(eEye.x,eEye.y,0) + Angle(calculatedAngle,0,0)):Forward() * 2000
+			else
+			VectorPos = owner:EyePos() + ( Angle(eEye.x,eEye.y,0) + Angle(-calculatedAngle,0,0)):Forward() * 2000
+			end
+			local tarpos2d = VectorPos:ToScreen()
+			tarpos2d = Vector(math.floor(tarpos2d.x + 0.5), math.floor(tarpos2d.y + 0.5), 0)
 
-            surface.DrawRect(x - 35 + (tarpos2d.x - x), y-1 + (tarpos2d.y - y), 30, 3)
+			surface.DrawRect(x - 35 + (tarpos2d.x - x), y-1 + (tarpos2d.y - y), 30, 3)
 			surface.DrawRect(x + 6 + (tarpos2d.x - x), y-1 + (tarpos2d.y - y), 30, 3)
 			surface.DrawRect(x-1 + (tarpos2d.x - x), y + 6 + (tarpos2d.y - y), 3, 30)
 
-            surface.SetTextPos( x + 250, y+50 ) 
-            surface.DrawText( "ANG: "..math.Round(calculatedAngle,3).."")
+			surface.SetTextPos( x + 250, y + 50 )
+			surface.DrawText( "ANG: " .. math.Round(calculatedAngle,3) .. "")
 
 
 

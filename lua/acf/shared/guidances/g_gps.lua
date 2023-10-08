@@ -112,11 +112,11 @@ function this:GetFallbackWireInputs(missile)
 end
 
 
-function this:GetGuidance(missile)
+function this:GetGuidance(_)
 
 	local posVec = self:GetWireTarget()
 
-	if self.FirstGuidance then		
+	if self.FirstGuidance then
 		if not posVec or type(posVec) ~= "Vector" or posVec == Vector() then
 			return {TargetPos = nil}
 		end
@@ -129,7 +129,7 @@ function this:GetGuidance(missile)
 end
 
 --Another Stupid Workaround. Since guidance degrees are not loaded when ammo is created
-function this:GetDisplayConfig(Type)
+function this:GetDisplayConfig(_)
 
 	return
 	{

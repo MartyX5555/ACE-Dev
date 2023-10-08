@@ -250,7 +250,6 @@ function ENT:AcquireLock()
 	for _, scanEnt in ipairs(found) do
 
 		local randanginac	= math.Rand(-inac,inac) --Using the same accuracy var for inaccuracy, what could possibly go wrong?
-		local randposinac	= Vector(math.Rand(-inac, inac), math.Rand(-inac, inac), math.Rand(-inac, inac))
 
 		entpos	= scanEnt:WorldSpaceCenter()
 		difpos	= (entpos - IRSTPos)
@@ -296,7 +295,6 @@ function ENT:AcquireLock()
 			end
 
 			local errorFromHeat = math.max((200 - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
-			local posErrorFromHeat = 1 - math.min(1, Heat / 200)
 			local angerr = 1 + randanginac * (errorFromAng + errorFromHeat)
 
 			--For Owner table

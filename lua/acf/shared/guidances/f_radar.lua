@@ -122,7 +122,7 @@ function this:GetWhitelistedEntsInCone(missile)
 		-- skip any invalid entity
 		if not scanEnt:IsValid() then continue end
 
-		
+
 --No sir I will not ignore the flares. They "might" contain chaff
 
 --		-- skip any flare from vision.

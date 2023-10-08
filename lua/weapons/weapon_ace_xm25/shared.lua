@@ -89,21 +89,21 @@ function SWEP:SecondaryAttack()
 		if CLIENT then return end
 
 		local RangeTrace = util.QuickTrace(owner:GetShootPos(), owner:GetAimVector() * 50000, {owner})
-	
+
 		if RangeTrace.Hit then
 			local difpos = RangeTrace.HitPos - owner:GetShootPos()
-			local XM25dist = (difpos):Length()/39.37
-			local Xdist = (difpos*Vector(1,1,0)):Length()/39.37
-			local Ydist = ( (owner:GetShootPos().z) - (RangeTrace.HitPos.z) )/39.37
+			local XM25dist = difpos:Length() / 39.37
+			local Xdist = ( difpos * Vector(1,1,0) ):Length() / 39.37
+			local Ydist = ( (owner:GetShootPos().z) - RangeTrace.HitPos.z ) / 39.37
 			local time = (XM25dist + 2.5) / 110
-	
+
 			self.FuseDelay = time > 0.07 and time or 0
-			owner:SendLua( "XM25FuseDelay="..self.FuseDelay )
-			owner:SendLua( "XM25Distance="..XM25dist )
-			owner:SendLua( "XM25Px="..Xdist )
-			owner:SendLua( "XM25Py="..Ydist )
+			owner:SendLua( "XM25FuseDelay=" .. self.FuseDelay )
+			owner:SendLua( "XM25Distance=" .. XM25dist )
+			owner:SendLua( "XM25Px=" .. Xdist )
+			owner:SendLua( "XM25Py=" .. Ydist )
 		end
-	
+
 		ACE_SendNotification(owner, "Fuse Delay: " .. (self.FuseDelay > 0 and (math.Round(self.FuseDelay * 110) .. " m") or "None"), 2)
 		return
 
@@ -117,7 +117,7 @@ function SWEP:InitBulletData()
 	self.BulletData.Type = "HEAT"
 	self.BulletData.Id = 2
 	self.BulletData.Caliber = 2.5 --2.5 for 25mm
-	self.BulletData.PropLength = 16 --Volume of the case as a cylinder * Powder density converted from g to kg
+	self.BulletData.PropLength = 30 --Volume of the case as a cylinder * Powder density converted from g to kg
 	self.BulletData.ProjLength = 560 --Volume of the projectile as a cylinder * streamline factor (Data5) * density of steel
 	self.BulletData.Data5 = 200 --He Filler or Flechette count
 	self.BulletData.Data6 = 30 --HEAT ConeAng or Flechette Spread
