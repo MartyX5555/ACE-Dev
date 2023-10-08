@@ -36,9 +36,9 @@ SWEP.Primary.RecoilAngle	= 15
 SWEP.Primary.Cone			= 0.025
 SWEP.Primary.Delay			= 1
 SWEP.Primary.ClipSize		= 1
-SWEP.Primary.DefaultClip	= 4
+SWEP.Primary.DefaultClip	= 11
 SWEP.Primary.Automatic		= 0
-SWEP.Primary.Ammo		= "Grenade"
+SWEP.Primary.Ammo		= "CombineHeavyCannon"
 
 SWEP.ReloadSoundEnabled = 1
 

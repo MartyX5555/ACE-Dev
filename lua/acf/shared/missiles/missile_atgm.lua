@@ -205,7 +205,7 @@ ACF_defineGun("Ataka ASM", { --id
 	},
 
 	ent			= "acf_missile_to_rack",						-- A workaround ent which spawns an appropriate rack for the missile.
-	guidance	= {"Dumb", "Laser", "Infrared"},
+	guidance	= {"Dumb", "Laser"},
 	fuses		= {"Contact", "Optical"},
 
 	racks	= {											-- a whitelist for racks that this missile can load into.
@@ -314,7 +314,7 @@ ACF_defineGun("FGM-148 ASM", {
 
 	fuses			= {"Contact", "Optical"},
 
-	seekcone		= 40,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
+	seekcone		= 5,										-- getting inside this cone will get you locked.  Divided by 2 ('seekcone = 40' means 80 degrees total.)	--was 25
 	viewcone		= 80,										-- getting outside this cone will break the lock.  Divided by 2.
 	racks			= {											-- a whitelist for racks that this missile can load into.
 					["1x Javelin"] = true

@@ -12,7 +12,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 1 --Rounds per second
 
 SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 4
+SWEP.Primary.DefaultClip = 10
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "XBowBolt"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/amr_multi.mp3"
