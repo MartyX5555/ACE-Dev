@@ -124,6 +124,5 @@ function this:GetDisplayConfig()
 		["Arming delay"]	= math.Round(self.Primer, 3) .. " s",
 		["Distance"]		= math.Round(self.Distance / 39.37, 1) .. " m",
 		["Detonation Delay"]  = tostring(math.Round(self.Delay, 3)) .. " s"
-		["Adjusted Penetration"] =
 	}
 end
