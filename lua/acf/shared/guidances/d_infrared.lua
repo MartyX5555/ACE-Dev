@@ -180,7 +180,7 @@ function this:AcquireLock(missile)
 
 	local missilePos	= missile:GetPos()
 
-	local bestAng	= 5000000
+	local bestAng	= math.huge
 	local bestent	= NULL
 
 	local Heat		= 0
