@@ -78,6 +78,7 @@ ACF.HEATMulFuel       = 4						-- needs less multiplier, much less health than a
 ACF.HEATMulEngine     = 10						-- likewise
 ACF.HEATPenLayerMul   = 0.95					-- HEAT base energy multiplier
 ACF.HEATBoomConvert   = 1 / 3					-- percentage of filler that creates HE damage at detonation
+ACF.HEATPlungingReduction = 4					--Multiplier for the penarea of HEAT shells. 2x is a 50% reduction in penetration, 4x 25% and so on.
 
 ACF.ScaledHEMax       = 50
 ACF.ScaledEntsMax     = 5

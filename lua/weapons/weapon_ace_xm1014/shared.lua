@@ -12,7 +12,7 @@ SWEP.SlotPos = 1 --Priority in which the weapon appears, 1 tries to put it at th
 SWEP.FireRate = 3.3 --Rounds per second
 
 SWEP.Primary.ClipSize = 7
-SWEP.Primary.DefaultClip = 21
+SWEP.Primary.DefaultClip = 42
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/xm1014_multi.mp3"

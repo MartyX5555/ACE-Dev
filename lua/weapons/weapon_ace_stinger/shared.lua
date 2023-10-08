@@ -13,7 +13,7 @@ DEFINE_BASECLASS("weapon_ace_base")
 SWEP.Primary.Delay = 8--Reload in seconds
 
 SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 2
+SWEP.Primary.DefaultClip = 12
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "RPG_Round"
 SWEP.Primary.Sound = "acf_extra/airfx/missile_launch2.wav"

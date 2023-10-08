@@ -16,7 +16,7 @@ SWEP.CSMuzzleFlashes = true
 SWEP.FireRate = 8
 
 SWEP.Primary.ClipSize = 12
-SWEP.Primary.DefaultClip = 36
+SWEP.Primary.DefaultClip = 72
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/usp_multi.mp3"
 SWEP.Primary.Automatic = false

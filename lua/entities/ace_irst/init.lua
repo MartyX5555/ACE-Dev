@@ -124,8 +124,8 @@ function ENT:TriggerInput( inp, value )
 
 			SetConeParameter( self )
 
-			--local curTime = CurTime()
-			--self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
+			local curTime = CurTime()
+			self:NextThink(curTime + 10) --You are not going from a wide to narrow beam in half a second deal with it.
 		else
 			self.Cone = self.ICone
 		end
@@ -152,14 +152,12 @@ function ENT:SetActive(active)
 
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
 		WireLib.TriggerOutput( self, "Owner"		, {} )
-		WireLib.TriggerOutput( self, "Position"	, {} )
 		WireLib.TriggerOutput( self, "Angle"		, {} )
 		WireLib.TriggerOutput( self, "EffHeat"	, {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
-		self.OutputData.Position = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
 		self.OutputData.ClosestToBeam = -1
@@ -232,7 +230,6 @@ function ENT:AcquireLock()
 
 	--Table definition
 	local Owners			= {}
-	local Positions		= {}
 	local Temperatures	= {}
 	local posTable		= {}
 
@@ -304,7 +301,6 @@ function ENT:AcquireLock()
 
 			--For Owner table
 			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
-			table.insert(Positions, entpos + randposinac * posErrorFromHeat * difpos:Length() / 500)
 			table.insert(Temperatures, Heat)
 			table.insert(posTable, nonlocang * angerr)
 
@@ -319,14 +315,12 @@ function ENT:AcquireLock()
 
 		WireLib.TriggerOutput( self, "Detected"	, 1 )
 		WireLib.TriggerOutput( self, "Owner"		, Owners )
-		WireLib.TriggerOutput( self, "Position"	, Positions )
 		WireLib.TriggerOutput( self, "Angle"		, posTable )
 		WireLib.TriggerOutput( self, "EffHeat"	, Temperatures )
 		WireLib.TriggerOutput( self, "ClosestToBeam", self.ClosestToBeam )
 
 		self.OutputData.Detected = 1
 		self.OutputData.Owner = Owners
-		self.OutputData.Position = Positions
 		self.OutputData.Angle = posTable
 		self.OutputData.EffHeat = Temperatures
 		self.OutputData.ClosestToBeam = self.ClosestToBeam
@@ -334,14 +328,12 @@ function ENT:AcquireLock()
 
 		WireLib.TriggerOutput( self, "Detected"	, 0 )
 		WireLib.TriggerOutput( self, "Owner"		, {} )
-		WireLib.TriggerOutput( self, "Position"	, {} )
 		WireLib.TriggerOutput( self, "Angle"		, {} )
 		WireLib.TriggerOutput( self, "EffHeat"	, {} )
 		WireLib.TriggerOutput( self, "ClosestToBeam", -1 )
 
 		self.OutputData.Detected = 0
 		self.OutputData.Owner = {}
-		self.OutputData.Position = {}
 		self.OutputData.Angle = {}
 		self.OutputData.EffHeat = {}
 		self.OutputData.ClosestToBeam = -1

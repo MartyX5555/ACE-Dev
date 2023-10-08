@@ -12,7 +12,7 @@ SWEP.SlotPos = 1
 SWEP.FireRate = 10 --Rounds per second
 
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.DefaultClip = 90
+SWEP.Primary.DefaultClip = 180
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "SMG1"
 SWEP.Primary.Sound = "ace_weapons/sweps/multi_sound/ak47_multi.mp3"

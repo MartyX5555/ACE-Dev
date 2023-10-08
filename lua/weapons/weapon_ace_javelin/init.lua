@@ -10,7 +10,7 @@ function SWEP:Equip()
 
 	self.BulletData.Filter = {self:GetOwner()}
 
-	self:GetOwner():GiveAmmo( 5 * self.Primary.ClipSize, self.Primary.Ammo , false )
+	self:GetOwner():GiveAmmo( 4 * self.Primary.ClipSize, self.Primary.Ammo , false )
 end
 
 
