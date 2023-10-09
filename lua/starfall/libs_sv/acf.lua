@@ -1947,7 +1947,12 @@ function ents_methods:acfReload ()
 
 	if not isGun( this ) then return end
 
-	this.Reloading = true
+	local isEmpty = this.BulletData.Type == "Empty"
+
+	if isEmpty and not this.Reloading then
+		this:LoadAmmo(false, true)
+		this.Reloading = true
+	end
 end
 
 --- Returns the number of rounds in active ammo crates linked to an ACF weapon

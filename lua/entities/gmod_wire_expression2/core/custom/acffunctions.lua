@@ -804,7 +804,13 @@ do
 	e2function void entity:acfReload()
 		if not isGun(this) then return end
 		if not isOwner(self, this) then return end
-		this.Reloading = true
+
+		local isEmpty = this.BulletData.Type == "Empty"
+
+		if isEmpty and not this.Reloading then
+			this:LoadAmmo(false, true)
+			this.Reloading = true
+		end
 	end
 
 	__e2setcost( 1 )
