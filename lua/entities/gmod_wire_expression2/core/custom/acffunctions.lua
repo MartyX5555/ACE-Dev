@@ -782,7 +782,7 @@ do
 		if (this.MagSize > 1) then
 			return (this.MagSize - this.CurrentShot) or 1
 		end
-		if (this.Ready) then return 1 end
+		if (this.Ready and this.BulletData.Type ~= "Empty") then return 1 end
 		return 0
 	end
 	
