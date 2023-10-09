@@ -177,12 +177,12 @@ function ENT:Think()
 		local distXY = Vector(posDiff.x, posDiff.y, 0):Length()
 		local travelTime = dist / self:GetVelocity():Length()
 		local tarVel = GetRootVelocity(self.tarent)
-		local relvel = tarVel - self:GetVelocity()
+		--local relvel = tarVel - self:GetVelocity()
 
-		tarAccel = (tarVel-self.LastVelTarget)*DelTime
+		tarAccel = (tarVel-self.LastVelTarget) * DelTime
 		self.lastVelTarget = tarVel
 
-		tarJerk = (tarAccel-self.LastAccelTarget)*DelTime
+		tarJerk = (tarAccel-self.LastAccelTarget) * DelTime
 		self.LastAccelTarget = tarAccel
 
 		travelTime = travelTime * self.LeadMul
@@ -216,7 +216,7 @@ function ENT:Think()
 
 			self:SetAngles(AngAdjust)
 		else
-			if self.DestructOnMiss and self.CurrentFuse>0.5 then
+			if self.DestructOnMiss and self.CurrentFuse > 0.5 then
 				self:Detonate()
 				--print("Self Destruct")
 			end
