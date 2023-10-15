@@ -97,7 +97,7 @@ if SERVER then
 			HitRes.Overkill = 0
 			HitRes.Loss	= 1
 
-			return HitReHeatTypess
+			return HitRes
 
 		elseif OtherImpactType[Type] then
 
