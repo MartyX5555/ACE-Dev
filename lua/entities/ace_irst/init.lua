@@ -26,6 +26,7 @@ function ENT:Initialize()
 
 	self.Heat                = 21	-- Heat
 	self.HeatAboveAmbient    = 5	-- How many degrees above Ambient Temperature this irst will start to track?
+	self.HeatNoLoss 	     = 200  -- Required heat to make the tracker not to lose accuracy. Below this value, inaccuracy starts to take effect.
 
 	self.MinViewCone         = 3
 	self.MaxViewCone         = 45
@@ -257,7 +258,7 @@ function ENT:AcquireLock()
 		absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.y / 90) ^ 2 + 0.01 * (absang.p / 90) ^ 2
+		errorFromAng = 0.2 * (absang.y / 90) ^ 2 + 0.2 * (absang.y / 90) ^ 2 + 0.2 * (absang.p / 90) ^ 2
 
 		-- Check if the target is within the cone.
 		if IsInCone( absang, self.Cone ) then
@@ -293,13 +294,14 @@ function ENT:AcquireLock()
 				besterr = err
 			end
 
-			local errorFromHeat = math.max((200 - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
-			local angerr = 1 + randanginac * (errorFromAng + errorFromHeat)
+			local errorFromHeat = math.max((self.HeatNoLoss - Heat) / 5000, 0) --200 degrees to the seeker causes no loss in accuracy
+			local finalerror = errorFromAng + errorFromHeat
+			local angerr = Angle(finalerror, finalerror, finalerror) * randanginac
 
 			--For Owner table
 			table.insert(Owners, IsValid(scanEnt:CPPIGetOwner()) and scanEnt:CPPIGetOwner():GetName() or "")
 			table.insert(Temperatures, Heat)
-			table.insert(AngTable, -ang * angerr) -- Negative means that if the target is higher than irst = positive pitch
+			table.insert(AngTable, -ang + angerr) -- Negative means that if the target is higher than irst = positive pitch
 
 		end
 
