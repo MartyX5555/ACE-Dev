@@ -29,7 +29,6 @@ function Round.create( Gun, BulletData )
 		local phys = ent:GetPhysicsObject()
 		phys:SetVelocity( BulletData.Flight )
 		ent.Heat = (BulletData.FillerMass or 1) * 10000--250 -- Reverted to solar levels while i can bring a better system...
-		print(ent.Heat)
 
 	end
 
