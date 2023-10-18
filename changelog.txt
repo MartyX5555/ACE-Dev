@@ -698,3 +698,4 @@ r100
 - Added flare noise. Supported by the sound volume system.
 - Fixed textolite spamming alot of errors if impacted by heat shells.
 - Fixed IRST angle return. Now its provided in a local angle relative to itself.
+- Updated armor analyzer
