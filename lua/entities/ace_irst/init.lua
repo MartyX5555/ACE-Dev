@@ -258,7 +258,7 @@ function ENT:AcquireLock()
 		absang      = Angle(math.abs(ang.p),math.abs(ang.y),0)  --Since I like ABS so much
 
 		--Doesn't want to see through peripheral vison since its easier to focus a seeker on a target front and center of an array
-		errorFromAng = 0.2 * (absang.y / 90) ^ 2 + 0.2 * (absang.y / 90) ^ 2 + 0.2 * (absang.p / 90) ^ 2
+		errorFromAng = 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.y / 90) ^ 2 + 0.4 * (absang.p / 90) ^ 2
 
 		-- Check if the target is within the cone.
 		if IsInCone( absang, self.Cone ) then
