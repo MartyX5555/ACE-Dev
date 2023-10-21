@@ -35,15 +35,13 @@ function ACF_CreateBullet( BulletData )
 	BulletData.FuseLength	= type(BulletData.FuseLength) == "number" and BulletData.FuseLength or 0
 
 	--Check the Gun's velocity and add a modifier to the flighttime so the traceback system doesn't hit the originating contraption if it's moving along the shell path
-	if IsValid(BulletData.Gun) then
+	local Parent = ACF_GetPhysicalParent(BulletData.Gun)
 
-		local Gun = BulletData.Gun
-		local physobj = ACF_GetPhysicalParent(Gun):GetPhysicsObject()
-
-		if IsValid(physobj) then
-			BulletData.TraceBackComp = math.max(physobj:GetVelocity():Dot(BulletData.Flight:GetNormalized()),0)
+	if IsValid(Parent) then
+		local physObj = Parent:GetPhysicsObject()
+		if IsValid(physObj) then
+			BulletData.TraceBackComp = math.max(physObj:GetVelocity():Dot(BulletData.Flight:GetNormalized()),0)
 		end
-
 	end
 
 	if BulletData.Filter then
@@ -176,6 +174,8 @@ end
 ]]--------------------------------------------------------------------------------------------------
 do
 
+	local MaxvisclipPerBullet = 50
+
 	local function ACF_PerformTrace( Bullet )
 
 		-- perform the trace for damage
@@ -188,7 +188,7 @@ do
 		debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
 		debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
 
-		-- Disabled since for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
+		-- Disabled since, for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
 		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 
 		--FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
@@ -206,20 +206,13 @@ do
 
 		FlightTr.filter	= Bullet.Filter -- any changes to bullet filter will be reflected in the trace
 
-		local Iteration = 0
+		local visCount = 0
 
 		--if trace hits clipped part of prop, add prop to trace filter and retry
-		while RetryTrace do
+		while RetryTrace and visCount < MaxvisclipPerBullet do
 
 			-- Disables so we dont overloop it again
 			RetryTrace		= false
-
-			-- i temporally added this, because i crash this very often when testing.
-			Iteration = Iteration + 1
-			if Iteration > 100 then
-				print("FATAL ERROR")
-				break
-			end
 
 			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
 			util.TraceHull(FlightTr)
@@ -266,7 +259,12 @@ do
 				end
 			end
 
+			-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
+			visCount = visCount + 1
+
 		end
+
+		print("Count: " .. visCount)
 	end
 
 	do
