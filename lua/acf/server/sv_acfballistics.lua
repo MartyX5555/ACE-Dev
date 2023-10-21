@@ -240,6 +240,9 @@ do
 
 				table.insert( Bullet.Filter, FlightRes.Entity )
 				RetryTrace = true	--re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
+
+				-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
+				visCount = visCount + 1
 			end
 
 			-- If we hit a player or NPC, we need to retry the trace as a TraceLine
@@ -256,15 +259,14 @@ do
 					table.insert(Bullet.FilterKeysToRemove, #Bullet.Filter)
 
 					RetryTrace = true
+
+					-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
+					visCount = visCount + 1
 				end
 			end
-
-			-- Counts the amount of passed visclips during this tick. The loop will break if the limit is passed
-			visCount = visCount + 1
-
 		end
 
-		print("Count: " .. visCount)
+		--print("Count: " .. visCount)
 	end
 
 	do
