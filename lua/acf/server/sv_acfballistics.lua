@@ -191,7 +191,7 @@ do
 		-- Disabled since for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
 		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 
-		FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
+		--FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
 
 		local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 		FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
@@ -222,15 +222,15 @@ do
 			end
 
 			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
-			--util.TraceHull(FlightTr)
-			util.TraceLine(FlightTr)
+			util.TraceHull(FlightTr)
+			--util.TraceLine(FlightTr)
 
 			--if our shell hits visclips, convert the tracehull on traceline.
 			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				print("") -- not wanting linter annoys me.
+				--print("") -- not wanting linter annoys me.
 				-- trace result is stored in supplied output FlightRes (at top of file)
-				--util.TraceLine(FlightTr)
+				util.TraceLine(FlightTr)
 
 				-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
 				if not FlightRes.HitNonWorld then
