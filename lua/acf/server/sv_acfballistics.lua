@@ -191,7 +191,7 @@ do
 		-- Disabled since for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
 		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 
-		--FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
+		FlightTr.mask = MASK_SHOT -- Enable this to see the weird side
 
 		local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 		FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
@@ -221,26 +221,35 @@ do
 				break
 			end
 
+			local Tr = {}
+			Tr.start = Bullet.StartTrace
+			Tr.endpos = Bullet.EndTrace
+			Tr.filter = Bullet.Filter
+			Tr.mask = MASK_SHOT
+			Tr.mins = vector_origin
+			Tr.maxs = vector_origin
+			local Trace = util.TraceHull(Tr)
+			print("Target Entity on shot: ", Trace.Entity)
+
 			-- Defining tracehull at first instance. If you want serious cases, change this to traceline
-			util.TraceHull(FlightTr)
-			--util.TraceLine(FlightTr)
+			--util.TraceHull(FlightTr)
+			util.TraceLine(FlightTr) --Lets break it intentionally
 
 			--if our shell hits visclips, convert the tracehull on traceline.
-			if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
+			--if ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then
 
-				--print("") -- not wanting linter annoys me.
 				-- trace result is stored in supplied output FlightRes (at top of file)
-				util.TraceLine(FlightTr)
+				--util.TraceLine(FlightTr)
 
 				-- if our traceline doesnt detect anything after conversion, revert it to tracehull again. This should fix the 1 in 1 billon issue.
-				if not FlightRes.HitNonWorld then
+				--if not FlightRes.HitNonWorld then
 
 					-- The traceline function overrides the mins/maxs. So i must redefine them again here.
-					FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
-					FlightTr.mins = -FlightTr.maxs
-					util.TraceHull(FlightTr)
-				end
-			end
+					--FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
+					--FlightTr.mins = -FlightTr.maxs
+					--util.TraceHull(FlightTr)
+				--end
+			--end
 
 			--We hit something that's not world, if it's visclipped, filter it out and retry
 			if FlightRes.HitNonWorld and ACF_CheckClips( FlightRes.Entity, FlightRes.HitPos ) then	--our shells hit the visclip as traceline, no more double bounds.
@@ -248,7 +257,7 @@ do
 				table.insert( Bullet.Filter, FlightRes.Entity )
 				RetryTrace = true	--re-enabled for retry trace. Bullet will start as tracehull again unless other visclip is detected!
 			end
-
+--[[ -- not required on the test
 			-- If we hit a player or NPC, we need to retry the trace as a TraceLine
 			-- TraceHull hits player's physics collision boxes rather than proper hitboxes, causing near miss shots to hit
 			local HitEnt = FlightRes.Entity
@@ -265,7 +274,7 @@ do
 					RetryTrace = true
 				end
 			end
-
+]]
 		end
 	end
 
