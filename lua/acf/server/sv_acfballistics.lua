@@ -9,7 +9,7 @@ local FlightTr = { output = FlightRes }
 --[[------------------------------------------------------------------------------------------------
 	DEBUG CONFIG
 ]]--------------------------------------------------------------------------------------------------
-local DebugTime = 5
+local DebugTime = 1
 
 --[[------------------------------------------------------------------------------------------------
 	creates a new bullet being fired
@@ -151,9 +151,9 @@ do
 		Bullet.StartTrace = Bullet.Pos - Flightnorm * math.min( PhysVel, Bullet.FlightTime * Bullet.Flight:Length() - Bullet.TraceBackComp * Bullet.DeltaTime )
 		Bullet.EndTrace	= Bullet.NextPos + Flightnorm * PhysVel
 
-		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255,32) ) --true start
-		debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, ColorRand() )
-		debugoverlay.Line(Bullet.StartTrace, Bullet.EndTrace, DebugTime, Color(0, 255, 0))
+		debugoverlay.Cross(Bullet.Pos,5,DebugTime,Color(255,255,255) ) --true start
+		debugoverlay.Line(Bullet.Pos, Bullet.NextPos, DebugTime, Color(0,255,0), true ) -- the predicted trayectory.
+		debugoverlay.Line(Bullet.StartTrace, Bullet.EndTrace, DebugTime, Color(255, 255, 0)) -- the real trace detection.
 
 		--updating timestep timers
 		Bullet.LastThink = ACF.SysTime
@@ -185,9 +185,6 @@ do
 		FlightTr.start	= Bullet.StartTrace
 		FlightTr.endpos	= Bullet.EndTrace
 
-		debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
-		debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
-
 		-- Disabled since, for some reason, MASK_SHOT caused issues with bullets bypassing things should not (parented props if the tracehull had mins/maxs at 0,0,0). WHY??
 		--FlightTr.mask	= Bullet.Caliber <= 3 and MASK_SHOT or MASK_SOLID -- cals 30mm and smaller will pass through things like chain link fences
 
@@ -196,6 +193,10 @@ do
 		local TROffset = 0.235 * Bullet.Caliber / 1.14142 --Square circumscribed by circle. 1.14142 is an aproximation of sqrt 2. Radius and divide by 2 for min/max cancel.
 		FlightTr.maxs = Vector(TROffset, TROffset, TROffset)
 		FlightTr.mins = -FlightTr.maxs
+
+		debugoverlay.Box( Bullet.Pos, FlightTr.mins, FlightTr.maxs, DebugTime, Color(255,100,0, 100) )
+		--debugoverlay.Cross( FlightTr.start, 10, 20, Color(255,0,0), true )
+		--debugoverlay.Cross( FlightTr.endpos, 10, 20, Color(0,255,0), true )
 
 		-- Table to hold temporary filter keys that should be removed after the below while loop is completed
 		if not Bullet.FilterKeysToRemove then Bullet.FilterKeysToRemove = {} end
