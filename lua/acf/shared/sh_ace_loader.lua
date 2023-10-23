@@ -314,8 +314,8 @@ ACF.Classes.GunClass        = GunClasses
 ACF.Classes.Rack            = RackClasses
 ACF.Classes.Radar           = RadarClasses
 
-ACF.Weapons.Ammo 			= AmmoTable --end ammo containers listing
-ACF.Weapons.LegacyAmmo 		= LegacyAmmoTable
+ACF.Weapons.Ammo            = AmmoTable --end ammo containers listing
+ACF.Weapons.LegacyAmmo      = LegacyAmmoTable
 
 ACF.Weapons.Guns            = GunTable
 ACF.Weapons.Racks           = RackTable
@@ -326,8 +326,8 @@ ACF.Weapons.FuelTanksSize   = FuelTankSizeTable
 ACF.Weapons.Radars          = Radars
 
 --Small reminder of Mobility table. Still being used in stuff like starfall/e2. This can change
-ACF.Weapons.Mobility        = MobilityTable
+ACF.Weapons.Mobility    = MobilityTable
 
-ACE.GSounds.GunFire         = GSoundData
-ACE.ModelData               = ModelData
-ACE.MineData  				= MineData
+ACE.GSounds.GunFire     = GSoundData
+ACE.ModelData           = ModelData
+ACE.MineData            = MineData

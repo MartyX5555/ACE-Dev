@@ -241,15 +241,15 @@ do
 		if not Owner:CheckLimit("_acf_ammo") then return false end
 
 		local Ammo = ents.Create("acf_ammo")
-
 		if IsValid(Ammo) then
 
 			local Model
 			local Weight
 			local Dimensions
 
-			Ammo:SetPos(Pos)
+			Ammo:CPPISetOwner(Owner)
 			Ammo:SetAngles(Angle)
+			Ammo:SetPos(Pos)
 			Ammo:Spawn()
 
 			-- If the crate is not valid in the system, but it could be in the LegacyAmmoTable o be scalable.
@@ -315,7 +315,6 @@ do
 			end
 
 			Ammo.Id = Id
-			Ammo:CPPISetOwner(Owner)
 			Ammo.Model = Model
 			Ammo.Dimensions = Dimensions
 
