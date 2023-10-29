@@ -272,38 +272,7 @@ end
 
 --Checks if theres new versions for ACE
 function ACF_UpdateChecking( )
-	http.Fetch("https://raw.githubusercontent.com/RedDeadlyCreeper/ArmoredCombatExtended/master/lua/autorun/acf_globals.lua",function(contents)
-
-		--maybe not the best way to get git but well......
-		str = tostring("String:" .. contents)
-		i,k = string.find(str,"ACF.Version =")
-
-		local rev = tonumber(string.sub(str,k + 2,k + 4)) or 0
-
-		if rev and ACF.Version == rev  and rev ~= 0 then
-
-			print("[ACE | INFO]- You have the latest version! Current version: " .. rev)
-
-		elseif rev and ACF.Version > rev and rev ~= 0 then
-
-			print("[ACE | INFO]- You have an experimental version! Your version: " .. ACF.Version .. ". Main version: " .. rev)
-		elseif rev == 0 then
-
-			print("[ACE | ERROR]- Unable to find the latest version! Failed to connect to GitHub.")
-
-		else
-
-			print("[ACE | INFO]- A new version of ACE is available! Your version: " .. ACF.Version .. ". New version: " .. rev)
-			if CLIENT then chat.AddText( Color( 255, 0, 0 ), "A newer version of ACE is available!" ) end
-
-		end
-		ACF.CurrentVersion = rev
-
-	end, function()
-		print("[ACE | ERROR]- Unable to find the latest version! No internet available.")
-
-		ACF.CurrentVersion = 0
-	end)
+	print("[ACE | INFO]- You have an outdated developer version! The new dev version can be found here: https://github.com/RedDeadlyCreeper/ArmoredCombatExtended/tree/dev")
 end
 
 
