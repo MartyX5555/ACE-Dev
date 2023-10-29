@@ -3,7 +3,7 @@ ACF = ACF or {}
 ACF.AmmoTypes = {}
 ACF.MenuFunc = {}
 ACF.AmmoBlacklist = {}
-ACF.Version = 492		-- ACE current version
+ACF.Version = 493		-- ACE current version
 ACF.CurrentVersion = 0	-- just defining a variable, do not change
 
 ACF.Year = 2023			-- Current Year
@@ -137,6 +137,18 @@ ACF.PenAreaMod          = 0.85
 ACF.KinFudgeFactor      = 2.1					-- True kinetic would be 2, over that it's speed biaised, below it's mass biaised
 ACF.KEtoRHA             = 0.25					-- Empirical conversion from (kinetic energy in KJ)/(Area in Cm2) to RHA penetration
 ACF.GroundtoRHA         = 0.15					-- How much mm of steel is a mm of ground worth (Real soil is about 0.15)
+
+-- How much mm of steel is a mm of ground worth (Real soil is about 0.15). I will assume soil is concrete.
+-- warning. Citations needed regarding to the real equivalents below
+ACF.GroundtoRHAMaterials = {
+	Concrete   = 0.15,
+	Wood	   = 0.025,
+	Dirt       = 0.1,
+	Sand       = 0.09,
+	Glass      = 0.02,
+	Metal 	   = 1,
+}
+
 ACF.KEtoSpall           = 1
 ACF.AmmoMod             = 2.6					-- Ammo modifier. 1 is 1x the amount of ammo
 ACF.AmmoLengthMul       = 1
